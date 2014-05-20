@@ -356,10 +356,12 @@ tb_preparation() {
    if [ -x /usr/lib/curl-scripts/curl-prgrs ]; then
       ## Curl progress wrapper.
       CURL_PRGRS="/usr/lib/curl-scripts/curl-prgrs"
+   else
+      true "/usr/lib/curl-scripts/curl-prgrs not available, skipping."
    fi
 
    if [ "$ORDINARY_PROGRESS_BAR" = "1" ]; then
-      ## --ordinary enabled
+      true "--ordinary enabled, setting CURL_PRGRS to $CURL."
       CURL_PRGRS="$CURL"
    fi
 
