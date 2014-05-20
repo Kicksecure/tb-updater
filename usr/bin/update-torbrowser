@@ -390,10 +390,9 @@ tb_connectivity_checks_tor() {
       source /usr/lib/anon-shared-helper-scripts/tor_enabled_check
       ## sets: TOR_ENABLED
       check_tor_enabled_do
-   fi
 
-   if [ "$TOR_ENABLED" = "0" ]; then
-      MSG="Tor not enabled yet.
+      if [ "$TOR_ENABLED" = "0" ]; then
+         MSG="Tor not enabled yet.
 
 Please check: Start menu -> System -> Whonix Check
               or in Terminal: whonixcheck
@@ -403,19 +402,21 @@ Run whonixcheck on Whonix-Gateway as well.
 
 If whonixcheck reports no problems with internet activity and this still fails, please report a bug!"
 
-      $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
-      $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
-      exit 1
+         $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
+         $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+         exit 1
+      fi
+   else
+      true "/usr/lib/anon-shared-helper-scripts/tor_enabled_check does not exist, skipping."
    fi
 
    if [ -f /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh ]; then
       source /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh
       ## sets: tor_bootstrap_percent
       check_tor_bootstrap_helper
-   fi
 
-   if [ ! "$tor_bootstrap_percent" = "100" ]; then
-      MSG="Tor not fully bootstrapped.
+      if [ ! "$tor_bootstrap_percent" = "100" ]; then
+         MSG="Tor not fully bootstrapped.
 
 Possible reasons:
 - no internet connectivity
@@ -428,9 +429,12 @@ Run whonixcheck on Whonix-Gateway as well.
 
 If whonixcheck reports no problems with internet activity and this still fails, please report a bug!"
 
-      $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
-      $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
-      exit 1
+         $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
+         $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+         exit 1
+      fi
+   else
+      true "/usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh not available, skipping."
    fi
 
    true "Tor fully bootstrapped."
