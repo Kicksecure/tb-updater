@@ -12,6 +12,8 @@ SCRIPTNAME="$(basename $0)"
 ## Setting to "torbrowser" so this does not become "whonix-torbrowser".
 IDENTIFIER="torbrowser"
 
+nice_name="Tor Browser"
+
 ICON="/usr/share/icons/anon-icon-pack/tbupdate.ico"
 
 ## Developer comment on this script:
@@ -450,7 +452,7 @@ tb_connectivity_checks_curl() {
       return 0
    fi
 
-   NOTIFY_MSG="$SCRIPTNAME Update Check (by Whonix developers)
+   NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
 ----------------------------------------------------------------------
 Checking connectivity... Will take a moment..."
 
@@ -674,7 +676,7 @@ $DOWNLOAD_FAIL_HELP"
 
    if [ "$up_to_date" = "1" ]; then
          MSG="\
-$SCRIPTNAME Update Check (by Whonix developers)
+$nice_name Update Check (by Whonix developers)
 ----------------------------------------------------------------------
 Currently installed version: $tbb_locally_installed_version
 Online detected version(s) : $tbb_recommended_versions_list
@@ -699,7 +701,7 @@ Upgrade now?\
    else
       if [ "$installed_or_not_result" = "0" ]; then
          MSG="\
-$SCRIPTNAME Update Check (by Whonix developers)
+$nice_name Update Check (by Whonix developers)
 ----------------------------------------------------------------------
 Currently installed version: $tbb_locally_installed_version
 Online detected version(s) : $tbb_recommended_versions_list
@@ -707,7 +709,7 @@ Online detected version(s) : $tbb_recommended_versions_list
 Install now?"
       else
          MSG="\
-$SCRIPTNAME Update Check (by Whonix developers)
+$nice_name Update Check (by Whonix developers)
 ----------------------------------------------------------------------
 Currently installed version: $tbb_locally_installed_version
 Online detected version(s) : $tbb_recommended_versions_list
@@ -806,7 +808,7 @@ tb_download() {
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       true
    else
-      NOTIFY_MSG="$SCRIPTNAME Update Check (by Whonix developers)
+      NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
 ----------------------------------------------------------------------
 Downloading Tor Browser signature... Will take a moment..."
 
@@ -897,7 +899,7 @@ $DOWNLOAD_FAIL_HELP"
       fi
    fi
 
-   NOTIFY_MSG="$SCRIPTNAME Update Check (by Whonix developers)
+   NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
 ----------------------------------------------------------------------
 Downloading Tor Browser... Will take a while..."
 
