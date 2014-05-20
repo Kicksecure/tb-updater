@@ -82,9 +82,6 @@ Recommendations:
 - Check News: https://www.whonix.org/wiki/Download#Stay_tuned
 - Manually update: https://www.whonix.org/wiki/Manually_Updating_Tor_Browser"
 
-GATEWAY_IP="192.168.0.10"
-SOCKS_PORT_TBB_DOWNLOAD="9115"
-
 root_check() {
    if [ "$(id -u)" != "0" ]; then
       #echo "$SCRIPTNAME running as user."
@@ -491,6 +488,8 @@ Checking connectivity... Will take a moment..."
    wait "$last_pid" || { curl_exit_code="$?" ; true; };
    last_pid=""
 
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
       local curl_status_message
@@ -553,9 +552,13 @@ Checking Tor Browser version... Will take a moment..."
    fi
 
    if [ "$DEV_PASSTHROUGH" = "1" ]; then
-      CURL_PROXY=""
+      [ -n "$CURL_PROXY" ] || CURL_PROXY=""
+   elif [ -d /usr/share/whonix ]; then
+      [ -n "$GATEWAY_IP" ] || GATEWAY_IP="192.168.0.10"
+      [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
+      [ -n "$CURL_PROXY" ] || CURL_PROXY="--socks5-hostname socks5h://$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD/"
    else
-      CURL_PROXY="--socks5-hostname socks5h://$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD/"
+      [ -n "$CURL_PROXY" ] || CURL_PROXY=""
    fi
 
    echo "INFO: Find out latest version..."
@@ -592,6 +595,8 @@ Checking Tor Browser version... Will take a moment..."
    last_pid="$!"
    wait "$last_pid" || { curl_exit_code="$?" ; true; };
    last_pid=""
+
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
@@ -945,6 +950,8 @@ INFO: Downloading:
    last_pid="$!"
    wait "$last_pid" || { curl_exit_code="$?" ; true; };
    last_pid=""
+
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
