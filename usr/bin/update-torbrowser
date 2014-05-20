@@ -332,12 +332,12 @@ tb_preparation() {
    TITLE="Tor Browser Update Check (by Whonix developers)"
 
    ret="0"
-   command -v curl.whonix-orig >/dev/null || { ret="$?" ; true; };
+   command -v curl.anondist-orig >/dev/null || { ret="$?" ; true; };
 
    if [ "$ret" = "0" ]; then
       ## using the non-uwt-wrapped version, if the uwt wrapper is installed,
       ## which is the case on a default Whonix installation
-      CURL=curl.whonix-orig
+      CURL=curl.anondist-orig
    else
       ret="0"
       command -v curl >/dev/null || { ret="$?" ; true; };
@@ -349,7 +349,6 @@ tb_preparation() {
          $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG"
          $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG"
          EXIT_CODE="1"
-         cleanup "1"
          return 0
       fi
    fi

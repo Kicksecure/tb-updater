@@ -14,7 +14,7 @@ Standards-Version: 3.9.4
 
 Package: tb-updater
 Architecture: all
-Depends: msgcollector, ${misc:Depends}
+Depends: msgcollector, curl, ${misc:Depends}
 Recommends: tb-starter, tb-default-browser, open-link-confirmation,
  anon-icon-pack
 Description: Tor Browser Updater
