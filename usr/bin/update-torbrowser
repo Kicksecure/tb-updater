@@ -1,0 +1,1090 @@
+#!/bin/bash
+
+## This file is part of Whonix.
+## Copyright (C) 2012 - 2014 Patrick Schleizer <adrelanos@riseup.net>
+## See the file COPYING for copying conditions.
+
+#set -x
+set -o pipefail
+
+SCRIPTNAME="$(basename $0)"
+
+## Setting to "torbrowser" so this does not become "whonix-torbrowser".
+IDENTIFIER="torbrowser"
+
+ICON="/usr/share/icons/anon-icon-pack/tbupdate.ico"
+
+## Developer comment on this script:
+## I would be very happy if this script would not be required.
+## Unfortunately, it is required. It works around a lot bugs:
+## - There is no deb/rpm/whatever package with Tor Browser.
+##   https://trac.torproject.org/projects/tor/ticket/5236
+##   https://trac.torproject.org/projects/tor/ticket/3994
+## - There is no way to keep Tor Browser updated.
+##   (Thandy doesn't exist yet.)
+## - There is no way to add the Whonix Documentation well visible to Tor Browser:
+##   https://trac.torproject.org/projects/tor/ticket/6025
+##   https://trac.torproject.org/projects/tor/ticket/6053
+## - Tor Browsers support for Isolating and Transparent Proxies is very limited:
+##   https://trac.torproject.org/projects/tor/ticket/5611
+## - tbb-scripts
+##   https://github.com/adrelanos/tbb-scripts
+
+tb_error_handler() {
+   local exit_code="$?"
+
+   local MSG="\
+###########################################################
+## $SCRIPTNAME script bug.
+## No panic. Nothing is broken. Just some rare condition
+## has been hit. Try again later. There is likely a
+## solution for this problem. Please see the Whonix News,
+## Whonix User Help Forum and Whonix Documentation.
+## https://www.whonix.org/wiki/Tor_Browser
+## Please report this bug!
+##
+## BASH_COMMAND: $BASH_COMMAND
+## exit_code: $exit_code
+##
+## output: $output
+## output_opts: ${output_opts[@]}
+## progressbaridx: $progressbaridx
+##
+## Experts only:
+## bash -x $SCRIPTNAME
+###########################################################\
+"
+
+   mkdir --parents ~/".tb"
+   echo "$MSG" >> ~/".tb/torbrowser_updater_error.log"
+
+   if [ "$progressbaridx" = "" ]; then
+      true
+   else
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+   fi
+   $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
+   $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+   exit 1
+}
+
+trap "tb_error_handler" ERR
+
+DOWNLOAD_FAIL_HELP="Possible reasons:
+
+- The download server is down.
+- File size exceeded (endless data attack triggered).
+- Tor Browser Updater (by Whonix developers) has been broken due to upstream changes.
+
+Recommendations:
+
+- Try again later. If the error persists it probably won't solve itself before the next update.
+- Check News: https://www.whonix.org/wiki/Download#Stay_tuned
+- Manually update: https://www.whonix.org/wiki/Manually_Updating_Tor_Browser"
+
+GATEWAY_IP="192.168.0.10"
+SOCKS_PORT_TBB_DOWNLOAD="9115"
+
+root_check() {
+   if [ "$(id -u)" != "0" ]; then
+      #echo "$SCRIPTNAME running as user."
+      true
+   else
+      echo "Do not run $SCRIPTNAME as root!"
+      exit 1
+   fi
+}
+
+tb_sanity_tests() {
+   trap "tb_error_handler" ERR
+
+   command -v id >/dev/null
+   command -v basename >/dev/null
+   command -v touch >/dev/null
+   command -v uname >/dev/null
+   command -v sudo >/dev/null
+   command -v mkdir >/dev/null
+   command -v pidof >/dev/null
+   command -v chmod >/dev/null
+   command -v cp >/dev/null
+   command -v mv >/dev/null
+   command -v killall >/dev/null
+   command -v rm >/dev/null
+   command -v head >/dev/null
+   command -v zenity >/dev/null
+   command -v tar >/dev/null
+   command -v date >/dev/null
+   command -v /usr/lib/msgcollector/msgcollector >/dev/null
+   ## tbbversion function
+   command -v grep >/dev/null
+   ## tbbversion function
+   command -v sed >/dev/null
+}
+
+trap_tb() {
+   trap "tb_error_handler" ERR
+
+   MSG="INFO $SCRIPTNAME: SIG-(TERM/INT) received. Exiting."
+
+   if [ "$last_pid" = "" ]; then
+      true
+   else
+      kill -1 "$last_pid"
+   fi
+
+   if [ "$progressbaridx" = "" ]; then
+      true
+   else
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+   fi
+
+   $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+
+   #MSG="Aborted."
+   #$output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
+   #$output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+   exit 1
+}
+
+trap "trap_tb" SIGTERM
+trap "trap_tb" SIGINT
+
+get_new_progressbaridx() {
+   trap "tb_error_handler" ERR
+
+   local tmp
+   tmp="$(mktemp)"
+   progressbaridx="${tmp##*.}"
+}
+
+parse_cmd_options() {
+   trap "tb_error_handler" ERR
+
+   if [ "$1" = "" ]; then
+      ## Same as --start.
+      open_new_window="0"
+      LINK=""
+      return 0
+   fi
+
+   ## Thanks to:
+   ## http://mywiki.wooledge.org/BashFAQ/035
+
+   while :
+   do
+       case $1 in
+           --ordinary)
+               ORDINARY_PROGRESS_BAR="1"
+               shift
+               ;;
+           --update)
+               TB_UPDATE="1"
+               shift
+               ;;
+           --noask)
+               TB_UPDATE="1"
+               TB_FORCE_INSTALL="1"
+               shift
+               ;;
+           --nokilltb)
+               TB_UPDATE="1"
+               NOKILLTB="1"
+               shift
+               ;;
+           --devbuildpassthrough)
+               TB_UPDATE="1"
+               TB_FORCE_INSTALL="1"
+               DEV_BUILD_PASSTHROUGH="1"
+               DEV_PASSTHROUGH="1"
+               ORDINARY_PROGRESS_BAR="1"
+               shift
+               ;;
+           ## Keeping --clearnet this for compatibility. Does nothing anymore,
+           ## because --clearnet is now the default.
+           --clearnet)
+               TB_CLEARNET="1"
+               shift
+               ;;
+           --noaskstart)
+               noaskstart="true"
+               shift
+               ;;
+           --language)
+               TB_LANG="$2"
+               shift 2
+               ;;
+           --)
+               shift
+               break
+               ;;
+           -*)
+               echo "$SCRIPTNAME unknown option: $1"
+               echo "See:"
+               echo "    man $SCRIPTNAME"
+               exit 1
+               ;;
+           *)
+               break
+               ;;
+       esac
+   done
+
+   ## If there are input files (for example) that follow the options, they
+   ## will remain in the "$@" positional parameters.
+   true "$0 \$@: $@"
+}
+
+tb_preparation() {
+   trap "tb_error_handler" ERR
+
+   ## Workaround for CI compatibility.
+   if [ "$CI" = "true" ]; then
+      home_folder=/home/user
+   else
+      home_folder=~
+   fi
+
+   ## Fortunately, on linux-image-486 kernel, while "uname --all" returns for example
+   ## "Linux host 3.2.0-4-486 #1 Debian 3.2.41-2 i686 GNU/Linux",
+   ## "uname --machine" returns "i686" and Tor Browser works fine with linux-image-486 kernel.
+   ## (There are no 486 downloads for Tor Browser.)
+   ##ARCH="x86_64"
+   ##ARCH="i686"
+   ARCH="$(uname --machine)"
+   echo "INFO: $ARCH detected."
+
+   if [ "$ARCH" = "i686" ]; then
+      ARCH_NEW="linux32"
+   else
+      ## NOTE: A simple else is non-ideal, should there be ever more architectures.
+      ARCH_NEW="linux64"
+   fi
+
+   ## provides tbbversion function
+   source /usr/lib/tbbversion_parser
+
+   #echo "INFO: TB_LANG: $TB_LANG"
+
+   for i in /etc/torbrowser.d/*; do
+      if [ -f "$i" ]; then
+         ## If the last character is a ~, ignore that file,
+         ## because it was created by some editor,
+         ## which creates backup files.
+         if [ "${i: -1}" = "~" ]; then
+            continue
+         fi
+         ## Skipping files such as .dpkg-old and .dpkg-dist.
+         if ( echo "$i" | grep -q ".dpkg-" ); then
+            true "skip $i"
+            continue
+         fi
+         source "$i"
+      fi
+   done
+
+   ## Check if TB_LANG exists and is not empty.
+   if [[ "$TB_LANG" && "${TB_LANG}" ]]; then
+      #echo "INFO: Tor Browser language variable is set to "$TB_LANG"."
+      true
+   else
+      #echo "INFO: Tor Browser language variable not found. Setting TB_LANG to the default en-US."
+      TB_LANG="en-US"
+   fi
+
+   if [ "$display" = "" ]; then
+      if [ "$DISPLAY" = "" ]; then
+         display=":0"
+      else
+         display="$DISPLAY"
+      fi
+   fi
+
+   rm --force "/var/run/whonixcheck/${IDENTIFIER}_done"
+
+   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+      output="true"
+   else
+      output="/usr/lib/msgcollector/msgcollector"
+   fi
+
+   local my_tty
+   local my_tty_exit_code
+   my_tty_exit_code="0"
+   my_tty="$(tty)" || { my_tty_exit_code="$?" ; true; };
+
+   if [ ! "$my_tty_exit_code" = "0" ]; then
+      my_tty="none"
+   fi
+
+   ## Just in case.
+   if [ "$my_tty" = "" ]; then
+      my_tty="none"
+   fi
+
+   output_opt_1="--icon $ICON"
+   output_opt_2="--parentpid $$"
+   output_opt_3="--identifier ${IDENTIFIER}"
+   output_opt_4="--parenttty $my_tty"
+   #output_opt_5=""
+
+   output_opts=( "$output_opt_1" "$output_opt_2" "$output_opt_3" "$output_opt_4" "$output_opt_5")
+
+   TITLE="Tor Browser Update Check (by Whonix developers)"
+
+   ret="0"
+   command -v curl.whonix-orig >/dev/null || { ret="$?" ; true; };
+
+   if [ "$ret" = "0" ]; then
+      ## using the non-uwt-wrapped version, if the uwt wrapper is installed,
+      ## which is the case on a default Whonix installation
+      CURL=curl.whonix-orig
+   else
+      ret="0"
+      command -v curl >/dev/null || { ret="$?" ; true; };
+      if [ "$ret" = "0" ]; then
+         ## falling back to real curl, if the uwt wrapper has been uninstalled
+         CURL=curl
+      else
+         local MSG="uwt_tool: Can not find curl. Please report this bug!"
+         $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG"
+         $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG"
+         EXIT_CODE="1"
+         cleanup "1"
+         return 0
+      fi
+   fi
+
+   if [ "$ORDINARY_PROGRESS_BAR" = "1" ]; then
+      ## --ordinary enabled
+      CURL_PRGRS="$CURL"
+   else
+      ## Curl progress wrapper.
+      CURL_PRGRS="/usr/lib/curl-scripts/curl-prgrs"
+   fi
+
+   ## Debugging CURL_PRGRS.
+   #CURL_PRGRS="bash -x /usr/lib/curl-scripts/curl-prgrs"
+
+   ## Debugging / disabling CURL_PRGRS.
+   #CURL_PRGRS="$CURL"
+
+   ## Export CURL variable, so it can be read by $CURL_PRGRS.
+   export CURL="$CURL"
+
+   ## {{ Download from the torproject.org clearnet by default instead from
+   ##    their hidden service.
+
+   TBB_REMOTE_FOLDER="https://archive.torproject.org/tor-package-archive/torbrowser"
+   CURL_FORCE_SSL="--tlsv1 --proto =https"
+
+   ## }}
+}
+
+tb_connectivity_checks_tor() {
+   trap "tb_error_handler" ERR
+
+   if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
+      return 0
+   fi
+
+   if [ -f /usr/lib/anon-shared-helper-scripts/tor_enabled_check ]; then
+      source /usr/lib/anon-shared-helper-scripts/tor_enabled_check
+      ## sets: TOR_ENABLED
+      check_tor_enabled_do
+   fi
+
+   if [ "$TOR_ENABLED" = "0" ]; then
+      MSG="Tor not enabled yet.
+
+Please check: Start menu -> System -> Whonix Check
+              or in Terminal: whonixcheck
+              or in Terminal with debugging: whonixcheck -v
+
+Run whonixcheck on Whonix-Gateway as well.
+
+If whonixcheck reports no problems with internet activity and this still fails, please report a bug!"
+
+      $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
+      $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+      exit 1
+   fi
+
+   if [ -f /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh ]; then
+      source /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh
+      ## sets: tor_bootstrap_percent
+      check_tor_bootstrap_helper
+   fi
+
+   if [ ! "$tor_bootstrap_percent" = "100" ]; then
+      MSG="Tor not fully bootstrapped.
+
+Possible reasons:
+- no internet connectivity
+
+Please check: Start menu -> System -> Whonix Check
+              or in Terminal: whonixcheck
+              or in Terminal with debugging: whonixcheck -v
+
+Run whonixcheck on Whonix-Gateway as well.
+
+If whonixcheck reports no problems with internet activity and this still fails, please report a bug!"
+
+      $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
+      $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+      exit 1
+   fi
+
+   true "Tor fully bootstrapped."
+}
+
+tb_connectivity_checks_curl() {
+   trap "tb_error_handler" ERR
+
+   if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
+      return 0
+   fi
+
+   NOTIFY_MSG="$SCRIPTNAME Update Check (by Whonix developers)
+----------------------------------------------------------------------
+Checking connectivity... Will take a moment..."
+
+   ## sets: progressbaridx
+   get_new_progressbaridx
+
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --typex "info" --titlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
+   sleep 1 &
+   wait "$!"
+
+   mkdir --parents "$home_folder/.tb/"
+
+   curl_exit_code="0"
+   ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
+   ## variables. (See above.)
+   ## Define what CURL_PRGRS is supposed to eval.
+   ## ($percent is a local variable provided by $CURL_PRGRS.)
+   export CURL_PRGRS_EXEC="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
+   ## 1 MB = 1048576 bytes
+   ## 2 MB = 2097152 bytes
+   ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
+   export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
+   ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
+   export CURL_OUT_FILE="$home_folder/.tb/tbb_remote_folder"
+   $CURL_PRGRS \
+      --fail \
+      $CURL_PROXY \
+      $CURL_FORCE_SSL \
+      --max-time 180 \
+      --output "$CURL_OUT_FILE" \
+      "$TBB_REMOTE_FOLDER" \
+      &
+
+   last_pid="$!"
+   wait "$last_pid" || { curl_exit_code="$?" ; true; };
+   last_pid=""
+
+   ## Check if curl failed.
+   if [ ! "$curl_exit_code" = "0" ]; then
+      if [ -x "/usr/lib/curl-scripts/curl_exit_codes" ]; then
+         local curl_status_message
+         curl_status_message="$(/usr/lib/curl-scripts/curl_exit_codes "$curl_exit_code")" || true
+      fi
+
+      MSG="$TBB_REMOTE_FOLDER could not be reached.
+
+Possible reasons:
+- $TBB_REMOTE_FOLDER is down
+- download location changed
+
+Please check: Start menu -> System -> Whonix Check
+              or in Terminal: whonixcheck
+              or in Terminal with debugging: whonixcheck -v
+
+If whonixcheck reports no problems with internet activity and this keeps failing, please report a bug!
+
+(Debugging information: curl_status_message: $curl_status_message)"
+
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+      $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
+      $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+      exit 1
+   fi
+
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+   sleep 1 &
+   wait "$!"
+}
+
+tb_update_check() {
+   trap "tb_error_handler" ERR
+
+   ## do not re-download Tor Browser if a previous build already did
+   if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
+      if [ -d "$home_folder/tor-browser_$TB_LANG" ]; then
+         echo "$SCRIPTNAME: Not downloading Tor Browser again, because $home_folder/tor-browser_$TB_LANG already exists."
+         exit 0
+      fi
+   fi
+
+   ## sets: progressbaridx
+   get_new_progressbaridx
+
+   ## progress bar for update check
+   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+      true
+   else
+      NOTIFY_MSG="$SCRIPTNAME Update Check (by Whonix developers)
+----------------------------------------------------------------------
+Checking Tor Browser version... Will take a moment..."
+
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --typex "info" --titlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
+      sleep 1 &
+      wait "$!"
+   fi
+
+   if [ "$DEV_PASSTHROUGH" = "1" ]; then
+      CURL_PROXY=""
+   else
+      CURL_PROXY="--socks5-hostname socks5h://$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD/"
+   fi
+
+   echo "INFO: Find out latest version..."
+   LINK="https://check.torproject.org/RecommendedTBBVersions"
+   echo "INFO: Downloading: "$LINK""
+
+   mkdir --parents "$home_folder/.tb"
+
+   #echo "$0 CURL_PRGRS_EXEC: $CURL_PRGRS_EXEC"
+   #echo "$0 CURL: $CURL"
+
+   curl_exit_code="0"
+   ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
+   ## variables. (See above.)
+   ## Define what CURL_PRGRS is supposed to eval.
+   ## ($percent is a local variable provided by $CURL_PRGRS.)
+   export CURL_PRGRS_EXEC="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
+   ## 1 MB = 1048576 bytes
+   ## 2 MB = 2097152 bytes
+   ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
+   export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
+   ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
+   export CURL_OUT_FILE="$home_folder/.tb/RecommendedTBBVersions"
+   $CURL_PRGRS \
+      --fail \
+      $CURL_PROXY \
+      --tlsv1 \
+      --proto =https \
+      --max-time 180 \
+      --output "$CURL_OUT_FILE" \
+      "$LINK" \
+      &
+
+   last_pid="$!"
+   wait "$last_pid" || { curl_exit_code="$?" ; true; };
+   last_pid=""
+
+   ## Check if curl failed.
+   if [ ! "$curl_exit_code" = "0" ]; then
+      if [ -x "/usr/lib/curl-scripts/curl_exit_codes" ]; then
+         local curl_status_message
+         curl_status_message="$(/usr/lib/curl-scripts/curl_exit_codes "$curl_exit_code")" || true
+      fi
+
+      MSG="Failed to download: $LINK
+
+$DOWNLOAD_FAIL_HELP
+
+(Debugging information: curl_status_message: $curl_status_message)"
+
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+      $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
+      $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+      exit 1
+   fi
+
+   ## Used by tbbversion.
+   RecommendedTBBVersions="$home_folder/.tb/RecommendedTBBVersions"
+
+   ## sets: tbb_recommended_versions_list
+   ## sets: tbbversions_found
+   ## sets: tbb_recommended_versions_error
+   tbbversion
+
+   ## Used by tbbversion_installed
+   tbb_folder="$home_folder/tor-browser_$TB_LANG"
+
+   ## sets: tbb_locally_installed_version
+   tbbversion_installed
+
+   if [ -d "$home_folder/tor-browser_$TB_LANG" ]; then
+      local installed_or_not_result="1"
+      local installed_or_not_text=""
+   else
+      local installed_or_not_result="0"
+      local installed_or_not_text="Tor Browser is currently not installed.
+(Folder $home_folder/tor-browser_$TB_LANG does not exist.)"
+   fi
+
+   if [ "$tbb_recommended_versions_list" = "UNKNOWN" ]; then
+      local MSG="$installed_or_not_text
+
+Could not find out latest Tor Browser version! $tbb_recommended_versions_error
+
+$DOWNLOAD_FAIL_HELP"
+
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+      $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
+      $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+      exit 1
+   fi
+
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+   sleep 1 &
+   wait "$!"
+
+   local up_to_date
+   up_to_date="0"
+   local tbb_version
+
+   for tbb_version in $tbb_recommended_versions_list; do
+      if [ "$tbb_version" = "$tbb_locally_installed_version" ]; then
+         up_to_date="1"
+         break
+      fi
+   done
+
+   local MSG
+
+   if [ "$up_to_date" = "1" ]; then
+         MSG="\
+$SCRIPTNAME Update Check (by Whonix developers)
+----------------------------------------------------------------------
+Currently installed version: $tbb_locally_installed_version
+Online detected version(s) : $tbb_recommended_versions_list
+
+Looks like Tor Browser is already up to date.
+
+Please close Tor Browser if you want to (re-)install!
+
+If your currently installed version is:
+   higher: you are likely victim of a downgrade attack, SAY NO NOW!
+   equal : only proceed, if you want to create a new browser profile.
+   lower : you should upgrade.
+
+YOUR BROWSER WILL BE KILLED.
+YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED!
+
+A backup of your old Tor Browser and settings will be created in your home folder.
+It is a good idea to delete old TBB backups once in a while if you are running low with disk space.
+
+Upgrade now?\
+"
+   else
+      if [ "$installed_or_not_result" = "0" ]; then
+         MSG="\
+$SCRIPTNAME Update Check (by Whonix developers)
+----------------------------------------------------------------------
+Currently installed version: $tbb_locally_installed_version
+Online detected version(s) : $tbb_recommended_versions_list
+
+Install now?"
+      else
+         MSG="\
+$SCRIPTNAME Update Check (by Whonix developers)
+----------------------------------------------------------------------
+Currently installed version: $tbb_locally_installed_version
+Online detected version(s) : $tbb_recommended_versions_list
+
+Looks like there is an upgrade for Tor Browser.
+
+Please close Tor Browser if you want to upgrade!
+
+If your currently installed version is:
+   higher: you are likely victim of a downgrade attack, SAY NO NOW!
+   equal : only proceed, if you want to create a new browser profile.
+   lower : you should upgrade.
+
+YOUR BROWSER WILL BE KILLED.
+YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED!
+
+A backup of your old Tor Browser and settings will be created in your home folder.
+It is a good idea to delete old TBB backups once in a while if you are running low with disk space.
+
+Upgrade now?\
+"
+      fi
+   fi
+
+   local answer
+   answer="0"
+
+   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+      true
+   else
+      zenity --title="$TITLE" --question --text "$MSG" || { answer="$?" ; true; };
+
+      ## zenity exit codes
+      ## no 1
+      ## yes 0
+
+      #echo "answer: $answer"
+
+      if [ "$TB_FORCE_INSTALL" = "1" ]; then
+         echo "INFO: TB_FORCE_INSTALL = 1"
+         true
+      else
+         if [ "$answer" = "1" ]; then
+            echo "INFO: Canceled. Exit."
+            exit 0
+         fi
+      fi
+   fi
+
+   if [ ! "$NOKILLTB" = "1" ]; then
+      killall firefox || true
+   fi
+
+   rm --recursive --force "$home_folder/.tb/gpgtmpdir/"
+   mkdir --parents "$home_folder/.tb/gpgtmpdir/"
+   chmod --recursive 700 "$home_folder/.tb/gpgtmpdir/"
+
+   local key
+
+   for key in "/usr/share/torbrowser-updater-keys.d/"*; do
+      local key_filename
+      key_filename="$(basename "$key")"
+      if [ "$key_filename" = "placeholder" ]; then
+         continue
+      fi
+      if [ "$key_filename" = "*" ]; then
+         ## Folder is empty.
+         continue
+      fi
+      gpg --no-options --homedir "$home_folder/.tb/gpgtmpdir/" --import "$key" 2>/dev/null
+   done
+}
+
+tb_download() {
+   trap "tb_error_handler" ERR
+
+   tb_download_ok="0"
+
+   ## Initialize variable, if non-existing.
+   if [ "$attempt" = "" ]; then
+      attempt="0"
+   fi
+
+   attempt="$(( $attempt + 1 ))"
+
+   last_try="0"
+   if [ "$attempt" -ge "$tbbversions_found" ]; then
+      last_try="1"
+   fi
+
+   ## {{ progress bar for download
+
+   ## sets: progressbaridx
+   get_new_progressbaridx
+
+   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+      true
+   else
+      NOTIFY_MSG="$SCRIPTNAME Update Check (by Whonix developers)
+----------------------------------------------------------------------
+Downloading Tor Browser signature... Will take a moment..."
+
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --typex "info" --titlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
+      sleep 1 &
+      wait "$!"
+   fi
+
+   ## }}
+
+   echo "INFO: Downloading GPG signature... Will take a moment..."
+
+   ## Example signature link:
+   ## https://archive.torproject.org/tor-package-archive/torbrowser/3.0rc1/tor-browser-linux32-3.0-rc-1_en-US.tar.xz.asc
+   TBB_SIG_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz.asc"
+   TBB_EXTRA_FOLDER="${tbb_version_folder}/"
+
+   TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}${TBB_SIG_FILENAME}"
+
+   echo "\
+INFO: Downloading:
+      $TBB_SIG_LINK ... Will take a moment..."
+
+   #echo "$0 CURL_PRGRS_EXEC: $CURL_PRGRS_EXEC"
+   #echo "$0 CURL: $CURL"
+
+   mkdir --parents "$home_folder/.tb"
+
+   curl_exit_code="0"
+   ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
+   ## variables. (See above.)
+   ## Define what CURL_PRGRS is supposed to eval.
+   ## ($percent is a local variable provided by $CURL_PRGRS.)
+   export CURL_PRGRS_EXEC="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
+   ## 1 MB = 1048576 bytes
+   ## 2 MB = 2097152 bytes
+   ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
+   export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
+   ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
+   export CURL_OUT_FILE="$home_folder/.tb/$TBB_SIG_FILENAME"
+   $CURL_PRGRS \
+      --fail \
+      $CURL_PROXY \
+      $CURL_FORCE_SSL \
+      --max-time 180 \
+      --output "$CURL_OUT_FILE" \
+      "$TBB_SIG_LINK" \
+      &
+
+   last_pid="$!"
+   wait "$last_pid" || { curl_exit_code="$?" ; true; };
+   last_pid=""
+
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+   sleep 1 &
+   wait "$!"
+
+   ## Check if curl failed.
+   if [ ! "$curl_exit_code" = "0" ]; then
+      if [ -x "/usr/lib/curl-scripts/curl_exit_codes" ]; then
+         local curl_status_message
+         curl_status_message="$(/usr/lib/curl-scripts/curl_exit_codes "$curl_exit_code")" || true
+      fi
+
+      if [ "$last_try" = "0" ]; then
+         MSG="Failed to download: $TBB_SIG_LINK
+There are other recommended versions. Will try to download the next recommended version...
+
+(Debugging information: curl_status_message: $curl_status_message)"
+
+         ## No popup message in X. Would be too confusing.
+         #$output ${output_opts[@]} --messagex --typex "info" --titlex "$TITLE" --message "$MSG" --done
+
+         $output ${output_opts[@]} --messagecli --typecli "info" --titlecli "$TITLE" --message "$MSG" --done
+
+         ## return 0, so the loop will tell us to try the next $tbb_version.
+         return 0
+      else
+         MSG="Failed to download: $TBB_SIG_LINK
+
+$DOWNLOAD_FAIL_HELP"
+
+         $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
+         $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+         exit 1
+      fi
+   fi
+
+   NOTIFY_MSG="$SCRIPTNAME Update Check (by Whonix developers)
+----------------------------------------------------------------------
+Downloading Tor Browser... Will take a while..."
+
+   ## sets: progressbaridx
+   get_new_progressbaridx
+
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --typex "info" --titlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
+   sleep 1 &
+   wait "$!"
+
+   echo "INFO: Downloading Tor Browser Bundle: $tbb_version"
+
+   ## Example package filename:
+   ## https://archive.torproject.org/tor-package-archive/torbrowser/3.0rc1/tor-browser-linux32-3.0-rc-1_en-US.tar.xz
+   TBB_PACKAGE_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz"
+   TBB_EXTRA_FOLDER="${tbb_version_folder}/"
+
+   TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}$TBB_PACKAGE_FILENAME"
+
+   echo "\
+INFO: Downloading:
+      $TBB_PACKAGE_LINK ... Will take a while..."
+
+   curl_exit_code="0"
+
+   #echo "$0 CURL_PRGRS_EXEC: $CURL_PRGRS_EXEC"
+   #echo "$0 CURL: $CURL"
+
+   ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
+   ## variables. (See above.)
+   ## Define what CURL_PRGRS is supposed to eval.
+   ## ($percent is a local variable provided by $CURL_PRGRS.)
+   export CURL_PRGRS_EXEC="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
+   ## 1 MB = 1048576 bytes
+   ## 100 MB = 104857600 bytes
+   ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
+   export CURL_PRGRS_MAX_FILE_SIZE_BYTES="104857600"
+   ## Simulating endless data attack.
+   #export CURL_PRGRS_MAX_FILE_SIZE_BYTES="1048576"
+   ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
+   export CURL_OUT_FILE="$home_folder/.tb/$TBB_PACKAGE_FILENAME"
+   $CURL_PRGRS \
+      --fail \
+      $CURL_PROXY \
+      $CURL_FORCE_SSL \
+      --output "$CURL_OUT_FILE" \
+      "$TBB_PACKAGE_LINK" \
+      &
+
+   last_pid="$!"
+   wait "$last_pid" || { curl_exit_code="$?" ; true; };
+   last_pid=""
+
+   ## Check if curl failed.
+   if [ ! "$curl_exit_code" = "0" ]; then
+      if [ -x "/usr/lib/curl-scripts/curl_exit_codes" ]; then
+         local curl_status_message
+         curl_status_message="$(/usr/lib/curl-scripts/curl_exit_codes "$curl_exit_code")" || true
+      fi
+
+      MSG="Failed to download: $TBB_PACKAGE_LINK
+
+$DOWNLOAD_FAIL_HELP
+
+(Debugging information: curl_status_message: $curl_status_message)"
+
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+
+      $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
+      $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+      exit 1
+   fi
+
+   tb_download_ok="1"
+}
+
+tb_verify() {
+   trap "tb_error_handler" ERR
+
+   echo "INFO:
+## Verifying GPG signature.
+## Not using the user's GPG keyring also ensures, that the key can be only
+## signed by the GPG keys we added. Signatures from random people from the
+## user's keyring will be ignored.
+"
+
+   local timeout_after="60"
+   local kill_after="10"
+
+   tb_gpg_verify_exit_code="0"
+   timeout --kill-after="$kill_after" "$timeout_after" \
+      gpg \
+         --no-options \
+         --homedir "$home_folder/.tb/gpgtmpdir/" \
+         --verify "$home_folder/.tb/$TBB_SIG_FILENAME" \
+         "$home_folder/.tb/$TBB_PACKAGE_FILENAME" \
+         &
+
+   last_pid="$!"
+   wait "$last_pid" || { tb_gpg_verify_exit_code="$?" ; true; };
+   last_pid=""
+
+   ## `timeout` returns:
+   ## - 124 if sigterm was sufficient
+   ## - 137 if needed to use kill.
+
+   if [ ! "$tb_gpg_verify_exit_code" = "0" ]; then
+      local MSG="\
+GPG download signature could NOT be verified.
+Tor Browser update failed! Try again later.\
+"
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+
+      $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
+      $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+      exit 1
+   fi
+}
+
+tb_extract() {
+   trap "tb_error_handler" ERR
+
+   tar xfv "$home_folder/.tb/$TBB_PACKAGE_FILENAME" -C "$home_folder/.tb/"
+
+   ## The tor-browser_"$TB_LANG"/Docs folder should already exist.
+   ## Just to make sure the script will not break in case the get changed by upstream.
+   mkdir --parents "$home_folder/.tb/tor-browser_$TB_LANG/Docs"
+
+   ## Tor Browser changelog has been forgotten to update.
+   ## https://sourceforge.net/p/whonix/discussion/general/thread/6122990d/
+   ## To play it safe and having a chance of finding out the installed version,
+   ## we create a file ourselves to remember it.
+   echo "INFO: Creating version file tor-browser_$TB_LANG/Docs/version."
+   echo "$tbb_version" > "$home_folder/.tb/tor-browser_$TB_LANG/Docs/version"
+
+   if [ -d "$home_folder/tor-browser_$TB_LANG" ]; then
+      echo "INFO: Moving old folder $home_folder/tor-browser_$TB_LANG..."
+      mv "$home_folder/tor-browser_$TB_LANG" "$home_folder/tor-browser_$TB_LANG.old.$(date '+%F-%H:%M:%S')"
+   fi
+
+   echo "INFO: Moving temporary folder $home_folder/.tb/tor-browser_$TB_LANG to $home_folder/tor-browser_$TB_LANG."
+   mv "$home_folder/.tb/tor-browser_$TB_LANG" "$home_folder/tor-browser_$TB_LANG"
+
+   local TEMP
+   TEMP="$home_folder/tor-browser_$TB_LANG/"
+
+   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+      MSG="Finished installing Tor Browser. Can be found in $TEMP."
+      echo "$MSG"
+      return 0
+   fi
+
+   if [ "$noaskstart" = "true" ]; then
+      true "noaskstart is set to true."
+   else
+      MSG="Finished installing Tor Browser. Can be found in $TEMP.
+
+Start Tor Browser?"
+      local answer
+      answer="0"
+      zenity --title="$TITLE" --question --text "$MSG" || { answer="$?" ; true; };
+      ## zenity exit codes
+      ## no 1
+      ## yes 0
+      if [ "$answer" = "1" ]; then
+         echo "INFO: Canceled starting Tor Browser, ok."
+      else
+         torbrowser
+      fi
+   fi
+}
+
+main_function() {
+   root_check
+   tb_sanity_tests
+   parse_cmd_options ${1+"$@"}
+   tb_preparation
+   tb_connectivity_checks_tor
+   tb_connectivity_checks_curl
+   tb_update_check
+
+   ## For testing:
+   #tbb_recommended_versions_list="2.3.25-16 2.3.25-15"
+
+   for tbb_version in $tbb_recommended_versions_list; do
+      ## For testing.
+      #tbb_version="3.0-rc-1"
+      #tbb_version_folder="3.0rc1"
+
+      ## Let's hope version number of the download folder exactly equals
+      ## version number of TBB for the TBB 3.x final release. (No extra dashes
+      ## or something like that.)
+      tbb_version_folder="$tbb_version"
+
+      if [ "$tb_download_ok" = "1" ]; then
+         ## Download already succeeded.
+         break
+      fi
+      tb_download
+      if [ "$tb_download_ok" = "1" ]; then
+         ## Download already succeeded.
+         break
+      fi
+   done
+
+   tb_verify
+   tb_extract
+}
+
+main_function ${1+"$@"}

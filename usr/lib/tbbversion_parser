@@ -1,0 +1,226 @@
+#!/bin/bash
+
+## This file is part of Whonix.
+## Copyright (C) 2012 - 2014 Patrick Schleizer <adrelanos@riseup.net>
+## See the file COPYING for copying conditions.
+
+## This script gets sourced by:
+## - /usr/bin/whonixcheck
+## - /usr/bin/torbrowser
+
+## https://check.torproject.org/RecommendedTBBVersions legit example:
+## [
+## "2.3.25-11-MacOS",
+## "2.3.25-11-Windows",
+## "2.3.25-11-Linux",
+## "2.3.25-12-MacOS",
+## "2.3.25-12-Windows",
+## "2.3.25-12-Linux",
+## "2.3.25-13-MacOS",
+## "2.3.25-13-Windows",
+## "2.3.25-13-Linux",
+## "2.4.16-beta-1-MacOS",
+## "2.4.16-beta-1-Windows",
+## "2.4.16-beta-1-Linux",
+## "2.4.17-beta-1-MacOS",
+## "2.4.17-beta-1-Windows",
+## "2.4.17-beta-1-Linux",
+## "2.4.17-beta-2-MacOS",
+## "2.4.17-beta-2-Windows",
+## "2.4.17-beta-2-Linux",
+## "3.0-alpha-4-Linux",
+## "3.0-alpha-4-MacOS",
+## "3.0-alpha-4-Windows"
+## ]
+
+## https://check.torproject.org/RecommendedTBBVersions malicious example:
+## ...
+## "2.3.25-13-Linux-Do this, then do this etc...................................................... etc.",
+## ...
+
+tbbversion() {
+   ## code shared between torbrowser and whonixcheck
+
+   ## fallback
+   tbb_recommended_versions_list="UNKNOWN"
+   tbb_recommended_versions_error=""
+
+   ## Sanity Tests.
+   command -v sed >/dev/null
+   if [ ! "$?" = "0" ]; then
+      local MSG="$SCRIPTNAME tbbversion: sed not found."
+      echo "$MSG"
+      error "$MSG"
+      return 1
+   fi
+   command -v grep >/dev/null
+   if [ ! "$?" = "0" ]; then
+      local MSG="$SCRIPTNAME tbbversion: grep not found."
+      echo "$MSG"
+      error "$MSG"
+      return 1
+   fi
+
+   tbbversions_found="0"
+
+   if [ -f "$RecommendedTBBVersions" ]; then
+      local i
+      i="0"
+      local line
+      while read line; do
+         i="$(( $i + 1 ))"
+
+         echo "$line" | grep -q -i -s "alpha"
+         if [ "$?" = "0" ]; then
+            continue
+         fi
+         echo "$line" | grep -q -i -s "beta"
+         if [ "$?" = "0" ]; then
+            continue
+         fi
+         echo "$line" | grep -q -i -s "rc"
+         if [ "$?" = "0" ]; then
+            continue
+         fi
+         echo "$line" | grep -q -i -s "MacOS"
+         if [ "$?" = "0" ]; then
+            continue
+         fi
+         echo "$line" | grep -q -i -s "Windows"
+         if [ "$?" = "0" ]; then
+            continue
+         fi
+
+         line="$(echo "$line" | sed 's/"//g')"
+         line="$(echo "$line" | sed 's/,//g')"
+
+         echo "$line" | grep -q -i -s "Linux"
+         if [ "$?" = "0" ]; then
+            local temp
+            temp="$line"
+            temp="$(echo "$temp" | sed 's/-i686//g')"
+            temp="$(echo "$temp" | sed 's/-x86_64//g')"
+            temp="$(echo "$temp" | sed 's/-Linux//g')"
+
+            tbbversions_found="$(( $tbbversions_found + 1 ))"
+
+            if [ "$tbb_recommended_versions_list" = "UNKNOWN" ]; then
+               ## No tbb versions has been found earlier. Still set to UNKNOWN.
+               ## Therefore setting tbb_recommended_versions_list to $temp.
+               tbb_recommended_versions_list="$temp"
+            else
+               ## Keep already found version and add newly found version.
+               tbb_recommended_versions_list="$temp $tbb_recommended_versions_list"
+            fi
+
+            ## Not using break, because RecommendedTBBVersions often have
+            ## multiple recommended versions. Latest on the bottom.
+            ## For example:
+            ##    "2.3.25-12-Linux",
+            ##    "2.3.25-13-Linux",
+         fi
+
+      done < "$RecommendedTBBVersions"
+
+      ## A single version string should not be longer than 20 characters. If
+      ## it is, there is probably something wrong.
+      local max_string_length
+      max_string_length="20"
+
+      ## In case we found multiple valid versions, the max_string_length must
+      ## be multiplied with the number of valid versions we found.
+      max_string_length="$(( $max_string_length * $tbbversions_found ))"
+
+      local actual_string_length
+      actual_string_length="${#tbb_recommended_versions_list}"
+      tbbversion_excess_length=""
+
+      ## Check if the string length of tbb_recommended_versions_list is excessive.
+      if [ "$actual_string_length" -gt "$max_string_length" ]; then
+         ## Store excess length for later use.
+         tbbversion_excess_length="$tbb_recommended_versions_list"
+
+         ## Shorten excess length $tbb_recommended_versions_list to $max_string_length chars.
+         #tbb_recommended_versions_list="${tbb_recommended_versions_list:0:$max_string_length}"
+
+         tbb_recommended_versions_list="UNKNOWN"
+
+         tbb_recommended_versions_error="Excessive version string length. ($actual_string_length characters)
+Either check.torproject.org has been compromised or this is a Whonix bug."
+
+         return 0
+      fi
+
+      ## Check if RecommendedTBBVersions versions file is excessively long.
+      if [ "$i" -gt "100" ]; then
+         tbb_recommended_versions_list="UNKNOWN"
+         tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. (Longer than 100 lines.) \
+Either check.torproject.org has been compromised or this is a Whonix bug."
+         return 0
+      fi
+   else
+      local MSG="$SCRIPTNAME tbbversion: 1: $1 does not exist."
+      echo "$MSG"
+      error "$MSG"
+      return 1
+   fi
+
+   #echo "tbb_recommended_versions_list: $tbb_recommended_versions_list"
+}
+
+tbbversion_installed() {
+   ## Getting currently installed version number
+
+   ## Fallbacks.
+   tbb_locally_installed_version="UNKNOWN. Please report this Whonix Bug!"
+   tbb_locally_installed_version_detect_success="0"
+
+   if [ ! -d "$tbb_folder" ]; then
+      tbb_locally_installed_version="None installed. ($tbb_folder does not exist.)"
+      return 0
+   fi
+
+   ## Prefer using our own version file which should be most reliable.
+   local temp=""
+   temp="$tbb_folder/Docs/version"
+   if [ -f "$temp" ]; then
+      tbb_locally_installed_version="$(head -1 "$temp")" || true
+      tbb_locally_installed_version_detect_success="1"
+      return 0
+   fi
+
+   ## Try to fall back to the version file that comes with Tor Browser.
+   local temp=""
+   temp=~/tor-browser_en-US/Docs/sources/versions
+   if [ -f "$temp" ]; then
+      local grep_output
+      grep_output="$(grep "TORBROWSER_VERSION" "$temp")"
+      ## Example grep_output:
+      ## TORBROWSER_VERSION=3.5.1
+      if [ ! "$grep_output" = "" ]; then
+         local tr_output
+         tr_output="$(echo "$grep_output" | tr '=' ' ')"
+         ## Example tr_output:
+         ## TORBROWSER_VERSION 3.5.1
+         if [ ! "$tr_output" = "" ]; then
+            local awk_output
+            awk_output="$(echo "$tr_output" | awk '{print $2}')"
+            ## Example awk_output:
+            ## 3.5.1
+            if [ ! "$awk_output" = "" ]; then
+               tbb_locally_installed_version="$awk_output"
+               tbb_locally_installed_version_detect_success="1"
+               return 0
+            fi
+         fi
+      fi
+   fi
+
+   ## Perhaps we also could extract the about:config value torbrowser.version
+   ## (which is for example set to "3.5.1-Linux") from
+   ## ~/tor-browser_en-US/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi
+   ## or so?
+
+   tbb_locally_installed_version="Locally installed Tor Browser version can not be determined, \
+because version file does not exist. You probably manually updated last time. ($temp does not exist.)"
+}

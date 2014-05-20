@@ -1,0 +1,12 @@
+## This file is part of Whonix.
+## Copyright (C) 2012 - 2014 Patrick Schleizer <adrelanos@riseup.net>
+## See the file COPYING for copying conditions.
+
+[Desktop Entry]
+Exec=update-torbrowser
+Type=Application
+Name=Tor Browser Updater (Whonix)
+GenericName=Update Tor Browser
+Comment=Update Tor Browser
+Categories=System;
+Icon=/usr/share/icons/anon-icon-pack/tbupdate.ico
