@@ -386,7 +386,7 @@ tb_connectivity_checks_tor() {
       return 0
    fi
 
-   if [ -f /usr/lib/anon-shared-helper-scripts/tor_enabled_check ]; then
+   if [ -x /usr/lib/anon-shared-helper-scripts/tor_enabled_check ]; then
       source /usr/lib/anon-shared-helper-scripts/tor_enabled_check
       ## sets: TOR_ENABLED
       check_tor_enabled_do
@@ -410,7 +410,7 @@ If whonixcheck reports no problems with internet activity and this still fails, 
       true "/usr/lib/anon-shared-helper-scripts/tor_enabled_check does not exist, skipping."
    fi
 
-   if [ -f /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh ]; then
+   if [ -x /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh ]; then
       source /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh
       ## sets: tor_bootstrap_percent
       check_tor_bootstrap_helper
