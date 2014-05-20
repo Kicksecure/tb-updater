@@ -8,10 +8,7 @@
 set -o pipefail
 
 SCRIPTNAME="$(basename $0)"
-
-## Setting to "torbrowser" so this does not become "whonix-torbrowser".
 IDENTIFIER="torbrowser"
-
 nice_name="Tor Browser"
 
 ICON="/usr/share/icons/anon-icon-pack/tbupdate.ico"
@@ -24,7 +21,7 @@ ICON="/usr/share/icons/anon-icon-pack/tbupdate.ico"
 ##   https://trac.torproject.org/projects/tor/ticket/3994
 ## - There is no way to keep Tor Browser updated.
 ##   (Thandy doesn't exist yet.)
-## - There is no way to add the Whonix Documentation well visible to Tor Browser:
+## - There is no way to add the Documentation page well visible to Tor Browser:
 ##   https://trac.torproject.org/projects/tor/ticket/6025
 ##   https://trac.torproject.org/projects/tor/ticket/6053
 ## - Tor Browsers support for Isolating and Transparent Proxies is very limited:
@@ -297,8 +294,6 @@ tb_preparation() {
          display="$DISPLAY"
       fi
    fi
-
-   rm --force "/var/run/whonixcheck/${IDENTIFIER}_done"
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       output="true"
