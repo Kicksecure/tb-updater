@@ -90,7 +90,7 @@ To check if further languages are supported visit:
 
 ## CONFIG FILE
 
-/etc/whonix.d/30_torbrowser
+/etc/torbrowser.d/30_torbrowser_default
 
 ## ENVIRONMENT VARIABLES
 You could use:
@@ -107,7 +107,7 @@ For example, for Vietnamese use:
 
 Replace "vi" with "zh-CN" for Chinese and so on.
 
-To make this change permanent, create a file `/etc/whonix.d/50_torbrowser` and add for
+To make this change permanent, create a file `/etc/torbrowser.d/50_torbrowser` and add for
 example
 
     TB_LANG="ar"
