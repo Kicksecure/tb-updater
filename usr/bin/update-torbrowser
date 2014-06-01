@@ -98,7 +98,6 @@ tb_sanity_tests() {
    command -v basename >/dev/null
    command -v touch >/dev/null
    command -v uname >/dev/null
-   command -v sudo >/dev/null
    command -v mkdir >/dev/null
    command -v pidof >/dev/null
    command -v chmod >/dev/null
