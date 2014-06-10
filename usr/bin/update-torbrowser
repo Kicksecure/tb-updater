@@ -550,7 +550,7 @@ Checking Tor Browser version... Will take a moment..."
    if [ "$DEV_PASSTHROUGH" = "1" ]; then
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
    elif [ -d /usr/share/whonix ]; then
-      [ -n "$GATEWAY_IP" ] || GATEWAY_IP="192.168.0.10"
+      [ -n "$GATEWAY_IP" ] || GATEWAY_IP="10.152.152.10"
       [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
       [ -n "$CURL_PROXY" ] || CURL_PROXY="--socks5-hostname socks5h://$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD/"
    else
