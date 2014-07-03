@@ -681,8 +681,8 @@ Checking Tor Browser version... Will take a moment..."
 
 <p>If your currently installed version is:
    <blockquote>higher: you are likely victim of a downgrade attack, SAY NO NOW!
-   equal : only proceed, if you want to create a new browser profile.
-   lower : you should upgrade.</blockquote></p>
+   <br></br>equal : only proceed, if you want to create a new browser profile.
+   <br></br>lower : you should upgrade.</blockquote></p>
 
 <p>YOUR BROWSER WILL BE KILLED.
 <br></br>YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED!</p>
@@ -710,8 +710,8 @@ local Online detected version(s) : $tbb_recommended_versions_list</p>
 
 <p>If your currently installed version is:
    <blockquote>higher: you are likely victim of a downgrade attack, SAY NO NOW!
-   equal : only proceed, if you want to create a new browser profile.
-   lower : you should upgrade.</blockquote></p>
+   <br></br>equal : only proceed, if you want to create a new browser profile.
+   <br></br>lower : you should upgrade.</blockquote></p>
 
 <p>YOUR BROWSER WILL BE KILLED.
 <br></br>YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED!</p>
