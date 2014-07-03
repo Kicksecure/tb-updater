@@ -695,14 +695,14 @@ Checking Tor Browser version... Will take a moment..."
       if [ "$installed_or_not_result" = "0" ]; then
          MSG="<p>$nice_name Update Check (by Whonix developers)
 <br></br>----------------------------------------------------------------------
-<br></br>Currently installed version: $tbb_locally_installed_version
-<br></br>Online detected version(s) : $tbb_recommended_versions_list</p>"
+<br></br>Currently installed version: <blockquote><code>$tbb_locally_installed_version</code></blockquote>
+Online detected version(s) : <blockquote><code>$tbb_recommended_versions_list</code></blockquote></p>"
          question="Install now?"
       else
-         MSG="<p>$nice_name Update Check (by Whonix developers)
-----------------------------------------------------------------------
-Currently installed version: $tbb_locally_installed_version
-Online detected version(s) : $tbb_recommended_versions_list</p>
+         MSG="$nice_name Update Check (by Whonix developers)
+<br></br>----------------------------------------------------------------------
+<br></br>Currently installed version: <blockquote><code>$tbb_locally_installed_version</code></blockquote>
+Online detected version(s) : <blockquote><code>$tbb_recommended_versions_list</code></blockquote>
 
 <p>Looks like there is an upgrade for Tor Browser.</p>
 
