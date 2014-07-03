@@ -32,27 +32,25 @@ ICON="/usr/share/icons/anon-icon-pack/tbupdate.ico"
 tb_error_handler() {
    local exit_code="$?"
 
-   local MSG="\
-###########################################################
-## $SCRIPTNAME script bug.
-## No panic. Nothing is broken. Just some rare condition
-## has been hit. Try again later. There is likely a
-## solution for this problem. Please see the Whonix News,
-## Whonix User Help Forum and Whonix Documentation.
-## https://www.whonix.org/wiki/Tor_Browser
-## Please report this bug!
-##
-## BASH_COMMAND: $BASH_COMMAND
-## exit_code: $exit_code
-##
-## output: $output
-## output_opts: ${output_opts[@]}
-## progressbaridx: $progressbaridx
-##
-## Experts only:
-## bash -x $SCRIPTNAME
-###########################################################\
-"
+   local MSG="<p>###########################################################
+<br></br>## $SCRIPTNAME script bug.
+<br></br>## No panic. Nothing is broken. Just some rare condition
+<br></br>## has been hit. Try again later. There is likely a
+<br></br>## solution for this problem. Please see the Whonix News,
+<br></br>## Whonix User Help Forum and Whonix Documentation.
+<br></br>## https://www.whonix.org/wiki/Tor_Browser
+<br></br>## Please report this bug!
+<br></br>##
+<br></br>## BASH_COMMAND: $BASH_COMMAND
+<br></br>## exit_code: $exit_code
+<br></br>##
+<br></br>## output: $output
+<br></br>## output_opts: ${output_opts[@]}
+<br></br>## progressbaridx: $progressbaridx
+<br></br>##
+<br></br>## Experts only:
+<br></br>## bash -x $SCRIPTNAME
+<br></br>###########################################################</p>"
 
    mkdir --parents ~/".tb"
    echo "$MSG" >> ~/".tb/torbrowser_updater_error.log"
@@ -69,17 +67,18 @@ tb_error_handler() {
 
 trap "tb_error_handler" ERR
 
-DOWNLOAD_FAIL_HELP="Possible reasons:
-
-- The download server is down.
-- File size exceeded (endless data attack triggered).
-- Tor Browser Updater (by Whonix developers) has been broken due to upstream changes.
-
-Recommendations:
-
-- Try again later. If the error persists it probably won't solve itself before the next update.
-- Check News: https://www.whonix.org/wiki/Download#Stay_tuned
-- Manually update: https://www.whonix.org/wiki/Manually_Updating_Tor_Browser"
+DOWNLOAD_FAIL_HELP="<p>Possible reasons:</p>
+<p>
+<br></br>- The download server is down.
+<br></br>- File size exceeded (endless data attack triggered).
+<br></br>- Tor Browser Updater (by Whonix developers) has been broken due to upstream changes.
+</p>
+<p>Recommendations:</p>
+<p>
+<br></br>- Try again later. If the error persists it probably won't solve itself before the next update.
+<br></br>- Check News: https://www.whonix.org/wiki/Download#Stay_tuned
+<br></br>- Manually update: https://www.whonix.org/wiki/Manually_Updating_Tor_Browser
+</p>"
 
 root_check() {
    if [ "$(id -u)" != "0" ]; then
@@ -391,15 +390,15 @@ tb_connectivity_checks_tor() {
       check_tor_enabled_do
 
       if [ "$TOR_ENABLED" = "0" ]; then
-         MSG="Tor not enabled yet.
+         MSG="<p><b>Tor not enabled yet.</b></p>
 
-Please check: Start menu -> System -> Whonix Check
-              or in Terminal: whonixcheck
-              or in Terminal with debugging: whonixcheck -v
+<p>Please check: <blockquote>Start menu -> System -> Whonix Check
+              <br></br>or in Terminal: whonixcheck
+              <br></br>or in Terminal with debugging: whonixcheck -v</blockquote></p>
 
-Run whonixcheck on Whonix-Gateway as well.
+<p>Run whonixcheck on Whonix-Gateway as well.</p>
 
-If whonixcheck reports no problems with internet activity and this still fails, please report a bug!"
+<p>If whonixcheck reports no problems with internet activity and this still fails, please report a bug!</p>"
 
          $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
@@ -415,18 +414,18 @@ If whonixcheck reports no problems with internet activity and this still fails, 
       check_tor_bootstrap_helper
 
       if [ ! "$tor_bootstrap_percent" = "100" ]; then
-         MSG="Tor not fully bootstrapped.
+         MSG="<p></b>Tor not fully bootstrapped.</b></p>
 
-Possible reasons:
-- no internet connectivity
+<p>Possible reasons:
+<br></br>- no internet connectivity</p>
 
-Please check: Start menu -> System -> Whonix Check
-              or in Terminal: whonixcheck
-              or in Terminal with debugging: whonixcheck -v
+<p>Please check: <blockquote>Start menu -> System -> Whonix Check
+              <br></br>or in Terminal: whonixcheck
+              <br></br>or in Terminal with debugging: whonixcheck -v</blockquote></p>
 
-Run whonixcheck on Whonix-Gateway as well.
+<p>Run whonixcheck on Whonix-Gateway as well.</p>
 
-If whonixcheck reports no problems with internet activity and this still fails, please report a bug!"
+<p>If whonixcheck reports no problems with internet activity and this still fails, please report a bug!</p>"
 
          $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
@@ -495,19 +494,19 @@ Checking connectivity... Will take a moment..."
          curl_status_message="$curl_exit_code"
       fi
 
-      MSG="$TBB_REMOTE_FOLDER could not be reached.
+      MSG="<p>$TBB_REMOTE_FOLDER could not be reached.</p>
 
-Possible reasons:
-- $TBB_REMOTE_FOLDER is down
-- download location changed
+<p>Possible reasons:
+<br></br>- $TBB_REMOTE_FOLDER is down
+<br></br>- download location changed</p>
 
-Please check: Start menu -> System -> Whonix Check
-              or in Terminal: whonixcheck
-              or in Terminal with debugging: whonixcheck -v
+<p>Please check: <blockquote>Start menu -> System -> Whonix Check
+              <br></br>or in Terminal: whonixcheck
+              <br></br>or in Terminal with debugging: whonixcheck -v</blockquote></p>
 
-If whonixcheck reports no problems with internet activity and this keeps failing, please report a bug!
+<p>If whonixcheck reports no problems with internet activity and this keeps failing, please report a bug!</p>
 
-(Debugging information: curl_status_message: $curl_status_message)"
+<p>(Debugging information: curl_status_message: $curl_status_message)</p>"
 
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
       $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
@@ -603,11 +602,11 @@ Checking Tor Browser version... Will take a moment..."
          curl_status_message="$curl_exit_code"
       fi
 
-      MSG="Failed to download: $LINK
+      MSG="<p><b>Failed to download:</b> $LINK</p>
 
-$DOWNLOAD_FAIL_HELP
+<p>$DOWNLOAD_FAIL_HELP</p>
 
-(Debugging information: curl_status_message: $curl_status_message)"
+<p>(Debugging information: curl_status_message: $curl_status_message)</p>"
 
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
       $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
@@ -639,11 +638,11 @@ $DOWNLOAD_FAIL_HELP
    fi
 
    if [ "$tbb_recommended_versions_list" = "UNKNOWN" ]; then
-      local MSG="$installed_or_not_text
+      local MSG="<p>$installed_or_not_text</p>
 
-Could not find out latest Tor Browser version! $tbb_recommended_versions_error
+<p>Could not find out latest Tor Browser version! $tbb_recommended_versions_error</p>
 
-$DOWNLOAD_FAIL_HELP"
+<p>$DOWNLOAD_FAIL_HELP</p>"
 
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
       $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
@@ -667,74 +666,70 @@ $DOWNLOAD_FAIL_HELP"
    done
 
    local MSG
+   local question
+   local button="yesno"
 
    if [ "$up_to_date" = "1" ]; then
-         MSG="\
-$nice_name Update Check (by Whonix developers)
-----------------------------------------------------------------------
-Currently installed version: $tbb_locally_installed_version
-Online detected version(s) : $tbb_recommended_versions_list
+         MSG="<p>$nice_name Update Check (by Whonix developers)
+<br></br>----------------------------------------------------------------------
+<br></br>Currently installed version: $tbb_locally_installed_version
+<br></br>Online detected version(s) : $tbb_recommended_versions_list</p>
 
-Looks like Tor Browser is already up to date.
+<p>Looks like Tor Browser is already up to date.</p>
 
-Please close Tor Browser if you want to (re-)install!
+<p>Please close Tor Browser if you want to (re-)install!</p>
 
-If your currently installed version is:
-   higher: you are likely victim of a downgrade attack, SAY NO NOW!
+<p>If your currently installed version is:
+   <blockquote>higher: you are likely victim of a downgrade attack, SAY NO NOW!
    equal : only proceed, if you want to create a new browser profile.
-   lower : you should upgrade.
+   lower : you should upgrade.</blockquote></p>
 
-YOUR BROWSER WILL BE KILLED.
-YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED!
+<p>YOUR BROWSER WILL BE KILLED.
+<br></br>YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED!</p>
 
-A backup of your old Tor Browser and settings will be created in your home folder.
-It is a good idea to delete old TBB backups once in a while if you are running low with disk space.
+<p>A backup of your old Tor Browser and settings will be created in your home folder.
+<br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space.</p>"
+   question="Upgrade now?"
 
-Upgrade now?\
-"
    else
       if [ "$installed_or_not_result" = "0" ]; then
-         MSG="\
-$nice_name Update Check (by Whonix developers)
-----------------------------------------------------------------------
-Currently installed version: $tbb_locally_installed_version
-Online detected version(s) : $tbb_recommended_versions_list
-
-Install now?"
+         MSG="<p>$nice_name Update Check (by Whonix developers)
+<br></br>----------------------------------------------------------------------
+<br></br>Currently installed version: $tbb_locally_installed_version
+<br></br>Online detected version(s) : $tbb_recommended_versions_list</p>"
+      question="Install now?"
       else
-         MSG="\
-$nice_name Update Check (by Whonix developers)
-----------------------------------------------------------------------
-Currently installed version: $tbb_locally_installed_version
-Online detected version(s) : $tbb_recommended_versions_list
+         MSG="<p>$nice_name Update Check (by Whonix developers)
+local ----------------------------------------------------------------------
+local Currently installed version: $tbb_locally_installed_version
+local Online detected version(s) : $tbb_recommended_versions_list</p>
 
-Looks like there is an upgrade for Tor Browser.
+<p>Looks like there is an upgrade for Tor Browser.</p>
 
-Please close Tor Browser if you want to upgrade!
+<p>Please close Tor Browser if you want to upgrade!</p>
 
-If your currently installed version is:
-   higher: you are likely victim of a downgrade attack, SAY NO NOW!
+<p>If your currently installed version is:
+   <blockquote>higher: you are likely victim of a downgrade attack, SAY NO NOW!
    equal : only proceed, if you want to create a new browser profile.
-   lower : you should upgrade.
+   lower : you should upgrade.</blockquote></p>
 
-YOUR BROWSER WILL BE KILLED.
-YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED!
+<p>YOUR BROWSER WILL BE KILLED.
+<br></br>YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED!</p>
 
-A backup of your old Tor Browser and settings will be created in your home folder.
-It is a good idea to delete old TBB backups once in a while if you are running low with disk space.
-
-Upgrade now?\
-"
+<p>A backup of your old Tor Browser and settings will be created in your home folder.
+<br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space.</p>"
+         question="Upgrade now?"
       fi
    fi
 
    local answer
-   answer="0"
+   #answer="0"
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       true
    else
-      zenity --title="$TITLE" --question --text "$MSG" || { answer="$?" ; true; };
+      answer="$(/usr/lib/generic_gui_message "info" "Tor Browser Updater" "$msg" "$question" "$button")"
+      #zenity --title="$TITLE" --question --text "$MSG" || { answer="$?" ; true; };
 
       ## zenity exit codes
       ## no 1
@@ -746,7 +741,7 @@ Upgrade now?\
          echo "INFO: TB_FORCE_INSTALL = 1"
          true
       else
-         if [ "$answer" = "1" ]; then
+         if [ "$answer" = "65536" ]; then  # button 'no' pressed
             echo "INFO: Canceled. Exit."
             exit 0
          fi
@@ -870,10 +865,10 @@ INFO: Downloading:
       fi
 
       if [ "$last_try" = "0" ]; then
-         MSG="Failed to download: $TBB_SIG_LINK
-There are other recommended versions. Will try to download the next recommended version...
+         MSG="<p><b>Failed to download:</b> $TBB_SIG_LINK
+<br></br>There are other recommended versions. Will try to download the next recommended version...</p>
 
-(Debugging information: curl_status_message: $curl_status_message)"
+<p>(Debugging information: curl_status_message: $curl_status_message)</p>"
 
          ## No popup message in X. Would be too confusing.
          #$output ${output_opts[@]} --messagex --typex "info" --titlex "$TITLE" --message "$MSG" --done
@@ -883,9 +878,9 @@ There are other recommended versions. Will try to download the next recommended 
          ## return 0, so the loop will tell us to try the next $tbb_version.
          return 0
       else
-         MSG="Failed to download: $TBB_SIG_LINK
+         MSG="<p>Failed to download: $TBB_SIG_LINK</p>
 
-$DOWNLOAD_FAIL_HELP"
+<p>$DOWNLOAD_FAIL_HELP</p>"
 
          $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
@@ -958,11 +953,11 @@ INFO: Downloading:
          curl_status_message="$curl_exit_code"
       fi
 
-      MSG="Failed to download: $TBB_PACKAGE_LINK
+      MSG="<p>Failed to download: $TBB_PACKAGE_LINK</p>
 
-$DOWNLOAD_FAIL_HELP
+<p>$DOWNLOAD_FAIL_HELP</p>
 
-(Debugging information: curl_status_message: $curl_status_message)"
+<p>(Debugging information: curl_status_message: $curl_status_message)</p>"
 
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
 
@@ -977,12 +972,11 @@ $DOWNLOAD_FAIL_HELP
 tb_verify() {
    trap "tb_error_handler" ERR
 
-   echo "INFO:
-## Verifying GPG signature.
-## Not using the user's GPG keyring also ensures, that the key can be only
-## signed by the GPG keys we added. Signatures from random people from the
-## user's keyring will be ignored.
-"
+   echo "<p>INFO:
+<br></br>## Verifying GPG signature.
+<br></br>## Not using the user's GPG keyring also ensures, that the key can be only
+<br></br>## signed by the GPG keys we added. Signatures from random people from the
+<br></br>## user's keyring will be ignored.</p>"
 
    local timeout_after="60"
    local kill_after="10"
@@ -1005,10 +999,8 @@ tb_verify() {
    ## - 137 if needed to use kill.
 
    if [ ! "$tb_gpg_verify_exit_code" = "0" ]; then
-      local MSG="\
-GPG download signature could NOT be verified.
-Tor Browser update failed! Try again later.\
-"
+      local MSG="<p><b>GPG download signature could NOT be verified.</b>
+<br></br>Tor Browser update failed! Try again later.</p>"
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
 
       $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
@@ -1053,19 +1045,19 @@ tb_extract() {
    if [ "$noaskstart" = "true" ]; then
       true "noaskstart is set to true."
    else
-      MSG="Finished installing Tor Browser. Can be found in $TEMP.
+      MSG="<p>Finished installing Tor Browser. Can be found in $TEMP.</p>
 
-Please donate!
-https://www.whonix.org/wiki/Donate
-
-Start Tor Browser?"
-      local answer
-      answer="0"
-      zenity --title="$TITLE" --question --text "$MSG" || { answer="$?" ; true; };
+<p>Please donate!
+<br></br>https://www.whonix.org/wiki/Donate</p>"
+      local question="Start Tor Browser?"
+      local question="yesno"
+      local answer="$(/usr/lib/generic_gui_message "info" "Tor Browser Updater" "$msg" "$question" "$button")"
+      #answer="0"
+      #zenity --title="$TITLE" --question --text "$MSG" || { answer="$?" ; true; };
       ## zenity exit codes
       ## no 1
       ## yes 0
-      if [ "$answer" = "1" ]; then
+      if [ "$answer" = "65536" ]; then  # button 'no' pressed
          echo "INFO: Canceled starting Tor Browser, ok."
       else
          torbrowser
