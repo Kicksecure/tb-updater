@@ -38,7 +38,7 @@ tb_error_handler() {
 <br></br>## has been hit. Try again later. There is likely a
 <br></br>## solution for this problem. Please see the Whonix News,
 <br></br>## Whonix User Help Forum and Whonix Documentation.
-<br></br>## https://www.whonix.org/wiki/Tor_Browser
+<br></br>## <a href=https://www.whonix.org/wiki/Tor_Browser>https://www.whonix.org/wiki/Tor_Browser</a>
 <br></br>## Please report this bug!
 <br></br>##
 <br></br>## BASH_COMMAND: $BASH_COMMAND
@@ -76,8 +76,8 @@ DOWNLOAD_FAIL_HELP="<p>Possible reasons:</p>
 <p>Recommendations:</p>
 <p>
 <br></br>- Try again later. If the error persists it probably won't solve itself before the next update.
-<br></br>- Check News: https://www.whonix.org/wiki/Download#Stay_tuned
-<br></br>- Manually update: https://www.whonix.org/wiki/Manually_Updating_Tor_Browser
+<br></br>- Check News: <a href=https://www.whonix.org/wiki/Download#Stay_tuned>https://www.whonix.org/wiki/Download#Stay_tuned</a>
+<br></br>- Manually update: <a href=https://www.whonix.org/wiki/Manually_Updating_Tor_Browser>https://www.whonix.org/wiki/Manually_Updating_Tor_Browser</a>
 </p>"
 
 root_check() {
@@ -1048,7 +1048,7 @@ tb_extract() {
       MSG="<p>Finished installing Tor Browser. Can be found in $TEMP.</p>
 
 <p>Please donate!
-<br></br>https://www.whonix.org/wiki/Donate</p>"
+<br></br><a href=https://www.whonix.org/wiki/Donate>https://www.whonix.org/wiki/Donate</a></p>"
       local question="Start Tor Browser?"
       local question="yesno"
       local answer="$(/usr/lib/generic_gui_message "info" "Tor Browser Updater" "$msg" "$question" "$button")"
