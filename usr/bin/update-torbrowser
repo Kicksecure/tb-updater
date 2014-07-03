@@ -697,7 +697,7 @@ Checking Tor Browser version... Will take a moment..."
 <br></br>----------------------------------------------------------------------
 <br></br>Currently installed version: $tbb_locally_installed_version
 <br></br>Online detected version(s) : $tbb_recommended_versions_list</p>"
-      question="Install now?"
+         question="Install now?"
       else
          MSG="<p>$nice_name Update Check (by Whonix developers)
 local ----------------------------------------------------------------------
