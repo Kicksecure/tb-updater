@@ -700,9 +700,9 @@ Checking Tor Browser version... Will take a moment..."
          question="Install now?"
       else
          MSG="<p>$nice_name Update Check (by Whonix developers)
-local ----------------------------------------------------------------------
-local Currently installed version: $tbb_locally_installed_version
-local Online detected version(s) : $tbb_recommended_versions_list</p>
+----------------------------------------------------------------------
+Currently installed version: $tbb_locally_installed_version
+Online detected version(s) : $tbb_recommended_versions_list</p>
 
 <p>Looks like there is an upgrade for Tor Browser.</p>
 
