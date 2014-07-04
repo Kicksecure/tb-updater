@@ -728,7 +728,7 @@ Online detected version(s) : <blockquote><code>$tbb_recommended_versions_list</c
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       true
    else
-      answer="$(/usr/lib/msgcollector/generic_gui_message "info" "Tor Browser Updater" "$msg" "$question" "$button")"
+      answer="$(/usr/lib/msgcollector/generic_gui_message "info" "Tor Browser Updater" "$MSG" "$question" "$button")"
       #zenity --title="$TITLE" --question --text "$MSG" || { answer="$?" ; true; };
 
       ## zenity exit codes
@@ -1051,7 +1051,7 @@ tb_extract() {
 <br></br><a href=https://www.whonix.org/wiki/Donate>https://www.whonix.org/wiki/Donate</a></p>"
       local question="Start Tor Browser?"
       local question="yesno"
-      local answer="$(/usr/lib/msgcollector/generic_gui_message "info" "Tor Browser Updater" "$msg" "$question" "$button")"
+      local answer="$(/usr/lib/msgcollector/generic_gui_message "info" "Tor Browser Updater" "$MSG" "$question" "$button")"
       #answer="0"
       #zenity --title="$TITLE" --question --text "$MSG" || { answer="$?" ; true; };
       ## zenity exit codes
