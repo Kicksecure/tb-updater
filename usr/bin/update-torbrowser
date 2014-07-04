@@ -723,7 +723,7 @@ Online detected version(s) : <blockquote><code>$tbb_recommended_versions_list</c
    fi
 
    local answer
-   #answer="0"
+   answer="0"
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       true
@@ -741,7 +741,7 @@ Online detected version(s) : <blockquote><code>$tbb_recommended_versions_list</c
          echo "INFO: TB_FORCE_INSTALL = 1"
          true
       else
-         if [ "$answer" = "65536" ]; then  # button 'no' pressed
+         if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
             echo "INFO: Canceled. Exit."
             exit 0
          fi
