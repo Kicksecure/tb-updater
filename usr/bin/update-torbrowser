@@ -115,10 +115,10 @@ tb_sanity_tests() {
    command -v sed >/dev/null
 }
 
-trap_tb() {
+tb_ex_funct() {
    trap "tb_error_handler" ERR
 
-   MSG="INFO $SCRIPTNAME: SIG-(TERM/INT) received. Exiting."
+   MSG="$SIGNAL_TYPE received. Cleaning up..."
 
    if [ "$last_pid" = "" ]; then
       true
@@ -132,16 +132,35 @@ trap_tb() {
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
    fi
 
-   $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+   $output ${output_opts[@]} --messagecli --typecli "info" --titlecli "$TITLE" --message "$MSG" --done
 
    #MSG="Aborted."
    #$output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
    #$output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
-   exit 1
+
+   MSG="$SIGNAL_TYPE received. Exiting."
+   $output ${output_opts[@]} --messagecli --typecli "info" --titlecli "$TITLE" --message "$MSG" --done
 }
 
-trap "trap_tb" SIGTERM
-trap "trap_tb" SIGINT
+tb_signal_sigint() {
+   trap "tb_error_handler" ERR
+
+   SIGNAL_TYPE="sigint"
+   tb_ex_funct
+   exit 130
+}
+
+trap "tb_signal_sigint" SIGINT ## ctrl + c
+
+tb_signal_sigterm() {
+   trap "tb_error_handler" ERR
+
+   SIGNAL_TYPE="sigterm"
+   tb_ex_funct
+   exit 143
+}
+
+trap "tb_signal_sigterm" SIGTERM
 
 get_new_progressbaridx() {
    trap "tb_error_handler" ERR
