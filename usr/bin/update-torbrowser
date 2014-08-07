@@ -341,7 +341,7 @@ tb_preparation() {
 
    output_opts=( "$output_opt_1" "$output_opt_2" "$output_opt_3" "$output_opt_4" "$output_opt_5")
 
-   TITLE="Tor Browser Update Check (by Whonix developers)"
+   TITLE="Tor Browser Updater (by Whonix developers)"
 
    ret="0"
    command -v curl.anondist-orig >/dev/null || { ret="$?" ; true; };
@@ -748,7 +748,7 @@ Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</b
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       true
    else
-      answer="$(/usr/lib/msgcollector/generic_gui_message "info" "Tor Browser Updater" "$MSG" "$question" "$button")"
+      answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
       #zenity --title="$TITLE" --question --text "$MSG" || { answer="$?" ; true; };
 
       ## zenity exit codes
@@ -1071,7 +1071,7 @@ tb_extract() {
 <br></br><a href=https://www.whonix.org/wiki/Donate>https://www.whonix.org/wiki/Donate</a></p>"
       local question="Start Tor Browser?"
       local question="yesno"
-      local answer="$(/usr/lib/msgcollector/generic_gui_message "info" "Tor Browser Updater" "$MSG" "$question" "$button")"
+      local answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
       #answer="0"
       #zenity --title="$TITLE" --question --text "$MSG" || { answer="$?" ; true; };
       ## zenity exit codes
