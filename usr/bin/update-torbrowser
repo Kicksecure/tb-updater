@@ -105,7 +105,6 @@ tb_sanity_tests() {
    command -v killall >/dev/null
    command -v rm >/dev/null
    command -v head >/dev/null
-   command -v zenity >/dev/null
    command -v tar >/dev/null
    command -v date >/dev/null
    command -v /usr/lib/msgcollector/msgcollector >/dev/null
@@ -742,21 +741,11 @@ Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</b
       fi
    fi
 
-   local answer
-   answer="0"
-
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       true
    else
+      local answer
       answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
-      #zenity --title="$TITLE" --question --text "$MSG" || { answer="$?" ; true; };
-
-      ## zenity exit codes
-      ## no 1
-      ## yes 0
-
-      #echo "answer: $answer"
-
       if [ "$TB_FORCE_INSTALL" = "1" ]; then
          echo "INFO: TB_FORCE_INSTALL = 1"
          true
@@ -1073,11 +1062,6 @@ tb_extract() {
       local question="yesno"
       local answer
       answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
-      #answer="0"
-      #zenity --title="$TITLE" --question --text "$MSG" || { answer="$?" ; true; };
-      ## zenity exit codes
-      ## no 1
-      ## yes 0
       if [ "$answer" = "65536" ]; then  # button 'no' pressed
          echo "INFO: Canceled starting Tor Browser, ok."
       else
