@@ -1071,7 +1071,8 @@ tb_extract() {
 <br></br><a href=https://www.whonix.org/wiki/Donate>https://www.whonix.org/wiki/Donate</a></p>"
       local question="Start Tor Browser?"
       local question="yesno"
-      local answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
+      local answer
+      answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
       #answer="0"
       #zenity --title="$TITLE" --question --text "$MSG" || { answer="$?" ; true; };
       ## zenity exit codes
