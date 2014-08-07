@@ -1057,7 +1057,7 @@ tb_extract() {
       local question="yesno"
       local answer
       answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
-      if [ "$answer" = "65536" ]; then  # button 'no' pressed
+      if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
          echo "INFO: Canceled starting Tor Browser, ok."
       else
          torbrowser
