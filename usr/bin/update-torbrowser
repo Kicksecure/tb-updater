@@ -742,18 +742,13 @@ Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</b
    fi
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      true
+      echo "INFO: TB_FORCE_INSTALL = 1"
    else
       local answer
       answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
-      if [ "$TB_FORCE_INSTALL" = "1" ]; then
-         echo "INFO: TB_FORCE_INSTALL = 1"
-         true
-      else
-         if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-            echo "INFO: Canceled. Exit."
-            exit 0
-         fi
+      if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
+         echo "INFO: Canceled. Exit."
+         exit 0
       fi
    fi
 
