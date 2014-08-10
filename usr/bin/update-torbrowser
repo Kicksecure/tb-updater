@@ -689,7 +689,7 @@ Checking Tor Browser version... Will take a moment..."
    local button="yesno"
 
    if [ "$up_to_date" = "1" ]; then
-         MSG="$nice_name Update Check (by Whonix developers)
+      MSG="$nice_name Update Check (by Whonix developers)
 <br></br>----------------------------------------------------------------------
 <br></br>Currently installed version: <code><blockquote>$tbb_locally_installed_version</blockquote></code>
 Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</blockquote></code>
@@ -708,8 +708,7 @@ Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</b
 
 <p>A backup of your old Tor Browser and settings will be created in your home folder.
 <br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space.</p>"
-   question="Upgrade now?"
-
+      question="Upgrade now?"
    else
       if [ "$installed_or_not_result" = "0" ]; then
          MSG="<p>$nice_name Update Check (by Whonix developers)
@@ -1054,7 +1053,7 @@ tb_extract() {
 <p>Please donate!
 <br></br><a href=https://www.whonix.org/wiki/Donate>https://www.whonix.org/wiki/Donate</a></p>"
       local question="Start Tor Browser?"
-      local question="yesno"
+      local button="yesno"
       local answer
       answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
       if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
