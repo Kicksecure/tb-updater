@@ -1,3 +1,9 @@
+tb-updater (3:0.2-2) unstable; urgency=low
+
+  * Fixed changelog date.
+
+ -- Patrick Schleizer <adrelanos@riseup.net>  Sun, 17 Aug 2014 20:50:20 +0000
+
 tb-updater (3:0.2-1) unstable; urgency=low
 
   * New upstream version.
