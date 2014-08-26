@@ -164,9 +164,7 @@ trap "tb_signal_sigterm" SIGTERM
 get_new_progressbaridx() {
    trap "tb_error_handler" ERR
 
-   local tmp
-   tmp="$(mktemp)"
-   progressbaridx="${tmp##*.}"
+   progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
 }
 
 parse_cmd_options() {
