@@ -254,6 +254,12 @@ tb_preparation() {
       home_folder=~
    fi
 
+   ## Required for /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh.
+   TEMP_DIR="$home_folder/.tb/temp_dir"
+   export TEMP_DIR
+   rm --recursive --force "$TEMP_DIR"
+   mkdir --parents "$TEMP_DIR"
+
    ## Fortunately, on linux-image-486 kernel, while "uname --all" returns for example
    ## "Linux host 3.2.0-4-486 #1 Debian 3.2.41-2 i686 GNU/Linux",
    ## "uname --machine" returns "i686" and Tor Browser works fine with linux-image-486 kernel.
