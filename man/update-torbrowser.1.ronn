@@ -20,8 +20,8 @@ update-torbrowser(1) -- Tor Browser Update and Start Script
 ## DESCRIPTION
 The update-torbrowser script lets you safely download the Tor Browser Bundle (TBB)
 from the Tor Project's website. It enforces TLS encryption (https) for
-`http://check.torproject.org`, downloads TBB from the Tor Project's hidden
-service and uses OpenPGP verification. It is the recommended way to keep Tor
+The Tor Project's website, downloads TBB from the Tor Project's website,
+and uses OpenPGP verification. It is the recommended way to keep Tor
 Browser updated in Whonix-Workstation.
 
 In case there is already a `/home/user/tor-browser_en-US` folder, it renames it
@@ -47,8 +47,8 @@ how you want to proceed.
 
   * --noask
 
-    Installs whatever https://check.torproject.org/RecommendedTBBVersions
-    claims to be the latest version without user user interaction.
+    Installs whatever https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions
+    claims to be the latest version without user interaction.
 
   * --nokilltb
 

@@ -580,7 +580,7 @@ Checking Tor Browser version... Will take a moment..."
    fi
 
    echo "INFO: Find out latest version..."
-   LINK="https://check.torproject.org/RecommendedTBBVersions"
+   LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
    echo "INFO: Downloading: $LINK"
 
    mkdir --parents "$home_folder/.tb"

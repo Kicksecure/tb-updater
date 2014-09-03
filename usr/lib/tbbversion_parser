@@ -8,7 +8,7 @@
 ## - /usr/bin/whonixcheck
 ## - /usr/bin/torbrowser
 
-## https://check.torproject.org/RecommendedTBBVersions legit example:
+## https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions legit example:
 ## [
 ## "2.3.25-11-MacOS",
 ## "2.3.25-11-Windows",
@@ -33,7 +33,7 @@
 ## "3.0-alpha-4-Windows"
 ## ]
 
-## https://check.torproject.org/RecommendedTBBVersions malicious example:
+## https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions malicious example:
 ## ...
 ## "2.3.25-13-Linux-Do this, then do this etc...................................................... etc.",
 ## ...
