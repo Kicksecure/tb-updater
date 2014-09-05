@@ -46,6 +46,14 @@ tbbversion() {
    while read -r line; do
       line_number="$(( $line_number + 1 ))"
 
+      ## Check if RecommendedTBBVersions versions file is excessively long.
+      if [ "$line_number" -gt "100" ]; then
+         tbb_recommended_versions_list="UNKNOWN"
+         tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. (Longer than 100 lines.) \
+Either check.torproject.org has been compromised or this is a Whonix bug."
+         return 0
+      fi
+
       if [ "$line" = "" ]; then
          continue
       fi
@@ -142,14 +150,6 @@ tbbversion() {
       tbb_recommended_versions_error="Excessive version string length. ($actual_string_length characters)
 Either check.torproject.org has been compromised or this is a Whonix bug."
 
-      return 0
-   fi
-
-   ## Check if RecommendedTBBVersions versions file is excessively long.
-   if [ "$line_number" -gt "100" ]; then
-      tbb_recommended_versions_list="UNKNOWN"
-      tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. (Longer than 100 lines.) \
-Either check.torproject.org has been compromised or this is a Whonix bug."
       return 0
    fi
 }
