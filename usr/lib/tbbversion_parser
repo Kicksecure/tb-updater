@@ -63,109 +63,107 @@ tbbversion() {
 
    tbbversions_found="0"
 
-   if [ -f "$RecommendedTBBVersions" ]; then
-      local i
-      i="0"
-      local line
-      while read -r line; do
-         i="$(( $i + 1 ))"
-
-         echo "$line" | grep -q -i -s "alpha"
-         if [ "$?" = "0" ]; then
-            continue
-         fi
-         echo "$line" | grep -q -i -s "beta"
-         if [ "$?" = "0" ]; then
-            continue
-         fi
-         echo "$line" | grep -q -i -s "rc"
-         if [ "$?" = "0" ]; then
-            continue
-         fi
-         echo "$line" | grep -q -i -s "MacOS"
-         if [ "$?" = "0" ]; then
-            continue
-         fi
-         echo "$line" | grep -q -i -s "Windows"
-         if [ "$?" = "0" ]; then
-            continue
-         fi
-
-         line="$(echo "$line" | sed 's/"//g')"
-         line="$(echo "$line" | sed 's/,//g')"
-
-         echo "$line" | grep -q -i -s "Linux"
-         if [ "$?" = "0" ]; then
-            local temp
-            temp="$line"
-            temp="$(echo "$temp" | sed 's/-i686//g')"
-            temp="$(echo "$temp" | sed 's/-x86_64//g')"
-            temp="$(echo "$temp" | sed 's/-Linux//g')"
-
-            tbbversions_found="$(( $tbbversions_found + 1 ))"
-
-            if [ "$tbb_recommended_versions_list" = "UNKNOWN" ]; then
-               ## No tbb versions has been found earlier. Still set to UNKNOWN.
-               ## Therefore setting tbb_recommended_versions_list to $temp.
-               tbb_recommended_versions_list="$temp"
-            else
-               ## Keep already found version and add newly found version.
-               tbb_recommended_versions_list="$temp $tbb_recommended_versions_list"
-            fi
-
-            ## Not using break, because RecommendedTBBVersions often have
-            ## multiple recommended versions. Latest on the bottom.
-            ## For example:
-            ##    "2.3.25-12-Linux",
-            ##    "2.3.25-13-Linux",
-         fi
-
-      done < "$RecommendedTBBVersions"
-
-      ## A single version string should not be longer than 20 characters. If
-      ## it is, there is probably something wrong.
-      local max_string_length
-      max_string_length="20"
-
-      ## In case we found multiple valid versions, the max_string_length must
-      ## be multiplied with the number of valid versions we found.
-      max_string_length="$(( $max_string_length * $tbbversions_found ))"
-
-      local actual_string_length
-      actual_string_length="${#tbb_recommended_versions_list}"
-      tbbversion_excess_length=""
-
-      ## Check if the string length of tbb_recommended_versions_list is excessive.
-      if [ "$actual_string_length" -gt "$max_string_length" ]; then
-         ## Store excess length for later use.
-         tbbversion_excess_length="$tbb_recommended_versions_list"
-
-         ## Shorten excess length $tbb_recommended_versions_list to $max_string_length chars.
-         #tbb_recommended_versions_list="${tbb_recommended_versions_list:0:$max_string_length}"
-
-         tbb_recommended_versions_list="UNKNOWN"
-
-         tbb_recommended_versions_error="Excessive version string length. ($actual_string_length characters)
-Either check.torproject.org has been compromised or this is a Whonix bug."
-
-         return 0
-      fi
-
-      ## Check if RecommendedTBBVersions versions file is excessively long.
-      if [ "$i" -gt "100" ]; then
-         tbb_recommended_versions_list="UNKNOWN"
-         tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. (Longer than 100 lines.) \
-Either check.torproject.org has been compromised or this is a Whonix bug."
-         return 0
-      fi
-   else
+   if [ ! -f "$RecommendedTBBVersions" ]; then
       local MSG="$SCRIPTNAME tbbversion: 1: $1 does not exist."
       echo "$MSG"
       error "$MSG"
       return 1
    fi
 
-   #echo "tbb_recommended_versions_list: $tbb_recommended_versions_list"
+   local i
+   i="0"
+   local line
+   while read -r line; do
+      i="$(( $i + 1 ))"
+
+      echo "$line" | grep -q -i -s "alpha"
+      if [ "$?" = "0" ]; then
+         continue
+      fi
+      echo "$line" | grep -q -i -s "beta"
+      if [ "$?" = "0" ]; then
+         continue
+      fi
+      echo "$line" | grep -q -i -s "rc"
+      if [ "$?" = "0" ]; then
+         continue
+      fi
+      echo "$line" | grep -q -i -s "MacOS"
+      if [ "$?" = "0" ]; then
+         continue
+      fi
+      echo "$line" | grep -q -i -s "Windows"
+      if [ "$?" = "0" ]; then
+         continue
+      fi
+
+      line="$(echo "$line" | sed 's/"//g')"
+      line="$(echo "$line" | sed 's/,//g')"
+
+      echo "$line" | grep -q -i -s "Linux"
+      if [ "$?" = "0" ]; then
+         local temp
+         temp="$line"
+         temp="$(echo "$temp" | sed 's/-i686//g')"
+         temp="$(echo "$temp" | sed 's/-x86_64//g')"
+         temp="$(echo "$temp" | sed 's/-Linux//g')"
+
+         tbbversions_found="$(( $tbbversions_found + 1 ))"
+
+         if [ "$tbb_recommended_versions_list" = "UNKNOWN" ]; then
+            ## No tbb versions has been found earlier. Still set to UNKNOWN.
+            ## Therefore setting tbb_recommended_versions_list to $temp.
+            tbb_recommended_versions_list="$temp"
+         else
+            ## Keep already found version and add newly found version.
+            tbb_recommended_versions_list="$temp $tbb_recommended_versions_list"
+         fi
+
+         ## Not using break, because RecommendedTBBVersions often have
+         ## multiple recommended versions. Latest on the bottom.
+         ## For example:
+         ##    "2.3.25-12-Linux",
+         ##    "2.3.25-13-Linux",
+      fi
+
+   done < "$RecommendedTBBVersions"
+
+   ## A single version string should not be longer than 20 characters. If
+   ## it is, there is probably something wrong.
+   local max_string_length
+   max_string_length="20"
+
+   ## In case we found multiple valid versions, the max_string_length must
+   ## be multiplied with the number of valid versions we found.
+   max_string_length="$(( $max_string_length * $tbbversions_found ))"
+
+   local actual_string_length
+   actual_string_length="${#tbb_recommended_versions_list}"
+   tbbversion_excess_length=""
+
+   ## Check if the string length of tbb_recommended_versions_list is excessive.
+   if [ "$actual_string_length" -gt "$max_string_length" ]; then
+      ## Store excess length for later use.
+      tbbversion_excess_length="$tbb_recommended_versions_list"
+
+      ## Shorten excess length $tbb_recommended_versions_list to $max_string_length chars.
+      #tbb_recommended_versions_list="${tbb_recommended_versions_list:0:$max_string_length}"
+
+      tbb_recommended_versions_list="UNKNOWN"
+
+      tbb_recommended_versions_error="Excessive version string length. ($actual_string_length characters)
+Either check.torproject.org has been compromised or this is a Whonix bug."
+
+      return 0
+   fi
+
+   ## Check if RecommendedTBBVersions versions file is excessively long.
+   if [ "$i" -gt "100" ]; then
+      tbb_recommended_versions_list="UNKNOWN"
+      tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. (Longer than 100 lines.) \
+Either check.torproject.org has been compromised or this is a Whonix bug."
+      return 0
+   fi
 }
 
 tbbversion_installed() {
