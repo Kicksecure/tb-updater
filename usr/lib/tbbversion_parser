@@ -8,36 +8,6 @@
 ## - /usr/bin/whonixcheck
 ## - /usr/bin/torbrowser
 
-## https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions legit example:
-## [
-## "2.3.25-11-MacOS",
-## "2.3.25-11-Windows",
-## "2.3.25-11-Linux",
-## "2.3.25-12-MacOS",
-## "2.3.25-12-Windows",
-## "2.3.25-12-Linux",
-## "2.3.25-13-MacOS",
-## "2.3.25-13-Windows",
-## "2.3.25-13-Linux",
-## "2.4.16-beta-1-MacOS",
-## "2.4.16-beta-1-Windows",
-## "2.4.16-beta-1-Linux",
-## "2.4.17-beta-1-MacOS",
-## "2.4.17-beta-1-Windows",
-## "2.4.17-beta-1-Linux",
-## "2.4.17-beta-2-MacOS",
-## "2.4.17-beta-2-Windows",
-## "2.4.17-beta-2-Linux",
-## "3.0-alpha-4-Linux",
-## "3.0-alpha-4-MacOS",
-## "3.0-alpha-4-Windows"
-## ]
-
-## https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions malicious example:
-## ...
-## "2.3.25-13-Linux-Do this, then do this etc...................................................... etc.",
-## ...
-
 tbbversion() {
    ## code shared between torbrowser and whonixcheck
 
@@ -76,6 +46,19 @@ tbbversion() {
    while read -r line; do
       i="$(( $i + 1 ))"
 
+      if [ "$line" = "" ]; then
+         continue
+      fi
+
+      echo "$line" | grep -q -i -s "\["
+      if [ "$?" = "0" ]; then
+         continue
+      fi
+      echo "$line" | grep -q -i -s "\]"
+      if [ "$?" = "0" ]; then
+         continue
+      fi
+
       echo "$line" | grep -q -i -s "alpha"
       if [ "$?" = "0" ]; then
          continue
@@ -100,32 +83,37 @@ tbbversion() {
       line="$(echo "$line" | sed 's/"//g')"
       line="$(echo "$line" | sed 's/,//g')"
 
+      local temp
+      temp="$line"
+
+      ## new format:
+      ## https://trac.torproject.org/projects/tor/ticket/8940#comment:28
+
+      ## {{ parsing old format
       echo "$line" | grep -q -i -s "Linux"
       if [ "$?" = "0" ]; then
-         local temp
-         temp="$line"
          temp="$(echo "$temp" | sed 's/-i686//g')"
          temp="$(echo "$temp" | sed 's/-x86_64//g')"
          temp="$(echo "$temp" | sed 's/-Linux//g')"
+      fi
+      ## }} parsing old format
 
-         tbbversions_found="$(( $tbbversions_found + 1 ))"
+      tbbversions_found="$(( $tbbversions_found + 1 ))"
 
-         if [ "$tbb_recommended_versions_list" = "UNKNOWN" ]; then
-            ## No tbb versions has been found earlier. Still set to UNKNOWN.
-            ## Therefore setting tbb_recommended_versions_list to $temp.
-            tbb_recommended_versions_list="$temp"
-         else
-            ## Keep already found version and add newly found version.
-            tbb_recommended_versions_list="$temp $tbb_recommended_versions_list"
-         fi
-
-         ## Not using break, because RecommendedTBBVersions often have
-         ## multiple recommended versions. Latest on the bottom.
-         ## For example:
-         ##    "2.3.25-12-Linux",
-         ##    "2.3.25-13-Linux",
+      if [ "$tbb_recommended_versions_list" = "UNKNOWN" ]; then
+         ## No tbb versions has been found earlier. Still set to UNKNOWN.
+         ## Therefore setting tbb_recommended_versions_list to $temp.
+         tbb_recommended_versions_list="$temp"
+      else
+         ## Keep already found version and add newly found version.
+         tbb_recommended_versions_list="$temp $tbb_recommended_versions_list"
       fi
 
+      ## Not using break, because RecommendedTBBVersions often have
+      ## multiple recommended versions. Latest on the bottom.
+      ## For example:
+      ##    "2.3.25-12-Linux",
+      ##    "2.3.25-13-Linux",
    done < "$RecommendedTBBVersions"
 
    ## A single version string should not be longer than 20 characters. If
