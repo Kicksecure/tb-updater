@@ -398,6 +398,16 @@ tb_preparation() {
    CURL_FORCE_SSL="--tlsv1 --proto =https"
 
    ## }}
+
+   if [ "$DEV_PASSTHROUGH" = "1" ]; then
+      [ -n "$CURL_PROXY" ] || CURL_PROXY=""
+   elif [ -d /usr/share/whonix ]; then
+      [ -n "$GATEWAY_IP" ] || GATEWAY_IP="10.152.152.10"
+      [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
+      [ -n "$CURL_PROXY" ] || CURL_PROXY="--socks5-hostname socks5h://$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD/"
+   else
+      [ -n "$CURL_PROXY" ] || CURL_PROXY=""
+   fi
 }
 
 tb_connectivity_checks_tor() {
@@ -567,16 +577,6 @@ Checking Tor Browser version... Will take a moment..."
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --typex "info" --titlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
       sleep 1 &
       wait "$!"
-   fi
-
-   if [ "$DEV_PASSTHROUGH" = "1" ]; then
-      [ -n "$CURL_PROXY" ] || CURL_PROXY=""
-   elif [ -d /usr/share/whonix ]; then
-      [ -n "$GATEWAY_IP" ] || GATEWAY_IP="10.152.152.10"
-      [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
-      [ -n "$CURL_PROXY" ] || CURL_PROXY="--socks5-hostname socks5h://$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD/"
-   else
-      [ -n "$CURL_PROXY" ] || CURL_PROXY=""
    fi
 
    echo "INFO: Find out latest version..."
