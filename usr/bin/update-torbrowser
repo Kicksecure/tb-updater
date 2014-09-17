@@ -141,6 +141,16 @@ tb_ex_funct() {
    $output ${output_opts[@]} --messagecli --typecli "info" --titlecli "$TITLE" --message "$MSG" --done
 }
 
+tb_signal_sigterm() {
+   trap "tb_error_handler" ERR
+
+   SIGNAL_TYPE="sigterm"
+   tb_ex_funct
+   exit 143
+}
+
+trap "tb_signal_sigterm" SIGTERM
+
 tb_signal_sigint() {
    trap "tb_error_handler" ERR
 
@@ -151,15 +161,15 @@ tb_signal_sigint() {
 
 trap "tb_signal_sigint" SIGINT ## ctrl + c
 
-tb_signal_sigterm() {
+trap_sigusr2() {
    trap "tb_error_handler" ERR
 
-   SIGNAL_TYPE="sigterm"
+   SIGNAL_TYPE="SIGUSR2"
    tb_ex_funct
-   exit 143
+   exit 0
 }
 
-trap "tb_signal_sigterm" SIGTERM
+trap "trap_sigusr2" SIGUSR2 ## msgcollector, zenity cancel button
 
 parse_cmd_options() {
    trap "tb_error_handler" ERR
