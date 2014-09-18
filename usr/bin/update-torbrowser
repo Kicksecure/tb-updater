@@ -58,7 +58,7 @@ tb_error_handler() {
    if [ "$progressbaridx" = "" ]; then
       true
    else
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
    fi
    $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
    $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
@@ -128,7 +128,7 @@ tb_ex_funct() {
    if [ "$progressbaridx" = "" ]; then
       true
    else
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
    fi
 
    $output ${output_opts[@]} --messagecli --typecli "info" --titlecli "$TITLE" --message "$MSG" --done
@@ -141,16 +141,6 @@ tb_ex_funct() {
    $output ${output_opts[@]} --messagecli --typecli "info" --titlecli "$TITLE" --message "$MSG" --done
 }
 
-tb_signal_sigint() {
-   trap "tb_error_handler" ERR
-
-   SIGNAL_TYPE="sigint"
-   tb_ex_funct
-   exit 130
-}
-
-trap "tb_signal_sigint" SIGINT ## ctrl + c
-
 tb_signal_sigterm() {
    trap "tb_error_handler" ERR
 
@@ -161,11 +151,25 @@ tb_signal_sigterm() {
 
 trap "tb_signal_sigterm" SIGTERM
 
-get_new_progressbaridx() {
+tb_signal_sigint() {
    trap "tb_error_handler" ERR
 
-   progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
+   SIGNAL_TYPE="sigint"
+   tb_ex_funct
+   exit 130
 }
+
+trap "tb_signal_sigint" SIGINT ## ctrl + c
+
+trap_sigusr2() {
+   trap "tb_error_handler" ERR
+
+   SIGNAL_TYPE="SIGUSR2"
+   tb_ex_funct
+   exit 0
+}
+
+trap "trap_sigusr2" SIGUSR2 ## msgcollector, zenity cancel button
 
 parse_cmd_options() {
    trap "tb_error_handler" ERR
@@ -482,8 +486,7 @@ tb_connectivity_checks_curl() {
 ----------------------------------------------------------------------
 Checking connectivity... Will take a moment..."
 
-   ## sets: progressbaridx
-   get_new_progressbaridx
+   progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
 
    $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --typex "info" --titlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
    sleep 1 &
@@ -516,7 +519,7 @@ Checking connectivity... Will take a moment..."
    wait "$last_pid" || { curl_exit_code="$?" ; true; };
    last_pid=""
 
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
@@ -541,13 +544,13 @@ Checking connectivity... Will take a moment..."
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
 
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
       exit 1
    fi
 
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
    sleep 1 &
    wait "$!"
 }
@@ -563,8 +566,7 @@ tb_update_check() {
       fi
    fi
 
-   ## sets: progressbaridx
-   get_new_progressbaridx
+   progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
 
    ## progress bar for update check
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
@@ -614,7 +616,7 @@ Checking Tor Browser version... Will take a moment..."
    wait "$last_pid" || { curl_exit_code="$?" ; true; };
    last_pid=""
 
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
@@ -631,11 +633,17 @@ Checking Tor Browser version... Will take a moment..."
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
 
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
       exit 1
    fi
+}
+
+tb_remote_version_parser() {
+   trap "tb_error_handler" ERR
+
+   test -f "$home_folder/.tb/RecommendedTBBVersions"
 
    ## Used by tbbversion.
    RecommendedTBBVersions="$home_folder/.tb/RecommendedTBBVersions"
@@ -644,21 +652,10 @@ Checking Tor Browser version... Will take a moment..."
    ## sets: tbbversions_found
    ## sets: tbb_recommended_versions_error
    tbbversion
+}
 
-   ## Used by tbbversion_installed
-   tbb_folder="$home_folder/tor-browser_$TB_LANG"
-
-   ## sets: tbb_locally_installed_version
-   tbbversion_installed
-
-   if [ -d "$home_folder/tor-browser_$TB_LANG" ]; then
-      local installed_or_not_result="1"
-      local installed_or_not_text=""
-   else
-      local installed_or_not_result="0"
-      local installed_or_not_text="Tor Browser is currently not installed.
-(Folder $home_folder/tor-browser_$TB_LANG does not exist.)"
-   fi
+tb_remote_version_sanity_test() {
+   trap "tb_error_handler" ERR
 
    if [ "$tbb_recommended_versions_list" = "UNKNOWN" ]; then
       local MSG="<p>$installed_or_not_text</p>
@@ -667,40 +664,89 @@ Checking Tor Browser version... Will take a moment..."
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
 
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
       exit 1
    fi
 
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
    sleep 1 &
    wait "$!"
+}
 
-   local up_to_date
-   up_to_date="0"
-   local tbb_version
+tb_local_version_detection() {
+   trap "tb_error_handler" ERR
 
-   for tbb_version in $tbb_recommended_versions_list; do
-      if [ "$tbb_version" = "$tbb_locally_installed_version" ]; then
-         up_to_date="1"
-         break
-      fi
-   done
+   ## Used by tbbversion_installed
+   tbb_folder="$home_folder/tor-browser_$TB_LANG"
+
+   ## sets: tbb_locally_installed_version
+   tbbversion_installed
+
+   if [ -d "$home_folder/tor-browser_$TB_LANG" ]; then
+      installed_or_not_result="true"
+      installed_or_not_text=""
+   else
+      installed_or_not_result="false"
+      installed_or_not_text="Tor Browser is currently not installed.
+(Folder $home_folder/tor-browser_$TB_LANG does not exist.)"
+   fi
+}
+
+tb_confirm_update() {
+   trap "tb_error_handler" ERR
+
+   if [ "$installed_or_not_result" = "true" ]; then
+      local tbb_version
+      for tbb_version in $tbb_recommended_versions_list; do
+         local dpkg_compare_versions_equals_exit_code="0"
+         dpkg --compare-versions "$tbb_version" eq "$tbb_locally_installed_version" || { dpkg_compare_versions_equals_exit_code="$?" ; true; };
+         if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
+            break
+         fi
+         local dpkg_compare_versions_greater_than_exit_code="0"
+         dpkg --compare-versions "$tbb_version" gt "$tbb_locally_installed_version" || { dpkg_compare_versions_greater_than_exit_code="$?" ; true; };
+         if [ "$dpkg_compare_versions_greater_than_exit_code" = "0" ]; then
+            break
+         fi
+         local dpkg_compare_versions_lower_than_exit_code="0"
+         dpkg --compare-versions "$tbb_version" lt "$tbb_locally_installed_version" || { dpkg_compare_versions_lower_than_exit_code="$?" ; true; };
+         #if [ "$dpkg_compare_versions_lower_than_exit_code" = "0" ]; then
+            #break
+         #fi
+      done
+   fi
 
    local MSG
    local question
    local button="yesno"
 
-   if [ "$up_to_date" = "1" ]; then
+   if [ "$installed_or_not_result" = "true" ]; then
+      if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
+         up_to_date_or_not_text="<p>Looks like Tor Browser is already up to date.</p>"
+         re_install_or_install_text="<p>Please close Tor Browser if you want to (re-)install!</p>"
+      elif [ "$dpkg_compare_versions_greater_than_exit_code" = "0" ]; then
+         up_to_date_or_not_text="<p>Looks like there is an upgrade for Tor Browser.</p>"
+         re_install_or_install_text="<p>Please close Tor Browser if you want to (re-)install!</p>"
+      elif [ "$dpkg_compare_versions_lower_than_exit_code" = "0" ]; then
+         up_to_date_or_not_text="<p><b><u>WARNING: Looks like a downgrade attack!</u></b></p>"
+         re_install_or_install_text="<p>Please close Tor Browser if you want to (re-)install!</p>"
+      else
+         error "<p>Neither of the following were zero.
+<br></br>dpkg_compare_versions_equals_exit_code: $dpkg_compare_versions_equals_exit_code
+<br></br>dpkg_compare_versions_lower_than_exit_code: $dpkg_compare_versions_lower_than_exit_code
+<br></br>dpkg_compare_versions_greater_than_exit_code: $dpkg_compare_versions_greater_than_exit_code</p>"
+         exit 1
+      fi
       MSG="$nice_name Update Check (by Whonix developers)
 <br></br>----------------------------------------------------------------------
 <br></br>Currently installed version: <code><blockquote>$tbb_locally_installed_version</blockquote></code>
 Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</blockquote></code>
 
-<p>Looks like Tor Browser is already up to date.</p>
+$up_to_date_or_not_text
 
-<p>Please close Tor Browser if you want to (re-)install!</p>
+$re_install_or_install_text
 
 <p>If your currently installed version is:
    <blockquote>higher: you are likely victim of a downgrade attack, SAY NO NOW!
@@ -714,34 +760,11 @@ Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</b
 <br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space.</p>"
       question="Upgrade now?"
    else
-      if [ "$installed_or_not_result" = "0" ]; then
-         MSG="<p>$nice_name Update Check (by Whonix developers)
+      MSG="$nice_name Update Check (by Whonix developers)
 <br></br>----------------------------------------------------------------------
 <br></br>Currently installed version: <code><blockquote>$tbb_locally_installed_version</blockquote></code>
-Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</blockquote></code></p>"
-         question="Install now?"
-      else
-         MSG="$nice_name Update Check (by Whonix developers)
-<br></br>----------------------------------------------------------------------
-<br></br>Currently installed version: <code><blockquote>$tbb_locally_installed_version</blockquote></code>
-Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</blockquote></code>
-
-<p>Looks like there is an upgrade for Tor Browser.</p>
-
-<p>Please close Tor Browser if you want to upgrade!</p>
-
-<p>If your currently installed version is:
-   <blockquote>higher: you are likely victim of a downgrade attack, SAY NO NOW!
-   <br></br>equal : only proceed, if you want to create a new browser profile.
-   <br></br>lower : you should upgrade.</blockquote></p>
-
-<p>YOUR BROWSER WILL BE KILLED.
-<br></br>YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED!</p>
-
-<p>A backup of your old Tor Browser and settings will be created in your home folder.
-<br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space.</p>"
-         question="Upgrade now?"
-      fi
+Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</blockquote></code>"
+      question="Install now?"
    fi
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
@@ -797,9 +820,7 @@ tb_download() {
    fi
 
    ## {{ progress bar for download
-
-   ## sets: progressbaridx
-   get_new_progressbaridx
+   progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       true
@@ -812,7 +833,6 @@ Downloading Tor Browser signature... Will take a moment..."
       sleep 1 &
       wait "$!"
    fi
-
    ## }}
 
    echo "INFO: Downloading GPG signature... Will take a moment..."
@@ -858,7 +878,7 @@ INFO: Downloading:
    wait "$last_pid" || { curl_exit_code="$?" ; true; };
    last_pid=""
 
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
    sleep 1 &
    wait "$!"
 
@@ -899,8 +919,7 @@ INFO: Downloading:
 ----------------------------------------------------------------------
 Downloading Tor Browser... Will take a while..."
 
-   ## sets: progressbaridx
-   get_new_progressbaridx
+   progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
 
    $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --typex "info" --titlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
    sleep 1 &
@@ -949,7 +968,7 @@ INFO: Downloading:
    wait "$last_pid" || { curl_exit_code="$?" ; true; };
    last_pid=""
 
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
@@ -966,7 +985,7 @@ INFO: Downloading:
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
 
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
 
       $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
@@ -1008,7 +1027,7 @@ tb_verify() {
    if [ ! "$tb_gpg_verify_exit_code" = "0" ]; then
       local MSG="<p><b>GPG download signature could NOT be verified.</b>
 <br></br>Tor Browser update failed! Try again later.</p>"
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100"
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
 
       $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
@@ -1039,6 +1058,10 @@ tb_extract() {
 
    echo "INFO: Moving temporary folder $home_folder/.tb/tor-browser_$TB_LANG to $home_folder/tor-browser_$TB_LANG."
    mv "$home_folder/.tb/tor-browser_$TB_LANG" "$home_folder/tor-browser_$TB_LANG"
+}
+
+tb_end() {
+   trap "tb_error_handler" ERR
 
    local TEMP
    TEMP="$home_folder/tor-browser_$TB_LANG/"
@@ -1068,19 +1091,51 @@ tb_extract() {
    fi
 }
 
-main_function() {
-   root_check
-   tb_sanity_tests
-   parse_cmd_options ${1+"$@"}
-   tb_preparation
-   tb_connectivity_checks_tor
-   tb_connectivity_checks_curl
-   tb_update_check
+tb_sort_remote_versions() {
+   trap "tb_error_handler" ERR
 
-   ## For testing:
-   #tbb_recommended_versions_list="2.3.25-16 2.3.25-15"
+   if [ "$tbb_recommended_versions_list" = "" ]; then
+      error "tbb_recommended_versions_list was empty before sorting."
+   fi
+
+   ## Example tbb_recommended_versions_list:
+   ## 2.3.25-16 3.8 2.6 3.7 3.1 3.1 3.4 2.3.25-15 3.5
+
+   rm --force "$TEMP_DIR/tbb_recommended_versions_list"
+   touch "$TEMP_DIR/tbb_recommended_versions_list"
+   test -f "$TEMP_DIR/tbb_recommended_versions_list"
+   local tbb_version
+   for tbb_version in $tbb_recommended_versions_list; do
+      echo "$tbb_version" >> "$TEMP_DIR/tbb_recommended_versions_list"
+   done
+
+   tbb_recommended_versions_list="$(sort --unique --version-sort --reverse "$TEMP_DIR/tbb_recommended_versions_list")"
+   if [ "$tbb_recommended_versions_list" = "" ]; then
+      error "tbb_recommended_versions_list is empty after sorting."
+   fi
+
+   ## Example tbb_recommended_versions_list:
+   ## 3.8
+   ## 3.7
+   ## 3.5
+   ## 3.4
+   ## 3.1
+   ## #2.6
+   ## 2.3.25-16
+   ## 2.3.25-15
+}
+
+tb_download_loop() {
+   trap "tb_error_handler" ERR
+
+   ## In past there where situations where RecommendedTBBVersions advertised
+   ## multiple versions, but not all were indeed downloadable. Therefore we
+   ## start with the highest available advertised version, try downloading, try
+   ## downloading next one and so forth.
 
    for tbb_version in $tbb_recommended_versions_list; do
+      ## Starting with the highest available $tbb_version thanks to tb_sort_remote_versions.
+
       ## For testing.
       #tbb_version="3.0-rc-1"
       #tbb_version_folder="3.0rc1"
@@ -1100,9 +1155,32 @@ main_function() {
          break
       fi
    done
+}
 
+main_function() {
+   trap "tb_error_handler" ERR
+
+   root_check
+   tb_sanity_tests
+   parse_cmd_options ${1+"$@"}
+   tb_preparation
+   tb_local_version_detection
+   tb_connectivity_checks_tor
+   tb_connectivity_checks_curl
+   tb_update_check
+   tb_remote_version_parser
+   tb_remote_version_sanity_test
+
+   ## For testing:
+   #tbb_recommended_versions_list="2.3.25-16 3.8 2.6 3.7 3.1 3.1 3.4 2.3.25-15 3.5"
+   #tbb_recommended_versions_list="2.3.25-16 2.3.25-15"
+
+   tb_sort_remote_versions
+   tb_confirm_update
+   tb_download_loop
    tb_verify
    tb_extract
+   tb_end
 }
 
 main_function ${1+"$@"}
