@@ -1,5 +1,5 @@
-update-torbrowser(1) -- Tor Browser Update and Start Script
-=============================================
+update-torbrowser(1) -- Tor Browser Updater by Whonix developers
+================================================================
 
 <span class="comment">
 # This file is part of Whonix.
@@ -18,22 +18,14 @@ update-torbrowser(1) -- Tor Browser Update and Start Script
 `update-torbrowser` [option(s)]
 
 ## DESCRIPTION
-The update-torbrowser script lets you safely download the Tor Browser Bundle (TBB)
-from the Tor Project's website. It enforces TLS encryption (https) for
-The Tor Project's website, downloads TBB from the Tor Project's website,
-and uses OpenPGP verification. It is the recommended way to keep Tor
-Browser updated in Whonix-Workstation.
+Lets you safely download the Tor Browser Bundle (TBB)
+from The Tor Project's (TPO) website. It enforces TLS encryption (https) for
+TPO's website, downloads TBB from the TPO's website,
+and uses OpenPGP verification.
 
-In case there is already a `/home/user/tor-browser_en-US` folder, it renames it
-to /home/user/tor-browser_en-US_(current date and time). It extracts freshly
-downloaded TBB too to your `/home/user` folder to
-`/home/user/tor-browser_en-US`.
-
-It prevents Tor over Tor (which is recommended), because it nicely integrates
-into Whonix, by patching the Tor Browser start script
-`/home/user/tor-browser_en-US/start-tor-browser` to only start Tor
-Browser, so the integrated Tor and Vidalia will not be started. (Tor is already
-running on Whonix-Gateway.)
+In case there is already a `~/tor-browser_en-US` folder, it renames it
+to ~/tor-browser_en-US_(current date and time). It extracts freshly
+downloaded TBB too to `~/tor-browser_en-US`.
 
 Default action when no options are given is to performs an update check and ask
 how you want to proceed.
@@ -43,7 +35,13 @@ how you want to proceed.
 
     Uses curl's ordinary progress bar. Only affects run in terminal. When using
     this option, the GUI progress bar will be stuck but downloading will still
-    work.
+    work. Note, when using this option, it wouldn't notice if the download
+    server were to run an endless data attack, for example the server claiming
+    to provide a 500.000 GB big file. (It does not use
+    `/usr/lib/curl-scripts/curl-prgrs`s `CURL_PRGRS_MAX_FILE_SIZE_BYTES`.)
+    However, it can be compensated by either manually terminating
+    `update-torbrowser` or by using the timeout utility as in the example
+    below.
 
   * --noask
 
@@ -54,8 +52,8 @@ how you want to proceed.
 
     Advanced users only. Do not kill all eventually still running  instances of
     Tor Browser. Useful in case you want to update
-    `/home/user/tor-browser_en-US`, while still using
-    `/home/user/tor-browser_something_else`.
+    `~/tor-browser_en-US`, while still using
+    `~/tor-browser_something_else`.
 
   * --language lang
 
@@ -85,8 +83,7 @@ As in October 2012:
 
 To check if further languages are supported visit:
 
-* https://www.torproject.org/dist/torbrowser/linux/
-* http://idnxcnkne4qt76tg.onion/dist/torbrowser/linux/
+https://www.torproject.org/dist/torbrowser/linux/
 
 ## CONFIG FILE
 
@@ -121,6 +118,8 @@ example
 `update-torbrowser`
 
 `update-torbrowser --update --lang="vi"`
+
+`timeout 600 update-torbrowser --ordinary`
 
 ## BUGS
 This script may break when the file name or RecommendedTBBVersions format
