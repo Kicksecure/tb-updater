@@ -1,3 +1,9 @@
+tb-updater (3:0.8-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Patrick Schleizer <adrelanos@riseup.net>  Sat, 20 Sep 2014 10:06:35 +0000
+
 tb-updater (3:0.7-1) unstable; urgency=low
 
   * New upstream version.
