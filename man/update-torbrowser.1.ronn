@@ -60,6 +60,11 @@ how you want to proceed.
     Specify which language specific version of Tor Browser you want to start or
     update.
 
+  * --no-tor-con-check
+
+    Skip Tor bootstrap connectivity check. (Only relevant in anonymity
+    distributions.)
+
 ## AVAILABLE LANGUAGES
 
 As in October 2012:
