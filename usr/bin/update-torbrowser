@@ -60,8 +60,8 @@ tb_error_handler() {
    else
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
    fi
-   $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
-   $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+   $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+   $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
    exit 1
 }
 
@@ -131,14 +131,14 @@ tb_ex_funct() {
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
    fi
 
-   $output ${output_opts[@]} --messagecli --typecli "info" --titlecli "$TITLE" --message "$MSG" --done
+   $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 
    #MSG="Aborted."
-   #$output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
-   #$output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+   #$output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+   #$output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
 
    MSG="$SIGNAL_TYPE received. Exiting."
-   $output ${output_opts[@]} --messagecli --typecli "info" --titlecli "$TITLE" --message "$MSG" --done
+   $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 }
 
 tb_signal_sigterm() {
@@ -252,6 +252,21 @@ parse_cmd_options() {
    true "$BASH_SOURCE \$@: $@"
 }
 
+output_func() {
+   trap "tb_error_handler" ERR
+
+   if [ "$output_func_verbose" = "true" ]; then
+      echo "Running: bash -x $output_tool --identifier $IDENTIFIER --whoami $who_ami ${1+$@}"
+      bash -x $output_tool --identifier "$IDENTIFIER" --whoami "$who_ami" ${1+"$@"}
+   else
+      $output_tool --identifier "$IDENTIFIER" --whoami "$who_ami" ${1+"$@"}
+   fi
+   true
+}
+
+## Make it visible to curl-prgrs.
+export -f output_func
+
 tb_preparation() {
    trap "tb_error_handler" ERR
 
@@ -344,15 +359,22 @@ tb_preparation() {
       my_tty="none"
    fi
 
-   output_opt_1="--icon $ICON"
-   output_opt_2="--parentpid $$"
-   output_opt_3="--identifier ${IDENTIFIER}"
-   output_opt_4="--parenttty $my_tty"
-   #output_opt_5=""
-
-   output_opts=( "$output_opt_1" "$output_opt_2" "$output_opt_3" "$output_opt_4" "$output_opt_5")
-
    TITLE="Tor Browser Updater (by Whonix developers)"
+
+   output_tool="/usr/lib/msgcollector/msgcollector"
+   output="output_func"
+
+   $output --icon "$ICON"
+   $output --parenttty "$my_tty"
+   $output --whoami "$who_ami"
+   $output --titlex "$TITLE"
+   $output --titlecli "$TITLE"
+
+   ## Make visible to curl-prgrs.
+   export output_tool
+   export output
+   export IDENTIFIER
+   export who_ami
 
    ret="0"
    command -v curl.anondist-orig >/dev/null || { ret="$?" ; true; };
@@ -369,8 +391,8 @@ tb_preparation() {
          CURL=curl
       else
          local MSG="uwt_tool: Can not find curl. Please report this bug!"
-         $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG"
-         $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG"
+         $output ${output_opts[@]} --messagex --typex "error" --message "$MSG"
+         $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG"
          EXIT_CODE="1"
          return 0
       fi
@@ -445,8 +467,8 @@ tb_connectivity_checks_tor() {
 
 <p>If whonixcheck reports no problems with internet activity and this still fails, please report a bug!</p>"
 
-         $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+         $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+         $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
          exit 1
       fi
    else
@@ -472,8 +494,8 @@ tb_connectivity_checks_tor() {
 
 <p>If whonixcheck reports no problems with internet activity and this still fails, please report a bug!</p>"
 
-         $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+         $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+         $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
          exit 1
       fi
    else
@@ -496,7 +518,7 @@ Checking connectivity... Will take a moment..."
 
    progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
 
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --typex "info" --titlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
    sleep 1 &
    wait "$!"
 
@@ -553,8 +575,8 @@ Checking connectivity... Will take a moment..."
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
 
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
-      $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
-      $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
       exit 1
    fi
 
@@ -584,7 +606,7 @@ tb_update_check() {
 ----------------------------------------------------------------------
 Checking Tor Browser version... Will take a moment..."
 
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --typex "info" --titlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
       sleep 1 &
       wait "$!"
    fi
@@ -642,8 +664,8 @@ Checking Tor Browser version... Will take a moment..."
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
 
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
-      $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
-      $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
       exit 1
    fi
 }
@@ -673,8 +695,8 @@ tb_remote_version_sanity_test() {
 <p>$DOWNLOAD_FAIL_HELP</p>"
 
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
-      $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
-      $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
       exit 1
    fi
 
@@ -837,7 +859,7 @@ tb_download() {
 ----------------------------------------------------------------------
 Downloading Tor Browser signature... Will take a moment..."
 
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --typex "info" --titlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
       sleep 1 &
       wait "$!"
    fi
@@ -906,9 +928,9 @@ INFO: Downloading:
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
 
          ## No popup message in X. Would be too confusing.
-         #$output ${output_opts[@]} --messagex --typex "info" --titlex "$TITLE" --message "$MSG" --done
+         #$output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
-         $output ${output_opts[@]} --messagecli --typecli "info" --titlecli "$TITLE" --message "$MSG" --done
+         $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 
          ## return 0, so the loop will tell us to try the next $tbb_version.
          return 0
@@ -917,8 +939,8 @@ INFO: Downloading:
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
 
-         $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+         $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+         $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
          exit 1
       fi
    fi
@@ -929,7 +951,7 @@ Downloading Tor Browser... Will take a while..."
 
    progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
 
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --typex "info" --titlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
    sleep 1 &
    wait "$!"
 
@@ -995,8 +1017,8 @@ INFO: Downloading:
 
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
 
-      $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
-      $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
       exit 1
    fi
 
@@ -1037,8 +1059,8 @@ tb_verify() {
 <br></br>Tor Browser update failed! Try again later.</p>"
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
 
-      $output ${output_opts[@]} --messagex --typex "error" --titlex "$TITLE" --message "$MSG" --done
-      $output ${output_opts[@]} --messagecli --typecli "error" --titlecli "$TITLE" --message "$MSG" --done
+      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
       exit 1
    fi
 }
