@@ -1100,22 +1100,30 @@ tb_end() {
       return 0
    fi
 
-   if [ "$noaskstart" = "true" ]; then
-      true "noaskstart is set to true."
-   else
-      MSG="<p>Finished installing Tor Browser. Can be found in $TEMP.</p>
+   local command_v_torbrowser_exit_code="0"
+   command -v torbrowser || { command_v_torbrowser_exit_code="$?" ; true; };
+
+   if [ "$command_v_torbrowser_exit_code" = "0" ]; then
+      if [ "$noaskstart" = "true" ]; then
+         true "noaskstart is set to true."
+      else
+         MSG="<p>Finished installing Tor Browser. Can be found in $TEMP.</p>
 
 <p>Please donate!
 <br></br><a href=https://www.whonix.org/wiki/Donate>https://www.whonix.org/wiki/Donate</a></p>"
-      local question="Start Tor Browser?"
-      local button="yesno"
-      local answer
-      answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
-      if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-         echo "INFO: Canceled starting Tor Browser, ok."
-      else
-         torbrowser
+         local question="Start Tor Browser?"
+         local button="yesno"
+         local answer
+         answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
+         if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
+            echo "INFO: Canceled starting Tor Browser, ok."
+         else
+            torbrowser
+         fi
       fi
+   else
+      echo "INFO: torbrowser binary not found in path. tb-starter is probably not installed. \
+Skipping question to start Tor Browser."
    fi
 }
 
