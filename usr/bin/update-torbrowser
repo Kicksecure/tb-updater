@@ -424,7 +424,7 @@ tb_preparation() {
    ## {{ Download from the torproject.org clearnet by default instead from
    ##    their hidden service.
 
-   TBB_REMOTE_FOLDER="https://archive.torproject.org/tor-package-archive/torbrowser"
+   TBB_REMOTE_FOLDER="https://dist.torproject.org/torbrowser"
    CURL_FORCE_SSL="--tlsv1 --proto =https"
 
    ## }}
@@ -867,8 +867,6 @@ Downloading Tor Browser signature... Will take a moment..."
 
    echo "INFO: Downloading GPG signature... Will take a moment..."
 
-   ## Example signature link:
-   ## https://archive.torproject.org/tor-package-archive/torbrowser/3.0rc1/tor-browser-linux32-3.0-rc-1_en-US.tar.xz.asc
    TBB_SIG_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz.asc"
    TBB_EXTRA_FOLDER="${tbb_version_folder}/"
 
@@ -957,8 +955,6 @@ Downloading Tor Browser... Will take a while..."
 
    echo "INFO: Downloading Tor Browser Bundle: $tbb_version"
 
-   ## Example package filename:
-   ## https://archive.torproject.org/tor-package-archive/torbrowser/3.0rc1/tor-browser-linux32-3.0-rc-1_en-US.tar.xz
    TBB_PACKAGE_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz"
    TBB_EXTRA_FOLDER="${tbb_version_folder}/"
 
