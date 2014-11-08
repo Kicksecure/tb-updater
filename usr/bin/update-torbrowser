@@ -359,6 +359,8 @@ tb_preparation() {
       my_tty="none"
    fi
 
+   who_ami="$(whoami)"
+
    TITLE="Tor Browser Updater (by Whonix developers)"
 
    output_tool="/usr/lib/msgcollector/msgcollector"
