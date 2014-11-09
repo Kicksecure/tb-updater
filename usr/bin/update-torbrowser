@@ -252,10 +252,10 @@ parse_cmd_options() {
    true "$BASH_SOURCE \$@: $@"
 }
 
-output_func() {
+outputfunc() {
    trap "tb_error_handler" ERR
 
-   if [ "$output_func_verbose" = "true" ]; then
+   if [ "$outputfunc_verbose" = "true" ]; then
       echo "Running: bash -x $output_tool --identifier $IDENTIFIER --whoami $who_ami ${1+$@}"
       bash -x $output_tool --identifier "$IDENTIFIER" --whoami "$who_ami" ${1+"$@"}
    else
@@ -265,7 +265,7 @@ output_func() {
 }
 
 ## Make it visible to curl-prgrs.
-export -f output_func
+export -f outputfunc
 
 tb_preparation() {
    trap "tb_error_handler" ERR
@@ -364,7 +364,7 @@ tb_preparation() {
    TITLE="Tor Browser Updater (by Whonix developers)"
 
    output_tool="/usr/lib/msgcollector/msgcollector"
-   output="output_func"
+   output="outputfunc"
 
    $output --icon "$ICON"
    $output --parenttty "$my_tty"
