@@ -1080,6 +1080,8 @@ tb_extract() {
    echo "INFO: Creating version file tor-browser_$TB_LANG/Docs/version."
    echo "$tbb_version" > "$home_folder/.tb/tor-browser_$TB_LANG/Docs/version"
 
+   mkdir --parents "$home_folder/.tb/tor-browser_$TB_LANG/Browser/Downloads"
+
    if [ -d "$home_folder/tor-browser_$TB_LANG" ]; then
       echo "INFO: Moving old folder $home_folder/tor-browser_$TB_LANG..."
       mv "$home_folder/tor-browser_$TB_LANG" "$home_folder/tor-browser_$TB_LANG.old.$(date '+%F-%H:%M:%S')"
