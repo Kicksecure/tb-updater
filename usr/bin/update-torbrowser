@@ -112,6 +112,7 @@ tb_sanity_tests() {
    command -v grep >/dev/null
    ## tbbversion function
    command -v sed >/dev/null
+   command -v sort >/dev/null
 }
 
 tb_ex_funct() {
