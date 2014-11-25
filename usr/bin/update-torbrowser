@@ -172,7 +172,7 @@ trap_sigusr2() {
 
 trap "trap_sigusr2" SIGUSR2 ## msgcollector, zenity cancel button
 
-parse_cmd_options() {
+tb_parse_cmd_options() {
    trap "tb_error_handler" ERR
 
    if [ "$1" = "" ]; then
@@ -268,6 +268,28 @@ outputfunc() {
 ## Make it visible to curl-prgrs.
 export -f outputfunc
 
+tb_config_folder_parser() {
+   trap "tb_error_handler" ERR
+
+   for i in /etc/torbrowser.d/*; do
+      if [ -f "$i" ]; then
+         ## If the last character is a ~, ignore that file,
+         ## because it was created by some editor,
+         ## which creates backup files.
+         if [ "${i: -1}" = "~" ]; then
+            continue
+         fi
+         ## Skipping files such as .dpkg-old and .dpkg-dist.
+         if ( echo "$i" | grep -q ".dpkg-" ); then
+            true "skip $i"
+            continue
+         fi
+         bash -n "$i"
+         source "$i"
+      fi
+   done
+}
+
 tb_preparation() {
    trap "tb_error_handler" ERR
 
@@ -304,24 +326,6 @@ tb_preparation() {
    source /usr/lib/tbbversion_parser
 
    #echo "INFO: TB_LANG: $TB_LANG"
-
-   for i in /etc/torbrowser.d/*; do
-      if [ -f "$i" ]; then
-         ## If the last character is a ~, ignore that file,
-         ## because it was created by some editor,
-         ## which creates backup files.
-         if [ "${i: -1}" = "~" ]; then
-            continue
-         fi
-         ## Skipping files such as .dpkg-old and .dpkg-dist.
-         if ( echo "$i" | grep -q ".dpkg-" ); then
-            true "skip $i"
-            continue
-         fi
-         bash -n "$i"
-         source "$i"
-      fi
-   done
 
    ## Check if TB_LANG exists and is not empty.
    if [[ "$TB_LANG" && "${TB_LANG}" ]]; then
@@ -1201,8 +1205,9 @@ main_function() {
 
    root_check
    tb_sanity_tests
-   parse_cmd_options ${1+"$@"}
    tb_preparation
+   tb_config_folder_parser
+   tb_parse_cmd_options ${1+"$@"}
    tb_local_version_detection
    tb_connectivity_checks_tor
    tb_connectivity_checks_curl
