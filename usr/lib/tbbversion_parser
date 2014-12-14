@@ -177,7 +177,7 @@ tbbversion_installed() {
 
    ## Try to fall back to the version file that comes with Tor Browser.
    local temp=""
-   temp=~/tor-browser_en-US/Docs/sources/versions
+   temp=~/tor-browser_en-US/Browser/TorBrowser/Docs/sources/versions
    if [ -f "$temp" ]; then
       local grep_output
       grep_output="$(grep "TORBROWSER_VERSION" "$temp")"
