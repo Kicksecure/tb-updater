@@ -1077,8 +1077,10 @@ tb_extract() {
 tb_patch_version_number_own() {
    trap "tb_error_handler" ERR
 
-   ## The ~/"tor-browser_${TB_LANG}/Docs" folder should already exist.
-   ## Just to make sure the script will not break in case the get changed by upstream.
+   ## In past with TBB 3.x the folder ~/"tor-browser_${TB_LANG}/Docs" already
+   ## existed. Was later changed. Since TBB's folder structure often changes we
+   ## just keep using the folder, create it ourselves and therefore make sure
+   ## the script will not break in case of further changes by upstream.
    mkdir --parents "$home_folder/.tb/tor-browser_$TB_LANG/Docs"
 
    ## Tor Browser changelog has been forgotten to update.
