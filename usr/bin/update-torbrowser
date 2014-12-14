@@ -498,7 +498,7 @@ tb_connectivity_checks_tor() {
    if [ -x /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh ]; then
       source /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh
       ## sets: tor_bootstrap_percent
-      check_tor_bootstrap_helper
+      tb_run_function check_tor_bootstrap_helper
 
       if [ ! "$tor_bootstrap_percent" = "100" ]; then
          MSG="<p></b>Tor not fully bootstrapped.</b></p>
@@ -701,7 +701,7 @@ tb_remote_version_parser() {
    ## sets: tbb_recommended_versions_list
    ## sets: tbbversions_found
    ## sets: tbb_recommended_versions_error
-   tbbversion
+   tb_run_function tbbversion
 }
 
 tb_remote_version_sanity_test() {
@@ -732,7 +732,7 @@ tb_local_version_detection() {
    tbb_folder="$home_folder/tor-browser_$TB_LANG"
 
    ## sets: tbb_locally_installed_version
-   tbbversion_installed
+   tb_run_function tbbversion_installed
 
    if [ -d "$home_folder/tor-browser_$TB_LANG" ]; then
       installed_or_not_result="true"
@@ -1137,9 +1137,9 @@ does not exist."
 tb_patch() {
    trap "tb_error_handler" ERR
 
-   tb_patch_version_number_own
-   tb_patch_download_folder_create
-   tb_patch_internal_updater_disable_maybe
+   tb_run_function tb_patch_version_number_own
+   tb_run_function tb_patch_download_folder_create
+   tb_run_function tb_patch_internal_updater_disable_maybe
 }
 
 tb_install() {
@@ -1251,7 +1251,7 @@ tb_download_loop() {
          ## Download already succeeded.
          break
       fi
-      tb_download
+      tb_run_function tb_download
       if [ "$tb_download_ok" = "1" ]; then
          ## Download already succeeded.
          break
@@ -1262,30 +1262,30 @@ tb_download_loop() {
 main_function() {
    trap "tb_error_handler" ERR
 
-   root_check
-   tb_sanity_tests
-   tb_preparation
-   tb_config_folder_parser
-   tb_parse_cmd_options ${1+"$@"}
-   tb_local_version_detection
-   tb_connectivity_checks_tor
-   tb_connectivity_checks_curl
-   tb_update_check
-   tb_remote_version_parser
-   tb_remote_version_sanity_test
+   tb_run_function root_check
+   tb_run_function tb_sanity_tests
+   tb_run_function tb_preparation
+   tb_run_function tb_config_folder_parser
+   tb_run_function tb_parse_cmd_options ${1+"$@"}
+   tb_run_function tb_local_version_detection
+   tb_run_function tb_connectivity_checks_tor
+   tb_run_function tb_connectivity_checks_curl
+   tb_run_function tb_update_check
+   tb_run_function tb_remote_version_parser
+   tb_run_function tb_remote_version_sanity_test
 
    ## For testing:
    #tbb_recommended_versions_list="2.3.25-16 3.8 2.6 3.7 3.1 3.1 3.4 2.3.25-15 3.5"
    #tbb_recommended_versions_list="2.3.25-16 2.3.25-15"
 
-   tb_sort_remote_versions
-   tb_confirm_update
-   tb_download_loop
-   tb_verify
-   tb_extract
-   tb_patch
-   tb_install
-   tb_end
+   tb_run_function tb_sort_remote_versions
+   tb_run_function tb_confirm_update
+   tb_run_function tb_download_loop
+   tb_run_function tb_verify
+   tb_run_function tb_extract
+   tb_run_function tb_patch
+   tb_run_function tb_install
+   tb_run_function tb_end
 }
 
-main_function ${1+"$@"}
+tb_run_function main_function ${1+"$@"}
