@@ -80,6 +80,19 @@ DOWNLOAD_FAIL_HELP="<p>Possible reasons:</p>
 <br></br>- Manually update: <a href=https://www.whonix.org/wiki/Manually_Updating_Tor_Browser>https://www.whonix.org/wiki/Manually_Updating_Tor_Browser</a>
 </p>"
 
+tb_run_function() {
+   trap "tb_error_handler" ERR
+
+   case $tb_skip_functions in
+   *"${1+"$@"}"*) echo "INFO: Skipping ${1+"$@"}, because tb_skip_functions includes it."
+                  return 0
+                  ;;
+   esac
+
+   true "INFO: Running ${1+"$@"}, because tb_skip_functions does not include it."
+   eval ${1+"$@"}
+}
+
 root_check() {
    if [ "$(id -u)" != "0" ]; then
       #echo "$SCRIPTNAME running as user."
