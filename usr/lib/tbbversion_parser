@@ -177,7 +177,7 @@ tbbversion_installed() {
 
    ## Try to fall back to the version file that comes with Tor Browser.
    local temp=""
-   temp=~/tor-browser_${TB_LANG}/Browser/TorBrowser/Docs/sources/versions
+   temp=~/"tor-browser_${TB_LANG}/Browser/TorBrowser/Docs/sources/versions"
    if [ -f "$temp" ]; then
       local grep_output
       grep_output="$(grep "TORBROWSER_VERSION" "$temp")"
@@ -204,7 +204,7 @@ tbbversion_installed() {
 
    ## Perhaps we also could extract the about:config value torbrowser.version
    ## (which is for example set to "3.5.1-Linux") from
-   ## ~/tor-browser_${TB_LANG}/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi
+   ## ~/"tor-browser_${TB_LANG}/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi"
    ## or so?
 
    tbb_locally_installed_version="Locally installed Tor Browser version can not be determined, \
