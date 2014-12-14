@@ -1084,7 +1084,10 @@ tb_verify() {
 tb_extract() {
    trap "tb_error_handler" ERR
 
-   tar xfv "$home_folder/.tb/$TBB_PACKAGE_FILENAME" -C "$home_folder/.tb/"
+   tar \
+      xfv \
+      "$home_folder/.tb/$TBB_PACKAGE_FILENAME" \
+      -C "$home_folder/.tb/"
 }
 
 tb_patch_version_number_own() {
