@@ -1084,10 +1084,38 @@ tb_verify() {
 tb_extract() {
    trap "tb_error_handler" ERR
 
-   tar \
-      xfv \
-      "$home_folder/.tb/$TBB_PACKAGE_FILENAME" \
-      -C "$home_folder/.tb/"
+   local timeout_after kill_after file_name
+   timeout_after="180"
+   kill_after="30"
+   file_name="$home_folder/.tb/$TBB_PACKAGE_FILENAME"
+
+   ## Debugging.
+   #timeout_after="0.001"
+   #kill_after="0.001"
+
+   tb_tar_exit_code="0"
+
+   timeout --kill-after="$kill_after" "$timeout_after" \
+      tar \
+         xfv \
+         "$file_name" \
+         -C "$home_folder/.tb/" \
+         &
+
+   lastpid="$!"
+   wait "$lastpid" || { tb_tar_exit_code="$?" ; true; };
+
+   ## `timeout` returns:
+   ## - 124 if sigterm was sufficient
+   ## - 137 if needed to use kill.
+
+   if [ ! "$tb_tar_exit_code" = "0" ]; then
+      local MSG="<p><b>Could not extract $file_name!</b> (tar exit code: ${tb_tar_exit_code})
+<br></br>Please report this bug!</p>"
+      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
+      exit 1
+   fi
 }
 
 tb_patch_version_number_own() {
