@@ -1077,12 +1077,15 @@ tb_extract() {
 tb_patch_version_number_own() {
    trap "tb_error_handler" ERR
 
-   ## The tor-browser_"$TB_LANG"/Docs folder should already exist.
+   ## The ~/"tor-browser_${TB_LANG}/Docs" folder should already exist.
    ## Just to make sure the script will not break in case the get changed by upstream.
    mkdir --parents "$home_folder/.tb/tor-browser_$TB_LANG/Docs"
 
    ## Tor Browser changelog has been forgotten to update.
    ## https://sourceforge.net/p/whonix/discussion/general/thread/6122990d/
+   ## Later the path was changed from
+   ## TBB 3.x ~/"tor-browser_${TB_LANG}/Docs/sources/versions" to
+   ## TBB 4.X ~/"tor-browser_${TB_LANG}/Browser/TorBrowser/Docs/sources/versions".
    ## To play it safe and having a chance of finding out the installed version,
    ## we create a file ourselves to remember it.
    echo "INFO: Creating version file tor-browser_$TB_LANG/Docs/version."
