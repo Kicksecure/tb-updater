@@ -1074,7 +1074,7 @@ tb_extract() {
    tar xfv "$home_folder/.tb/$TBB_PACKAGE_FILENAME" -C "$home_folder/.tb/"
 }
 
-tb_patch() {
+tb_patch_version_number_own() {
    trap "tb_error_handler" ERR
 
    ## The tor-browser_"$TB_LANG"/Docs folder should already exist.
@@ -1087,8 +1087,19 @@ tb_patch() {
    ## we create a file ourselves to remember it.
    echo "INFO: Creating version file tor-browser_$TB_LANG/Docs/version."
    echo "$tbb_version" > "$home_folder/.tb/tor-browser_$TB_LANG/Docs/version"
+}
+
+tb_patch_download_folder_create() {
+   trap "tb_error_handler" ERR
 
    mkdir --parents "$home_folder/.tb/tor-browser_$TB_LANG/Browser/Downloads"
+}
+
+tb_patch() {
+   trap "tb_error_handler" ERR
+
+   tb_patch_version_number_own
+   tb_patch_download_folder_create
 }
 
 tb_install() {
