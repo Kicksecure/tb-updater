@@ -1072,6 +1072,10 @@ tb_extract() {
    trap "tb_error_handler" ERR
 
    tar xfv "$home_folder/.tb/$TBB_PACKAGE_FILENAME" -C "$home_folder/.tb/"
+}
+
+tb_patch() {
+   trap "tb_error_handler" ERR
 
    ## The tor-browser_"$TB_LANG"/Docs folder should already exist.
    ## Just to make sure the script will not break in case the get changed by upstream.
@@ -1085,6 +1089,10 @@ tb_extract() {
    echo "$tbb_version" > "$home_folder/.tb/tor-browser_$TB_LANG/Docs/version"
 
    mkdir --parents "$home_folder/.tb/tor-browser_$TB_LANG/Browser/Downloads"
+}
+
+tb_install() {
+   trap "tb_error_handler" ERR
 
    if [ -d "$home_folder/tor-browser_$TB_LANG" ]; then
       echo "INFO: Moving old folder $home_folder/tor-browser_$TB_LANG..."
@@ -1224,6 +1232,8 @@ main_function() {
    tb_download_loop
    tb_verify
    tb_extract
+   tb_patch
+   tb_install
    tb_end
 }
 
