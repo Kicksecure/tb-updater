@@ -67,15 +67,15 @@ Either check.torproject.org has been compromised or this is a Whonix bug."
          continue
       fi
 
-      echo "$line" | grep -q -i -s "alpha"
+      echo "$line" | grep -q -i -s "\-alpha\-"
       if [ "$?" = "0" ]; then
          continue
       fi
-      echo "$line" | grep -q -i -s "beta"
+      echo "$line" | grep -q -i -s "\-beta\-"
       if [ "$?" = "0" ]; then
          continue
       fi
-      echo "$line" | grep -q -i -s "rc"
+      echo "$line" | grep -q -i -s "\-rc\-"
       if [ "$?" = "0" ]; then
          continue
       fi
