@@ -1,3 +1,9 @@
+tb-updater (3:1.3-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Patrick Schleizer <user@host.localdomain>  Tue, 06 Jan 2015 20:59:18 +0000
+
 tb-updater (3:1.2-1) unstable; urgency=low
 
   * New upstream version.

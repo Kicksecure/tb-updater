@@ -67,17 +67,29 @@ Either check.torproject.org has been compromised or this is a Whonix bug."
          continue
       fi
 
-      echo "$line" | grep -q -i -s "\-alpha\-"
-      if [ "$?" = "0" ]; then
-         continue
+      if [ "$TB_VERSIONS_ALPHA" = "1" ]; then
+         true
+      else
+         echo "$line" | grep -q -i -s "\-alpha\-"
+         if [ "$?" = "0" ]; then
+            continue
+         fi
       fi
-      echo "$line" | grep -q -i -s "\-beta\-"
-      if [ "$?" = "0" ]; then
-         continue
+      if [ "$TB_VERSIONS_BETA" = "1" ]; then
+         true
+      else
+         echo "$line" | grep -q -i -s "\-beta\-"
+         if [ "$?" = "0" ]; then
+            continue
+         fi
       fi
-      echo "$line" | grep -q -i -s "\-rc\-"
-      if [ "$?" = "0" ]; then
-         continue
+      if [ "$TB_VERSIONS_RC" = "1" ]; then
+         true
+      else
+         echo "$line" | grep -q -i -s "\-rc\-"
+         if [ "$?" = "0" ]; then
+            continue
+         fi
       fi
       echo "$line" | grep -q -i -s "MacOS"
       if [ "$?" = "0" ]; then

@@ -245,6 +245,18 @@ tb_parse_cmd_options() {
                TB_NO_TOR_CON_CHECK="1"
                shift 1
                ;;
+           --alpha)
+               TB_VERSIONS_ALPHA="1"
+               shift 1
+               ;;
+           --beta)
+               TB_VERSIONS_BETA="1"
+               shift 1
+               ;;
+           --rc)
+               TB_VERSIONS_RC="1"
+               shift 1
+               ;;
            --)
                shift
                break
