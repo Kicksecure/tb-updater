@@ -746,7 +746,7 @@ tb_local_version_detection() {
    trap "tb_error_handler" ERR
 
    ## Used by tbbversion_installed
-   tbb_folder="$tb_home_folder/tor-browser_$TB_LANG"
+   [ -n "$tbb_folder" ] || tbb_folder="$tb_home_folder/tor-browser_$TB_LANG"
 
    ## sets: tbb_locally_installed_version
    tb_run_function tbbversion_installed
