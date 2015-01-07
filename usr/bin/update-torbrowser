@@ -456,8 +456,8 @@ tb_preparation() {
    ## {{ Download from the torproject.org clearnet by default instead from
    ##    their hidden service.
 
-   TBB_REMOTE_FOLDER="https://dist.torproject.org/torbrowser"
-   CURL_FORCE_SSL="--tlsv1 --proto =https"
+   [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://dist.torproject.org/torbrowser"
+   [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1 --proto =https"
 
    ## }}
 
