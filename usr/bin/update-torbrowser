@@ -340,6 +340,7 @@ tb_preparation() {
       ## NOTE: A simple else is non-ideal, should there be ever more architectures.
       [ -n "$ARCH_NEW" ] || ARCH_NEW="linux64"
    fi
+   echo "INFO: arch $ARCH_NEW will be downloaded."
 
    ## provides tbbversion function
    source /usr/lib/tbbversion_parser
