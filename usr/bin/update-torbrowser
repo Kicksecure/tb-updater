@@ -467,7 +467,7 @@ tb_preparation() {
    fi
 
    ## Also used by tbbversion.
-   RecommendedTBBVersions="$tb_home_folder/.tb/RecommendedTBBVersions"
+   [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_home_folder/.tb/RecommendedTBBVersions"
 }
 
 tb_connectivity_checks_tor() {
