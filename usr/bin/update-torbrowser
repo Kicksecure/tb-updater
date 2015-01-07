@@ -835,6 +835,9 @@ Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</b
       question="Install now?"
    fi
 
+   echo "INFO: Currently installed version: $tbb_locally_installed_version"
+   echo "INFO: Online detected version(s) : $tbb_recommended_versions_list"
+
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       echo "INFO: TB_FORCE_INSTALL = 1"
    else
