@@ -192,7 +192,7 @@ tb_parse_cmd_options() {
    if [ "$1" = "" ]; then
       ## Same as --start.
       open_new_window="0"
-      LINK=""
+      TBB_VERSIONS_FILE_LINK=""
       return 0
    fi
 
@@ -645,8 +645,8 @@ Checking Tor Browser version... Will take a moment..."
    fi
 
    echo "INFO: Find out latest version..."
-   LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
-   echo "INFO: Downloading: $LINK"
+   TBB_VERSIONS_FILE_LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
+   echo "INFO: Downloading: $TBB_VERSIONS_FILE_LINK"
 
    mkdir --parents "$tb_home_folder/.tb"
 
@@ -672,7 +672,7 @@ Checking Tor Browser version... Will take a moment..."
       --proto =https \
       --max-time 180 \
       --output "$CURL_OUT_FILE" \
-      "$LINK" \
+      "$TBB_VERSIONS_FILE_LINK" \
       &
 
    last_pid="$!"
@@ -690,7 +690,7 @@ Checking Tor Browser version... Will take a moment..."
          curl_status_message="$curl_exit_code"
       fi
 
-      MSG="<p><b>Failed to download:</b> $LINK</p>
+      MSG="<p><b>Failed to download:</b> $TBB_VERSIONS_FILE_LINK</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>
 
