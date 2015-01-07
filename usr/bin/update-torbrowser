@@ -465,6 +465,9 @@ tb_preparation() {
    else
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
    fi
+
+   ## Also used by tbbversion.
+   RecommendedTBBVersions="$tb_home_folder/.tb/RecommendedTBBVersions"
 }
 
 tb_connectivity_checks_tor() {
@@ -666,7 +669,7 @@ Checking Tor Browser version... Will take a moment..."
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
-   export CURL_OUT_FILE="$tb_home_folder/.tb/RecommendedTBBVersions"
+   export CURL_OUT_FILE="$RecommendedTBBVersions"
    $CURL_PRGRS \
       --fail \
       $CURL_PROXY \
@@ -710,11 +713,9 @@ Checking Tor Browser version... Will take a moment..."
 tb_remote_version_parser() {
    trap "tb_error_handler" ERR
 
-   test -f "$tb_home_folder/.tb/RecommendedTBBVersions"
+   test -f "$RecommendedTBBVersions"
 
-   ## Used by tbbversion.
-   RecommendedTBBVersions="$tb_home_folder/.tb/RecommendedTBBVersions"
-
+   ## needs: $RecommendedTBBVersions
    ## sets: tbb_recommended_versions_list
    ## sets: tbbversions_found
    ## sets: tbb_recommended_versions_error
