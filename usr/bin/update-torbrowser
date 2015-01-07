@@ -189,13 +189,6 @@ trap "trap_sigusr2" SIGUSR2 ## msgcollector, zenity cancel button
 tb_parse_cmd_options() {
    trap "tb_error_handler" ERR
 
-   if [ "$1" = "" ]; then
-      ## Same as --start.
-      open_new_window="0"
-      TBB_VERSIONS_FILE_LINK=""
-      return 0
-   fi
-
    ## Thanks to:
    ## http://mywiki.wooledge.org/BashFAQ/035
 
