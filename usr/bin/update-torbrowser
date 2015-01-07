@@ -645,7 +645,7 @@ Checking Tor Browser version... Will take a moment..."
    fi
 
    echo "INFO: Find out latest version..."
-   TBB_VERSIONS_FILE_LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
+   [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
    echo "INFO: Downloading: $TBB_VERSIONS_FILE_LINK"
 
    mkdir --parents "$tb_home_folder/.tb"
@@ -900,10 +900,10 @@ Downloading Tor Browser signature... Will take a moment..."
 
    echo "INFO: Downloading GPG signature... Will take a moment..."
 
-   TBB_SIG_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz.asc"
-   TBB_EXTRA_FOLDER="${tbb_version_folder}/"
+   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz.asc"
+   [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}/"
 
-   TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}${TBB_SIG_FILENAME}"
+   [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}${TBB_SIG_FILENAME}"
 
    echo "\
 INFO: Downloading:
@@ -988,10 +988,10 @@ Downloading Tor Browser... Will take a while..."
 
    echo "INFO: Downloading Tor Browser Bundle: $tbb_version"
 
-   TBB_PACKAGE_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz"
-   TBB_EXTRA_FOLDER="${tbb_version_folder}/"
+   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz"
+   [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}/"
 
-   TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}$TBB_PACKAGE_FILENAME"
+   [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}$TBB_PACKAGE_FILENAME"
 
    echo "\
 INFO: Downloading:
