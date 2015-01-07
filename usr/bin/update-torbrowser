@@ -479,6 +479,8 @@ tb_connectivity_checks_tor() {
    fi
 
    if [ -x /usr/lib/anon-shared-helper-scripts/tor_enabled_check ]; then
+      echo -n "INFO: Running Tor enabled check... "
+
       source /usr/lib/anon-shared-helper-scripts/tor_enabled_check
       ## sets: TOR_ENABLED
       check_tor_enabled_do
@@ -498,11 +500,13 @@ tb_connectivity_checks_tor() {
          $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
          exit 1
       fi
+      echo "Done."
    else
       true "/usr/lib/anon-shared-helper-scripts/tor_enabled_check does not exist, skipping."
    fi
 
    if [ -x /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh ]; then
+      echo -n "INFO: Running Tor bootstrap check... "
       source /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh
       ## sets: tor_bootstrap_percent
       tb_run_function check_tor_bootstrap_helper
@@ -525,6 +529,7 @@ tb_connectivity_checks_tor() {
          $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
          exit 1
       fi
+      echo "Done."
    else
       true "/usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh not available, skipping."
    fi
@@ -538,6 +543,8 @@ tb_connectivity_checks_curl() {
    if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
       return 0
    fi
+
+   echo "INFO: Running connectivity check... "
 
    NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
 ----------------------------------------------------------------------
@@ -610,6 +617,8 @@ Checking connectivity... Will take a moment..."
    $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
    sleep 1 &
    wait "$!"
+
+   echo "INFO: Connectivity check succeeded."
 }
 
 tb_update_check() {
@@ -638,9 +647,8 @@ Checking Tor Browser version... Will take a moment..."
       wait "$!"
    fi
 
-   echo "INFO: Find out latest version..."
    [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
-   echo "INFO: Downloading: $TBB_VERSIONS_FILE_LINK"
+   echo "INFO: Find out latest version... Downloading: $TBB_VERSIONS_FILE_LINK... "
 
    mkdir --parents "$tb_home_folder/.tb"
 
@@ -695,6 +703,8 @@ Checking Tor Browser version... Will take a moment..."
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
       exit 1
    fi
+
+   echo "INFO: Done, downloaded $TBB_VERSIONS_FILE_LINK."
 }
 
 tb_remote_version_parser() {
