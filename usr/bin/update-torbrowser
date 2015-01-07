@@ -131,6 +131,7 @@ tb_sanity_tests() {
 tb_ex_funct() {
    trap "tb_error_handler" ERR
 
+   local MSG
    MSG="$SIGNAL_TYPE received. Cleaning up..."
 
    if [ "$last_pid" = "" ]; then
