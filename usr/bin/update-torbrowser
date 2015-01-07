@@ -321,13 +321,13 @@ tb_preparation() {
 
    ## Workaround for CI compatibility.
    if [ "$CI" = "true" ]; then
-      home_folder=/home/user
+      tb_home_folder=/home/user
    else
-      home_folder=~
+      tb_home_folder=~
    fi
 
    ## Required for /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh.
-   TEMP_DIR="$home_folder/.tb/temp_dir"
+   TEMP_DIR="$tb_home_folder/.tb/temp_dir"
    export TEMP_DIR
    rm --recursive --force "$TEMP_DIR"
    mkdir --parents "$TEMP_DIR"
@@ -555,7 +555,7 @@ Checking connectivity... Will take a moment..."
    sleep 1 &
    wait "$!"
 
-   mkdir --parents "$home_folder/.tb/"
+   mkdir --parents "$tb_home_folder/.tb/"
 
    curl_exit_code="0"
    ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
@@ -568,7 +568,7 @@ Checking connectivity... Will take a moment..."
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
-   export CURL_OUT_FILE="$home_folder/.tb/tbb_remote_folder"
+   export CURL_OUT_FILE="$tb_home_folder/.tb/tbb_remote_folder"
    $CURL_PRGRS \
       --fail \
       $CURL_PROXY \
@@ -623,8 +623,8 @@ tb_update_check() {
 
    ## do not re-download Tor Browser if a previous build already did
    if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
-      if [ -d "$home_folder/tor-browser_$TB_LANG" ]; then
-         echo "$SCRIPTNAME: Not downloading Tor Browser again, because $home_folder/tor-browser_$TB_LANG already exists."
+      if [ -d "$tb_home_folder/tor-browser_$TB_LANG" ]; then
+         echo "$SCRIPTNAME: Not downloading Tor Browser again, because $tb_home_folder/tor-browser_$TB_LANG already exists."
          exit 0
       fi
    fi
@@ -648,7 +648,7 @@ Checking Tor Browser version... Will take a moment..."
    LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
    echo "INFO: Downloading: $LINK"
 
-   mkdir --parents "$home_folder/.tb"
+   mkdir --parents "$tb_home_folder/.tb"
 
    #echo "$BASH_SOURCE CURL_PRGRS_EXEC: $CURL_PRGRS_EXEC"
    #echo "$BASH_SOURCE CURL: $CURL"
@@ -664,7 +664,7 @@ Checking Tor Browser version... Will take a moment..."
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
-   export CURL_OUT_FILE="$home_folder/.tb/RecommendedTBBVersions"
+   export CURL_OUT_FILE="$tb_home_folder/.tb/RecommendedTBBVersions"
    $CURL_PRGRS \
       --fail \
       $CURL_PROXY \
@@ -706,10 +706,10 @@ Checking Tor Browser version... Will take a moment..."
 tb_remote_version_parser() {
    trap "tb_error_handler" ERR
 
-   test -f "$home_folder/.tb/RecommendedTBBVersions"
+   test -f "$tb_home_folder/.tb/RecommendedTBBVersions"
 
    ## Used by tbbversion.
-   RecommendedTBBVersions="$home_folder/.tb/RecommendedTBBVersions"
+   RecommendedTBBVersions="$tb_home_folder/.tb/RecommendedTBBVersions"
 
    ## sets: tbb_recommended_versions_list
    ## sets: tbbversions_found
@@ -742,18 +742,18 @@ tb_local_version_detection() {
    trap "tb_error_handler" ERR
 
    ## Used by tbbversion_installed
-   tbb_folder="$home_folder/tor-browser_$TB_LANG"
+   tbb_folder="$tb_home_folder/tor-browser_$TB_LANG"
 
    ## sets: tbb_locally_installed_version
    tb_run_function tbbversion_installed
 
-   if [ -d "$home_folder/tor-browser_$TB_LANG" ]; then
+   if [ -d "$tb_home_folder/tor-browser_$TB_LANG" ]; then
       installed_or_not_result="true"
       installed_or_not_text=""
    else
       installed_or_not_result="false"
       installed_or_not_text="Tor Browser is currently not installed.
-(Folder $home_folder/tor-browser_$TB_LANG does not exist.)"
+(Folder $tb_home_folder/tor-browser_$TB_LANG does not exist.)"
    fi
 }
 
@@ -845,9 +845,9 @@ Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</b
       killall firefox || true
    fi
 
-   rm --recursive --force "$home_folder/.tb/gpgtmpdir/"
-   mkdir --parents "$home_folder/.tb/gpgtmpdir/"
-   chmod --recursive 700 "$home_folder/.tb/gpgtmpdir/"
+   rm --recursive --force "$tb_home_folder/.tb/gpgtmpdir/"
+   mkdir --parents "$tb_home_folder/.tb/gpgtmpdir/"
+   chmod --recursive 700 "$tb_home_folder/.tb/gpgtmpdir/"
 
    local key
 
@@ -861,7 +861,7 @@ Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</b
          ## Folder is empty.
          continue
       fi
-      gpg --no-options --homedir "$home_folder/.tb/gpgtmpdir/" --import "$key" 2>/dev/null
+      gpg --no-options --homedir "$tb_home_folder/.tb/gpgtmpdir/" --import "$key" 2>/dev/null
    done
 }
 
@@ -912,7 +912,7 @@ INFO: Downloading:
    #echo "$BASH_SOURCE CURL_PRGRS_EXEC: $CURL_PRGRS_EXEC"
    #echo "$BASH_SOURCE CURL: $CURL"
 
-   mkdir --parents "$home_folder/.tb"
+   mkdir --parents "$tb_home_folder/.tb"
 
    curl_exit_code="0"
    ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
@@ -925,7 +925,7 @@ INFO: Downloading:
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
-   export CURL_OUT_FILE="$home_folder/.tb/$TBB_SIG_FILENAME"
+   export CURL_OUT_FILE="$tb_home_folder/.tb/$TBB_SIG_FILENAME"
    $CURL_PRGRS \
       --fail \
       $CURL_PROXY \
@@ -1014,7 +1014,7 @@ INFO: Downloading:
    ## Simulating endless data attack.
    #export CURL_PRGRS_MAX_FILE_SIZE_BYTES="1048576"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
-   export CURL_OUT_FILE="$home_folder/.tb/$TBB_PACKAGE_FILENAME"
+   export CURL_OUT_FILE="$tb_home_folder/.tb/$TBB_PACKAGE_FILENAME"
    $CURL_PRGRS \
       --fail \
       $CURL_PROXY \
@@ -1070,9 +1070,9 @@ tb_verify() {
    timeout --kill-after="$kill_after" "$timeout_after" \
       gpg \
          --no-options \
-         --homedir "$home_folder/.tb/gpgtmpdir/" \
-         --verify "$home_folder/.tb/$TBB_SIG_FILENAME" \
-         "$home_folder/.tb/$TBB_PACKAGE_FILENAME" \
+         --homedir "$tb_home_folder/.tb/gpgtmpdir/" \
+         --verify "$tb_home_folder/.tb/$TBB_SIG_FILENAME" \
+         "$tb_home_folder/.tb/$TBB_PACKAGE_FILENAME" \
          &
 
    last_pid="$!"
@@ -1100,7 +1100,7 @@ tb_extract() {
    local timeout_after kill_after file_name
    timeout_after="180"
    kill_after="30"
-   file_name="$home_folder/.tb/$TBB_PACKAGE_FILENAME"
+   file_name="$tb_home_folder/.tb/$TBB_PACKAGE_FILENAME"
 
    ## Debugging.
    #timeout_after="0.001"
@@ -1112,7 +1112,7 @@ tb_extract() {
       tar \
          xfv \
          "$file_name" \
-         -C "$home_folder/.tb/" \
+         -C "$tb_home_folder/.tb/" \
          &
 
    lastpid="$!"
@@ -1138,7 +1138,7 @@ tb_patch_version_number_own() {
    ## existed. Was later changed. Since TBB's folder structure often changes we
    ## just keep using the folder, create it ourselves and therefore make sure
    ## the script will not break in case of further changes by upstream.
-   mkdir --parents "$home_folder/.tb/tor-browser_$TB_LANG/Docs"
+   mkdir --parents "$tb_home_folder/.tb/tor-browser_$TB_LANG/Docs"
 
    ## Tor Browser changelog has been forgotten to update.
    ## https://sourceforge.net/p/whonix/discussion/general/thread/6122990d/
@@ -1148,13 +1148,13 @@ tb_patch_version_number_own() {
    ## To play it safe and having a chance of finding out the installed version,
    ## we create a file ourselves to remember it.
    echo "INFO: Creating version file tor-browser_$TB_LANG/Docs/version."
-   echo "$tbb_version" > "$home_folder/.tb/tor-browser_$TB_LANG/Docs/version"
+   echo "$tbb_version" > "$tb_home_folder/.tb/tor-browser_$TB_LANG/Docs/version"
 }
 
 tb_patch_download_folder_create() {
    trap "tb_error_handler" ERR
 
-   mkdir --parents "$home_folder/.tb/tor-browser_$TB_LANG/Browser/Downloads"
+   mkdir --parents "$tb_home_folder/.tb/tor-browser_$TB_LANG/Browser/Downloads"
 }
 
 tb_patch_internal_updater_disable_maybe() {
@@ -1166,14 +1166,14 @@ it does not support verification. See also:
 - https://www.whonix.org/blog/tor-browser-updater-warning
 - https://www.whonix.org/forum/index.php/topic,807
 Feel free to delete file
-$home_folder/.tb/tor-browser_$TB_LANG/Browser/TorBrowser/Data/Browser/profile.default/preferences/tb_internal_updater_disable.js
+$tb_home_folder/.tb/tor-browser_$TB_LANG/Browser/TorBrowser/Data/Browser/profile.default/preferences/tb_internal_updater_disable.js
 if you want to disable this behavior."
       cp \
          "/usr/share/tb-updater/tb_internal_updater_disable.js" \
-         "$home_folder/.tb/tor-browser_$TB_LANG/Browser/TorBrowser/Data/Browser/profile.default/preferences/tb_internal_updater_disable.js"
+         "$tb_home_folder/.tb/tor-browser_$TB_LANG/Browser/TorBrowser/Data/Browser/profile.default/preferences/tb_internal_updater_disable.js"
    else
       echo "INFO: Not Deactivating Tor Browser’s Internal Updater because file
-$home_folder/.tb/tor-browser_$TB_LANG/Browser/TorBrowser/Data/Browser/profile.default/preferences/tb_internal_updater_disable.js
+$tb_home_folder/.tb/tor-browser_$TB_LANG/Browser/TorBrowser/Data/Browser/profile.default/preferences/tb_internal_updater_disable.js
 does not exist."
    fi
 }
@@ -1189,20 +1189,20 @@ tb_patch() {
 tb_install() {
    trap "tb_error_handler" ERR
 
-   if [ -d "$home_folder/tor-browser_$TB_LANG" ]; then
-      echo "INFO: Moving old folder $home_folder/tor-browser_$TB_LANG..."
-      mv "$home_folder/tor-browser_$TB_LANG" "$home_folder/tor-browser_$TB_LANG.old.$(date '+%F-%H:%M:%S')"
+   if [ -d "$tb_home_folder/tor-browser_$TB_LANG" ]; then
+      echo "INFO: Moving old folder $tb_home_folder/tor-browser_$TB_LANG..."
+      mv "$tb_home_folder/tor-browser_$TB_LANG" "$tb_home_folder/tor-browser_$TB_LANG.old.$(date '+%F-%H:%M:%S')"
    fi
 
-   echo "INFO: Moving temporary folder $home_folder/.tb/tor-browser_$TB_LANG to $home_folder/tor-browser_$TB_LANG."
-   mv "$home_folder/.tb/tor-browser_$TB_LANG" "$home_folder/tor-browser_$TB_LANG"
+   echo "INFO: Moving temporary folder $tb_home_folder/.tb/tor-browser_$TB_LANG to $tb_home_folder/tor-browser_$TB_LANG."
+   mv "$tb_home_folder/.tb/tor-browser_$TB_LANG" "$tb_home_folder/tor-browser_$TB_LANG"
 }
 
 tb_end() {
    trap "tb_error_handler" ERR
 
    local TEMP
-   TEMP="$home_folder/tor-browser_$TB_LANG/"
+   TEMP="$tb_home_folder/tor-browser_$TB_LANG/"
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       MSG="Finished installing Tor Browser. Can be found in $TEMP."
