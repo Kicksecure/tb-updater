@@ -321,9 +321,9 @@ tb_preparation() {
 
    ## Workaround for CI compatibility.
    if [ "$CI" = "true" ]; then
-      tb_home_folder=/home/user
+      [ -n "$tb_home_folder" ] || tb_home_folder=/home/user
    else
-      tb_home_folder=~
+      [ -n "$tb_home_folder" ] || tb_home_folder=~
    fi
 
    ## Required for /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh.
