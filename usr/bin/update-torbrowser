@@ -466,7 +466,7 @@ tb_preparation() {
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
    fi
 
-   ## Also used by tbbversion.
+   ## Also used by function tbbversion.
    [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_home_folder/.tb/RecommendedTBBVersions"
 }
 
