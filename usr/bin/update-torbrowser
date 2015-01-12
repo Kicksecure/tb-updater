@@ -6,6 +6,7 @@
 
 #set -x
 set -o pipefail
+set -o errtrace
 
 SCRIPTNAME="$(basename "$BASH_SOURCE")"
 IDENTIFIER="torbrowser"
@@ -81,8 +82,6 @@ DOWNLOAD_FAIL_HELP="<p>Possible reasons:</p>
 </p>"
 
 tb_run_function() {
-   trap "tb_error_handler" ERR
-
    case $tb_skip_functions in
    *"${1+"$@"}"*) echo "INFO: Skipping ${1+"$@"}, because tb_skip_functions includes it."
                   return 0
@@ -104,8 +103,6 @@ root_check() {
 }
 
 tb_sanity_tests() {
-   trap "tb_error_handler" ERR
-
    command -v id >/dev/null
    command -v basename >/dev/null
    command -v touch >/dev/null
@@ -129,8 +126,6 @@ tb_sanity_tests() {
 }
 
 tb_ex_funct() {
-   trap "tb_error_handler" ERR
-
    local MSG
    MSG="$SIGNAL_TYPE received. Cleaning up..."
 
@@ -157,8 +152,6 @@ tb_ex_funct() {
 }
 
 tb_signal_sigterm() {
-   trap "tb_error_handler" ERR
-
    SIGNAL_TYPE="sigterm"
    tb_ex_funct
    exit 143
@@ -167,8 +160,6 @@ tb_signal_sigterm() {
 trap "tb_signal_sigterm" SIGTERM
 
 tb_signal_sigint() {
-   trap "tb_error_handler" ERR
-
    SIGNAL_TYPE="sigint"
    tb_ex_funct
    exit 130
@@ -177,8 +168,6 @@ tb_signal_sigint() {
 trap "tb_signal_sigint" SIGINT ## ctrl + c
 
 trap_sigusr2() {
-   trap "tb_error_handler" ERR
-
    SIGNAL_TYPE="SIGUSR2"
    tb_ex_funct
    exit 0
@@ -187,8 +176,6 @@ trap_sigusr2() {
 trap "trap_sigusr2" SIGUSR2 ## msgcollector, zenity cancel button
 
 tb_parse_cmd_options() {
-   trap "tb_error_handler" ERR
-
    ## Thanks to:
    ## http://mywiki.wooledge.org/BashFAQ/035
 
@@ -273,8 +260,6 @@ tb_parse_cmd_options() {
 }
 
 outputfunc() {
-   trap "tb_error_handler" ERR
-
    if [ "$outputfunc_verbose" = "true" ]; then
       echo "Running: bash -x $output_tool --identifier $IDENTIFIER --whoami $who_ami ${1+$@}"
       bash -x $output_tool --identifier "$IDENTIFIER" --whoami "$who_ami" ${1+"$@"}
@@ -288,8 +273,6 @@ outputfunc() {
 export -f outputfunc
 
 tb_config_folder_parser() {
-   trap "tb_error_handler" ERR
-
    for i in /etc/torbrowser.d/*; do
       if [ -f "$i" ]; then
          ## If the last character is a ~, ignore that file,
@@ -310,8 +293,6 @@ tb_config_folder_parser() {
 }
 
 tb_preparation() {
-   trap "tb_error_handler" ERR
-
    ## Workaround for CI compatibility.
    if [ "$CI" = "true" ]; then
       [ -n "$tb_home_folder" ] || tb_home_folder=/home/user
@@ -471,8 +452,6 @@ tb_preparation() {
 }
 
 tb_connectivity_checks_tor() {
-   trap "tb_error_handler" ERR
-
    if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
       return 0
    fi
@@ -541,8 +520,6 @@ tb_connectivity_checks_tor() {
 }
 
 tb_connectivity_checks_curl() {
-   trap "tb_error_handler" ERR
-
    if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
       return 0
    fi
@@ -625,8 +602,6 @@ Checking connectivity... Will take a moment..."
 }
 
 tb_update_check() {
-   trap "tb_error_handler" ERR
-
    ## do not re-download Tor Browser if a previous build already did
    if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
       if [ -d "$tb_home_folder/tor-browser_$TB_LANG" ]; then
@@ -711,8 +686,6 @@ Checking Tor Browser version... Will take a moment..."
 }
 
 tb_remote_version_parser() {
-   trap "tb_error_handler" ERR
-
    test -f "$RecommendedTBBVersions"
 
    ## needs: $RecommendedTBBVersions
@@ -723,8 +696,6 @@ tb_remote_version_parser() {
 }
 
 tb_remote_version_sanity_test() {
-   trap "tb_error_handler" ERR
-
    if [ "$tbb_recommended_versions_list" = "UNKNOWN" ]; then
       local MSG="<p>$installed_or_not_text</p>
 
@@ -744,8 +715,6 @@ tb_remote_version_sanity_test() {
 }
 
 tb_local_version_detection() {
-   trap "tb_error_handler" ERR
-
    ## Used by tbbversion_installed
    [ -n "$tbb_folder" ] || tbb_folder="$tb_home_folder/tor-browser_$TB_LANG"
 
@@ -763,8 +732,6 @@ tb_local_version_detection() {
 }
 
 tb_confirm_update() {
-   trap "tb_error_handler" ERR
-
    if [ "$installed_or_not_result" = "true" ]; then
       local tbb_version
       for tbb_version in $tbb_recommended_versions_list; do
@@ -874,8 +841,6 @@ Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</b
 }
 
 tb_download() {
-   trap "tb_error_handler" ERR
-
    tb_download_ok="0"
 
    ## Initialize variable, if non-existing.
@@ -1063,8 +1028,6 @@ INFO: Downloading:
 }
 
 tb_verify() {
-   trap "tb_error_handler" ERR
-
    echo "INFO:
 ## Verifying GPG signature.
 ## Not using the user's GPG keyring also ensures, that the key can be only
@@ -1103,8 +1066,6 @@ tb_verify() {
 }
 
 tb_extract() {
-   trap "tb_error_handler" ERR
-
    local timeout_after kill_after file_name
    timeout_after="180"
    kill_after="30"
@@ -1140,8 +1101,6 @@ tb_extract() {
 }
 
 tb_patch_version_number_own() {
-   trap "tb_error_handler" ERR
-
    ## In past with TBB 3.x the folder ~/"tor-browser_${TB_LANG}/Docs" already
    ## existed. Was later changed. Since TBB's folder structure often changes we
    ## just keep using the folder, create it ourselves and therefore make sure
@@ -1160,14 +1119,10 @@ tb_patch_version_number_own() {
 }
 
 tb_patch_download_folder_create() {
-   trap "tb_error_handler" ERR
-
    mkdir --parents "$tb_home_folder/.tb/tor-browser_$TB_LANG/Browser/Downloads"
 }
 
 tb_patch_internal_updater_disable_maybe() {
-   trap "tb_error_handler" ERR
-
    local source_file target_file
    source_file="/usr/share/tb-updater/tb_internal_updater_disable.js"
    target_file="$tb_home_folder/.tb/tor-browser_$TB_LANG/Browser/TorBrowser/Data/Browser/profile.default/preferences/tb_internal_updater_disable.js"
@@ -1193,16 +1148,12 @@ does not exist."
 }
 
 tb_patch() {
-   trap "tb_error_handler" ERR
-
    tb_run_function tb_patch_version_number_own
    tb_run_function tb_patch_download_folder_create
    tb_run_function tb_patch_internal_updater_disable_maybe
 }
 
 tb_install() {
-   trap "tb_error_handler" ERR
-
    if [ -d "$tb_home_folder/tor-browser_$TB_LANG" ]; then
       echo "INFO: Moving old folder $tb_home_folder/tor-browser_$TB_LANG..."
       mv "$tb_home_folder/tor-browser_$TB_LANG" "$tb_home_folder/tor-browser_$TB_LANG.old.$(date '+%F-%H:%M:%S')"
@@ -1213,8 +1164,6 @@ tb_install() {
 }
 
 tb_end() {
-   trap "tb_error_handler" ERR
-
    local TEMP
    TEMP="$tb_home_folder/tor-browser_$TB_LANG/"
 
@@ -1252,8 +1201,6 @@ Skipping question to start Tor Browser."
 }
 
 tb_sort_remote_versions() {
-   trap "tb_error_handler" ERR
-
    if [ "$tbb_recommended_versions_list" = "" ]; then
       error "tbb_recommended_versions_list was empty before sorting."
    fi
@@ -1286,8 +1233,6 @@ tb_sort_remote_versions() {
 }
 
 tb_download_loop() {
-   trap "tb_error_handler" ERR
-
    ## In past there where situations where RecommendedTBBVersions advertised
    ## multiple versions, but not all were indeed downloadable. Therefore we
    ## start with the highest available advertised version, try downloading, try
@@ -1318,8 +1263,6 @@ tb_download_loop() {
 }
 
 main_function() {
-   trap "tb_error_handler" ERR
-
    tb_run_function root_check
    tb_run_function tb_sanity_tests
    tb_run_function tb_preparation
