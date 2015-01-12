@@ -1179,7 +1179,11 @@ it does not support verification. See also:
 - https://www.whonix.org/forum/index.php/topic,807
 Feel free to delete file
 $target_file
-if you want to disable this behavior."
+if you want to disable this behavior.
+To permanently disable this $SCRIPTNAME feature, create a file
+/etc/torbrowser.d/50_user
+and add:
+tb_skip_functions+=\" $FUNCNAME \""
       cp "$source_file" "$target_file"
    else
       echo "INFO: Not Deactivating Tor Browser’s Internal Updater because file
