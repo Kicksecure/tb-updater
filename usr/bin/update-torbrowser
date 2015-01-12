@@ -1181,7 +1181,7 @@ if you want to disable this behavior."
          "$tb_home_folder/.tb/tor-browser_$TB_LANG/Browser/TorBrowser/Data/Browser/profile.default/preferences/tb_internal_updater_disable.js"
    else
       echo "INFO: Not Deactivating Tor Browser’s Internal Updater because file
-$tb_home_folder/.tb/tor-browser_$TB_LANG/Browser/TorBrowser/Data/Browser/profile.default/preferences/tb_internal_updater_disable.js
+/usr/share/tb-updater/tb_internal_updater_disable.js
 does not exist."
    fi
 }
