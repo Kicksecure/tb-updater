@@ -1180,9 +1180,7 @@ it does not support verification. See also:
 Feel free to delete file
 $target_file
 if you want to disable this behavior."
-      cp \
-         "$source_file" \
-         "$target_file"
+      cp "$source_file" "$target_file"
    else
       echo "INFO: Not Deactivating Tor Browser’s Internal Updater because file
 $source_file
