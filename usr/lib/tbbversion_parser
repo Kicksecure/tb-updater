@@ -16,13 +16,13 @@ tbbversion() {
    tbb_recommended_versions_error=""
 
    ## Sanity Tests.
-   if command -v sed >/dev/null ; then
+   if ! command -v sed >/dev/null ; then
       local MSG="$SCRIPTNAME tbbversion: sed not found."
       echo "$MSG"
       error "$MSG"
       return 1
    fi
-   if command -v grep >/dev/null ; then
+   if ! command -v grep >/dev/null ; then
       local MSG="$SCRIPTNAME tbbversion: grep not found."
       echo "$MSG"
       error "$MSG"
