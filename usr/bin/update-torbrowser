@@ -799,7 +799,7 @@ $re_install_or_install_text
 <br></br>----------------------------------------------------------------------
 <br></br>Currently installed version: <code><blockquote>$tbb_locally_installed_version</blockquote></code>
 Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</blockquote></code>"
-      question="Install now?"
+      question="Download now?"
    fi
 
    echo "INFO: Currently installed version: $tbb_locally_installed_version"
@@ -1045,6 +1045,31 @@ $gpg_bash_lib_output_gpg_verify_output"
    fi
 }
 
+tb_confirm_install() {
+   local MSG question button answer
+
+   MSG="$nice_name Update Check (by Whonix developers)
+<br></br>----------------------------------------------------------------------
+<br></br>Currently installed version: <code><blockquote>$tbb_locally_installed_version</blockquote></code>
+Downloaded version         : <code><blockquote>$tbb_version</blockquote></code>
+<br></br>
+Signature Creation Date: <code><blockquote>$gpg_bash_lib_output_signed_on_date</blockquote></code>
+Current System Date    : <code><blockquote>$gpg_bash_lib_output_current_time</blockquote></code>"
+
+   button="yesno"
+   question="Install now?"
+
+   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+      echo "INFO: TB_FORCE_INSTALL = 1"
+   else
+      answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
+      if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
+         echo "INFO: Canceled. Exit."
+         exit 0
+      fi
+   fi
+}
+
 tb_extract() {
    local timeout_after kill_after file_name
    timeout_after="180"
@@ -1263,6 +1288,7 @@ main_function() {
    tb_run_function tb_confirm_update
    tb_run_function tb_download_loop
    tb_run_function tb_verify
+   tb_run_function tb_confirm_install
    tb_run_function tb_extract
    tb_run_function tb_patch
    tb_run_function tb_install
