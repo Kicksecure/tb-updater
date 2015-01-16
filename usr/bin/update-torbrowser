@@ -819,25 +819,6 @@ Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</b
    if [ ! "$NOKILLTB" = "1" ]; then
       killall firefox || true
    fi
-
-   rm --recursive --force "$tb_home_folder/.tb/gpgtmpdir/"
-   mkdir --parents "$tb_home_folder/.tb/gpgtmpdir/"
-   chmod --recursive 700 "$tb_home_folder/.tb/gpgtmpdir/"
-
-   local key
-
-   for key in "/usr/share/torbrowser-updater-keys.d/"*; do
-      local key_filename
-      key_filename="$(basename "$key")"
-      if [ "$key_filename" = "placeholder" ]; then
-         continue
-      fi
-      if [ "$key_filename" = "*" ]; then
-         ## Folder is empty.
-         continue
-      fi
-      gpg --no-options --homedir "$tb_home_folder/.tb/gpgtmpdir/" --import "$key" 2>/dev/null
-   done
 }
 
 tb_download() {
@@ -1034,27 +1015,23 @@ tb_verify() {
 ## signed by the GPG keys we added. Signatures from random people from the
 ## user's keyring will be ignored."
 
-   local timeout_after="60"
-   local kill_after="10"
+   gpg_bash_lib_input_verifiy_timeout_after="60"
+   gpg_bash_lib_input_verify_kill_after="10"
+   gpg_bash_lib_input_key_import_dir="/usr/share/torbrowser-updater-keys.d"
+   gpg_bash_lib_input_temp_folder="$tb_home_folder/.tb/gpgtmpdir"
+   gpg_bash_lib_input_data_file="$tb_home_folder/.tb/$TBB_PACKAGE_FILENAME"
+   gpg_bash_lib_input_sig_file="$tb_home_folder/.tb/$TBB_SIG_FILENAME"
+   gpg_bash_lib_input_file_name_enforce="true"
+   gpg_bash_lib_input_cleanup="false"
+   gpg_bash_lib_input_error_handler_extra='tb_error_handler "$gpg_bash_lib_output_error_handler_message"'
 
-   tb_gpg_verify_exit_code="0"
-   timeout --kill-after="$kill_after" "$timeout_after" \
-      gpg \
-         --no-options \
-         --homedir "$tb_home_folder/.tb/gpgtmpdir/" \
-         --verify "$tb_home_folder/.tb/$TBB_SIG_FILENAME" \
-         "$tb_home_folder/.tb/$TBB_PACKAGE_FILENAME" \
-         &
+   source "/usr/lib/gpg-bash-lib/source_all"
 
-   last_pid="$!"
-   wait "$last_pid" || { tb_gpg_verify_exit_code="$?" ; true; };
-   last_pid=""
+   trap "gpg_bash_lib_f_error_handler" ERR
+   gpg_bash_lib_f_main_verify
+   trap "tb_error_handler" ERR
 
-   ## `timeout` returns:
-   ## - 124 if sigterm was sufficient
-   ## - 137 if needed to use kill.
-
-   if [ ! "$tb_gpg_verify_exit_code" = "0" ]; then
+   if [ ! "$gpg_bash_lib_output_validsig" = "true" ]; then
       local MSG="<p><b>GPG download signature could NOT be verified.</b>
 <br></br>Tor Browser update failed! Try again later.</p>"
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
