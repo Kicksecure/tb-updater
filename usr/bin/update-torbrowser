@@ -1031,6 +1031,9 @@ tb_verify() {
    gpg_bash_lib_f_main_verify
    trap "tb_error_handler" ERR
 
+   echo "INFO: gpg_bash_lib_output_gpg_verify_output:
+$gpg_bash_lib_output_gpg_verify_output"
+
    if [ ! "$gpg_bash_lib_output_validsig" = "true" ]; then
       local MSG="<p><b>GPG download signature could NOT be verified.</b>
 <br></br>Tor Browser update failed! Try again later.</p>"
