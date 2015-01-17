@@ -1008,7 +1008,7 @@ tb_hash_verify() {
 }
 
 tb_confirm_install() {
-   local MSG question button answer
+   local MSG question button answer type
    local signature_freshness_msg
    local last_used_gpg_bash_lib_output_signed_on_date
    local last_used_gpg_bash_lib_output_signed_on_unixtime
@@ -1032,18 +1032,23 @@ tb_confirm_install() {
       true "'$last_used_gpg_bash_lib_output_signed_on_unixtime' is strictly numeric."
       if [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" -lt "$gpg_bash_lib_output_signed_on_unixtime" ]; then
          signature_freshness_msg="Downloaded signature is newer than last known signature. Looks alright."
+         type="info"
       elif [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" -gt "$gpg_bash_lib_output_signed_on_unixtime" ]; then
          signature_freshness_msg="Downloaded signature is older than last known signature. You are likely victim of a downgrade attack, SAY NO NOW!"
+         type="warning"
       elif [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" = "$gpg_bash_lib_output_signed_on_unixtime" ]; then
          signature_freshness_msg="Downloaded signature has same creation date as last known signature. \
 Unless you are re-installing the same version, you could be victim of an indefinite freeze attack."
+         type="warning"
       else
          error "last_used_gpg_bash_lib_output_signed_on_unixtime $last_used_gpg_bash_lib_output_signed_on_unixtime \
 neither -lt, -gt nor equals gpg_bash_lib_output_signed_on_unixtime $gpg_bash_lib_output_signed_on_unixtime"
+         type="error"
       fi
    else
       signature_freshness_msg="We have not previously accepted a signature yet. Therefore assisted check for downgrade \
 or indefinite freeze attacks skipped. Please check the Current Signature Creation Date looks sane."
+      type="info"
    fi
 
    MSG="$nice_name Update Check (by Whonix developers)
@@ -1057,13 +1062,15 @@ Downloaded version         : <code><blockquote>$tbb_version</blockquote></code>
 <br></br>Current Signature Creation Date : <code>$gpg_bash_lib_output_signed_on_date</code>
 <br></br>Current System Date             : <code>$gpg_bash_lib_output_current_time</code>"
 
+   $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+
    button="yesno"
    question="Install now?"
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       echo "INFO: TB_FORCE_INSTALL = 1"
    else
-      answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
+      answer="$(/usr/lib/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
       if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
          echo "INFO: Canceled. Exit."
          exit 0
