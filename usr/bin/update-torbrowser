@@ -529,7 +529,6 @@ tb_connectivity_checks_curl() {
    fi
 
    tb_notify_details="Checking connectivity... Will take a moment..."
-
    echo "INFO: Running connectivity check... "
 
    ## 1 MB = 1048576 bytes
@@ -574,9 +573,9 @@ tb_update_check() {
       fi
    fi
 
-   tb_notify_details="Checking Tor Browser version... Will take a moment..."
    [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
 
+   tb_notify_details="Checking Tor Browser version... Will take a moment..."
    echo "INFO: Find out latest version... Downloading: $TBB_VERSIONS_FILE_LINK... "
 
    ## 1 MB = 1048576 bytes
@@ -798,12 +797,11 @@ tb_download_files() {
 
    ### signature ###
 
-   tb_notify_details="Downloading Tor Browser signature... Will take a moment..."
-
    [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="sha256sums.txt.asc"
    [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
    [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}"
 
+   tb_notify_details="Downloading Tor Browser signature... Will take a moment..."
    echo "INFO: Downloading GPG signature... Will take a moment..."
    echo "\
 INFO: Downloading:
@@ -843,12 +841,11 @@ INFO: Downloading:
 
    ### hash file ###
 
-   tb_notify_details="Downloading Tor Browser sha256sums file... Will take a moment..."
-
    [ -n "$TBB_HASH_FILENAME" ] || TBB_HASH_FILENAME="sha256sums.txt"
    [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
    [ -n "$TBB_HASH_LINK" ] || TBB_HASH_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_HASH_FILENAME}"
 
+   tb_notify_details="Downloading Tor Browser sha256sums file... Will take a moment..."
    echo "INFO: Downloading sha256sums file... Will take a moment..."
    echo "\
 INFO: Downloading:
@@ -888,12 +885,11 @@ INFO: Downloading:
 
    ### archive file ###
 
-   tb_notify_details="Downloading Tor Browser... Will take a while..."
-
    [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz"
    [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
    [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME"
 
+   tb_notify_details="Downloading Tor Browser... Will take a while..."
    echo "INFO: Downloading Tor Browser Bundle: $tbb_version"
    echo "\
 INFO: Downloading:
