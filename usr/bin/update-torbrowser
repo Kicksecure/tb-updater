@@ -750,6 +750,9 @@ $tb_notify_details"
       export CURL_PRGRS_EXEC="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
    fi
 
+   ## Simulating endless data attack.
+   #export CURL_PRGRS_MAX_FILE_SIZE_BYTES="1048576"
+
    curl_exit_code="0"
    $CURL_PRGRS \
       --fail \
