@@ -1254,9 +1254,6 @@ tb_download_loop() {
       #tbb_version="3.0-rc-1"
       #tbb_version_folder="3.0rc1"
 
-      ## Let's hope version number of the download folder exactly equals
-      ## version number of TBB for the TBB 3.x final release. (No extra dashes
-      ## or something like that.)
       tbb_version_folder="$tbb_version"
 
       if [ "$tb_download_ok" = "1" ]; then
