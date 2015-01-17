@@ -894,8 +894,6 @@ INFO: Downloading:
    last_pid=""
 
    $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
-   sleep 1 &
-   wait "$!"
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
