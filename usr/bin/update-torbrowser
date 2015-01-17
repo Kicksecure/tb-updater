@@ -526,56 +526,22 @@ tb_connectivity_checks_curl() {
       return 0
    fi
 
-   if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      true
-   else
-      progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
-      tb_notify_details="Checking connectivity... Will take a moment..."
-      NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
-----------------------------------------------------------------------
-$tb_notify_details"
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
-   fi
+   tb_notify_details="Checking connectivity... Will take a moment..."
 
    echo "INFO: Running connectivity check... "
 
-   ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
-   ## variables. (See above.)
-   ## Define what CURL_PRGRS is supposed to eval.
-   ## ($percent is a local variable provided by $CURL_PRGRS.)
-   export CURL_PRGRS_EXEC="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
    ## 1 MB = 1048576 bytes
    ## 2 MB = 2097152 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$tb_home_folder/.tb/tbb_remote_folder"
+   curl_download_max_time="180"
    curl_download_target_url="$TBB_REMOTE_FOLDER"
-   curl_exit_code="0"
-   $CURL_PRGRS \
-      --fail \
-      $CURL_PROXY \
-      $CURL_FORCE_SSL \
-      --max-time 180 \
-      --output "$CURL_OUT_FILE" \
-      "$curl_download_target_url" \
-      &
-
-   last_pid="$!"
-   wait "$last_pid" || { curl_exit_code="$?" ; true; };
-   last_pid=""
-
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+   tb_download_common
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      local curl_status_message
-      if [ -x "/usr/lib/curl-scripts/curl_exit_codes" ]; then
-         curl_status_message="$(/usr/lib/curl-scripts/curl_exit_codes "$curl_exit_code")" || true
-      else
-         curl_status_message="$curl_exit_code"
-      fi
-
       MSG="<p>$TBB_REMOTE_FOLDER could not be reached.</p>
 
 <p>Possible reasons:
@@ -610,58 +576,23 @@ tb_update_check() {
       fi
    fi
 
-   if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      true
-   else
-      progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
-      tb_notify_details="Checking Tor Browser version... Will take a moment..."
-      NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
-----------------------------------------------------------------------
-$tb_notify_details"
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
-   fi
-
+   tb_notify_details="Checking Tor Browser version... Will take a moment..."
    [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
 
    echo "INFO: Find out latest version... Downloading: $TBB_VERSIONS_FILE_LINK... "
 
-   ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
-   ## variables. (See above.)
-   ## Define what CURL_PRGRS is supposed to eval.
-   ## ($percent is a local variable provided by $CURL_PRGRS.)
-   export CURL_PRGRS_EXEC="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
    ## 1 MB = 1048576 bytes
    ## 2 MB = 2097152 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$RecommendedTBBVersions"
+   curl_download_max_time="180"
    curl_download_target_url="$TBB_VERSIONS_FILE_LINK"
-   curl_exit_code="0"
-   $CURL_PRGRS \
-      --fail \
-      $CURL_PROXY \
-      $CURL_FORCE_SSL \
-      --max-time 180 \
-      --output "$CURL_OUT_FILE" \
-      "$curl_download_target_url" \
-      &
-
-   last_pid="$!"
-   wait "$last_pid" || { curl_exit_code="$?" ; true; };
-   last_pid=""
-
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+   tb_download_common
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      local curl_status_message
-      if [ -x "/usr/lib/curl-scripts/curl_exit_codes" ]; then
-         curl_status_message="$(/usr/lib/curl-scripts/curl_exit_codes "$curl_exit_code")" || true
-      else
-         curl_status_message="$curl_exit_code"
-      fi
-
       MSG="<p><b>Failed to download:</b> $TBB_VERSIONS_FILE_LINK</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>
@@ -811,7 +742,46 @@ Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</b
    fi
 }
 
-tb_download() {
+tb_download_common() {
+   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+      true
+   else
+      progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
+      NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
+----------------------------------------------------------------------
+$tb_notify_details"
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
+      ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
+      ## variables. (See above.)
+      ## Define what CURL_PRGRS is supposed to eval.
+      ## ($percent is a local variable provided by $CURL_PRGRS.)
+      export CURL_PRGRS_EXEC="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
+   fi
+
+   curl_exit_code="0"
+   $CURL_PRGRS \
+      --fail \
+      $CURL_PROXY \
+      $CURL_FORCE_SSL \
+      --max-time "$curl_download_max_time" \
+      --output "$CURL_OUT_FILE" \
+      "$curl_download_target_url" \
+      &
+
+   last_pid="$!"
+   wait "$last_pid" || { curl_exit_code="$?" ; true; };
+   last_pid=""
+
+   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+
+   if [ -x "/usr/lib/curl-scripts/curl_exit_codes" ]; then
+      curl_status_message="$(/usr/lib/curl-scripts/curl_exit_codes "$curl_exit_code")" || true
+   else
+      curl_status_message="$curl_exit_code"
+   fi
+}
+
+tb_download_files() {
    tb_download_ok="0"
 
    ## Initialize variable, if non-existing.
@@ -826,16 +796,7 @@ tb_download() {
       last_try="1"
    fi
 
-   if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      true
-   else
-      progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
-      tb_notify_details="Downloading Tor Browser signature... Will take a moment..."
-      NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
-----------------------------------------------------------------------
-$tb_notify_details"
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
-   fi
+   tb_notify_details="Downloading Tor Browser signature... Will take a moment..."
 
    [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz.asc"
    [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}/"
@@ -846,43 +807,18 @@ $tb_notify_details"
 INFO: Downloading:
       $TBB_SIG_LINK ... Will take a moment..."
 
-   ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
-   ## variables. (See above.)
-   ## Define what CURL_PRGRS is supposed to eval.
-   ## ($percent is a local variable provided by $CURL_PRGRS.)
-   export CURL_PRGRS_EXEC="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
    ## 1 MB = 1048576 bytes
    ## 2 MB = 2097152 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$tb_home_folder/.tb/$TBB_SIG_FILENAME"
+   curl_download_max_time="180"
    curl_download_target_url="$TBB_SIG_LINK"
-   curl_exit_code="0"
-   $CURL_PRGRS \
-      --fail \
-      $CURL_PROXY \
-      $CURL_FORCE_SSL \
-      --max-time 180 \
-      --output "$CURL_OUT_FILE" \
-      "$curl_download_target_url" \
-      &
-
-   last_pid="$!"
-   wait "$last_pid" || { curl_exit_code="$?" ; true; };
-   last_pid=""
-
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+   tb_download_common
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      local curl_status_message
-      if [ -x "/usr/lib/curl-scripts/curl_exit_codes" ]; then
-         curl_status_message="$(/usr/lib/curl-scripts/curl_exit_codes "$curl_exit_code")" || true
-      else
-         curl_status_message="$curl_exit_code"
-      fi
-
       if [ "$last_try" = "0" ]; then
          MSG="<p><b>Failed to download:</b> $TBB_SIG_LINK
 <br></br>There are other recommended versions. Will try to download the next recommended version...</p>
@@ -907,16 +843,7 @@ INFO: Downloading:
       fi
    fi
 
-   if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      true
-   else
-      progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
-      tb_notify_details="Downloading Tor Browser... Will take a while..."
-      NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
-----------------------------------------------------------------------
-$tb_notify_details"
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
-   fi
+   tb_notify_details="Downloading Tor Browser... Will take a while..."
 
    [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz"
    [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}/"
@@ -927,43 +854,18 @@ $tb_notify_details"
 INFO: Downloading:
       $TBB_PACKAGE_LINK ... Will take a while..."
 
-   ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
-   ## variables. (See above.)
-   ## Define what CURL_PRGRS is supposed to eval.
-   ## ($percent is a local variable provided by $CURL_PRGRS.)
-   export CURL_PRGRS_EXEC="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
    ## 1 MB = 1048576 bytes
    ## 100 MB = 104857600 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="104857600"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$tb_home_folder/.tb/$TBB_PACKAGE_FILENAME"
+   curl_download_max_time="3600"
    curl_download_target_url="$TBB_PACKAGE_LINK"
-   curl_exit_code="0"
-   $CURL_PRGRS \
-      --fail \
-      $CURL_PROXY \
-      $CURL_FORCE_SSL \
-      --max-time 180 \
-      --output "$CURL_OUT_FILE" \
-      "$curl_download_target_url" \
-      &
-
-   last_pid="$!"
-   wait "$last_pid" || { curl_exit_code="$?" ; true; };
-   last_pid=""
-
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+   tb_download_common
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      local curl_status_message
-      if [ -x "/usr/lib/curl-scripts/curl_exit_codes" ]; then
-         curl_status_message="$(/usr/lib/curl-scripts/curl_exit_codes "$curl_exit_code")" || true
-      else
-         curl_status_message="$curl_exit_code"
-      fi
-
       MSG="<p>Failed to download: $TBB_PACKAGE_LINK</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>
@@ -1273,7 +1175,7 @@ tb_download_loop() {
          ## Download already succeeded.
          break
       fi
-      tb_run_function tb_download
+      tb_run_function tb_download_files
       if [ "$tb_download_ok" = "1" ]; then
          ## Download already succeeded.
          break
