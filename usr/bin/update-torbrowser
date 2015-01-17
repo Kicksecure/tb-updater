@@ -429,6 +429,8 @@ tb_preparation() {
    ## Export CURL variable, so it can be read by $CURL_PRGRS.
    export CURL
 
+   mkdir --parents "$tb_home_folder/.tb"
+
    ## {{ Download from the torproject.org clearnet by default instead from
    ##    their hidden service.
 
@@ -524,21 +526,19 @@ tb_connectivity_checks_curl() {
       return 0
    fi
 
+   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+      true
+   else
+      progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
+      tb_notify_details="Checking connectivity... Will take a moment..."
+      NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
+----------------------------------------------------------------------
+$tb_notify_details"
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
+   fi
+
    echo "INFO: Running connectivity check... "
 
-   NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
-----------------------------------------------------------------------
-Checking connectivity... Will take a moment..."
-
-   progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
-
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
-   sleep 1 &
-   wait "$!"
-
-   mkdir --parents "$tb_home_folder/.tb/"
-
-   curl_exit_code="0"
    ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
    ## variables. (See above.)
    ## Define what CURL_PRGRS is supposed to eval.
@@ -550,13 +550,15 @@ Checking connectivity... Will take a moment..."
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$tb_home_folder/.tb/tbb_remote_folder"
+   curl_download_target_url="$TBB_REMOTE_FOLDER"
+   curl_exit_code="0"
    $CURL_PRGRS \
       --fail \
       $CURL_PROXY \
       $CURL_FORCE_SSL \
       --max-time 180 \
       --output "$CURL_OUT_FILE" \
-      "$TBB_REMOTE_FOLDER" \
+      "$curl_download_target_url" \
       &
 
    last_pid="$!"
@@ -595,8 +597,6 @@ Checking connectivity... Will take a moment..."
    fi
 
    $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
-   sleep 1 &
-   wait "$!"
 
    echo "INFO: Connectivity check succeeded."
 }
@@ -610,30 +610,21 @@ tb_update_check() {
       fi
    fi
 
-   progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
-
-   ## progress bar for update check
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       true
    else
-      NOTIFY_MSG="$SCRIPTNAME Update Check (by Whonix developers)
+      progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
+      tb_notify_details="Checking Tor Browser version... Will take a moment..."
+      NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
 ----------------------------------------------------------------------
-Checking Tor Browser version... Will take a moment..."
-
+$tb_notify_details"
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
-      sleep 1 &
-      wait "$!"
    fi
 
    [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
+
    echo "INFO: Find out latest version... Downloading: $TBB_VERSIONS_FILE_LINK... "
 
-   mkdir --parents "$tb_home_folder/.tb"
-
-   #echo "$BASH_SOURCE CURL_PRGRS_EXEC: $CURL_PRGRS_EXEC"
-   #echo "$BASH_SOURCE CURL: $CURL"
-
-   curl_exit_code="0"
    ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
    ## variables. (See above.)
    ## Define what CURL_PRGRS is supposed to eval.
@@ -645,14 +636,15 @@ Checking Tor Browser version... Will take a moment..."
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$RecommendedTBBVersions"
+   curl_download_target_url="$TBB_VERSIONS_FILE_LINK"
+   curl_exit_code="0"
    $CURL_PRGRS \
       --fail \
       $CURL_PROXY \
-      --tlsv1 \
-      --proto =https \
+      $CURL_FORCE_SSL \
       --max-time 180 \
       --output "$CURL_OUT_FILE" \
-      "$TBB_VERSIONS_FILE_LINK" \
+      "$curl_download_target_url" \
       &
 
    last_pid="$!"
@@ -710,8 +702,6 @@ tb_remote_version_sanity_test() {
    fi
 
    $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
-   sleep 1 &
-   wait "$!"
 }
 
 tb_local_version_detection() {
@@ -836,39 +826,26 @@ tb_download() {
       last_try="1"
    fi
 
-   ## {{ progress bar for download
-   progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
-
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       true
    else
+      progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
+      tb_notify_details="Downloading Tor Browser signature... Will take a moment..."
       NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
 ----------------------------------------------------------------------
-Downloading Tor Browser signature... Will take a moment..."
-
+$tb_notify_details"
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
-      sleep 1 &
-      wait "$!"
    fi
-   ## }}
-
-   echo "INFO: Downloading GPG signature... Will take a moment..."
 
    [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz.asc"
    [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}/"
-
    [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}${TBB_SIG_FILENAME}"
 
+   echo "INFO: Downloading GPG signature... Will take a moment..."
    echo "\
 INFO: Downloading:
       $TBB_SIG_LINK ... Will take a moment..."
 
-   #echo "$BASH_SOURCE CURL_PRGRS_EXEC: $CURL_PRGRS_EXEC"
-   #echo "$BASH_SOURCE CURL: $CURL"
-
-   mkdir --parents "$tb_home_folder/.tb"
-
-   curl_exit_code="0"
    ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
    ## variables. (See above.)
    ## Define what CURL_PRGRS is supposed to eval.
@@ -880,13 +857,15 @@ INFO: Downloading:
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$tb_home_folder/.tb/$TBB_SIG_FILENAME"
+   curl_download_target_url="$TBB_SIG_LINK"
+   curl_exit_code="0"
    $CURL_PRGRS \
       --fail \
       $CURL_PROXY \
       $CURL_FORCE_SSL \
       --max-time 180 \
       --output "$CURL_OUT_FILE" \
-      "$TBB_SIG_LINK" \
+      "$curl_download_target_url" \
       &
 
    last_pid="$!"
@@ -928,31 +907,25 @@ INFO: Downloading:
       fi
    fi
 
-   NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
+   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+      true
+   else
+      progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
+      tb_notify_details="Downloading Tor Browser... Will take a while..."
+      NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
 ----------------------------------------------------------------------
-Downloading Tor Browser... Will take a while..."
-
-   progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
-
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
-   sleep 1 &
-   wait "$!"
-
-   echo "INFO: Downloading Tor Browser Bundle: $tbb_version"
+$tb_notify_details"
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
+   fi
 
    [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz"
    [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}/"
-
    [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}$TBB_PACKAGE_FILENAME"
 
+   echo "INFO: Downloading Tor Browser Bundle: $tbb_version"
    echo "\
 INFO: Downloading:
       $TBB_PACKAGE_LINK ... Will take a while..."
-
-   curl_exit_code="0"
-
-   #echo "$BASH_SOURCE CURL_PRGRS_EXEC: $CURL_PRGRS_EXEC"
-   #echo "$BASH_SOURCE CURL: $CURL"
 
    ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
    ## variables. (See above.)
@@ -963,16 +936,17 @@ INFO: Downloading:
    ## 100 MB = 104857600 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="104857600"
-   ## Simulating endless data attack.
-   #export CURL_PRGRS_MAX_FILE_SIZE_BYTES="1048576"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$tb_home_folder/.tb/$TBB_PACKAGE_FILENAME"
+   curl_download_target_url="$TBB_PACKAGE_LINK"
+   curl_exit_code="0"
    $CURL_PRGRS \
       --fail \
       $CURL_PROXY \
       $CURL_FORCE_SSL \
+      --max-time 180 \
       --output "$CURL_OUT_FILE" \
-      "$TBB_PACKAGE_LINK" \
+      "$curl_download_target_url" \
       &
 
    last_pid="$!"
