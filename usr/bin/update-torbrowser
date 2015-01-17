@@ -60,6 +60,7 @@ tb_error_handler() {
       true
    else
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      progressbaridx=""
    fi
    $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
    $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
@@ -139,6 +140,7 @@ tb_ex_funct() {
       true
    else
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      progressbaridx=""
    fi
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
@@ -555,14 +557,10 @@ tb_connectivity_checks_curl() {
 <p>If whonixcheck reports no problems with internet activity and this keeps failing, please report a bug!</p>
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
-
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
       exit 1
    fi
-
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
 
    echo "INFO: Connectivity check succeeded."
 }
@@ -598,8 +596,6 @@ tb_update_check() {
 <p>$DOWNLOAD_FAIL_HELP</p>
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
-
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
       exit 1
@@ -625,14 +621,10 @@ tb_remote_version_sanity_test() {
 <p>Could not find out latest Tor Browser version! $tbb_recommended_versions_error</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
-
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
       exit 1
    fi
-
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
 }
 
 tb_local_version_detection() {
@@ -772,7 +764,12 @@ $tb_notify_details"
    wait "$last_pid" || { curl_exit_code="$?" ; true; };
    last_pid=""
 
-   $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+   if [ "$progressbaridx" = "" ]; then
+      true
+   else
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      progressbaridx=""
+   fi
 
    if [ -x "/usr/lib/curl-scripts/curl_exit_codes" ]; then
       curl_status_message="$(/usr/lib/curl-scripts/curl_exit_codes "$curl_exit_code")" || true
@@ -916,7 +913,6 @@ INFO: Downloading:
 <p>$DOWNLOAD_FAIL_HELP</p>
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
       exit 1
@@ -954,8 +950,6 @@ $gpg_bash_lib_output_gpg_verify_output"
    if [ ! "$gpg_bash_lib_output_validsig" = "true" ]; then
       local MSG="<p><b>GPG download signature could NOT be verified.</b>
 <br></br>Tor Browser update failed! Try again later.</p>"
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
-
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
       exit 1
