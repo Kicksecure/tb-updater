@@ -801,7 +801,7 @@ $tb_notify_details"
 }
 
 tb_download_files() {
-   tb_download_ok="0"
+   tb_download_attempt_success="0"
 
    ### signature ###
 
@@ -884,7 +884,7 @@ INFO: Downloading:
       return 0
    fi
 
-   tb_download_ok="1"
+   tb_download_attempt_success="1"
 }
 
 tb_gpg_verify() {
@@ -1270,12 +1270,12 @@ tb_download_loop() {
          tb_download_atempt_last_try="true"
       fi
 
-      if [ "$tb_download_ok" = "1" ]; then
+      if [ "$tb_download_attempt_success" = "1" ]; then
          ## Download already succeeded.
          break
       fi
       tb_run_function tb_download_files
-      if [ "$tb_download_ok" = "1" ]; then
+      if [ "$tb_download_attempt_success" = "1" ]; then
          ## Download already succeeded.
          break
       fi
