@@ -783,15 +783,6 @@ $tb_notify_details"
 tb_download_files() {
    tb_download_ok="0"
 
-   if [ "$attempt" = "" ]; then
-      attempt="0"
-   fi
-   attempt="$(( $attempt + 1 ))"
-   last_try="0"
-   if [ "$attempt" -ge "$tbbversions_found" ]; then
-      last_try="1"
-   fi
-
    ### signature ###
 
    [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="sha256sums.txt.asc"
@@ -816,7 +807,7 @@ INFO: Downloading:
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      if [ "$last_try" = "0" ]; then
+      if [ ! "$last_try" = "true" ]; then
          MSG="<p><b>Failed to download:</b> $curl_download_target_url
 <br></br>There are other recommended versions. Will try to download the next recommended version...</p>
 
@@ -860,7 +851,7 @@ INFO: Downloading:
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      if [ "$last_try" = "0" ]; then
+      if [ ! "$last_try" = "true" ]; then
          MSG="<p><b>Failed to download:</b> $curl_download_target_url
 <br></br>There are other recommended versions. Will try to download the next recommended version...</p>
 
@@ -904,7 +895,7 @@ INFO: Downloading:
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      if [ "$last_try" = "0" ]; then
+      if [ ! "$last_try" = "true" ]; then
          MSG="<p><b>Failed to download:</b> $curl_download_target_url
 <br></br>There are other recommended versions. Will try to download the next recommended version...</p>
 
@@ -1301,6 +1292,14 @@ tb_download_loop() {
       #tbb_version_folder="3.0rc1"
 
       tbb_version_folder="$tbb_version"
+
+      if [ "$attempt" = "" ]; then
+         attempt="0"
+      fi
+      attempt="$(( $attempt + 1 ))"
+      if [ "$attempt" -ge "$tbbversions_found" ]; then
+         last_try="true"
+      fi
 
       if [ "$tb_download_ok" = "1" ]; then
          ## Download already succeeded.
