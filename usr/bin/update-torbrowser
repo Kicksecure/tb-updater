@@ -599,8 +599,6 @@ tb_update_check() {
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
       exit 1
    fi
-
-   echo "INFO: Done, downloaded $curl_download_target_url."
 }
 
 tb_remote_version_parser() {
@@ -798,6 +796,8 @@ $tb_notify_details"
          exit 1
       fi
    fi
+
+   echo "INFO: Done, downloaded $curl_download_target_url."
 }
 
 tb_download_files() {
