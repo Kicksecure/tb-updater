@@ -543,7 +543,7 @@ tb_connectivity_checks_curl() {
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      MSG="<p>$TBB_REMOTE_FOLDER could not be reached.</p>
+      MSG="<p>$curl_download_target_url could not be reached.</p>
 
 <p>Possible reasons:
 <br></br>- $TBB_REMOTE_FOLDER is down
@@ -590,7 +590,7 @@ tb_update_check() {
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      MSG="<p><b>Failed to download:</b> $TBB_VERSIONS_FILE_LINK</p>
+      MSG="<p><b>Failed to download:</b> $curl_download_target_url</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>
 
@@ -600,7 +600,7 @@ tb_update_check() {
       exit 1
    fi
 
-   echo "INFO: Done, downloaded $TBB_VERSIONS_FILE_LINK."
+   echo "INFO: Done, downloaded $curl_download_target_url."
 }
 
 tb_remote_version_parser() {
