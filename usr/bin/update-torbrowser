@@ -825,6 +825,10 @@ INFO: Downloading:
    tb_download_common
 
    if [ ! "$curl_exit_code" = "0" ]; then
+      ## Unset those, so during next invocation by tb_download_loop these can
+      ## be set again.
+      unset TBB_SIG_FILENAME
+      unset TBB_SIG_LINK
       ## return 0, so the loop might try the next $tbb_version.
       return 0
    fi
@@ -851,6 +855,10 @@ INFO: Downloading:
    tb_download_common
 
    if [ ! "$curl_exit_code" = "0" ]; then
+      ## Unset those, so during next invocation by tb_download_loop these can
+      ## be set again.
+      unset TBB_HASH_FILENAME
+      unset TBB_HASH_LINK
       ## return 0, so the loop might try the next $tbb_version.
       return 0
    fi
@@ -877,6 +885,10 @@ INFO: Downloading:
    tb_download_common
 
    if [ ! "$curl_exit_code" = "0" ]; then
+      ## Unset those, so during next invocation by tb_download_loop these can
+      ## be set again.
+      unset TBB_PACKAGE_FILENAME
+      unset TBB_PACKAGE_LINK
       ## return 0, so the loop might try the next $tbb_version.
       return 0
    fi
