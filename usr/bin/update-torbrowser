@@ -801,8 +801,6 @@ $tb_notify_details"
 }
 
 tb_download_files() {
-   tb_download_attempt_success="0"
-
    ### signature ###
 
    [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="sha256sums.txt.asc"
@@ -884,7 +882,7 @@ INFO: Downloading:
       return 0
    fi
 
-   tb_download_attempt_success="1"
+   tb_download_attempt_success="true"
 }
 
 tb_gpg_verify() {
@@ -1270,12 +1268,12 @@ tb_download_loop() {
          tb_download_atempt_last_try="true"
       fi
 
-      if [ "$tb_download_attempt_success" = "1" ]; then
+      if [ "$tb_download_attempt_success" = "true" ]; then
          ## Download already succeeded.
          break
       fi
       tb_run_function tb_download_files
-      if [ "$tb_download_attempt_success" = "1" ]; then
+      if [ "$tb_download_attempt_success" = "true" ]; then
          ## Download already succeeded.
          break
       fi
