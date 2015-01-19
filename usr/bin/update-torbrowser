@@ -778,6 +778,26 @@ $tb_notify_details"
    else
       curl_status_message="$curl_exit_code"
    fi
+
+   ## Check if curl failed.
+   if [ ! "$curl_exit_code" = "0" ]; then
+      if [ ! "$tb_download_atempt_last_try" = "true" ]; then
+         MSG="<p><b>Failed to download:</b> $curl_download_target_url
+<br></br>There are other recommended versions. Will try to download the next recommended version...</p>
+
+<p>(Debugging information: curl_status_message: $curl_status_message)</p>"
+         ## No popup message in X. Would be too confusing.
+         #$output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
+         $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+      else
+         MSG="<p>Failed to download: $curl_download_target_url</p>
+
+<p>$DOWNLOAD_FAIL_HELP</p>"
+         $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+         $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
+         exit 1
+      fi
+   fi
 }
 
 tb_download_files() {
@@ -805,26 +825,9 @@ INFO: Downloading:
    curl_download_target_url="$TBB_SIG_LINK"
    tb_download_common
 
-   ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      if [ ! "$tb_download_atempt_last_try" = "true" ]; then
-         MSG="<p><b>Failed to download:</b> $curl_download_target_url
-<br></br>There are other recommended versions. Will try to download the next recommended version...</p>
-
-<p>(Debugging information: curl_status_message: $curl_status_message)</p>"
-         ## No popup message in X. Would be too confusing.
-         #$output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
-         ## return 0, so the loop will tell us to try the next $tbb_version.
-         return 0
-      else
-         MSG="<p>Failed to download: $curl_download_target_url</p>
-
-<p>$DOWNLOAD_FAIL_HELP</p>"
-         $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-         exit 1
-      fi
+      ## return 0, so the loop might try the next $tbb_version.
+      return 0
    fi
 
    ### hash file ###
@@ -849,26 +852,9 @@ INFO: Downloading:
    curl_download_target_url="$TBB_HASH_LINK"
    tb_download_common
 
-   ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      if [ ! "$tb_download_atempt_last_try" = "true" ]; then
-         MSG="<p><b>Failed to download:</b> $curl_download_target_url
-<br></br>There are other recommended versions. Will try to download the next recommended version...</p>
-
-<p>(Debugging information: curl_status_message: $curl_status_message)</p>"
-         ## No popup message in X. Would be too confusing.
-         #$output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
-         ## return 0, so the loop will tell us to try the next $tbb_version.
-         return 0
-      else
-         MSG="<p>Failed to download: $curl_download_target_url</p>
-
-<p>$DOWNLOAD_FAIL_HELP</p>"
-         $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-         exit 1
-      fi
+      ## return 0, so the loop might try the next $tbb_version.
+      return 0
    fi
 
    ### archive file ###
@@ -893,26 +879,9 @@ INFO: Downloading:
    curl_download_target_url="$TBB_PACKAGE_LINK"
    tb_download_common
 
-   ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      if [ ! "$tb_download_atempt_last_try" = "true" ]; then
-         MSG="<p><b>Failed to download:</b> $curl_download_target_url
-<br></br>There are other recommended versions. Will try to download the next recommended version...</p>
-
-<p>(Debugging information: curl_status_message: $curl_status_message)</p>"
-         ## No popup message in X. Would be too confusing.
-         #$output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
-         ## return 0, so the loop will tell us to try the next $tbb_version.
-         return 0
-      else
-         MSG="<p>Failed to download: $curl_download_target_url</p>
-
-<p>$DOWNLOAD_FAIL_HELP</p>"
-         $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-         exit 1
-      fi
+      ## return 0, so the loop might try the next $tbb_version.
+      return 0
    fi
 
    tb_download_ok="1"
