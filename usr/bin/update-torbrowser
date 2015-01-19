@@ -705,7 +705,7 @@ $re_install_or_install_text
 
 <p>A backup of your old Tor Browser and settings will be created in your home folder.
 <br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space.</p>"
-      question="Upgrade now?"
+      question="Download now?"
    else
       MSG="$nice_name Update Check (by Whonix developers)
 <br></br>----------------------------------------------------------------------
