@@ -807,7 +807,7 @@ INFO: Downloading:
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      if [ ! "$last_try" = "true" ]; then
+      if [ ! "$tb_download_atempt_last_try" = "true" ]; then
          MSG="<p><b>Failed to download:</b> $curl_download_target_url
 <br></br>There are other recommended versions. Will try to download the next recommended version...</p>
 
@@ -851,7 +851,7 @@ INFO: Downloading:
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      if [ ! "$last_try" = "true" ]; then
+      if [ ! "$tb_download_atempt_last_try" = "true" ]; then
          MSG="<p><b>Failed to download:</b> $curl_download_target_url
 <br></br>There are other recommended versions. Will try to download the next recommended version...</p>
 
@@ -895,7 +895,7 @@ INFO: Downloading:
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      if [ ! "$last_try" = "true" ]; then
+      if [ ! "$tb_download_atempt_last_try" = "true" ]; then
          MSG="<p><b>Failed to download:</b> $curl_download_target_url
 <br></br>There are other recommended versions. Will try to download the next recommended version...</p>
 
@@ -1293,12 +1293,12 @@ tb_download_loop() {
 
       tbb_version_folder="$tbb_version"
 
-      if [ "$attempt" = "" ]; then
-         attempt="0"
+      if [ "$tb_download_attempt_number" = "" ]; then
+         tb_download_attempt_number="0"
       fi
-      attempt="$(( $attempt + 1 ))"
-      if [ "$attempt" -ge "$tbbversions_found" ]; then
-         last_try="true"
+      tb_download_attempt_number="$(( $tb_download_attempt_number + 1 ))"
+      if [ "$tb_download_attempt_number" -ge "$tbbversions_found" ]; then
+         tb_download_atempt_last_try="true"
       fi
 
       if [ "$tb_download_ok" = "1" ]; then
