@@ -1274,11 +1274,15 @@ tb_download_loop() {
 
       tbb_version_folder="$tbb_version"
 
-      if [ "$tb_download_attempt_number" = "" ]; then
-         tb_download_attempt_number="0"
-      fi
+      [ -n "$tb_download_attempt_number" ] || tb_download_attempt_number="0"
+      [ -n "$tb_download_attempt_max" ] || tb_download_attempt_max="3"
+
       tb_download_attempt_number="$(( $tb_download_attempt_number + 1 ))"
+      echo "INFO: Download attempt number $tb_download_attempt_number of max tb_download_attempt_max $tb_download_attempt_max."
       if [ "$tb_download_attempt_number" -ge "$tbbversions_found" ]; then
+         tb_download_attempt_last_try="true"
+      fi
+      if [ "$tb_download_attempt_number" -ge "$tb_download_attempt_max" ]; then
          tb_download_attempt_last_try="true"
       fi
 
@@ -1309,7 +1313,7 @@ main_function() {
 
    ## For testing:
    #tbb_recommended_versions_list="2.3.25-16 3.8 2.6 3.7 3.1 3.1 3.4 2.3.25-15 3.5"
-   #tbb_recommended_versions_list="2.3.25-16 2.3.25-15 $tbb_recommended_versions_list 10.0 15.0"
+   #tbb_recommended_versions_list="2.3.25-16 2.3.25-15 $tbb_recommended_versions_list 10.0 15.0 20.0 25.0 30.0"
 
    tb_run_function tb_sort_remote_versions
    tb_run_function tb_confirm_update
