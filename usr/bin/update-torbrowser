@@ -779,7 +779,7 @@ $tb_notify_details"
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      if [ ! "$tb_download_atempt_last_try" = "true" ]; then
+      if [ ! "$tb_download_attempt_last_try" = "true" ]; then
          MSG="<p><b>Failed to download:</b> $curl_download_target_url
 <br></br>There are other recommended versions. Will try to download the next recommended version...</p>
 
@@ -1279,7 +1279,7 @@ tb_download_loop() {
       fi
       tb_download_attempt_number="$(( $tb_download_attempt_number + 1 ))"
       if [ "$tb_download_attempt_number" -ge "$tbbversions_found" ]; then
-         tb_download_atempt_last_try="true"
+         tb_download_attempt_last_try="true"
       fi
 
       if [ "$tb_download_attempt_success" = "true" ]; then
