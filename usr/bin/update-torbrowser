@@ -820,7 +820,7 @@ INFO: Downloading:
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
       if [ "$last_try" = "0" ]; then
-         MSG="<p><b>Failed to download:</b> $TBB_SIG_LINK
+         MSG="<p><b>Failed to download:</b> $curl_download_target_url
 <br></br>There are other recommended versions. Will try to download the next recommended version...</p>
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
@@ -830,7 +830,7 @@ INFO: Downloading:
          ## return 0, so the loop will tell us to try the next $tbb_version.
          return 0
       else
-         MSG="<p>Failed to download: $TBB_SIG_LINK</p>
+         MSG="<p>Failed to download: $curl_download_target_url</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
@@ -864,7 +864,7 @@ INFO: Downloading:
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
       if [ "$last_try" = "0" ]; then
-         MSG="<p><b>Failed to download:</b> $TBB_SIG_LINK
+         MSG="<p><b>Failed to download:</b> $curl_download_target_url
 <br></br>There are other recommended versions. Will try to download the next recommended version...</p>
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
@@ -874,7 +874,7 @@ INFO: Downloading:
          ## return 0, so the loop will tell us to try the next $tbb_version.
          return 0
       else
-         MSG="<p>Failed to download: $TBB_SIG_LINK</p>
+         MSG="<p>Failed to download: $curl_download_target_url</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
@@ -908,7 +908,7 @@ INFO: Downloading:
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
       if [ "$last_try" = "0" ]; then
-         MSG="<p><b>Failed to download:</b> $TBB_PACKAGE_LINK
+         MSG="<p><b>Failed to download:</b> $curl_download_target_url
 <br></br>There are other recommended versions. Will try to download the next recommended version...</p>
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
@@ -918,7 +918,7 @@ INFO: Downloading:
          ## return 0, so the loop will tell us to try the next $tbb_version.
          return 0
       else
-         MSG="<p>Failed to download: $TBB_PACKAGE_LINK</p>
+         MSG="<p>Failed to download: $curl_download_target_url</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
