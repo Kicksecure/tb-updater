@@ -801,10 +801,11 @@ $tb_notify_details"
 }
 
 tb_download_files() {
+   [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
+
    ### signature ###
 
    [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="sha256sums.txt.asc"
-   [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
    [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}"
 
    tb_notify_details="Downloading Tor Browser signature... Will take a moment..."
@@ -831,7 +832,6 @@ INFO: Downloading:
    ### hash file ###
 
    [ -n "$TBB_HASH_FILENAME" ] || TBB_HASH_FILENAME="sha256sums.txt"
-   [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
    [ -n "$TBB_HASH_LINK" ] || TBB_HASH_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_HASH_FILENAME}"
 
    tb_notify_details="Downloading Tor Browser sha256sums file... Will take a moment..."
@@ -858,7 +858,6 @@ INFO: Downloading:
    ### archive file ###
 
    [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz"
-   [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
    [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME"
 
    tb_notify_details="Downloading Tor Browser... Will take a while..."
