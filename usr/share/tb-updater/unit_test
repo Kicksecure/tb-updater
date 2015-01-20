@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e
+
+mydir="$( cd "$( dirname "$0" )" && pwd )"
+cd "$mydir"
+cd ..
+cd ..
+cd ..
+
+RecommendedTBBVersions="./usr/share/tb-updater/unit-test/RecommendedTBBVersions"
+
+test -f "$RecommendedTBBVersions"
+
+source ./usr/lib/tbbversion_parser
+
+tbbversion
+
+echo "tbb_recommended_versions_list: $tbb_recommended_versions_list"
+
+for tbb_version in $tbb_recommended_versions_list; do
+   echo "tbb_version: $tbb_version"
+done
