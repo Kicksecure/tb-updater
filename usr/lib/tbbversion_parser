@@ -41,7 +41,7 @@ tbbversion() {
    local line_number
    line_number="0"
    local line
-   while read -r line; do
+   while read -r -d $'\n' line; do
       line_number="$(( $line_number + 1 ))"
 
       ## Check if RecommendedTBBVersions versions file is excessively long.
