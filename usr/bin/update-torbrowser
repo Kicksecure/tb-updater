@@ -727,6 +727,7 @@ Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</b
    fi
 
    if [ ! "$NOKILLTB" = "1" ]; then
+      echo "INFO: Because you are not using --nokilltb, now killing eventually still running instances of Tor Browser..."
       killall firefox || true
    fi
 }
