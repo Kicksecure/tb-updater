@@ -1093,6 +1093,17 @@ Downloaded version         : <code><blockquote>$tbb_version</blockquote></code>
 }
 
 tb_extract() {
+   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+      true
+   else
+      progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
+      NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
+----------------------------------------------------------------------
+Extracting $nice_name... This could take a moment. Progress bar will not move."
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "25"
+   fi
+
    local timeout_after kill_after file_name
    timeout_after="180"
    kill_after="30"
@@ -1117,6 +1128,13 @@ tb_extract() {
    ## `timeout` returns:
    ## - 124 if sigterm was sufficient
    ## - 137 if needed to use kill.
+
+   if [ "$progressbaridx" = "" ]; then
+      true
+   else
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      progressbaridx=""
+   fi
 
    if [ ! "$tb_tar_exit_code" = "0" ]; then
       local MSG="<p><b>Could not extract $file_name!</b> (tar exit code: ${tb_tar_exit_code})
