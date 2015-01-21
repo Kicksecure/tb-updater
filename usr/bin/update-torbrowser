@@ -1195,8 +1195,8 @@ tb_end() {
    TEMP="$tb_home_folder/tor-browser_$TB_LANG/"
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      MSG="Finished installing Tor Browser. Can be found in $TEMP."
-      echo "$MSG"
+      echo "INFO: Finished installing Tor Browser. Can be found in $TEMP."
+      echo "INFO: Not starting Tor Browser, because variable TB_FORCE_INSTALL is set to 1."
       return 0
    fi
 
@@ -1205,7 +1205,7 @@ tb_end() {
 
    if [ "$command_v_torbrowser_exit_code" = "0" ]; then
       if [ "$noaskstart" = "true" ]; then
-         true "noaskstart is set to true."
+         echo "INFO: noaskstart is set to true. Skipping question if Tor Browser should be started."
       else
          MSG="<p>Finished installing Tor Browser. Can be found in $TEMP.</p>
 
