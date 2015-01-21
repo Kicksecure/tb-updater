@@ -686,6 +686,8 @@ tb_confirm_update() {
       fi
       MSG="$nice_name Update Check (by Whonix developers)
 <br></br>----------------------------------------------------------------------
+<br></br>Download Confirmation
+<br></br>----------------------------------------------------------------------
 <br></br>Currently installed version: <code><blockquote>$tbb_locally_installed_version</blockquote></code>
 Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</blockquote></code>
 
@@ -706,6 +708,8 @@ $re_install_or_install_text
       question="Download now?"
    else
       MSG="$nice_name Update Check (by Whonix developers)
+<br></br>----------------------------------------------------------------------
+<br></br>Download Confirmation
 <br></br>----------------------------------------------------------------------
 <br></br>Currently installed version: <code><blockquote>$tbb_locally_installed_version</blockquote></code>
 Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</blockquote></code>"
@@ -1062,6 +1066,8 @@ According to your system clock, signature was created $gpg_bash_lib_output_signe
    esac
 
    MSG="$nice_name Update Check (by Whonix developers)
+<br></br>----------------------------------------------------------------------
+<br></br>Installation / Signature Confirmation
 <br></br>----------------------------------------------------------------------
 <br></br>Currently installed version: <code><blockquote>$tbb_locally_installed_version</blockquote></code>
 Downloaded version         : <code><blockquote>$tbb_version</blockquote></code>
