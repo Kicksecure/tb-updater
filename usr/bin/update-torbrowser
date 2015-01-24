@@ -663,9 +663,9 @@ tb_confirm_update() {
       done
    fi
 
-   local MSG
-   local question
-   local button="yesno"
+   local MSG question button
+   button="yesno"
+   question="Download now?"
 
    if [ "$installed_or_not_result" = "true" ]; then
       if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
@@ -703,13 +703,11 @@ $re_install_or_install_text
 
 <p>A backup of your old Tor Browser and settings will be created in your home folder.
 <br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space.</p>"
-      question="Download now?"
    else
       MSG="Download Confirmation
 <br></br>----------------------------------------------------------------------
 <br></br>Currently installed version: <code><blockquote>$tbb_locally_installed_version</blockquote></code>
 Online detected version(s) : <code><blockquote>$tbb_recommended_versions_list</blockquote></code>"
-      question="Download now?"
    fi
 
    echo "INFO: Currently installed version: $tbb_locally_installed_version"
