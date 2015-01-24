@@ -741,10 +741,10 @@ tb_download_common() {
       true
    else
       progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
-      NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
+      tb_notify_msg="$nice_name Update Check (by Whonix developers)
 ----------------------------------------------------------------------
 $tb_notify_details"
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
       ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
       ## variables. (See above.)
       ## Define what CURL_PRGRS is supposed to eval.
@@ -1103,10 +1103,10 @@ tb_extract() {
       true
    else
       progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
-      NOTIFY_MSG="$nice_name Update Check (by Whonix developers)
+      tb_notify_msg="$nice_name Update Check (by Whonix developers)
 ----------------------------------------------------------------------
 Extracting $nice_name... This could take a moment. Progress bar will not move."
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$NOTIFY_MSG" --parentpid "$$" --done
+      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "25"
    fi
 
