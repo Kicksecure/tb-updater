@@ -1051,7 +1051,7 @@ According to your system clock, signature was created $gpg_bash_lib_output_signe
 <br></br>- this is an attack"
          ;;
       "current")
-         signature_creation_msg="According to your system clock, signatures was created $gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_output_pretty ago."
+         signature_creation_msg="According to your system clock, signatures was created $gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty ago."
          ;;
       *)
          error "gpg_bash_lib_output_freshness_detail is neither lenient, nor slow, nor outdated, nor current, it is: $gpg_bash_lib_output_freshness_detail"
