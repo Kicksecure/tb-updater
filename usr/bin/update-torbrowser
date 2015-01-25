@@ -1036,7 +1036,7 @@ or indefinite freeze attacks skipped. Please check the Current Signature Creatio
       "lenient")
          signature_creation_msg="<b>Your clock might be slow.</b> $clock_hint
 According to your system clock, signature was created $gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty before current time.
-You can probably ignore this, because it still is within range. (Okay up to $gpg_bash_lib_output_maximum_age_in_seconds_pretty_output before.)"
+You can probably ignore this, because it still is within range. (Okay up to $gpg_bash_lib_output_maximum_age_pretty_output before.)"
          ;;
       "slow")
          signature_creation_msg="<b>Your clock might be slow.</b> $clock_hint
@@ -1046,7 +1046,7 @@ According to your system clock, signature was created $gpg_bash_lib_output_signe
          signature_creation_msg="Signature looks quite old already.
 <br></br>Either,
 <br></br>- your clock might be fast (at least $gpg_bash_lib_output_in_future_output_pretty fast). $clock_hint
-<br></br>- there is really no newer signature yet. Signature is really older than $gpg_bash_lib_output_maximum_age_in_seconds_pretty_output. already. (Older than $gpg_bash_lib_output_in_future_output_pretty already.)
+<br></br>- there is really no newer signature yet. Signature is really older than $gpg_bash_lib_output_maximum_age_pretty_output. already. (Older than $gpg_bash_lib_output_in_future_output_pretty already.)
 <br></br>- this is a $SCRIPTNAME bug
 <br></br>- this is an attack"
          ;;
