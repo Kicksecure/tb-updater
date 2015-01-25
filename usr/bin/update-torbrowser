@@ -929,7 +929,7 @@ tb_gpg_verify() {
    echo "INFO: gpg_bash_lib_output_gpg_verify_output:
 $gpg_bash_lib_output_gpg_verify_output"
 
-   if [ ! "$gpg_bash_lib_output_validsig" = "true" ]; then
+   if [ ! "$gpg_bash_lib_output_validsig_status" = "true" ]; then
       local MSG="<p><b>GPG download signature could NOT be verified.</b>
 <br></br>Tor Browser update failed! Try again later.</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
