@@ -905,7 +905,7 @@ tb_gpg_verify() {
 ## signed by the GPG keys we added. Signatures from random people from the
 ## user's keyring will be ignored."
 
-   gpg_bash_lib_input_verifiy_timeout_after="60"
+   gpg_bash_lib_input_verify_timeout_after="60"
    gpg_bash_lib_input_verify_kill_after="10"
    gpg_bash_lib_input_key_import_dir="/usr/share/torbrowser-updater-keys.d"
    gpg_bash_lib_input_temp_folder="$tb_home_folder/.tb/gpgtmpdir"
