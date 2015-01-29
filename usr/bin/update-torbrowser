@@ -693,10 +693,10 @@ $up_to_date_or_not_text
 
 $re_install_or_install_text
 
-<p>If your currently installed version is:
-   <blockquote>higher: you are likely target of a downgrade attack, SAY NO NOW!
-   <br></br>equal : only proceed, if you want to create a new browser profile.
-   <br></br>lower : you should upgrade.</blockquote></p>
+If your currently installed version is:<pre>
+   higher: you are likely target of a downgrade attack, SAY NO NOW!
+   equal : only proceed, if you want to create a new browser profile.
+   lower : you should upgrade.</pre>
 
 <p>YOUR BROWSER WILL BE KILLED.
 <br></br>YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED!</p>
