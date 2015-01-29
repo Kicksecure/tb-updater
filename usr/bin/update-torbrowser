@@ -1017,7 +1017,7 @@ Unless you are downgrading, you should abort now and try again later!"
          type="warning"
       elif [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" = "$gpg_bash_lib_output_signed_on_unixtime" ]; then
          signature_freshness_msg="You could be target of an indefinite freeze attack! The downloaded signature has same creation date as the last known signature. \
-Unless you are re-installing the same version, you should abort now and try gain later!"
+Unless you are re-installing the same version, you should abort now and try again later!"
          type="warning"
       else
          error "last_used_gpg_bash_lib_output_signed_on_unixtime $last_used_gpg_bash_lib_output_signed_on_unixtime \
