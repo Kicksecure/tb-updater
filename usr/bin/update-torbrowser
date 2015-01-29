@@ -902,7 +902,7 @@ tb_gpg_verify() {
    echo "INFO:
 ## Verifying GPG signature.
 ## Not using the user's GPG keyring also ensures, that the key can be only
-## signed by the GPG keys we added. Signatures from random people from the
+## signed by the GPG keys we added. Keys from random people from the
 ## user's keyring will be ignored."
 
    gpg_bash_lib_input_verify_timeout_after="60"
