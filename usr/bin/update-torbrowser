@@ -208,7 +208,6 @@ tb_parse_cmd_options() {
                TB_FORCE_INSTALL="1"
                DEV_BUILD_PASSTHROUGH="1"
                DEV_PASSTHROUGH="1"
-               ORDINARY_PROGRESS_BAR="1"
                shift
                ;;
            ## Keeping --clearnet this for compatibility. Does nothing anymore,
