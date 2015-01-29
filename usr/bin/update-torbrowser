@@ -687,7 +687,7 @@ tb_confirm_update() {
       MSG="Download Confirmation
 <br></br>----------------------------------------------------------------------<pre>\
 Currently installed version: $tbb_locally_installed_version
-Online detected version(s) : $tbb_recommended_versions_list</pre>
+Online detected version(s) : $tbb_recommended_versions_inside_one_line_list</pre>
 
 $up_to_date_or_not_text
 
@@ -707,11 +707,11 @@ If your currently installed version is:<pre>
       MSG="Download Confirmation
 <br></br>----------------------------------------------------------------------<pre>
 Currently installed version: $tbb_locally_installed_version
-Online detected version(s) : $tbb_recommended_versions_list</pre>"
+Online detected version(s) : $tbb_recommended_versions_inside_one_line_list</pre>"
    fi
 
    echo "INFO: Currently installed version: $tbb_locally_installed_version"
-   echo "INFO: Online detected version(s) : $tbb_recommended_versions_list"
+   echo "INFO: Online detected version(s) : $tbb_recommended_versions_inside_one_line_list"
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       echo "INFO: TB_FORCE_INSTALL = 1"
@@ -1272,6 +1272,8 @@ tb_sort_remote_versions() {
    ## #2.6
    ## 2.3.25-16
    ## 2.3.25-15
+
+   tbb_recommended_versions_inside_one_line_list="$(echo "$tbb_recommended_versions_list" | tr '\n' ' ')"
 }
 
 tb_download_loop() {
