@@ -1016,7 +1016,7 @@ tb_confirm_install() {
 Unless you are downgrading, you should abort now and try again later!"
          type="warning"
       elif [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" = "$gpg_bash_lib_output_signed_on_unixtime" ]; then
-         signature_freshness_msg="You could be target of an indefinite freeze attack! The downloaded signature has same creation date as the last known signature. \
+         signature_freshness_msg="<b>You could be target of an indefinite freeze attack!</b> The downloaded signature has same creation date as the last known signature. \
 Unless you are re-installing the same version, you should abort now and try again later!"
          type="warning"
       else
@@ -1031,8 +1031,8 @@ or indefinite freeze attacks skipped. Please check the Current Signature Creatio
    fi
 
    if [ -d /usr/share/whonix ]; then
-      clock_hint="In that case, please run Timesync: <blockquote>Start menu -> Applications -> System -> Timesync</blockquote>
-                     or in Terminal: <code><blockquote>timesync</blockquote></code>"
+      clock_hint="In that case, please run Timesync: <code>Start menu -> Applications -> System -> Timesync</code>. \
+Or in Terminal: <code>timesync</code>"
    fi
 
    case "$gpg_bash_lib_output_freshness_detail" in
@@ -1046,10 +1046,9 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
 According to your system clock, the signature was created $gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty before current time."
          ;;
       "outdated")
-         signature_creation_msg="The signature looks quite old already.
-<br></br>Either,
+         signature_creation_msg="<b>The signature looks quite old already.</b> Either,
 <br></br>- your clock might be fast (at least $gpg_bash_lib_output_in_future_pretty_output fast). $clock_hint
-<br></br>- there is really no newer signature yet. The signature is really older than $gpg_bash_lib_output_maximum_age_pretty_output. already. (Older than $gpg_bash_lib_output_in_future_pretty_output already.)
+<br></br>- there is really no newer signature yet. The signature is really older than $gpg_bash_lib_output_maximum_age_pretty_output already. (Older than $gpg_bash_lib_output_in_future_pretty_output already.)
 <br></br>- this is a $SCRIPTNAME bug
 <br></br>- this is an attack"
          ;;
