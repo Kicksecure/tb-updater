@@ -62,8 +62,9 @@ tb_error_handler() {
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       progressbaridx=""
    fi
-   $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-   $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
+
+   $output ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
+   $output ${output_opts[@]} --messagecli --titlecli "$TITLE"--typecli "error" --message "$MSG" --done
    exit 1
 }
 
