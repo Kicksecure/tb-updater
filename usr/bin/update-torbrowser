@@ -1012,7 +1012,7 @@ tb_confirm_install() {
          signature_freshness_msg="The downloaded signature is newer than the last known signature as expected."
          type="info"
       elif [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" -gt "$gpg_bash_lib_output_signed_on_unixtime" ]; then
-         signature_freshness_msg="You are likely target of a downgrade attack, SAY NO NOW! The downloaded signature is older than the last known signature. \
+         signature_freshness_msg="<b>You are likely target of a downgrade attack</b>, SAY NO NOW! The downloaded signature is older than the last known signature. \
 Unless you are downgrading, you should abort now and try again later!"
          type="warning"
       elif [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" = "$gpg_bash_lib_output_signed_on_unixtime" ]; then
