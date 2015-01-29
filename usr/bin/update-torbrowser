@@ -1007,14 +1007,15 @@ tb_confirm_install() {
    if [[ "$last_used_gpg_bash_lib_output_signed_on_unixtime" != *[!0-9]* ]]; then
       true "'$last_used_gpg_bash_lib_output_signed_on_unixtime' is strictly numeric."
       if [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" -lt "$gpg_bash_lib_output_signed_on_unixtime" ]; then
-         signature_freshness_msg="Downloaded signature is newer than last known signature. Looks alright."
+         signature_freshness_msg="Looks alright. Downloaded signature is newer than last known signature."
          type="info"
       elif [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" -gt "$gpg_bash_lib_output_signed_on_unixtime" ]; then
-         signature_freshness_msg="Downloaded signature is older than last known signature. You are likely target of a downgrade attack, SAY NO NOW!"
+         signature_freshness_msg="You are likely target of a downgrade attack, SAY NO NOW! Downloaded signature is older than last known signature. \
+Unless you are downgrading, you should abort now and try again later!"
          type="warning"
       elif [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" = "$gpg_bash_lib_output_signed_on_unixtime" ]; then
-         signature_freshness_msg="Downloaded signature has same creation date as last known signature. \
-Unless you are re-installing the same version, you could be target of an indefinite freeze attack."
+         signature_freshness_msg="You could be target of an indefinite freeze attack! Downloaded signature has same creation date as last known signature. \
+Unless you are re-installing the same version, you should abort now and try gain later!"
          type="warning"
       else
          error "last_used_gpg_bash_lib_output_signed_on_unixtime $last_used_gpg_bash_lib_output_signed_on_unixtime \
