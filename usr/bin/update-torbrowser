@@ -1036,12 +1036,12 @@ or indefinite freeze attacks skipped. Please check the Current Signature Creatio
    case "$gpg_bash_lib_output_freshness_detail" in
       "lenient")
          signature_creation_msg="<b>Your clock might be slow.</b> $clock_hint
-According to your system clock, signature was created $gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty before current time.
+According to your system clock, the signature was created $gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty before current time.
 You can probably ignore this, because it still is within range. (Okay up to $gpg_bash_lib_output_maximum_age_pretty_output before.)"
          ;;
       "slow")
          signature_creation_msg="<b>Your clock might be slow.</b> $clock_hint
-According to your system clock, signature was created $gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty before current time."
+According to your system clock, the signature was created $gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty before current time."
          ;;
       "outdated")
          signature_creation_msg="The signature looks quite old already.
