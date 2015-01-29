@@ -663,7 +663,7 @@ tb_confirm_update() {
       done
    fi
 
-   local MSG question button
+   local MSG question button type
    button="yesno"
    question="Download now?"
 
@@ -684,6 +684,7 @@ tb_confirm_update() {
 <br></br>dpkg_compare_versions_greater_than_exit_code: $dpkg_compare_versions_greater_than_exit_code"
          exit 1
       fi
+      type="warning"
       MSG="Download Confirmation
 <br></br>----------------------------------------------------------------------<pre>\
 Currently installed version: $tbb_locally_installed_version
@@ -704,6 +705,7 @@ If your currently installed version is:<pre>
 <p>A backup of your old Tor Browser and settings will be created in your home folder.
 <br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space.</p>"
    else
+      type="info"
       MSG="Download Confirmation
 <br></br>----------------------------------------------------------------------<pre>
 Currently installed version: $tbb_locally_installed_version
@@ -717,7 +719,7 @@ Online detected version(s) : $tbb_recommended_versions_inside_one_line_list</pre
       echo "INFO: TB_FORCE_INSTALL = 1"
    else
       local answer
-      answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
+      answer="$(/usr/lib/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
       if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
          echo "INFO: Canceled. Exit."
          exit 0
