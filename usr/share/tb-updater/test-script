@@ -1,0 +1,29 @@
+#!/bin/bash
+
+## This file is part of Whonix.
+## Copyright (C) 2012 - 2014 Patrick Schleizer <adrelanos@riseup.net>
+## See the file COPYING for copying conditions.
+
+set -e
+set -o pipefail
+
+mydir="$( cd "$( dirname "$0" )" && pwd )"
+cd "$mydir"
+cd ../../../
+
+export TBB_VERSIONS_FILE_LINK="file:///home/user/.tb/test/RecommendedTBBVersions"
+export TBB_REMOTE_FOLDER="file:///home/user/.tb/test/RecommendedTBBVersions"
+
+export TBB_SIG_LINK="file:///home/user/.tb/test/sha256sums.txt.asc"
+export TBB_HASH_LINK="file:///home/user/.tb/test/sha256sums.txt"
+export TBB_PACKAGE_LINK="file:///home/user/.tb/test/tor-browser-linux32-4.5a3_en-US.tar.xz"
+
+## To allow downloads from local file system.
+export CURL_FORCE_SSL=" "
+
+## Using --ordinary because curl-prgrs does not work with local files.
+if [ -o xtrace ]; then
+   bash -x ./usr/bin/update-torbrowser --ordinary
+else
+   ./usr/bin/update-torbrowser --ordinary
+fi
