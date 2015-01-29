@@ -1009,7 +1009,7 @@ tb_confirm_install() {
    if [[ "$last_used_gpg_bash_lib_output_signed_on_unixtime" != *[!0-9]* ]]; then
       true "'$last_used_gpg_bash_lib_output_signed_on_unixtime' is strictly numeric."
       if [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" -lt "$gpg_bash_lib_output_signed_on_unixtime" ]; then
-         signature_freshness_msg="Looks alright. The downloaded signature is newer than the last known signature."
+         signature_freshness_msg="The downloaded signature is newer than the last known signature as expected."
          type="info"
       elif [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" -gt "$gpg_bash_lib_output_signed_on_unixtime" ]; then
          signature_freshness_msg="You are likely target of a downgrade attack, SAY NO NOW! The downloaded signature is older than the last known signature. \
