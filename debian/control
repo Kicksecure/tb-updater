@@ -14,9 +14,9 @@ Standards-Version: 3.9.4
 
 Package: tb-updater
 Architecture: all
-Depends: msgcollector, curl, psmisc, ${misc:Depends}
+Depends: msgcollector, curl, psmisc, gpg-bash-lib, ${misc:Depends}
 Recommends: tb-starter, anon-icon-pack, anon-shared-helper-scripts,
- curl-scripts, gpg-bash-lib
+ curl-scripts
 Suggests: tb-default-browser, open-link-confirmation
 Description: Tor Browser Updater
  Without the curl-scripts package installed, the GUI will not move the progress
