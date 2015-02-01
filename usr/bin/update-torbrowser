@@ -64,7 +64,7 @@ tb_error_handler() {
    fi
 
    $output ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
-   $output ${output_opts[@]} --messagecli --titlecli "$TITLE"--typecli "error" --message "$MSG" --done
+   $output ${output_opts[@]} --messagecli --titlecli "$TITLE" --typecli "error" --message "$MSG" --done
    exit 1
 }
 
