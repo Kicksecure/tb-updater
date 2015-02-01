@@ -120,11 +120,13 @@ tb_sanity_tests() {
    command -v tar >/dev/null
    command -v date >/dev/null
    command -v /usr/lib/msgcollector/msgcollector >/dev/null
+   command -v /usr/lib/msgcollector/pv_wrapper >/dev/null
    ## tbbversion function
    command -v grep >/dev/null
    ## tbbversion function
    command -v sed >/dev/null
    command -v sort >/dev/null
+   command -v pv >/dev/null
 }
 
 tb_ex_funct() {
