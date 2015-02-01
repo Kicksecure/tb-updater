@@ -1129,8 +1129,17 @@ Extracting $nice_name... This could take a moment."
 
       timeout --kill-after="$kill_after" "$timeout_after" \
          pv -n "$file_name" \
-            1> >( tar xfvJ - -C "$tb_home_folder/.tb/" ) \
-            2> >( bash /usr/lib/msgcollector/pv_wrapper ) \
+            1> \
+               >( \
+                  tar \
+                     xfvJ \
+                     - \
+                     -C "$tb_home_folder/.tb/" \
+               ) \
+            2> \
+               >( \
+                  bash /usr/lib/msgcollector/pv_wrapper \
+               ) \
             &
    fi
 
