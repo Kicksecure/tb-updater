@@ -1101,9 +1101,8 @@ tb_extract() {
       progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
       tb_notify_msg="Extraction
 ----------------------------------------------------------------------
-Extracting $nice_name... This could take a moment. Progress bar will not move."
+Extracting $nice_name... This could take a moment."
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "25"
    fi
 
    local timeout_after kill_after file_name
@@ -1117,12 +1116,23 @@ Extracting $nice_name... This could take a moment. Progress bar will not move."
 
    tb_tar_exit_code="0"
 
-   timeout --kill-after="$kill_after" "$timeout_after" \
-      tar \
-         xfv \
-         "$file_name" \
-         -C "$tb_home_folder/.tb/" \
-         &
+   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+      timeout --kill-after="$kill_after" "$timeout_after" \
+         tar \
+            xfv \
+            "$file_name" \
+            -C "$tb_home_folder/.tb/" \
+            &
+   else
+      pv_wrapper_command="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
+      export pv_wrapper_command
+
+      timeout --kill-after="$kill_after" "$timeout_after" \
+         pv -n "$file_name" \
+            1> >( tar xfvJ - -C "$tb_home_folder/.tb/" ) \
+            2> >( bash /usr/lib/msgcollector/pv_wrapper ) \
+            &
+   fi
 
    lastpid="$!"
    wait "$lastpid" || { tb_tar_exit_code="$?" ; true; };
