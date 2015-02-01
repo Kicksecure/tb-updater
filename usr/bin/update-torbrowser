@@ -1126,8 +1126,9 @@ Extracting $nice_name... This could take a moment."
             -C "$tb_home_folder/.tb/" \
             &
    else
+      pv_echo_command='echo "extraction percent done: "$percent" / 100" >&2'
       pv_wrapper_command="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
-      export pv_wrapper_command
+      export pv_wrapper_command pv_echo_command
 
       timeout --kill-after="$kill_after" "$timeout_after" \
          pv -n "$file_name" \
