@@ -99,7 +99,7 @@ root_check() {
       #echo "$SCRIPTNAME running as user."
       true
    else
-      echo "Do not run $SCRIPTNAME as root!"
+      echo "ERROR: Do not run $SCRIPTNAME as root!"
       exit 1
    fi
 }
