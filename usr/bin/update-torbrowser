@@ -267,6 +267,11 @@ tb_parse_cmd_options() {
    true "$BASH_SOURCE \$@: $@"
 }
 
+output_info_echo_only() {
+   MSG="${1+"$@"}"
+   $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+}
+
 outputfunc() {
    if [ "$outputfunc_verbose" = "true" ]; then
       echo "Running: bash -x $output_tool --identifier $IDENTIFIER --whoami $who_ami ${1+$@}"
@@ -576,7 +581,7 @@ tb_update_check() {
    [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
 
    tb_notify_details="Checking Tor Browser version... Will take a moment..."
-   echo "INFO: Find out latest version... Downloading: $TBB_VERSIONS_FILE_LINK... "
+   output_info_echo_only "INFO: Find out latest version... Downloading: $TBB_VERSIONS_FILE_LINK... "
 
    ## 1 MB = 1048576 bytes
    ## 2 MB = 2097152 bytes
@@ -717,29 +722,28 @@ Online detected version(s) : $tbb_recommended_versions_inside_one_line_list</pre
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      echo "INFO: TB_FORCE_INSTALL = 1"
+      output_info_echo_only "TB_FORCE_INSTALL = 1"
    else
       local answer
       if [ "$my_tty" = "none" ]; then
          answer="$(/usr/lib/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
          if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-            echo "INFO: Canceled. Exit."
+            output_info_echo_only "Canceled. Exit."
             exit 0
          fi
       else
-         MSG="QUESTION: $question
+         output_info_echo_only "QUESTION: $question
 y/n?"
-         $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
          read answer
          if [ ! "$answer" = "y" ]; then
-            echo "INFO: Canceled. Exit."
+            output_info_echo_only "Canceled. Exit."
             exit 0
          fi
       fi
    fi
 
    if [ ! "$NOKILLTB" = "1" ]; then
-      echo "INFO: Because you are not using --nokilltb, now killing eventually still running instances of Tor Browser..."
+      output_info_echo_only "Because you are not using --nokilltb, now killing eventually still running instances of Tor Browser..."
       killall firefox || true
    fi
 }
@@ -810,7 +814,7 @@ $tb_notify_details"
       fi
    fi
 
-   echo "INFO: Done, downloaded $curl_download_target_url."
+   output_info_echo_only "Done, downloaded $curl_download_target_url."
 }
 
 tb_download_files() {
@@ -822,9 +826,9 @@ tb_download_files() {
    [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}"
 
    tb_notify_details="Downloading Tor Browser signature... Will take a moment..."
-   echo "INFO: Downloading GPG signature... Will take a moment..."
-   echo "\
-INFO: Downloading:
+   output_info_echo_only "Downloading GPG signature... Will take a moment..."
+   output_info_echo_only "\
+Downloading:
       $TBB_SIG_LINK ... Will take a moment..."
 
    ## 1 MB = 1048576 bytes
@@ -853,9 +857,9 @@ INFO: Downloading:
    [ -n "$TBB_HASH_LINK" ] || TBB_HASH_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_HASH_FILENAME}"
 
    tb_notify_details="Downloading Tor Browser sha256sums file... Will take a moment..."
-   echo "INFO: Downloading sha256sums file... Will take a moment..."
-   echo "\
-INFO: Downloading:
+   output_info_echo_only "Downloading sha256sums file... Will take a moment..."
+   output_info_echo_only "\
+Downloading:
       $TBB_HASH_LINK ... Will take a moment..."
 
    ## 1 MB = 1048576 bytes
@@ -884,9 +888,9 @@ INFO: Downloading:
    [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME"
 
    tb_notify_details="Downloading Tor Browser... Will take a while..."
-   echo "INFO: Downloading Tor Browser Bundle: $tbb_version"
-   echo "\
-INFO: Downloading:
+   output_info_echo_only "Downloading Tor Browser Bundle: $tbb_version"
+   output_info_echo_only "\
+Downloading:
       $TBB_PACKAGE_LINK ... Will take a while..."
 
    ## 1 MB = 1048576 bytes
@@ -913,7 +917,7 @@ INFO: Downloading:
 }
 
 tb_gpg_verify() {
-   echo "INFO:
+   output_info_echo_only "\
 ## Verifying GPG signature.
 ## Not using the user's GPG keyring also ensures, that the key can be only
 ## signed by the GPG keys we added. Keys from random people from the
@@ -940,7 +944,7 @@ tb_gpg_verify() {
    gpg_bash_lib_function_main_verify
    trap "tb_error_handler" ERR
 
-   echo "INFO: gpg_bash_lib_output_gpg_verify_output:
+   output_info_echo_only "gpg_bash_lib_output_gpg_verify_output:
 $gpg_bash_lib_output_gpg_verify_output"
 
    if [ ! "$gpg_bash_lib_output_goodsig_status" = "true" ]; then
@@ -957,7 +961,7 @@ $gpg_bash_lib_output_gpg_verify_output"
 }
 
 tb_hash_verify() {
-   echo "INFO: Checking hash..."
+   output_info_echo_only "Checking hash..."
 
    rm --force "$tb_home_folder/.tb/sha256_output"
 
@@ -989,11 +993,11 @@ tb_hash_verify() {
    sha256sum_output="$(cat "$tb_home_folder/.tb/sha256_output")" || true
 
    if grep -q "$sha256sum_output" "$tb_home_folder/.tb/$TBB_HASH_FILENAME" ; then
-      echo "INFO: Hash check ok."
+      output_info_echo_only "Hash check ok."
       return 0
    fi
 
-   echo "ERROR: Hash check failed! Exiting." >&2
+   output_info_echo_only "Hash check failed! Exiting." >&2
    local MSG="<p><b>Hash could NOT be verified.</b>
 <br></br>Tor Browser update failed! Try again later.</p>"
    $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
@@ -1098,21 +1102,20 @@ $signature_creation_msg"
    question="Install now?"
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      echo "INFO: TB_FORCE_INSTALL = 1"
+      output_info_echo_only "TB_FORCE_INSTALL = 1"
    else
       if [ "$my_tty" = "none" ]; then
          answer="$(/usr/lib/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
          if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-            echo "INFO: Canceled. Exit."
+            output_info_echo_only "Canceled. Exit."
             exit 0
          fi
       else
-         MSG="QUESTION: $question
+         output_info_echo_only "QUESTION: $question
 y/n?"
-         $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
          read answer
          if [ ! "$answer" = "y" ]; then
-            echo "INFO: Canceled. Exit."
+            output_info_echo_only "Canceled. Exit."
             exit 0
          fi
       fi
@@ -1260,7 +1263,7 @@ tb_patch_version_number_own() {
    ## TBB 4.X ~/"tor-browser_${TB_LANG}/Browser/TorBrowser/Docs/sources/versions".
    ## To play it safe and having a chance of finding out the installed version,
    ## we create a file ourselves to remember it.
-   echo "INFO: Creating version file tor-browser_$TB_LANG/Docs/version."
+   output_info_echo_only "Creating version file tor-browser_$TB_LANG/Docs/version."
    echo "$tbb_version" > "$tb_home_folder/.tb/tor-browser_$TB_LANG/Docs/version"
 }
 
@@ -1274,7 +1277,7 @@ tb_patch_internal_updater_disable_maybe() {
    target_file="$tb_home_folder/.tb/tor-browser_$TB_LANG/Browser/TorBrowser/Data/Browser/profile.default/preferences/tb_internal_updater_disable.js"
 
    if [ -f "$source_file" ]; then
-      echo "INFO: Deactivating Tor Browser’s Internal Updater at least as long \
+      output_info_echo_only "Deactivating Tor Browser’s Internal Updater at least as long \
 it does not support verification. See also:
 - https://www.whonix.org/blog/tor-browser-updater-warning
 - https://www.whonix.org/forum/index.php/topic,807
@@ -1287,7 +1290,7 @@ and add:
 tb_skip_functions+=\" $FUNCNAME \""
       cp "$source_file" "$target_file"
    else
-      echo "INFO: Not Deactivating Tor Browser’s Internal Updater because file
+      output_info_echo_only "Not Deactivating Tor Browser’s Internal Updater because file
 $source_file
 does not exist."
    fi
@@ -1301,11 +1304,11 @@ tb_patch() {
 
 tb_install() {
    if [ -d "$tb_home_folder/tor-browser_$TB_LANG" ]; then
-      echo "INFO: Moving old folder $tb_home_folder/tor-browser_$TB_LANG..."
+      output_info_echo_only "Moving old folder $tb_home_folder/tor-browser_$TB_LANG..."
       mv "$tb_home_folder/tor-browser_$TB_LANG" "$tb_home_folder/tor-browser_$TB_LANG.old.$(date '+%F-%H:%M:%S')"
    fi
 
-   echo "INFO: Moving temporary folder $tb_home_folder/.tb/tor-browser_$TB_LANG to $tb_home_folder/tor-browser_$TB_LANG."
+   output_info_echo_only "Moving temporary folder $tb_home_folder/.tb/tor-browser_$TB_LANG to $tb_home_folder/tor-browser_$TB_LANG."
    mv "$tb_home_folder/.tb/tor-browser_$TB_LANG" "$tb_home_folder/tor-browser_$TB_LANG"
 }
 
@@ -1314,8 +1317,8 @@ tb_end() {
    TEMP="$tb_home_folder/tor-browser_$TB_LANG/"
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      echo "INFO: Finished installing Tor Browser. Can be found in $TEMP."
-      echo "INFO: Not starting Tor Browser, because variable TB_FORCE_INSTALL is set to 1."
+      output_info_echo_only "Finished installing Tor Browser. Can be found in $TEMP."
+      output_info_echo_only "Not starting Tor Browser, because variable TB_FORCE_INSTALL is set to 1."
       return 0
    fi
 
@@ -1324,7 +1327,7 @@ tb_end() {
 
    if [ "$command_v_torbrowser_exit_code" = "0" ]; then
       if [ "$noaskstart" = "true" ]; then
-         echo "INFO: noaskstart is set to true. Skipping question if Tor Browser should be started."
+         output_info_echo_only "noaskstart is set to true. Skipping question if Tor Browser should be started."
       else
          MSG="<p>Finished installing Tor Browser. Can be found in $TEMP.</p>
 
@@ -1336,24 +1339,23 @@ tb_end() {
          if [ "$my_tty" = "none" ]; then
             answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
             if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-               echo "INFO: Canceled starting Tor Browser, ok."
+               output_info_echo_only "Canceled starting Tor Browser, ok."
             else
                torbrowser
             fi
          else
-            MSG="QUESTION: $question
+            output_info_echo_only "QUESTION: $question
 y/n?"
-            $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
             read answer
             if [ ! "$answer" = "y" ]; then
-               echo "INFO: Canceled starting Tor Browser, ok."
+               output_info_echo_only "Canceled starting Tor Browser, ok."
             else
                torbrowser
             fi
          fi
       fi
    else
-      echo "INFO: torbrowser binary not found in path. tb-starter is probably not installed. \
+      output_info_echo_only "torbrowser binary not found in path. tb-starter is probably not installed. \
 Skipping question to start Tor Browser."
    fi
 }
