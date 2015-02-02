@@ -133,10 +133,10 @@ tb_ex_funct() {
    local MSG
    MSG="$SIGNAL_TYPE received. Cleaning up..."
 
-   if [ "$last_pid" = "" ]; then
+   if [ "$last_pid_list" = "" ]; then
       true
    else
-      kill -1 "$last_pid"
+      kill -1 "$last_pid_list"
    fi
 
    if [ "$progressbaridx" = "" ]; then
@@ -759,9 +759,9 @@ $tb_notify_details"
       "$curl_download_target_url" \
       &
 
-   last_pid="$!"
-   wait "$last_pid" || { curl_exit_code="$?" ; true; };
-   last_pid=""
+   last_pid_list="$!"
+   wait "$last_pid_list" || { curl_exit_code="$?" ; true; };
+   last_pid_list=""
 
    if [ "$progressbaridx" = "" ]; then
       true
