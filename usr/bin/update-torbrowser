@@ -359,7 +359,6 @@ tb_preparation() {
       output="/usr/lib/msgcollector/msgcollector"
    fi
 
-   local my_tty
    local my_tty_exit_code
    my_tty_exit_code="0"
    my_tty="$(tty)" || { my_tty_exit_code="$?" ; true; };
@@ -687,7 +686,8 @@ tb_confirm_update() {
       fi
       type="warning"
       MSG="Download Confirmation
-<br></br>----------------------------------------------------------------------<pre>\
+<br></br>----------------------------------------------------------------------
+<pre>\
 Currently installed version: $tbb_locally_installed_version
 Online detected version(s) : $tbb_recommended_versions_inside_one_line_list</pre>
 
@@ -708,22 +708,33 @@ If your currently installed version is:<pre>
    else
       type="info"
       MSG="Download Confirmation
-<br></br>----------------------------------------------------------------------<pre>
+<br></br>----------------------------------------------------------------------
+<pre>\
 Currently installed version: $tbb_locally_installed_version
 Online detected version(s) : $tbb_recommended_versions_inside_one_line_list</pre>"
    fi
 
-   echo "INFO: Currently installed version: $tbb_locally_installed_version"
-   echo "INFO: Online detected version(s) : $tbb_recommended_versions_inside_one_line_list"
+   $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       echo "INFO: TB_FORCE_INSTALL = 1"
    else
       local answer
-      answer="$(/usr/lib/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
-      if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-         echo "INFO: Canceled. Exit."
-         exit 0
+      if [ "$my_tty" = "none" ]; then
+         answer="$(/usr/lib/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
+         if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
+            echo "INFO: Canceled. Exit."
+            exit 0
+         fi
+      else
+         MSG="QUESTION: $question
+y/n?"
+         $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+         read answer
+         if [ ! "$answer" = "y" ]; then
+            echo "INFO: Canceled. Exit."
+            exit 0
+         fi
       fi
    fi
 
@@ -1071,7 +1082,8 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
    esac
 
    MSG="Installation / Signature Confirmation
-<br></br>----------------------------------------------------------------------<pre>\
+<br></br>----------------------------------------------------------------------
+<pre>\
 Currently installed version: $tbb_locally_installed_version
 Downloaded version         : $tbb_version</pre>
 $signature_freshness_msg
@@ -1088,10 +1100,21 @@ $signature_creation_msg"
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       echo "INFO: TB_FORCE_INSTALL = 1"
    else
-      answer="$(/usr/lib/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
-      if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-         echo "INFO: Canceled. Exit."
-         exit 0
+      if [ "$my_tty" = "none" ]; then
+         answer="$(/usr/lib/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
+         if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
+            echo "INFO: Canceled. Exit."
+            exit 0
+         fi
+      else
+         MSG="QUESTION: $question
+y/n?"
+         $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+         read answer
+         if [ ! "$answer" = "y" ]; then
+            echo "INFO: Canceled. Exit."
+            exit 0
+         fi
       fi
    fi
 
@@ -1310,11 +1333,23 @@ tb_end() {
          local question="Start Tor Browser?"
          local button="yesno"
          local answer
-         answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
-         if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-            echo "INFO: Canceled starting Tor Browser, ok."
+         if [ "$my_tty" = "none" ]; then
+            answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
+            if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
+               echo "INFO: Canceled starting Tor Browser, ok."
+            else
+               torbrowser
+            fi
          else
-            torbrowser
+            MSG="QUESTION: $question
+y/n?"
+            $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+            read answer
+            if [ ! "$answer" = "y" ]; then
+               echo "INFO: Canceled starting Tor Browser, ok."
+            else
+               torbrowser
+            fi
          fi
       fi
    else
