@@ -1125,29 +1125,70 @@ Extracting $nice_name... This could take a moment."
             "$file_name" \
             -C "$tb_home_folder/.tb/" \
             &
+
+      lastpid="$!"
+      wait "$lastpid" || { tb_tar_exit_code="$?" ; true; };
    else
       pv_echo_command='echo "extraction percent done: "$percent" / 100" >&2'
       pv_wrapper_command="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
       export pv_wrapper_command pv_echo_command
 
-      timeout --kill-after="$kill_after" "$timeout_after" \
-         pv -n "$file_name" \
-            1> \
-               >( \
-                  tar \
-                     xfvJ \
-                     - \
-                     -C "$tb_home_folder/.tb/" \
-               ) \
-            2> \
-               >( \
-                  bash /usr/lib/msgcollector/pv_wrapper \
-               ) \
-            &
-   fi
+      local tar_fifo tar_pid pv_wrapper_fifo pv_wrapper_fifo
+      local pv_exit_code tar_exit_code pv_wrapper_exit_code
+      tar_fifo="$TEMP_DIR/tar_fifo"
+      pv_wrapper_fifo="$TEMP_DIR/pv_wrapper_fifo"
+      pv_exit_code="0"
+      tar_exit_code="0"
+      pv_wrapper_exit_code="0"
 
-   lastpid="$!"
-   wait "$lastpid" || { tb_tar_exit_code="$?" ; true; };
+      rm --force "$tar_fifo"
+      rm --force "$pv_wrapper_fifo"
+      mkfifo "$tar_fifo"
+      mkfifo "$pv_wrapper_fifo"
+
+      timeout \
+         --kill-after="$kill_after" \
+         "$timeout_after" \
+            tar \
+               xfvJ \
+               - \
+               -C "$tb_home_folder/.tb/" \
+               < "$tar_fifo" &
+      tar_pid="$!"
+
+      timeout \
+         --kill-after="$kill_after" \
+         "$timeout_after" \
+            bash \
+               /usr/lib/msgcollector/pv_wrapper \
+               < "$pv_wrapper_fifo" &
+      pv_wrapper_pid="$!"
+
+      timeout \
+         --kill-after="$kill_after" \
+         "$timeout_after" \
+            pv \
+               -n \
+               "$file_name" \
+               1> "$tar_fifo" \
+               2> "$pv_wrapper_fifo" \
+               &
+      pv_pid="$!"
+
+      wait "$pv_pid" || { pv_exit_code="$?" ; true; };
+      wait "$tar_pid" || { tar_exit_code="$?" ; true; };
+      wait "$pv_wrapper_pid" || { pv_wrapper_exit_code="$?" ; true; };
+
+      if [ ! "$pv_exit_code" = "0" ]; then
+         tb_tar_exit_code="1"
+      fi
+      if [ ! "$tar_exit_code" = "0" ]; then
+         tb_tar_exit_code="1"
+      fi
+      if [ ! "$pv_wrapper_exit_code" = "0" ]; then
+         tb_tar_exit_code="1"
+      fi
+   fi
 
    ## `timeout` returns:
    ## - 124 if sigterm was sufficient
@@ -1161,7 +1202,14 @@ Extracting $nice_name... This could take a moment."
    fi
 
    if [ ! "$tb_tar_exit_code" = "0" ]; then
-      local MSG="<p><b>Could not extract $file_name!</b> (tar exit code: ${tb_tar_exit_code})
+      local MSG="<p><b>Could not extract $file_name!</b>
+<br></br>
+<br></br>(Debugging information:
+<br></br>tar exit code: $tb_tar_exit_code
+<br></br>pv_exit_code: $pv_exit_code
+<br></br>tar_exit_code: $tar_exit_code
+<br></br>pv_wrapper_exit_code: $pv_wrapper_exit_code)
+<br></br>
 <br></br>Please report this bug!</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
