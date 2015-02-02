@@ -127,6 +127,7 @@ tb_sanity_tests() {
    command -v sed >/dev/null
    command -v sort >/dev/null
    command -v pv >/dev/null
+   command -v mkfifo >/dev/null
 }
 
 tb_ex_funct() {
