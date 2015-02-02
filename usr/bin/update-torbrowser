@@ -136,7 +136,9 @@ tb_ex_funct() {
    if [ "$last_pid_list" = "" ]; then
       true
    else
-      kill -1 "$last_pid_list"
+      for pid in $last_pid_list; do
+         kill -1 "$pid"
+      done
    fi
 
    if [ "$progressbaridx" = "" ]; then
@@ -1155,6 +1157,7 @@ Extracting $nice_name... This could take a moment."
                -C "$tb_home_folder/.tb/" \
                < "$tar_fifo" &
       tar_pid="$!"
+      last_pid_list+=" $tar_pid"
 
       timeout \
          --kill-after="$kill_after" \
@@ -1163,6 +1166,7 @@ Extracting $nice_name... This could take a moment."
                /usr/lib/msgcollector/pv_wrapper \
                < "$pv_wrapper_fifo" &
       pv_wrapper_pid="$!"
+      last_pid_list+=" $pv_wrapper_pid"
 
       timeout \
          --kill-after="$kill_after" \
@@ -1174,6 +1178,7 @@ Extracting $nice_name... This could take a moment."
                2> "$pv_wrapper_fifo" \
                &
       pv_pid="$!"
+      last_pid_list+=" $pv_pid"
 
       wait "$pv_pid" || { pv_exit_code="$?" ; true; };
       wait "$tar_pid" || { tar_exit_code="$?" ; true; };
