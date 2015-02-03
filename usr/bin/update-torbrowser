@@ -364,17 +364,17 @@ tb_preparation() {
       output="/usr/lib/msgcollector/msgcollector"
    fi
 
-   local my_tty_exit_code
-   my_tty_exit_code="0"
-   my_tty="$(tty)" || { my_tty_exit_code="$?" ; true; };
-
-   if [ ! "$my_tty_exit_code" = "0" ]; then
-      my_tty="none"
-   fi
-
-   ## Just in case.
    if [ "$my_tty" = "" ]; then
-      my_tty="none"
+      local my_tty_exit_code
+      my_tty_exit_code="0"
+      my_tty="$(tty)" || { my_tty_exit_code="$?" ; true; };
+      if [ ! "$my_tty_exit_code" = "0" ]; then
+         my_tty="none"
+      fi
+      ## Just in case.
+      if [ "$my_tty" = "" ]; then
+         my_tty="none"
+      fi
    fi
 
    who_ami="$(whoami)"
