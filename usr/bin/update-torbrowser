@@ -451,7 +451,7 @@ tb_preparation() {
    elif [ -d /usr/share/whonix ]; then
       [ -n "$GATEWAY_IP" ] || GATEWAY_IP="10.152.152.10"
       [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
-      [ -n "$CURL_PROXY" ] || CURL_PROXY="--socks5-hostname socks5h://$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD/"
+      [ -n "$CURL_PROXY" ] || CURL_PROXY="--proxy socks5h://user:password@$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD"
    else
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
    fi
