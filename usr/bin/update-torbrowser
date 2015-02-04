@@ -100,7 +100,7 @@ root_check() {
       true
    else
       echo "ERROR: Do not run $SCRIPTNAME as root!"
-      exit 1
+      exit 2
    fi
 }
 
@@ -178,7 +178,7 @@ trap "tb_signal_sigint" SIGINT ## ctrl + c
 trap_sigusr2() {
    SIGNAL_TYPE="SIGUSR2"
    tb_ex_funct
-   exit 0
+   exit 3
 }
 
 trap "trap_sigusr2" SIGUSR2 ## msgcollector, zenity cancel button
@@ -254,7 +254,7 @@ tb_parse_cmd_options() {
                echo "$SCRIPTNAME unknown option: $1"
                echo "See:"
                echo "    man $SCRIPTNAME"
-               exit 1
+               exit 4
                ;;
            *)
                break
@@ -489,7 +489,7 @@ tb_connectivity_checks_tor() {
 
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-         exit 1
+         exit 5
       fi
       echo "Done."
    else
@@ -518,7 +518,7 @@ tb_connectivity_checks_tor() {
 
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-         exit 1
+         exit 6
       fi
       echo "Done."
    else
@@ -563,7 +563,7 @@ tb_connectivity_checks_curl() {
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-      exit 1
+      exit 7
    fi
 
    echo "INFO: Connectivity check succeeded."
@@ -602,7 +602,7 @@ tb_update_check() {
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-      exit 1
+      exit 8
    fi
 }
 
@@ -625,7 +625,7 @@ tb_remote_version_sanity_test() {
 <p>$DOWNLOAD_FAIL_HELP</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-      exit 1
+      exit 9
    fi
 }
 
@@ -729,7 +729,7 @@ Online detected version(s) : $tbb_recommended_versions_inside_one_line_list</pre
          answer="$(/usr/lib/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
          if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
             output_info_echo_only "Canceled. Exit."
-            exit 0
+            exit 10
          fi
       else
          output_info_echo_only "QUESTION: $question
@@ -737,7 +737,7 @@ y/n?"
          read answer
          if [ ! "$answer" = "y" ]; then
             output_info_echo_only "Canceled. Exit."
-            exit 0
+            exit 10
          fi
       fi
    fi
@@ -810,7 +810,7 @@ $tb_notify_details"
 <p>$DOWNLOAD_FAIL_HELP</p>"
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-         exit 1
+         exit 11
       fi
    fi
 
@@ -956,7 +956,7 @@ $gpg_bash_lib_output_gpg_verify_output"
 <p>$gpg_bash_lib_output_diagnostic_message</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-      exit 1
+      exit 12
    fi
 }
 
@@ -1002,7 +1002,7 @@ tb_hash_verify() {
 <br></br>Tor Browser update failed! Try again later.</p>"
    $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
    $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-   exit 1
+   exit 13
 }
 
 tb_confirm_install() {
@@ -1108,7 +1108,7 @@ $signature_creation_msg"
          answer="$(/usr/lib/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
          if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
             output_info_echo_only "Canceled. Exit."
-            exit 0
+            exit 14
          fi
       else
          output_info_echo_only "QUESTION: $question
@@ -1116,7 +1116,7 @@ y/n?"
          read answer
          if [ ! "$answer" = "y" ]; then
             output_info_echo_only "Canceled. Exit."
-            exit 0
+            exit 14
          fi
       fi
    fi
@@ -1245,7 +1245,7 @@ Extracting $nice_name... This could take a moment."
 <br></br>Please report this bug!</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-      exit 1
+      exit 15
    fi
 }
 

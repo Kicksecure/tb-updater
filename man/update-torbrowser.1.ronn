@@ -115,9 +115,43 @@ example
     TB_LANG="ar"
 
 ## EXIT CODES
-0 Success
+0 Success.
 
-1 Error
+0 When using --devbuildpassthrough $tb_home_folder/tor-browser_$TB_LANG already exists.
+
+1 Internal Error.
+
+2 Aborted because running as root.
+
+3 Cancel button pressed.
+
+4 Unknown command line option.
+
+5 Tor not enabled yet. (Only when using Tor connection check.)
+
+6 Tor not fully bootstrapped yet. (Only when using Tor connection check.)
+
+7 Connectivity test failed.
+
+8 Downloading version file failed.
+
+9 Could not find out latest Tor Browser version.
+
+10 User aborted update confirmation.
+
+11 Download failed.
+
+12 Gpg verification error.
+
+13 Hash verification error.
+
+14 User aborted installation confirmation.
+
+15 Extraction failed.
+
+130 Signal sigint received.
+
+143 Signal sigterm received.
 
 ## EXAMPLES
 `update-torbrowser`
