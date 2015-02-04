@@ -690,23 +690,22 @@ tb_confirm_update() {
          exit 1
       fi
       type="warning"
-      MSG="Download Confirmation
-<br></br>----------------------------------------------------------------------
-<pre>\
-Currently installed version: $tbb_locally_installed_version
-Online detected version(s) : $tbb_recommended_versions_inside_one_line_list</pre>
+      MSG="<p>Download Confirmation<br></br>
+----------------------------------------------------------------------</p>
+<p>Currently installed version: $tbb_locally_installed_version<br></br>
+Online detected version(s) : $tbb_recommended_versions_inside_one_line_list</p>
 
-$up_to_date_or_not_text
+<p>$up_to_date_or_not_text</p>
 
-$re_install_or_install_text
+<p>$re_install_or_install_text</p>
 
-If your currently installed version is:<pre>
-   higher: you are likely target of a downgrade attack, SAY NO NOW!
-   equal : only proceed, if you want to create a new browser profile.
-   lower : you should upgrade.</pre>
+<p>If your currently installed version is:<blockquote>
+   - higher: you are likely target of a downgrade attack, SAY NO NOW.<br></br>
+   - equal : only proceed, if you want to create a new browser profile.<br></br>
+   - lower : you should upgrade.</blockquote></p>
 
-<p>YOUR BROWSER WILL BE KILLED.
-<br></br>YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED!</p>
+<p>YOUR BROWSER WILL BE KILLED.<br></br>
+YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.</p>
 
 <p>A backup of your old Tor Browser and settings will be created in your home folder.
 <br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space.</p>"
@@ -1085,16 +1084,14 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
          ;;
    esac
 
-   MSG="Installation / Signature Confirmation
-<br></br>----------------------------------------------------------------------
-<pre>\
-Currently installed version: $tbb_locally_installed_version
-Downloaded version         : $tbb_version</pre>
-$signature_freshness_msg
-<pre>\
-Previous Signature Creation Date: $last_used_gpg_bash_lib_output_signed_on_date
-Last Signature Creation Date    : $gpg_bash_lib_output_signed_on_date</pre>
-$signature_creation_msg"
+   MSG="<p>Installation / Signature Confirmation<br></br>
+----------------------------------------------------------------------</p>
+<p>Currently installed version: $tbb_locally_installed_version<br></br>
+Downloaded version         : $tbb_version</p>
+<p>$signature_freshness_msg</p>
+<p>Previous Signature Creation Date: $last_used_gpg_bash_lib_output_signed_on_date<br></br>
+Last Signature Creation Date    : $gpg_bash_lib_output_signed_on_date</p>
+<p>$signature_creation_msg</p>"
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 
