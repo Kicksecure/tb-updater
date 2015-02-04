@@ -1,0 +1,1302 @@
+commit b6cee65e6e4afcc1f5bd5454a66c0a15faa6ca05
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Feb 4 00:40:53 2015 +0000
+
+    updated makefile generic to version 1.3
+
+commit 4843936a1064cb6516388a72b3390f67d161bc21
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Feb 3 23:58:55 2015 +0000
+
+    Added creation of upstream changelog to debian/rules
+
+commit 81ca9b29a72be45d5b60ccfe51220b5df5dbb3d7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Feb 3 17:24:50 2015 +0000
+
+    made variable my_tty overruleable
+
+commit 74d813357f4f13a3a66c43933c882fe0a53efca6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Feb 2 19:36:05 2015 +0000
+
+    test script allow passing args
+
+commit 7edfc83efdfdeb8ae41e827d88efdaaa8a283d66
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Feb 2 19:34:04 2015 +0000
+
+    output
+
+commit 34562460c42188eeb55f5aa7981c2a76cec7ae04
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Feb 2 19:33:36 2015 +0000
+
+    refactoring; output
+
+commit 8b825fa2f2ea07e8694502765c533c928021d2e9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Feb 2 19:20:00 2015 +0000
+
+    support running without having X running by reading answers from stdin
+
+commit 43cbd4f002b692905732a5cb56293db15c6fdea7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Feb 2 18:49:47 2015 +0000
+
+    sanity test
+
+commit e729247f862f2e5c717a7b7857a5642c3606de9c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Feb 2 18:40:51 2015 +0000
+
+    fix
+
+commit 3ffc995cee871263b1489f1223ee560e4fdec927
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Feb 2 18:36:13 2015 +0000
+
+    refactoring
+
+commit 3b2bc883470c27ed30537fe4f98f97d387ba7f6b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Feb 2 18:28:49 2015 +0000
+
+    fix
+
+commit 5f5b0bbaf21f323092b918932d1f9add010d954a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Feb 1 22:19:56 2015 +0000
+
+    output extraction progress percent also in stderr
+
+commit a2a52ec6f259c1057b488f9965ca9f907147689b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Feb 1 22:13:31 2015 +0000
+
+    sanity tests
+
+commit 6a07f195d88c850e78d4332af0f7178d8fa82b30
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Feb 1 22:12:20 2015 +0000
+
+    added pv to dependencies
+
+commit 06bbfd8a7501f86fbaa9e8d3b9184f65417958c3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Feb 1 22:10:41 2015 +0000
+
+    refactoring
+
+commit 64f3c322ec02cea88d47482334bccf6073e0189c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Feb 1 22:06:35 2015 +0000
+
+    fix
+
+commit d774e196be05ede36dc4a7292ade031d13ce5933
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Feb 1 22:01:11 2015 +0000
+
+    added progress bar for extraction
+
+commit 310521a04a862f1c2f7b99832e582d6e4f27a378
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 30 20:14:39 2015 +0000
+
+    added gpg-bash-lib dependency
+
+commit 9d6641388d590d977d5f888956c73ae52396a5fd
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 22:56:40 2015 +0000
+
+    output
+
+commit 34d733cd294f5f8227b79f37d87948bb2bab3c09
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 22:53:46 2015 +0000
+
+    output
+
+commit 6bc91947631409a3a3523511d5e70678b5148774
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 22:48:22 2015 +0000
+
+    output
+
+commit 70f582202797791b061c0f5d4cc4ff312b8c13a8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 22:46:43 2015 +0000
+
+    output
+
+commit 2b332a386b10360c3f3ebdaffdb0abc391129038
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 22:39:12 2015 +0000
+
+    output
+
+commit f5a6afb66fb6d9ea81188b91a74ebb050fca1308
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 20:31:02 2015 +0000
+
+    output
+
+commit 23d992078cf9ce337f89a7bfda3050909613c77e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 20:25:19 2015 +0000
+
+    added test-script
+
+commit 835b5accb64cf60418115a83fccd288d1d8c0684
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 19:57:34 2015 +0000
+
+    output
+
+commit ffd7ba7226bb759b7c15117dae529f225811fa53
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 19:52:58 2015 +0000
+
+    fix
+
+commit ee172349fc2fb5d42bf57afac4728b4c2be712ef
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 19:20:58 2015 +0000
+
+    fix
+
+commit 20566ba7e1a036e3823b18d33d0dc4a90c10cee9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 19:20:16 2015 +0000
+
+    fix --ordinary
+
+commit 6a6dbd23ce411023a7e98c558ebb1400ba056514
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 19:03:57 2015 +0000
+
+    update
+
+commit f7d1aa302b2d067d041f6c191171f92e76150cf8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 17:30:19 2015 +0000
+
+    use warning sign rather than info sign when Tor Browser is already installed because it will be terminated and moved
+
+commit 47c1f1452670e52e0264bb82162838f58dea3316
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 14:24:41 2015 +0000
+
+    output
+
+commit 2d2fb13a2c05d3f65c1cf8ada010e12e386619fb
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 14:22:28 2015 +0000
+
+    if there are multiple versions advertised, show them all inside one line
+
+commit a47241ae153069ce0558c7b5261aca19822123a1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 14:13:52 2015 +0000
+
+    output
+
+commit 345d1d2a519529eeb67f9eaab91e0a3c47c359c1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 14:03:58 2015 +0000
+
+    output
+
+commit c7ed85b1e6e0607c01fa987d18071bfb0cde242f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 14:01:03 2015 +0000
+
+    output
+
+commit eaa391c01257c36e96c84ccaba3b1130630b7fc6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 13:53:23 2015 +0000
+
+    output
+
+commit 6bbc38ebf978d0a36e47a29810f3d8eb65817720
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 12:54:36 2015 +0000
+
+    output
+
+commit a387cb84e21ec254d185dd3d636b58d874cf12f5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 12:51:46 2015 +0000
+
+    output
+
+commit d35c279c3ace1027a089fa716dd9f1d705bd5829
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 29 12:39:37 2015 +0000
+
+    output: victim -> target
+
+commit 95d0ce13c601cb62d5f70b06dd80eb92d857cfbe
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jan 25 19:13:16 2015 +0000
+
+    update
+
+commit 347f0d2dc240d8287e9c783e1d1909e4bd66a3a8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jan 25 18:49:45 2015 +0000
+
+    update
+
+commit 17d86d2ea0fe304505079770fd3edd0897a8fefe
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jan 25 18:43:52 2015 +0000
+
+    update
+
+commit de907dbeab861ad4b05f3b68a3c5cac9ce720c17
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jan 25 18:29:52 2015 +0000
+
+    update
+
+commit f91ebe09c1e44b6da74cd71dbed6382ed23b2435
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jan 25 02:49:11 2015 +0000
+
+    update
+
+commit efedad7a2a886aff6d699da019652411b09fd062
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 24 17:28:11 2015 +0000
+
+    update
+
+commit b94ae64b063a43427985e219182038901e66b3b3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 24 03:59:06 2015 +0000
+
+    output
+
+commit a0aadc030b1bfb83745459a6865a12102443595e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 24 03:54:13 2015 +0000
+
+    refactoring
+
+commit 6f067f7eda100596bf7b526b121b62b974262925
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 24 03:50:25 2015 +0000
+
+    output: removed duplicate "Tor Browser Update Check (by Whonix developers)" because generic_gui_tool correctly shows the window title
+
+commit 3ea910ab5bba4a5cb078d7b95f1a66916ca0756e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 24 03:41:05 2015 +0000
+
+    refactoring
+
+commit 64e5a160b4353450195ab888a7408b97e3da6972
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 24 03:06:53 2015 +0000
+
+    output
+
+commit b7ab03ea51906c2273fe1789aa4161756d373135
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 22 18:29:17 2015 +0000
+
+    output
+
+commit c781c16234f674f692b7b176c7c4d622e8add099
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 21 08:48:14 2015 +0000
+
+    output
+
+commit cdc8a6b87d999b6bb68ac2726a6907e9e2454a7a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 21 08:37:57 2015 +0000
+
+    output
+
+commit 1df33a13f38dc42df5d11120a7c5a58a1b586c5b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 21 08:35:09 2015 +0000
+
+    progress bar for extraction process
+
+commit 35c1cda693bc7fea047f3037493b03e16ee0d28c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 21 07:51:48 2015 +0000
+
+    output
+
+commit 6fd759ca22b6b1253bda1ed078f16c3f7ac4b9ae
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 20 21:20:28 2015 +0000
+
+    fix
+
+commit ed12c6b4a9609c3a157fc5855271696476fc895b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 20 21:17:07 2015 +0000
+
+    unit test
+
+commit 1f58df5d89c7c310db05e9b623d957d51f99597e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 20 21:15:00 2015 +0000
+
+    unit test
+
+commit 3547a23d52e009647419a3fbd10c9bedc71a3a9d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:52:12 2015 +0000
+
+    maximum 3 download attempts (configurable through variable tb_download_attempt_max)
+
+commit 7e3a1561f20e84cbbdbcb79245e3d7a1b20f5e8a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:38:18 2015 +0000
+
+    refactoring
+
+commit a36aedd9baffcac035ae79c6f7ee934714999291
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:36:45 2015 +0000
+
+    fix
+
+commit 3fc2eeac7018265deb29a17d2795d5cbcf6b654b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:33:32 2015 +0000
+
+    comment
+
+commit 3ca72eb806524a804911b6c82efbb80a4823594a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:31:30 2015 +0000
+
+    output
+
+commit cf8e8f06c41557c49af921d30bda35f723228ca0
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:30:21 2015 +0000
+
+    refactoring
+
+commit 0428726c0c864d1a3e1b031913ba862a3abbca02
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:27:23 2015 +0000
+
+    fix
+
+commit e19b77729a88164bd6d9261bcc1be3af9cb62af7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:23:18 2015 +0000
+
+    refactoring
+
+commit 29450049593d5aecb8d1ffface6aec70b78b98b5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:22:10 2015 +0000
+
+    refactoring
+
+commit 9b5675adf32115d7d3a14ee525b4229e4d898608
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:21:16 2015 +0000
+
+    refactoring
+
+commit 4c1554df60277a9b1bcadabd6f9e395005995ed4
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:20:17 2015 +0000
+
+    refactoring
+
+commit 2516fce6b8e484e9d9c1f231a6945beca5f179ff
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:16:07 2015 +0000
+
+    refactoring
+
+commit d225b51b49f3843250d64be14ec4c7012422328a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:14:51 2015 +0000
+
+    refactoring
+
+commit 640300692b5c4a75016edf5eaf19d578ce22665d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:11:45 2015 +0000
+
+    cleanup
+
+commit 06e775d1a092bac6f1308687e4cd64daa9b2f6d1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 18:09:35 2015 +0000
+
+    refactoring
+
+commit 0ec299763e7b6384cf102ce4403a31897e366340
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 17:50:57 2015 +0000
+
+    compare signature creation date with local clock
+
+commit ec0d58dd968582d406f0a4a196b651ff66f2942a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 19 17:09:25 2015 +0000
+
+    output
+
+commit 9d4da0201609de49afbec7c17d49236f244ee97f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 17 22:56:58 2015 +0000
+
+    fixed changelog
+
+commit 5f9e935f734b31d7130ae47e7f272b0bb0343f63
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 17 17:17:56 2015 +0000
+
+    refactoring
+
+commit 168109870bc1db93344e9c2c17e67635a531a5ca
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 17 06:24:11 2015 +0000
+
+    fix
+
+commit 7e1b18c0e629619430b6f0b8091f2a7f5cb2f26b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 17 06:15:26 2015 +0000
+
+    comment
+
+commit 0a3fa21b9f0c7a2b6c34ecb6d6d389d1ac15cf31
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 17 06:13:26 2015 +0000
+
+    cleanup
+
+commit a614be513f70a992ba08aa2c20030996d76ea1cd
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 17 06:05:55 2015 +0000
+
+    output
+
+commit 832bfdfa45ed8013e8e2ad7e2974e7c67ac0a706
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 17 05:21:29 2015 +0000
+
+    cleanup
+
+commit 67907c315922933a71a73d429ed5bf4139c4577a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 17 05:16:34 2015 +0000
+
+    Authenticate file names. This is useful to detect a downgrade or indefinite freeze attack.
+    To do this, the sha256sums.txt file needs to be verified using the sha256sums.txt.asc file.
+    When that succeeded, the hash for the archive needs to be created and looked up within sha256sums.txt.
+    https://phabricator.whonix.org/T98
+
+commit 43d12bc2e9e5788af5d6b7eefb925caa1445d96e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 17 04:13:11 2015 +0000
+
+    refactoring
+
+commit 4f1ca75f2a6a6796ef33b310231c839a78c68773
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 17 03:37:32 2015 +0000
+
+    refactoring
+
+commit 6a633fbc01de56e8a7f54eaeff162da05b09b06d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 17 03:06:29 2015 +0000
+
+    fix
+
+commit d3fc92d010574f06f9db6384231a718a086abfd9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 16 21:41:52 2015 +0000
+
+    Store and show last known signature creation date. - Useful to detect downgrade or infinite freeze attack. - https://phabricator.whonix.org/T96
+
+commit 763fb38964e7c54abc777082747b61a877fc5176
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 16 20:44:10 2015 +0000
+
+    Show when signature way made and ask for confirmation. Useful to detect downgrade or infinite freeze attack. - https://phabricator.whonix.org/T95
+
+commit c231cdcf5eeef2d060e59777b638fa61c8669410
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 16 20:06:25 2015 +0000
+
+    output
+
+commit 88a8556eb9fa292dd78d5d6b0cb334ad9a293bee
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 16 19:31:20 2015 +0000
+
+    ported to gpg-bash-lib - https://phabricator.whonix.org/T88 - https://github.com/Whonix/gpg-bash-lib
+
+commit 0487de3d269ce40e6cc39f288f0abdf7375d1c80
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 13 11:47:44 2015 +0000
+
+    fix
+
+commit acd7e51323989f7cebbefe3b05753dda1299671c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 12 22:20:04 2015 +0000
+
+    refactoring, use errtrace and therefore fewer trap ERR's required - https://phabricator.whonix.org/T48
+
+commit b75855afaea3f6cfeaab62dbe41729c08e126f1c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 12 16:03:25 2015 +0000
+
+    output
+
+commit 21b7b7fae2f8cf4e06bf95d0b8ec1242a9cb7f37
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 12 15:59:43 2015 +0000
+
+    refactoring
+
+commit 1d1665e3dd6ae1c0e5fbbbbbfadd23bf80a90b2b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 12 15:59:11 2015 +0000
+
+    refactoring
+
+commit b58a9320e8c3bda422748249c4ca7bc1ae07d2bb
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 12 15:57:15 2015 +0000
+
+    output fix
+
+commit 648b6f763ec6644a7a41c48fe41178db54af9881
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 8 17:31:19 2015 +0000
+
+    comment
+
+commit e0b7eb77264e79c4d07abf60b0b64098ae6978fa
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 21:17:08 2015 +0000
+
+    output
+
+commit 595219ef4715709d450015ce334f895ec5c0e16f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 21:11:00 2015 +0000
+
+    made variable overruleable
+
+commit b65ba8d49bcaa1dbc39712de45b4310b6f3f4e7a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 21:10:22 2015 +0000
+
+    refactoring
+
+commit dfddc2e78c5a13e2dd93da2fb8d9043decf3e798
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 21:06:25 2015 +0000
+
+    made variable overruleable
+
+commit 3cadd9a903752983839975f7bd86f2f007b32761
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 20:30:06 2015 +0000
+
+    output
+
+commit 0a8117847358e8cd412d74dbf3e6e852859d9fce
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 20:12:40 2015 +0000
+
+    output
+
+commit da86f5452817ab66ecd1796b9e1fb6f8801021fa
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 20:11:42 2015 +0000
+
+    made variables overruleable
+
+commit ffa2e1f4dd2a1a633e88aa3acd2ad00a601fc110
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 20:08:59 2015 +0000
+
+    cleanup
+
+commit ee30dfa0f168aaf1e252ffaca58f2ef8ca8d2eee
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 20:08:09 2015 +0000
+
+    made variables overruleable
+
+commit a34fa7d3fa9dc642eece35a3c4d72b03ab65e060
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 20:04:58 2015 +0000
+
+    refactoring
+
+commit b303447941778f55b12f1e5c1ed46955f35827b1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 20:00:02 2015 +0000
+
+    made variable overrideable
+
+commit c08d8e166df99cf6db7a63b4ddcb23b66d797697
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 19:58:21 2015 +0000
+
+    refactoring
+
+commit 4f54665b70f51b889976197b1e0e155d85ef4122
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 19:56:01 2015 +0000
+
+    local
+
+commit 2096f64be3d2cd1d4bea339710c05aff7121ce12
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 19:55:31 2015 +0000
+
+    made variables overruleable
+
+commit cb46d09cc28562e69ddfa165d60193819d3c5a55
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 19:34:56 2015 +0000
+
+    bumped compat from 8 to 9
+
+commit 2f05fb189fb0771467533c4e2fdfcbfe41c4c452
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 16:40:34 2015 +0000
+
+    bumped version number
+
+commit 599a3e5a12cb315aaaa4c31f0478f7e0d80b959d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 7 16:40:06 2015 +0000
+
+    added new key tbb-team.asc as per https://trac.torproject.org/projects/tor/ticket/13407 which I verified to be signed by Georg Koppen
+
+commit a9eaf7338c475aac498a2bc9229dba5c9f3b50fe
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 6 21:01:17 2015 +0000
+
+    added experimental --alpha, --beta and --rc switches
+
+commit 45c8f60a4fbb2d3bb1a4e8b6d2f00d4c3b117af3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 3 12:14:33 2015 +0000
+
+    version parser, match for "-alpha-", "-beta-", "-rc-" rather than just "alpha", "beta", "rc"
+
+commit 7667ded3f15f57f8c65339d7a14e367ba0e04fe5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 14 23:13:35 2014 +0000
+
+    added timeout to extract function
+
+commit 2c2767370adcc92130fd1243f3e91c2ac1d70695
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 14 21:56:34 2014 +0000
+
+    refactoring
+
+commit e124d4c5c38053a56e7c5fac6282046ba7530734
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 14 21:53:38 2014 +0000
+
+    make functions skipable through tb_skip_functions environment variable, so users could skip certain patches by using /etc/torbrowser.d configuration folder
+
+commit fb464bcc1f0c25ffb42245fa92814b39d381c445
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 14 21:36:56 2014 +0000
+
+    new function tb_run_function
+
+commit ed796e833e1886deb2e0f254af7aa99ef73d4055
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 14 21:32:58 2014 +0000
+
+    Deactivating Tor Browser’s Internal Updater at least as long it does not support verification. See also:
+    - https://www.whonix.org/blog/tor-browser-updater-warning
+    - https://www.whonix.org/forum/index.php/topic,807
+
+commit efe1fbce89de12d0a13a659bb5a409e50d1c9573
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 14 21:24:23 2014 +0000
+
+    new file: usr/share/tb-updater/tb_internal_updater_disable.js
+
+commit e1e5afb20f456ed3995aea99d74d73006d331ce4
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 14 21:19:15 2014 +0000
+
+    comment
+
+commit 2a01cbe297363ac14917300b5102abaadf6f86be
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 14 21:17:58 2014 +0000
+
+    comment
+
+commit c9a75c5017e0a80a424023ab085a2ee3778c24c2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 14 21:15:34 2014 +0000
+
+    comments
+
+commit e51f7b81b405ec23d24bed32dce374127efbb6a2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 14 21:13:00 2014 +0000
+
+    refactoring
+
+commit 0f91afb2b0803473bd7f20dbf0801e49df935647
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 14 21:10:03 2014 +0000
+
+    quotes
+
+commit bd890b4b169733e1fb6f89870f0382099b597747
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 14 21:09:19 2014 +0000
+
+    fix
+
+commit 3cc41757bc086369eb663ebe3f83b02d95991f1f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 14 21:08:07 2014 +0000
+
+    update path for TBB 4.x
+
+commit bc7efc202021cd091083201f8aaca8d50b79d88c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 14 21:05:39 2014 +0000
+
+    refactoring
+
+commit 3e1fe9018d68973e03ddf730c4f4aa2cfd2eaccd
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 5 19:01:20 2014 +0000
+
+    updated generic makefile
+
+commit ba4cb074a4f9468b5f4dda58bd89d846f9884196
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Nov 25 22:48:54 2014 +0000
+
+    fixed --language command line parameter; refactoring
+
+commit 7010b1685aba9a86c39b34d52cc231648223f27d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Nov 16 12:29:24 2014 +0000
+
+    Create /home/user/tor-browser_$TB_LANG/Browser/Downloads folder for better AppArmor support as suggested by troubadour. - https://www.whonix.org/forum/index.php/topic,97.msg5541.html#msg5541
+
+commit 4be768506e5628244eec180a7acb2627986cad8e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Nov 16 12:26:15 2014 +0000
+
+    sanity test
+
+commit 41fd04ff859199c12d849476f97c46b1ce692adf
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Nov 9 14:16:36 2014 +0000
+
+    workaround for "bash: Shellshock fix breaks bash function exporting" - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=763164
+
+commit 457ac5613248d0a659eed5387976bd6afb45fe7c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Nov 8 11:31:44 2014 +0000
+
+    do not ask to start Tor Browser if tb-starter is not installed
+
+commit cf12351c6164ad755abe7594939c75cf69b9b4bf
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Nov 8 11:14:56 2014 +0000
+
+    fix
+
+commit 7a0031f33a5065067ca497a63109807584e38f56
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Nov 8 11:12:22 2014 +0000
+
+    fixed remote download location to cope up with The Tor Project's changes
+
+commit 604599729c07752c66f322b31cb7cc9a3d153c85
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Nov 2 08:25:36 2014 +0000
+
+    refactoring, fewer leftover files in /var/run/msgcollector
+
+commit 6b059d7187308d7bb0c7105b05218c5437b1b121
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Oct 28 22:35:30 2014 +0000
+
+    makefile: refactoring, avoid using IFS
+
+commit f9162eabd88746529e5bdae6c56e586301b6bfe6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Oct 25 01:58:53 2014 +0000
+
+    makefile:
+    - make debdist; make undebdist
+    - cleanup
+    - refactoring
+
+commit efd8605a15cce1195aeb63ea99665225e9364722
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Oct 23 22:43:04 2014 +0000
+
+    makefile:
+    - new target "make undist", which deletes the upstream tarball
+    - $DISTDIR variable for make (un)dist, which defaults to ".." and can be used to create upstream tarballs in arbitrary locations
+    - refactoring, all function names and global variables now start with "make_" to make the script `source`ing friendly
+    - made `source`able
+
+commit ef9554a374cdc4dfd696c7f5494d75f6ea93aec1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Oct 13 12:36:58 2014 +0000
+
+    readme
+
+commit 6729673aaa0602cca8bc0d86c07cda5fa07a8235
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Sep 20 10:10:19 2014 +0000
+
+    bumped version number
+
+commit c01d37c79d4cdf6ab074d9cec912710152119419
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Sep 20 10:06:24 2014 +0000
+
+    implemented --no-tor-con-check
+
+commit a7165e5f3f643c961d18ab6e862f82be324a26c0
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 19 17:55:14 2014 +0000
+
+    updated man page
+
+commit 29556ddf625dc29655ca1d43e9ec8d29d3d81e9a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Sep 18 16:34:45 2014 +0000
+
+    bumped version number
+
+commit 9cbe896dcd700deaba35b7cc57ff95bc2d1b9f7f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Sep 18 16:34:10 2014 +0000
+
+    tb-updater: use dpkg --compare-versions for local/remote version comparison; refactoring; output; comments
+
+commit dd93c8106d5c3830ddf87203325169e69dfe438b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Sep 17 01:11:48 2014 +0000
+
+    bumped version number
+
+commit 23429b922ed8f627bf374820af52b8c966730d67
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Sep 17 01:10:41 2014 +0000
+
+    tb-updater: fix stream isolation (proxy) settings, make it work without transparent proxy as well
+
+commit 6514dca897a39eaee3cfb6074de889b816d861b8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 5 12:50:08 2014 +0000
+
+    fix
+
+commit a04f679a6321880e3ce71971aa788468b8272d63
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 5 12:47:25 2014 +0000
+
+    refactoring
+
+commit 2e9990c8bf2302a0005d5327c13b7a55c0a63ee5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 5 12:44:48 2014 +0000
+
+    made tbbversion_parser compatible with new format as per https://trac.torproject.org/projects/tor/ticket/8940#comment:28
+
+commit 07177c8583b74a8266042268d5c126adc0183234
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 5 12:26:27 2014 +0000
+
+    refactoring
+
+commit 95b45be44c3776ef1ced03e483808cfe1ad653d3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Sep 3 12:48:19 2014 +0000
+
+    update tbb version url as per https://trac.torproject.org/projects/tor/ticket/8940#comment:21 ; man page
+
+commit 10b24c59f2eb793816274f094e030a6a0d055f8c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Aug 27 04:31:00 2014 +0000
+
+    refactoring
+
+commit 77c8df55750a850b0e07ade5f556c75775160892
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Aug 26 02:32:56 2014 +0000
+
+    fix, clean up temporary files/directory
+
+commit c49b50c3d335bf9c80e4b79e2f0857cca8b98735
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Aug 19 18:52:44 2014 +0000
+
+    makefile: added new feature "make deb-chl-bumpup" - Bump upstream version number in debian/changelog.
+
+commit 3946b6d73c07d0cb004041b9e45e3208518a5ec1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Aug 17 20:54:27 2014 +0000
+
+    Updated debian/changelog.
+
+commit cc6a674e975e77ccd6e3585290a03259b1526142
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Aug 17 20:47:30 2014 +0000
+
+    Fixed changelog date.
+
+commit 2e4b9deee37b6b08e612f22d843a61b6c5f4eaef
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Aug 17 18:03:31 2014 +0000
+
+    bump version number
+
+commit a569697944adecb248170fc174b5f59d73dd2b3f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Aug 14 13:35:20 2014 +0000
+
+    Implemented make deb-icup: Combination of make deb-pkg, make deb-pkg-install and make deb-pkg-cleanup.
+
+commit 076475509904354567ae4ee734145026a7ae074e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Aug 10 21:30:40 2014 +0000
+
+    fix
+
+commit a7ca17fb567a16fdc5b0fb33fc39346f67b458ee
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Aug 7 19:04:34 2014 +0000
+
+    fix
+
+commit 2b2b01593261479a038e183546e7e5b0052a6d90
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Aug 7 19:02:40 2014 +0000
+
+    fix
+
+commit 89c954be31010a5ab43760ab19d507e79000d674
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Aug 7 19:01:16 2014 +0000
+
+    cleanup zenity leftovers
+
+commit 1ac3da24e892864119520f5bd269d7cd99817f69
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Aug 7 18:58:06 2014 +0000
+
+    fix
+
+commit d4937293c09eee847e7bc8e1b4c25133c8c199c0
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Aug 7 18:56:37 2014 +0000
+
+    refactoring; output
+
+commit da53e7a79fe8f28fde2f95f60872545f0ba7d5ff
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 31 17:23:14 2014 +0000
+
+    output
+
+commit 6b687aa999ce9fbaf6f0de726b0d36a0f55b399d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jul 27 12:42:29 2014 +0000
+
+    packaging
+
+commit d2a1ce3fbc767ebf2fb70520a7a0d760a1a35cfb
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jul 27 04:01:14 2014 +0000
+
+    packaging
+
+commit 915789533a18dcc485be688cb94fb52045a50eaf
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 26 15:26:40 2014 +0000
+
+    packaging
+
+commit 7bffbb988d87bb65bf62c64fe31f6581a1b0d3be
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 26 15:16:07 2014 +0000
+
+    packaging: removed build dependency on git, since the .git folder won't be included in the upstream tarball.
+
+commit 745f9ca781dcb07f93537cd26dfcbfa39325fd48
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jul 14 02:28:27 2014 +0000
+
+    quotes
+
+commit 39e12e5f00340cf9a504fd4240e9ea362886464f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 12 17:31:01 2014 +0000
+
+    packaging
+
+commit b4368dc58463501a042c4a6b55e919a20df7bf93
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 12 17:11:03 2014 +0000
+
+    packaging
+
+commit f172add7bcce325ff4127db60ab9009498d6c55d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 12 15:34:20 2014 +0000
+
+    packaging
+
+commit caafb2bd202ea82b5c18f8519b84b7005de41536
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jul 6 13:31:09 2014 +0000
+
+    quotes
+
+commit 5173e765545bfbb6d640ed2d2e0735b5ac535bca
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jul 6 13:25:54 2014 +0000
+
+    use $BASH_SOURCE instead of $0
+
+commit 1072dc0dbdf5fc67097687146291c9edfcb05218
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jul 6 11:33:32 2014 +0000
+
+    sanity test
+
+commit b0388d046da1acf6aa94d68b9935cdb8de988ccc
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 5 08:09:45 2014 +0000
+
+    Bumped debian revision number to avoid lintian warning "new-package-should-close-itp-bug" so we can use lintian --fail-on-warnings as sanity test.
+
+commit 9354be5e19db4c892072e5bb4f9e4a35139ea2bc
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 5 06:58:34 2014 +0000
+
+    better exit handling
+
+commit 0860a61d40d3b0734eff26a77c346fe446f12899
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 4 08:01:20 2014 +0000
+
+    fix
+
+commit 3b1a3aa877383804723efb8f95602076bdd7d515
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 4 04:48:33 2014 +0000
+
+    more secure default for yes/no button
+
+commit 67cc1e5bebe1bf36b452dc0a5aae6ebd633db89e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 4 04:29:15 2014 +0000
+
+    merged generic-gui-message into msgcollector
+
+commit 359726c4c1e514352d8c86656c02c56b2db29b14
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 3 17:33:04 2014 +0000
+
+    html tags a href
+
+commit d1342a30241a92dc74e05e42c7f665fcf21c8d5c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 3 17:08:10 2014 +0000
+
+    added depends generic-gui-message
+
+commit e882d69d64ac890f6b72ff4d16b4784dd8368bd8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 3 17:00:58 2014 +0000
+
+    improved html output
+
+commit a708b234fa89404c267be7a80b2a9dc0ceac1437
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 3 17:00:27 2014 +0000
+
+    improved html output
+
+commit 11e9373cf5e6b5483f6b8d3d92d0f11b68c123ab
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 3 16:50:38 2014 +0000
+
+    fix
+
+commit 0d01eea8c3c4adf1ca3a1203b7b659aaa8feb04e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 3 16:49:26 2014 +0000
+
+    fix intention
+
+commit da2dbdb2e82a0b5328665b183c4b61e56588fc8c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 3 16:42:44 2014 +0000
+
+    fix html tags
+
+commit 1f2ea0d46c0e09468c304801449f8d8d830ceac7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 3 16:41:28 2014 +0000
+
+    fix echo
+
+commit c5e0b8397b2127776f2fe516a08aadc8f2842aaf
+Author: troubadoour <trobador@riseup.net>
+Date:   Thu Jul 3 15:24:09 2014 +0000
+
+    HTML tags
+
+commit 18bbdf3d2a81582bba8a2cca1ce4160f69eb358f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jul 1 16:53:08 2014 +0000
+
+    fix
+
+commit aa82181a8d74cde558f79cc430da6be047c5cef7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jun 24 15:45:14 2014 +0000
+
+    added debian epoch; added dotglob
+
+commit 57e1a5a4d10f4665bde0a0019ce3874d82c22fcd
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jun 10 14:16:57 2014 +0000
+
+    update IP as per https://www.whonix.org/forum/index.php/topic,107.0.html
+
+commit d1fc2e6c6e23d9dd18ba4f88c8376f8407d80eaf
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jun 3 18:27:38 2014 +0000
+
+    readme
+
+commit 2f18e353672b5dda9a30e0b9303e58f2baee2588
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jun 1 15:38:37 2014 +0000
+
+    readme
+
+commit 121a1850c8d95ab63df7dd7cfaa7a58e4cb45a47
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat May 31 17:13:26 2014 +0000
+
+    donate
+
+commit ed9b4cbf3066e60be0c320546e4508b620c51051
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat May 31 14:38:53 2014 +0000
+
+    # On branch master
+    nothing to commit (working directory clean)
+
+commit 28122acfb3fe95904978eab30ab1ea21fa582c72
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue May 20 08:49:49 2014 +0000
+
+    .
+
+commit 2aa4239cee5ce4b3fa2f545d942cebbfaaa235c4
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue May 20 04:40:40 2014 +0000
+
+    .
+
+commit 98319bdefb146f5ee9f276a1e3651099df3e6015
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue May 20 04:31:32 2014 +0000
+
+    .
+
+commit 23bb50c29e0a7b6005cc82c0b9c7ab6e9b533e5a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue May 20 04:05:18 2014 +0000
+
+    .
+
+commit 9d7c1853f30bdda2650c60d8317ad087977ec0f2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue May 20 03:59:47 2014 +0000
+
+    .
+
+commit 93536630b4486b9101600d6e7ba9d82a10427827
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue May 20 03:58:23 2014 +0000
+
+    .
+
+commit 29944930c7f5e0bb71e0449aeabde7bdf6448587
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue May 20 03:55:56 2014 +0000
+
+    .
+
+commit 30bb8ebe41d6a597a84f15950b89295e7acea7c6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue May 20 03:54:17 2014 +0000
+
+    .
+
+commit 65b84e6edab966ef8508bb05d7d89328f251e68e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue May 20 03:46:26 2014 +0000
+
+    .
+
+commit 5b8d2bd262653982ac1d5de356badf26ddb75256
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue May 20 03:41:31 2014 +0000
+
+    .
+
+commit 820adf3b913bace7199e9d2159ab31540896d687
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue May 20 03:33:46 2014 +0000
+
+    .
+
+commit df747e2f583c5443e4d46a911d35993b41ba6d46
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue May 20 03:28:01 2014 +0000
+
+    .
+
+commit 61256195b7e4fc4a451d8b2067ccd74c7bc3c315
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue May 20 03:19:01 2014 +0000
+
+    .
