@@ -668,9 +668,14 @@ tb_confirm_update() {
       done
    fi
 
-   local MSG question button type
+   local MSG question button type download_confirmation_topmost_message
    button="yesno"
    question="Download now?"
+
+   download_confirmation_topmost_message="<p>Download Confirmation<br></br>
+----------------------------------------------------------------------</p><p><table><tr>
+<td>Currently installed version:</td> <td><tt>$tbb_locally_installed_version</tt></td></tr><tr>
+<td>Online detected version(s) :</td> <td><tt>$tbb_recommended_versions_inside_one_line_list</tt></td></tr></table></p>"
 
    if [ "$installed_or_not_result" = "true" ]; then
       if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
@@ -690,10 +695,7 @@ tb_confirm_update() {
          exit 1
       fi
       type="warning"
-      MSG="<p>Download Confirmation<br></br>
-----------------------------------------------------------------------</p>
-<p>Currently installed version: $tbb_locally_installed_version<br></br>
-Online detected version(s) : $tbb_recommended_versions_inside_one_line_list</p>
+      MSG="$download_confirmation_topmost_message
 
 <p>$up_to_date_or_not_text</p>
 
@@ -711,11 +713,7 @@ YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.<
 <br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space.</p>"
    else
       type="info"
-      MSG="Download Confirmation
-<br></br>----------------------------------------------------------------------
-<pre>\
-Currently installed version: $tbb_locally_installed_version
-Online detected version(s) : $tbb_recommended_versions_inside_one_line_list</pre>"
+      MSG="$download_confirmation_topmost_message"
    fi
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
@@ -1085,12 +1083,12 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
    esac
 
    MSG="<p>Installation / Signature Confirmation<br></br>
-----------------------------------------------------------------------</p>
-<p>Currently installed version: $tbb_locally_installed_version<br></br>
-Downloaded version         : $tbb_version</p>
-<p>$signature_freshness_msg</p>
-<p>Previous Signature Creation Date: $last_used_gpg_bash_lib_output_signed_on_date<br></br>
-Last Signature Creation Date    : $gpg_bash_lib_output_signed_on_date</p>
+----------------------------------------------------------------------</p><p><table><tr>
+<td>Currently installed version:</td> <td><tt> $tbb_locally_installed_version</tt></td></tr><tr>
+<td>Downloaded version         :</td> <td><tt> $tbb_version</tt></td></tr></table></p>
+<p>$signature_freshness_msg</p><p><table><tr>
+<td>Previous Signature Creation Date:</td> <td><tt> $last_used_gpg_bash_lib_output_signed_on_date</tt></td></tr><tr>
+<td>Last Signature Creation Date    :</td> <td><tt> $gpg_bash_lib_output_signed_on_date</tt></td></tr></table></p>
 <p>$signature_creation_msg</p>"
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
