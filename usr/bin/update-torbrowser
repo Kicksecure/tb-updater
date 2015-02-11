@@ -710,10 +710,13 @@ tb_confirm_update() {
 YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.</p>
 
 <p>A backup of your old Tor Browser and settings will be created in your home folder.
-<br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space.</p>"
+<br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space.</p>
+
+<p><a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a></p>"
    else
       type="info"
-      MSG="$download_confirmation_topmost_message"
+      MSG="$download_confirmation_topmost_message
+<p><a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a></p>"
    fi
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
@@ -1082,14 +1085,15 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
          ;;
    esac
 
-   MSG="<p>Installation / Signature Confirmation<br></br>
+   MSG="<p>Installation Confirmation<br></br>
 ----------------------------------------------------------------------</p><p><table><tr>
 <td>Currently installed version:</td> <td><tt> $tbb_locally_installed_version</tt></td></tr><tr>
 <td>Downloaded version         :</td> <td><tt> $tbb_version</tt></td></tr></table></p>
 <p>$signature_freshness_msg</p><p><table><tr>
 <td>Previous Signature Creation Date:</td> <td><tt> $last_used_gpg_bash_lib_output_signed_on_date</tt></td></tr><tr>
 <td>Last Signature Creation Date    :</td> <td><tt> $gpg_bash_lib_output_signed_on_date</tt></td></tr></table></p>
-<p>$signature_creation_msg</p>"
+<p>$signature_creation_msg</p>
+<p><a href=https://www.whonix.org/wiki/Tor_Browser/Installation_Confirmation_Screen>Learn more about this Installation Confirmation Screen.</a></p>"
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 
