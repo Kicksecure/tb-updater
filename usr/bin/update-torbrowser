@@ -750,7 +750,7 @@ y/n?"
             output_info_echo_only "Canceled. Exit."
             exit 10
          fi
-         ## TODO
+         tbb_version="$answer"
          tbb_version_folder="$answer"
       fi
    fi
@@ -1473,7 +1473,8 @@ main_function() {
 
    tb_run_function tb_sort_remote_versions
    tb_run_function tb_confirm_update
-   tb_run_function tb_download_loop
+   #tb_run_function tb_download_loop
+   tb_run_function tb_download_files
    tb_run_function tb_gpg_verify
    tb_run_function tb_hash_verify
    tb_run_function tb_confirm_install
