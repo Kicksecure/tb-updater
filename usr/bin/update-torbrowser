@@ -1388,7 +1388,7 @@ tb_sort_remote_versions() {
       echo "$tbb_version" >> "$TEMP_DIR/tbb_recommended_versions_list"
    done
 
-   tbb_recommended_versions_list="$(sort --unique --version-sort --reverse "$TEMP_DIR/tbb_recommended_versions_list")"
+   tbb_recommended_versions_list="$(sort --unique --version-sort "$TEMP_DIR/tbb_recommended_versions_list")"
    if [ "$tbb_recommended_versions_list" = "" ]; then
       error "tbb_recommended_versions_list is empty after sorting."
    fi
