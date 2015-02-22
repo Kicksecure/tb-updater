@@ -685,14 +685,9 @@ tb_confirm_update() {
       done
    fi
 
-   local MSG question button type download_confirmation_topmost_message
+   local MSG question button type
    button="yesno"
    question="Download now?"
-
-   download_confirmation_topmost_message="<p>Download Confirmation<br></br>
-----------------------------------------------------------------------</p><p><table><tr>
-<td>Currently installed version:</td> <td><tt>$tbb_locally_installed_version</tt></td></tr><tr>
-<td>Online detected version(s) :</td> <td><tt>$tbb_recommended_versions_inside_one_line_list</tt></td></tr></table></p>"
 
    if [ "$installed_or_not_result" = "true" ]; then
       if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
@@ -712,8 +707,7 @@ tb_confirm_update() {
          exit 1
       fi
       type="warning"
-      MSG="$download_confirmation_topmost_message
-
+      MSG="\
 <p>$up_to_date_or_not_text</p>
 
 <p>$re_install_or_install_text</p>
@@ -732,8 +726,7 @@ YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.<
 <p><a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a></p>"
    else
       type="info"
-      MSG="$download_confirmation_topmost_message
-<p><a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a></p>"
+      MSG="<p><a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a></p>"
    fi
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
@@ -751,11 +744,14 @@ y/n?"
             exit 10
          fi
       else
-         answer="$(/usr/lib/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
-         if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
+         echo "/usr/lib/msgcollector/tb_updater_gui \"$type\" \"$TITLE\" \"$tbb_locally_installed_version\" \"$tbb_recommended_versions_comma_separated\" \"$MSG\" \"$question\" \"$button\")"
+         answer="$("/usr/lib/msgcollector/tb_updater_gui" "$type" "$TITLE" "$tbb_locally_installed_version" "$tbb_recommended_versions_comma_separated" "$MSG" "$question" "$button")"
+         if [ "$answer" = "65536" ]; then ## Button 'Yes' has not been pressed.
             output_info_echo_only "Canceled. Exit."
             exit 10
          fi
+         ## TODO
+         tbb_version_folder="$answer"
       fi
    fi
 
@@ -1407,7 +1403,15 @@ tb_sort_remote_versions() {
    ## 2.3.25-16
    ## 2.3.25-15
 
-   tbb_recommended_versions_inside_one_line_list="$(echo "$tbb_recommended_versions_list" | tr '\n' ' ')"
+   ## Thanks to:
+   ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
+   ## for the leading/trailing whitespace removal code
+
+   local temp
+   temp="$(echo "$tbb_recommended_versions_list" | tr '\n' ' ')"
+   temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
+   temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
+   tbb_recommended_versions_comma_separated="$(echo "$temp" | tr ' ' ',')"
 }
 
 tb_download_loop() {
