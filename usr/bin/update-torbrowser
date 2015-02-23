@@ -733,6 +733,7 @@ YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.<
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       output_info_echo_only "TB_FORCE_INSTALL = 1"
+      answer="$tbb_default_download_version"
    else
       local answer
       if [ "$TB_INPUT" = "stdin" ]; then
@@ -751,10 +752,10 @@ n/${tbb_recommended_versions_slash_separated}?"
             exit 10
          fi
       fi
-      tbb_version="$answer"
-      tbb_version_folder="$answer"
-      output_info_echo_only "Version $tbb_version chosen."
    fi
+   tbb_version="$answer"
+   tbb_version_folder="$answer"
+   output_info_echo_only "Version $tbb_version chosen."
 
    if [ ! "$NOKILLTB" = "1" ]; then
       output_info_echo_only "Because you are not using --nokilltb, now killing eventually still running instances of Tor Browser..."
@@ -1403,6 +1404,9 @@ tb_sort_remote_versions() {
    ## #2.6
    ## 2.3.25-16
    ## 2.3.25-15
+
+   ## Choose lowest version number for default file download. Only used for TB_FORCE_INSTALL.
+   read -r tbb_default_download_version _ <<< "$tbb_recommended_versions_list"
 
    ## Thanks to:
    ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
