@@ -737,9 +737,9 @@ YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.<
       local answer
       if [ "$TB_INPUT" = "stdin" ]; then
          output_info_echo_only "QUESTION: $question
-y/n?"
+n/${tbb_recommended_versions_slash_separated}?"
          read answer
-         if [ ! "$answer" = "y" ]; then
+         if [ "$answer" = "n" ] || [ "$answer" = "" ]; then
             output_info_echo_only "Canceled. Exit."
             exit 10
          fi
@@ -750,10 +750,10 @@ y/n?"
             output_info_echo_only "Canceled. Exit."
             exit 10
          fi
-         tbb_version="$answer"
-         tbb_version_folder="$answer"
-         output_info_echo_only "Version $tbb_version chosen."
       fi
+      tbb_version="$answer"
+      tbb_version_folder="$answer"
+      output_info_echo_only "Version $tbb_version chosen."
    fi
 
    if [ ! "$NOKILLTB" = "1" ]; then
@@ -1413,6 +1413,11 @@ tb_sort_remote_versions() {
    temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
    temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
    tbb_recommended_versions_comma_separated="$temp"
+
+   temp="${tbb_recommended_versions_list//$'\n'//}"
+   temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
+   temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
+   tbb_recommended_versions_slash_separated="$temp"
 }
 
 tb_download_loop() {
