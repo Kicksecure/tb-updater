@@ -1100,8 +1100,7 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
          ;;
    esac
 
-   MSG="<p>Installation Confirmation<br></br>
-----------------------------------------------------------------------</p><p><table><tr>
+   MSG="<p><b>Installation confirmation</b></p><p><table><tr>
 <td>Currently installed version:</td> <td><tt> $tbb_locally_installed_version</tt></td></tr><tr>
 <td>Downloaded version         :</td> <td><tt> $tbb_version</tt></td></tr></table></p>
 <p>$signature_freshness_msg</p><p><table><tr>
