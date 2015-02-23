@@ -665,20 +665,20 @@ tb_local_version_detection() {
 
 tb_confirm_update() {
    if [ "$installed_or_not_result" = "true" ]; then
-      local tbb_version
-      for tbb_version in $tbb_recommended_versions_list; do
+      local tbb_compare_version
+      for tbb_compare_version in $tbb_recommended_versions_list; do
          local dpkg_compare_versions_equals_exit_code="0"
-         dpkg --compare-versions "$tbb_version" eq "$tbb_locally_installed_version" || { dpkg_compare_versions_equals_exit_code="$?" ; true; };
+         dpkg --compare-versions "$tbb_compare_version" eq "$tbb_locally_installed_version" || { dpkg_compare_versions_equals_exit_code="$?" ; true; };
          if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
             break
          fi
          local dpkg_compare_versions_greater_than_exit_code="0"
-         dpkg --compare-versions "$tbb_version" gt "$tbb_locally_installed_version" || { dpkg_compare_versions_greater_than_exit_code="$?" ; true; };
+         dpkg --compare-versions "$tbb_compare_version" gt "$tbb_locally_installed_version" || { dpkg_compare_versions_greater_than_exit_code="$?" ; true; };
          if [ "$dpkg_compare_versions_greater_than_exit_code" = "0" ]; then
             break
          fi
          local dpkg_compare_versions_lower_than_exit_code="0"
-         dpkg --compare-versions "$tbb_version" lt "$tbb_locally_installed_version" || { dpkg_compare_versions_lower_than_exit_code="$?" ; true; };
+         dpkg --compare-versions "$tbb_compare_version" lt "$tbb_locally_installed_version" || { dpkg_compare_versions_lower_than_exit_code="$?" ; true; };
          #if [ "$dpkg_compare_versions_lower_than_exit_code" = "0" ]; then
             #break
          #fi
@@ -752,6 +752,7 @@ y/n?"
          fi
          tbb_version="$answer"
          tbb_version_folder="$answer"
+         output_info_echo_only "Version $tbb_version chosen."
       fi
    fi
 
