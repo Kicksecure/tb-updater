@@ -1385,9 +1385,9 @@ tb_sort_remote_versions() {
    rm --force "$TEMP_DIR/tbb_recommended_versions_list"
    touch "$TEMP_DIR/tbb_recommended_versions_list"
    test -f "$TEMP_DIR/tbb_recommended_versions_list"
-   local tbb_version
-   for tbb_version in $tbb_recommended_versions_list; do
-      echo "$tbb_version" >> "$TEMP_DIR/tbb_recommended_versions_list"
+   local tbb_sort_version
+   for tbb_sort_version in $tbb_recommended_versions_list; do
+      echo "$tbb_sort_version" >> "$TEMP_DIR/tbb_recommended_versions_list"
    done
 
    tbb_recommended_versions_list="$(sort --unique --version-sort "$TEMP_DIR/tbb_recommended_versions_list")"
