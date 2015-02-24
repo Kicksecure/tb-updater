@@ -932,11 +932,7 @@ Downloading:
 }
 
 tb_gpg_verify() {
-   output_info_echo_only "\
-## Verifying GPG signature.
-## Not using the user's GPG keyring also ensures, that the key can be only
-## signed by the GPG keys we added. Keys from random people from the
-## user's keyring will be ignored."
+   output_info_echo_only "GPG signature verification... This will take a moment..."
 
    gpg_bash_lib_input_verify_timeout_after="60"
    gpg_bash_lib_input_verify_kill_after="10"
@@ -971,6 +967,8 @@ $gpg_bash_lib_output_gpg_verify_output"
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
       exit 12
    fi
+
+   output_info_echo_only "GPG signature verification ok."
 }
 
 tb_hash_verify() {
