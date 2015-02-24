@@ -955,9 +955,7 @@ tb_gpg_verify() {
 
    source "/usr/lib/gpg-bash-lib/source_all"
 
-   trap "gpg_bash_lib_function_error_handler" ERR
    gpg_bash_lib_function_main_verify
-   trap "tb_error_handler" ERR
 
    output_info_echo_only "gpg_bash_lib_output_gpg_verify_output:
 $gpg_bash_lib_output_gpg_verify_output"
