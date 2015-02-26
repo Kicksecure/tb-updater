@@ -277,7 +277,11 @@ tb_stdin() {
       return 0
    fi
    if [ -t "0" ]; then
-      output_info_echo_only "INFO: stdin connected to terminal, setting TB_INPUT to stdin, ok."
+      output_info_echo_only "INFO: stdin connected to terminal, setting \
+TB_INPUT to stdin, will use terminal for input, ok."
+      output_info_echo_only "INFO: alternatively, if want to run from \
+command line, but still use the graphical user interface for input, \
+you could add to command line: --input gui"
       TB_INPUT="stdin"
       return 0
    fi
