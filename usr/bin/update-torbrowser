@@ -276,6 +276,11 @@ tb_stdin() {
       output_info_echo_only "INFO: TB_INPUT is already set to $TB_INPUT, skipping auto detection, ok."
       return 0
    fi
+   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+      output_info_echo_only "INFO: TB_FORCE_INSTALL is set to '1', therefore setting TB_INPUT to 'none'."
+      TB_INPUT="none"
+      return 0
+   fi
    if [ -t "0" ]; then
       output_info_echo_only "INFO: stdin connected to terminal, setting \
 TB_INPUT to stdin, will use terminal for input, ok."
