@@ -196,21 +196,18 @@ tb_parse_cmd_options() {
                shift
                ;;
            --update)
-               TB_UPDATE="1"
+               true ## legacy
                shift
                ;;
            --noask)
-               TB_UPDATE="1"
                TB_FORCE_INSTALL="1"
                shift
                ;;
            --nokilltb)
-               TB_UPDATE="1"
                NOKILLTB="1"
                shift
                ;;
            --devbuildpassthrough)
-               TB_UPDATE="1"
                TB_FORCE_INSTALL="1"
                DEV_BUILD_PASSTHROUGH="1"
                DEV_PASSTHROUGH="1"
