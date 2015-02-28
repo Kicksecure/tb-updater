@@ -1019,8 +1019,8 @@ tb_hash_verify() {
       return 0
    fi
 
-   output_info_echo_only "Hash check failed! Exiting." >&2
-   local MSG="<p><b>Hash could NOT be verified.</b>
+   output_info_echo_only "Hash check failed! (tb_sha_exit_code: $tb_sha_exit_code) Exiting." >&2
+   local MSG="<p><b>Hash could NOT be verified. (tb_sha_exit_code: $tb_sha_exit_code)</b>
 <br></br>Tor Browser update failed! Try again later.</p>"
    $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
    $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
