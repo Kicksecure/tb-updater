@@ -740,8 +740,7 @@ YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.<
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 
-   if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      output_info_echo_only "TB_FORCE_INSTALL = 1"
+   if [ "$TB_INPUT" = "none" ]; then
       answer="$tbb_default_download_version"
    else
       local answer
@@ -1122,8 +1121,8 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
    button="yesno"
    question="Install now?"
 
-   if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      output_info_echo_only "TB_FORCE_INSTALL = 1"
+   if [ "$TB_INPUT" = "none" ]; then
+      true "INFO: TB_INPUT is set to $TB_INPUT, continuing without asking."
    else
       if [ "$TB_INPUT" = "stdin" ]; then
          output_info_echo_only "QUESTION: $question
@@ -1357,7 +1356,9 @@ tb_end() {
          local question="Start Tor Browser?"
          local button="yesno"
          local answer
-         if [ "$TB_INPUT" = "stdin" ]; then
+         if [ "$TB_INPUT" = "none" ]; then
+            true "INFO: TB_INPUT is set to $TB_INPUT. Skipping question if Tor Browser should be started."
+         elif [ "$TB_INPUT" = "stdin" ]; then
             output_info_echo_only "QUESTION: $question
 y/n?"
             read answer
