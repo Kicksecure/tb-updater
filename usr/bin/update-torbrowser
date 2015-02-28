@@ -290,7 +290,7 @@ you could add to command line: --input gui"
       TB_INPUT="stdin"
       return 0
    fi
-   output_info_echo_only "INFO: stdin not connected to terminal, ok."
+   output_info_echo_only "INFO: stdin not connected to terminal, probably run in graphical environment, ok."
 }
 
 output_info_echo_only() {
