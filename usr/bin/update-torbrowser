@@ -958,6 +958,8 @@ tb_gpg_verify() {
 
    gpg_bash_lib_function_main_verify
 
+   gpg_bash_lib_output_diagnostic_message="$(/usr/lib/msgcollector/br_add "$gpg_bash_lib_output_diagnostic_message")"
+
    output_info_echo_only "gpg_bash_lib_output_gpg_verify_output:
 $gpg_bash_lib_output_gpg_verify_output"
 
