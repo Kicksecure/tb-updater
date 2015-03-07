@@ -1488,9 +1488,9 @@ tb_download_loop() {
 main_function() {
    tb_run_function root_check
    tb_run_function tb_sanity_tests
-   tb_run_function tb_preparation
    tb_run_function tb_config_folder_parser
    tb_run_function tb_parse_cmd_options ${1+"$@"}
+   tb_run_function tb_preparation
    tb_run_function tb_stdin
    tb_run_function tb_local_version_detection
    tb_run_function tb_connectivity_checks_tor
