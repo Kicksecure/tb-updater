@@ -327,6 +327,7 @@ outputfunc() {
 }
 
 ## Make it visible to curl-prgrs.
+export -f output
 export -f outputfunc
 
 tb_config_folder_parser() {
