@@ -380,12 +380,12 @@ tb_preparation() {
    fi
 
    if [ "$ARCH" = "i686" ]; then
-      [ -n "$ARCH_NEW" ] || ARCH_NEW="linux32"
+      [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux32"
    else
       ## NOTE: A simple else is non-ideal, should there be ever more architectures.
-      [ -n "$ARCH_NEW" ] || ARCH_NEW="linux64"
+      [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux64"
    fi
-   echo "INFO: arch $ARCH_NEW will be downloaded."
+   echo "INFO: arch $ARCH_DOWNLOAD will be downloaded."
 
    ## provides tbbversion function
    source /usr/lib/tbbversion_parser
@@ -926,7 +926,7 @@ Downloading:
 
    ### archive file ###
 
-   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_NEW}-${tbb_version}_${TB_LANG}.tar.xz"
+   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_${TB_LANG}.tar.xz"
    [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME"
 
    tb_notify_details="Downloading Tor Browser... Will take a while..."
