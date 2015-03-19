@@ -379,7 +379,9 @@ tb_preparation() {
       echo "INFO: ARCH is set to $ARCH."
    fi
 
-   if [ "$ARCH" = "i686" ]; then
+   if [ "$ARCH" = "i386" ]; then
+      [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux32"
+   elif [ "$ARCH" = "i686" ]; then
       [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux32"
    else
       ## NOTE: A simple else is non-ideal, should there be ever more architectures.
