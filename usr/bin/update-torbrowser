@@ -371,7 +371,7 @@ tb_preparation() {
    ##ARCH="x86_64"
    ##ARCH="i686"
    if [ "$ARCH" = "" ]; then
-      echo "INFO: Auto detecting ARCH."
+      echo "INFO: Auto detecting ARCH..."
       ARCH="$(uname --machine)"
       echo "INFO: ARCH $ARCH detected."
    else
@@ -379,15 +379,21 @@ tb_preparation() {
       echo "INFO: ARCH is set to $ARCH."
    fi
 
-   if [ "$ARCH" = "i386" ]; then
-      [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux32"
-   elif [ "$ARCH" = "i686" ]; then
-      [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux32"
+   if [ "$ARCH_DOWNLOAD" = "" ]; then
+      echo "INFO: Auto detecting ARCH_DOWNLOAD..."
+      if [ "$ARCH" = "i386" ]; then
+         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux32"
+      elif [ "$ARCH" = "i686" ]; then
+         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux32"
+      else
+         ## NOTE: A simple else is non-ideal, should there be ever more architectures.
+         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux64"
+      fi
+      echo "INFO: ARCH_DOWNLOAD $ARCH_DOWNLOAD detected."
    else
-      ## NOTE: A simple else is non-ideal, should there be ever more architectures.
-      [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux64"
+      echo "INFO: Skipping auto detecting ARCH_DOWNLOAD because already set."
+      echo "INFO: ARCH_DOWNLOAD is set to $ARCH_DOWNLOAD."
    fi
-   echo "INFO: arch $ARCH_DOWNLOAD will be downloaded."
 
    ## provides tbbversion function
    source /usr/lib/tbbversion_parser
