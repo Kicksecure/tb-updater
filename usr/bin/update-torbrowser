@@ -744,6 +744,8 @@ tb_confirm_update() {
       fi
       type="warning"
       MSG="\
+<p>Only versions still considered secure should be listed here. Higher version numbers does not necessarily mean more secure here. Could be alpha or beta versions. In most cases you are best off choosing the lowest version number among them.</p>
+
 <p>$up_to_date_or_not_text</p>
 
 <p>$re_install_or_install_text</p>
