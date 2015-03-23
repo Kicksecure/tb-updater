@@ -992,9 +992,6 @@ tb_gpg_verify() {
 
    gpg_bash_lib_output_diagnostic_message="$(/usr/lib/msgcollector/br_add "$gpg_bash_lib_output_diagnostic_message")"
 
-   output_info_echo_only "gpg_bash_lib_output_gpg_verify_output:
-$gpg_bash_lib_output_gpg_verify_output"
-
    ## Not checking for gpg_bash_lib_output_alright_status, because then there
    ## would be no way to accept outdated signatures. It is not clear if it is
    ## guaranteed to have a new stable TBB release every three months.
