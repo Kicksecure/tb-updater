@@ -1,3 +1,244 @@
+commit e3a166d6c9560a13e6ac853facf9325b3d756d33
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Mar 24 17:26:52 2015 +0000
+
+    updated makefile generic to version 1.4
+
+commit 11cb4ce6a867abcb4c2789078d7b73f99c0d9524
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Mar 23 19:27:09 2015 +0000
+
+    removed duplicate output of gpg_bash_lib_output_gpg_verify_output in terminal
+
+commit a41f640de4655362a4b5601434a2ec115b047da3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Mar 23 16:56:54 2015 +0000
+
+    improved gpg verification
+
+commit bfd6fac5909b3f637a7cf42b3ec1fe8fd408a413
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Mar 22 17:35:39 2015 +0000
+
+    output - tb-updater's download confirmation screen multiple version numbers usability - https://phabricator.whonix.org/T214
+
+commit 468f6e9406ac8dab92fea2568a7a59edd048ab59
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Mar 19 11:41:12 2015 +0000
+
+    improved architecture detection
+
+commit 3d74efe775dd2ae70957377ec2178836eee057b6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Mar 19 11:36:49 2015 +0000
+
+    improved architecture detection
+
+commit eb0bf2b3c4502bfe1d7486037592155e48ea974c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Mar 19 11:35:10 2015 +0000
+
+    refactoring
+
+commit 3a787133683da59145e291c2705e3d9987ece68e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Mar 13 18:02:24 2015 +0000
+
+    output
+
+commit a8fce24a3fa0d0f2b6428c3daeaa6947ad06f494
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Mar 7 03:27:43 2015 +0000
+
+    fix
+
+commit 556eef643d3eabea6082bc83a96be2b3d85c5535
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Mar 7 03:22:09 2015 +0000
+
+    fix
+
+commit 5b4bb78f10e58c4d3c9875e3b55bbbdbf3ff44d3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Mar 6 23:12:43 2015 +0000
+
+    output
+
+commit bf271422e598178d14be2e669c4ea378dca4bfd6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Mar 6 23:07:31 2015 +0000
+
+    fix
+
+commit 243b60da10afe506e34b16a801680209d2e52194
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Mar 5 16:07:37 2015 +0000
+
+    use /usr/lib/msgcollector/br_add - https://phabricator.whonix.org/T216
+
+commit fcb0d7826f17246ce573b9d04392f58a419fd767
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Feb 28 03:36:56 2015 +0000
+
+    cleanup
+
+commit 2ef1798d614f3a5d32d487596e5d0cd018005804
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Feb 28 03:35:40 2015 +0000
+
+    output
+
+commit 5fd1247856f67e0e59fda8f40ee01e62a1a72471
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Feb 28 03:34:46 2015 +0000
+
+    refactoring
+
+commit 7d55bf12c406b9620e4eda4a57bb71fee0229937
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Feb 28 03:29:08 2015 +0000
+
+    output
+
+commit d20bbd7815a0c827318f902433941da44c70e84e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Feb 28 03:27:53 2015 +0000
+
+    output
+
+commit c1f9cd205ca3fab30a70164fb84b7b50095ca826
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Feb 26 21:39:23 2015 +0000
+
+    output
+
+commit 3fc7138e09ce911bbb7f9bfb1c1c91b19c2aaac0
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Feb 24 23:05:45 2015 +0000
+
+    update
+
+commit f9146ce45649dc16b87322be3c48374fa93c965d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Feb 24 16:21:39 2015 +0000
+
+    output
+
+commit 1b129ae517507cc2774d2b8a6a77f9589c31beb6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Feb 24 16:18:41 2015 +0000
+
+    update
+
+commit 8b1b441ea08526a1dbf3aa3a9e0b08654b3fd484
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Feb 23 13:08:00 2015 +0000
+
+    output
+
+commit 6c434c0efbff19720b1b63ecbbee475904f12cc1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Feb 23 12:58:25 2015 +0000
+
+    refactoring
+
+commit 70a3a8150a9947d7f296d6b27d7b567e61b842c0
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Feb 23 12:56:11 2015 +0000
+
+    fixed --noask
+
+commit d773634c6bdf0a3c3f28ecb4461cbc9d57066138
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Feb 23 12:48:43 2015 +0000
+
+    fix cli
+
+commit be4f82ff95081fe18621bf1e5aaa62f0e5af51ff
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Feb 23 12:41:32 2015 +0000
+
+    fix; output
+
+commit ebd3edb6c7b4124cdbce0a7f1c9b0063d0921525
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Feb 22 18:12:44 2015 +0000
+
+    debugging
+
+commit 8852c4de1e491959f1b0d770bf37e3a9f984584b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Feb 22 18:12:15 2015 +0000
+
+    fix
+
+commit 1a30ac828439dcf92d9d006d695f3ed8805d88d4
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Feb 22 13:50:38 2015 +0000
+
+    suggest lowest advertised version number by default because then chances are good, it is a stable and no alpha version - https://phabricator.whonix.org/T130
+
+commit 0a212436a2162bcac91391f8b2aba8cfbd351f14
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Feb 22 12:56:03 2015 +0000
+
+    refactoring
+
+commit 1acc91cab5f9256a34c510be2b06ff553d76749c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Feb 22 12:46:39 2015 +0000
+
+    work on porting to tb_updater_gui https://phabricator.whonix.org/T149
+
+commit e587fdbab6db582e07fa338aef40c53e3ee6aab4
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Feb 12 13:59:36 2015 +0000
+
+    new switch --input
+
+commit 8520b854aad0167eb9fae7800dba8334753daf02
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Feb 11 18:16:11 2015 +0000
+
+    added links to download and installation confirmation screen documentation
+
+commit d9a8775a390377066c144db68f459cc4910c04c4
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Feb 6 16:19:03 2015 +0000
+
+    output; refactoring
+
+commit a762dfd9950dc816d490adfc986caf5e514c3239
+Merge: 711c6b8 2582f6c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Feb 4 21:12:46 2015 +0000
+
+    Merge remote-tracking branch 'troubadoour/master'
+
+commit 2582f6c29baee9635d49dd0afd1d13b5874aefe9
+Author: troubadoour <trobador@riseup.net>
+Date:   Wed Feb 4 20:09:47 2015 +0000
+
+    fix HTML
+
+commit 711c6b805d997197246adebda5562985816d55bb
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Feb 4 17:01:59 2015 +0000
+
+    distinct exit codes for each case of abort or failure
+
+commit d040c12085a527f4d39cb1751f2e514642c7ebaa
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Feb 4 12:31:27 2015 +0000
+
+    instead of --socks5-hostname, use more modern --proxy + user:password@ip:port syntax for curl for better stream isolation - https://phabricator.whonix.org/T126
+
+commit 994bbc5275489a412d58e9b2196d4fed55abb2be
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Feb 4 00:56:34 2015 +0000
+
+    bumped changelog version
+
 commit 2d8ccab302ac89d9d7bf44c00cd3ac45989e174d
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Feb 4 00:45:01 2015 +0000
