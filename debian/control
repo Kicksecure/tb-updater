@@ -14,7 +14,8 @@ Standards-Version: 3.9.4
 
 Package: tb-updater
 Architecture: all
-Depends: msgcollector, curl, psmisc, gpg-bash-lib, pv, ${misc:Depends}
+Depends: msgcollector, curl, psmisc, gpg-bash-lib, pv, xz-utils,
+ ${misc:Depends}
 Recommends: tb-starter, anon-icon-pack, anon-shared-helper-scripts,
  curl-scripts
 Suggests: tb-default-browser, open-link-confirmation
