@@ -1331,6 +1331,12 @@ tb_patch_internal_updater_disable_maybe() {
    source_file="/usr/share/tb-updater/tb_internal_updater_disable.js"
    target_file="$tb_home_folder/.tb/tor-browser_$TB_LANG/Browser/TorBrowser/Data/Browser/profile.default/preferences/tb_internal_updater_disable.js"
 
+   if dpkg --compare-versions "$tbb_version" ge "4.5" ; then
+      output_info_echo_only "No need to deactivate Tor Browser’s Internal \
+Updater, because tbb_version $tbb_version is equal or higher than 4.5."
+      return 0
+   fi
+
    if [ -f "$source_file" ]; then
       output_info_echo_only "Deactivating Tor Browser’s Internal Updater at least as long \
 it does not support verification. See also:
