@@ -1,3 +1,39 @@
+commit bc318ba4255c41d244c27ce21685927ce6dd9e34
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Apr 2 18:41:27 2015 +0000
+
+    added genmkfile to Build-Depends
+
+commit c868445b0800a5754f809cb2fcef6d9a1f124d02
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Apr 2 17:45:01 2015 +0000
+
+    updated debian/rules for makefile generic to version 1.5
+
+commit 2e931564d1369e7c63dd36546bba56824c3cf5f2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Apr 2 17:24:48 2015 +0000
+
+    updated makefile generic to version 1.5
+
+commit 5269eca39da11a2cbb3a9a5e190a1eb37ddb3f63
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Apr 2 17:07:57 2015 +0000
+
+    removed deactivation of TBB internal updater for TBB versions equal or higher than 4.5 because upstream fixed the security issue - https://phabricator.whonix.org/T105
+
+commit 83c01bb6414e22c097e25e8da06b2f4d84c3ffb4
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Mar 31 10:26:05 2015 +0000
+
+    added xz-utils to Depends:
+
+commit aa206f3bea5e67b6e739bee0f65a0d2290c3a79b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Mar 24 17:36:55 2015 +0000
+
+    bumped changelog version
+
 commit e3a166d6c9560a13e6ac853facf9325b3d756d33
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Mar 24 17:26:52 2015 +0000
