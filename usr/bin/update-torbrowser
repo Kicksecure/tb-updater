@@ -1035,10 +1035,11 @@ tb_hash_verify() {
    tb_sha_exit_code="0"
 
    timeout --kill-after="$kill_after" "$timeout_after" \
-      sha256sum "$TBB_PACKAGE_FILENAME" \
+      sha256sum \
+         "$TBB_PACKAGE_FILENAME" \
          > "$tb_home_folder/.tb/sha256_output" \
          2>&1 \
-         \ &
+         &
 
    lastpid="$!"
    wait "$lastpid" || { tb_sha_exit_code="$?" ; true; };
