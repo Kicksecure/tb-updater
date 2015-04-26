@@ -10,7 +10,7 @@ Build-Depends: debhelper (>= 9), faketime, genmkfile
 Homepage: https://github.com/Whonix/tb-updater
 Vcs-Browser: https://github.com/Whonix/tb-updater
 Vcs-Git: https://github.com/Whonix/tb-updater.git
-Standards-Version: 3.9.4
+Standards-Version: 3.9.6
 
 Package: tb-updater
 Architecture: all
