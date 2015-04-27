@@ -725,6 +725,9 @@ tb_confirm_update() {
    button="yesno"
    question="Download now?"
 
+   highest_version_not_always_better_text="\
+Only versions still considered secure should be listed here. Higher version numbers does not necessarily mean more secure here. Could be alpha or beta versions. In most cases you are best off choosing the lowest version number among them."
+
    if [ "$installed_or_not_result" = "true" ]; then
       if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
          up_to_date_or_not_text="Looks like Tor Browser is already up to date."
@@ -744,7 +747,7 @@ tb_confirm_update() {
       fi
       type="warning"
       MSG="\
-<p>Only versions still considered secure should be listed here. Higher version numbers does not necessarily mean more secure here. Could be alpha or beta versions. In most cases you are best off choosing the lowest version number among them.</p>
+<p>$highest_version_not_always_better_text</p>
 
 <p>$up_to_date_or_not_text</p>
 
@@ -764,7 +767,9 @@ YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.<
 <p><a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a></p>"
    else
       type="info"
-      MSG="<p><a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a></p>"
+      MSG="\
+<p>$highest_version_not_always_better_text</p>
+<p><a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a></p>"
    fi
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
