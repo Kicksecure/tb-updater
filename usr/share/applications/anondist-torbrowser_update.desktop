@@ -10,3 +10,4 @@ GenericName=Update Tor Browser
 Comment=Update Tor Browser (AnonDist)
 Categories=System;
 Icon=/usr/share/icons/anon-icon-pack/tbupdate.ico
+Keywords=system;update;browser;Tor
