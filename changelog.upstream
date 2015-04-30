@@ -1,3 +1,33 @@
+commit cf6317bcea4d297ad3e98cf18ecfa84722918b50
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Apr 28 15:43:55 2015 +0000
+
+    added 'Keywords=' to '.desktop' files to fix lintian warning 'desktop-entry-lacks-keywords-entry' - https://phabricator.whonix.org/T281
+
+commit 2963ae3591465e2cc770345c384f364abf2b7e82
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Apr 28 13:43:26 2015 +0000
+
+    added debian/source/lintian-overrides with debian-watch-may-check-gpg-signature to fix lintian warning - https://phabricator.whonix.org/T277
+
+commit 4aa6c996e972cf374ece96b785eb5d132618800a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Apr 27 17:35:17 2015 +0000
+
+    - tb-updater: show "highest version number is not necessarily the best one" message also on first run if no Tor Browser is installed yet - https://phabricator.whonix.org/T283
+
+commit 86017a6c02cda7a6e26769a734c224d618a1d35e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Apr 26 23:16:15 2015 +0000
+
+    packaging, bumped Standards-Version from 3.9.4 to 3.9.6 for jessie support
+
+commit 8fa1d488f9c5448b367afe7947eba2838a3ef7a4
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Apr 15 20:28:59 2015 +0000
+
+    bumped changelog version
+
 commit c0f0b0e2d86e0d5301b44a171faba1a5187c522f
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Apr 15 20:28:27 2015 +0000
