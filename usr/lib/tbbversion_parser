@@ -56,38 +56,38 @@ Either check.torproject.org has been compromised or this is a Whonix bug."
          continue
       fi
 
-      if $(echo "$line" | grep -q -i -s "\[") ; then
+      if echo "$line" | grep -q -i -s "\[" ; then
          continue
       fi
-      if $(echo "$line" | grep -q -i -s "\]") ; then
+      if echo "$line" | grep -q -i -s "\]" ; then
          continue
       fi
 
       if [ "$TB_VERSIONS_ALPHA" = "1" ]; then
          true
       else
-         if $(echo "$line" | grep -q -i -s "\-alpha\-") ; then
+         if echo "$line" | grep -q -i -s "\-alpha\-" ; then
             continue
          fi
       fi
       if [ "$TB_VERSIONS_BETA" = "1" ]; then
          true
       else
-         if $(echo "$line" | grep -q -i -s "\-beta\-") ; then
+         if echo "$line" | grep -q -i -s "\-beta\-" ; then
             continue
          fi
       fi
       if [ "$TB_VERSIONS_RC" = "1" ]; then
          true
       else
-         if $(echo "$line" | grep -q -i -s "\-rc\-") ; then
+         if echo "$line" | grep -q -i -s "\-rc\-" ; then
             continue
          fi
       fi
-      if $(echo "$line" | grep -q -i -s "MacOS") ; then
+      if echo "$line" | grep -q -i -s "MacOS" ; then
          continue
       fi
-      if $(echo "$line" | grep -q -i -s "Windows") ; then
+      if echo "$line" | grep -q -i -s "Windows" ; then
          continue
       fi
 
@@ -101,7 +101,7 @@ Either check.torproject.org has been compromised or this is a Whonix bug."
       ## https://trac.torproject.org/projects/tor/ticket/8940#comment:28
 
       ## {{ parsing old format
-      if $(echo "$line" | grep -q -i -s "Linux") ; then
+      if echo "$line" | grep -q -i -s "Linux" ; then
          temp="$(echo "$temp" | sed 's/-i686//g')"
          temp="$(echo "$temp" | sed 's/-x86_64//g')"
          temp="$(echo "$temp" | sed 's/-Linux//g')"
