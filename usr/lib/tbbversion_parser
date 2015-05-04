@@ -183,7 +183,7 @@ tbbversion_installed() {
    temp=~/"tor-browser_${TB_LANG}/Browser/TorBrowser/Docs/sources/versions"
    if [ -f "$temp" ]; then
       local grep_output
-      grep_output="$(grep "TORBROWSER_VERSION" "$temp")" || true
+      grep_output="$(grep "^TORBROWSER_VERSION=" "$temp")" || true
       ## Example grep_output:
       ## TORBROWSER_VERSION=3.5.1
       if [ ! "$grep_output" = "" ]; then
