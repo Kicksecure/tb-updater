@@ -1,3 +1,15 @@
+commit 818ce87fa25bc4f3e26dd034b0d652bc1b4b8a2b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon May 4 20:14:17 2015 +0000
+
+    tbbversion_installed parser fix
+
+commit 34703c7c04f9addeb8b6e2db8f42f4d7ae7f091f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat May 2 15:33:11 2015 +0000
+
+    bumped changelog version
+
 commit 3d918dbb165a803f9a751100808dec4f14555e31
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat May 2 15:32:40 2015 +0000
