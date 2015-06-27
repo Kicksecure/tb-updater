@@ -538,7 +538,10 @@ tb_connectivity_checks_tor() {
 
 <p>Run whonixcheck on Whonix-Gateway as well.</p>
 
-<p>If whonixcheck reports no problems with internet activity and this still fails, please report a bug!</p>"
+<p>If whonixcheck reports no problems with internet activity and this still fails, please report a bug!</p>
+
+<p>Debugging information:<br />
+You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCNAME</code> should be skipped.</p>"
 
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
