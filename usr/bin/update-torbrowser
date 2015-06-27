@@ -1205,6 +1205,8 @@ Extracting $nice_name... This could take a moment."
    kill_after="30"
    file_name="$tb_home_folder/.tb/$TBB_PACKAGE_FILENAME"
 
+   output_info_echo_only "Extracting $file_name ..."
+
    ## Debugging.
    #timeout_after="0.001"
    #kill_after="0.001"
@@ -1311,6 +1313,8 @@ Extracting $nice_name... This could take a moment."
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
       exit 15
    fi
+
+   output_info_echo_only "Extraction of $file_name done."
 }
 
 tb_patch_version_number_own() {
