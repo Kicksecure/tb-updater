@@ -773,6 +773,7 @@ YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.<
    fi
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+   output_info_echo_only "https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen"
 
    if [ "$TB_INPUT" = "none" ]; then
       answer="$tbb_default_download_version"
@@ -1159,6 +1160,7 @@ $gpg_bash_lib_output_gpg_verify_output_br_added</p>
 <p><a href=https://www.whonix.org/wiki/Tor_Browser/Installation_Confirmation_Screen>Learn more about this Installation Confirmation Screen.</a></p>"
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+   output_info_echo_only "https://www.whonix.org/wiki/Tor_Browser/Installation_Confirmation_Screen"
 
    button="yesno"
    question="Install now?"
