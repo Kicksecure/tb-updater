@@ -703,6 +703,8 @@ tb_local_version_detection() {
 }
 
 tb_confirm_update() {
+   output_info_echo_only "Currently installed version: $tbb_locally_installed_version"
+
    if [ "$installed_or_not_result" = "true" ]; then
       local tbb_compare_version
       for tbb_compare_version in $tbb_recommended_versions_list; do
