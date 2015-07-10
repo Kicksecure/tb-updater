@@ -861,22 +861,12 @@ $tb_notify_details"
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
-      if [ ! "$tb_download_attempt_last_try" = "true" ]; then
-         MSG="<p><b>Failed to download:</b> $curl_download_target_url
-<br></br>There are other recommended versions. Will try to download the next recommended version...</p>
-
-<p>(Debugging information: curl_status_message: $curl_status_message)</p>"
-         ## No popup message in X. Would be too confusing.
-         #$output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
-      else
-         MSG="<p>Failed to download: $curl_download_target_url</p>
+      MSG="<p>Failed to download: $curl_download_target_url</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
-         $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-         exit 11
-      fi
+      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
+      exit 11
    fi
 
    output_info_echo_only "Done, downloaded $curl_download_target_url."
@@ -906,16 +896,6 @@ Downloading:
    curl_download_target_url="$TBB_SIG_LINK"
    tb_download_common
 
-   if [ ! "$curl_exit_code" = "0" ]; then
-      ## Unset those, so during next invocation by tb_download_loop these can
-      ## be set again.
-      unset TBB_EXTRA_FOLDER
-      unset TBB_SIG_FILENAME
-      unset TBB_SIG_LINK
-      ## return 0, so the loop might try the next $tbb_version.
-      return 0
-   fi
-
    ### hash file ###
 
    [ -n "$TBB_HASH_FILENAME" ] || TBB_HASH_FILENAME="sha256sums.txt"
@@ -937,16 +917,6 @@ Downloading:
    curl_download_target_url="$TBB_HASH_LINK"
    tb_download_common
 
-   if [ ! "$curl_exit_code" = "0" ]; then
-      ## Unset those, so during next invocation by tb_download_loop these can
-      ## be set again.
-      unset TBB_EXTRA_FOLDER
-      unset TBB_HASH_FILENAME
-      unset TBB_HASH_LINK
-      ## return 0, so the loop might try the next $tbb_version.
-      return 0
-   fi
-
    ### archive file ###
 
    [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_${TB_LANG}.tar.xz"
@@ -967,16 +937,6 @@ Downloading:
    curl_download_max_time="3600"
    curl_download_target_url="$TBB_PACKAGE_LINK"
    tb_download_common
-
-   if [ ! "$curl_exit_code" = "0" ]; then
-      ## Unset those, so during next invocation by tb_download_loop these can
-      ## be set again.
-      unset TBB_EXTRA_FOLDER
-      unset TBB_PACKAGE_FILENAME
-      unset TBB_PACKAGE_LINK
-      ## return 0, so the loop might try the next $tbb_version.
-      return 0
-   fi
 
    tb_download_attempt_success="true"
 }
@@ -1493,45 +1453,6 @@ tb_sort_remote_versions() {
    tbb_recommended_versions_slash_separated="$temp"
 }
 
-tb_download_loop() {
-   ## In past there where situations where RecommendedTBBVersions advertised
-   ## multiple versions, but not all were indeed downloadable. Therefore we
-   ## start with the highest available advertised version, try downloading, try
-   ## downloading next one and so forth.
-
-   for tbb_version in $tbb_recommended_versions_list; do
-      ## Starting with the highest available $tbb_version thanks to tb_sort_remote_versions.
-
-      ## For testing.
-      #tbb_version="3.0-rc-1"
-      #tbb_version_folder="3.0rc1"
-
-      tbb_version_folder="$tbb_version"
-
-      [ -n "$tb_download_attempt_number" ] || tb_download_attempt_number="0"
-      [ -n "$tb_download_attempt_max" ] || tb_download_attempt_max="3"
-
-      tb_download_attempt_number="$(( $tb_download_attempt_number + 1 ))"
-      echo "INFO: Download attempt number $tb_download_attempt_number of max tb_download_attempt_max $tb_download_attempt_max."
-      if [ "$tb_download_attempt_number" -ge "$tbbversions_found" ]; then
-         tb_download_attempt_last_try="true"
-      fi
-      if [ "$tb_download_attempt_number" -ge "$tb_download_attempt_max" ]; then
-         tb_download_attempt_last_try="true"
-      fi
-
-      if [ "$tb_download_attempt_success" = "true" ]; then
-         ## Download already succeeded.
-         break
-      fi
-      tb_run_function tb_download_files
-      if [ "$tb_download_attempt_success" = "true" ]; then
-         ## Download already succeeded.
-         break
-      fi
-   done
-}
-
 main_function() {
    tb_run_function root_check
    tb_run_function tb_sanity_tests
@@ -1552,7 +1473,6 @@ main_function() {
 
    tb_run_function tb_sort_remote_versions
    tb_run_function tb_confirm_update
-   #tb_run_function tb_download_loop
    tb_run_function tb_download_files
    tb_run_function tb_gpg_verify
    tb_run_function tb_hash_verify
