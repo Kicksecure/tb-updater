@@ -409,6 +409,8 @@ tb_preparation() {
       TB_LANG="en-US"
    fi
 
+   [ -n "$tb_browser_folder" ] || tb_browser_folder="$tb_home_folder/tor-browser_$TB_LANG"
+
    if [ "$display" = "" ]; then
       if [ "$DISPLAY" = "" ]; then
          display=":0"
@@ -628,8 +630,8 @@ tb_connectivity_checks_curl() {
 tb_update_check() {
    ## do not re-download Tor Browser if a previous build already did
    if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
-      if [ -d "$tb_home_folder/tor-browser_$TB_LANG" ]; then
-         echo "$SCRIPTNAME: Not downloading Tor Browser again, because $tb_home_folder/tor-browser_$TB_LANG already exists."
+      if [ -d "$tb_browser_folder" ]; then
+         echo "$SCRIPTNAME: Not downloading Tor Browser again, because $tb_browser_folder already exists."
          exit 0
       fi
    fi
@@ -687,18 +689,18 @@ tb_remote_version_sanity_test() {
 
 tb_local_version_detection() {
    ## Used by tbbversion_installed
-   [ -n "$tbb_folder" ] || tbb_folder="$tb_home_folder/tor-browser_$TB_LANG"
+   [ -n "$tbb_folder" ] || tbb_folder="$tb_browser_folder"
 
    ## sets: tbb_locally_installed_version
    tb_run_function tbbversion_installed
 
-   if [ -d "$tb_home_folder/tor-browser_$TB_LANG" ]; then
+   if [ -d "$tb_browser_folder" ]; then
       installed_or_not_result="true"
       installed_or_not_text=""
    else
       installed_or_not_result="false"
       installed_or_not_text="Tor Browser is currently not installed.
-(Folder $tb_home_folder/tor-browser_$TB_LANG does not exist.)"
+(Folder $tb_browser_folder does not exist.)"
    fi
 }
 
@@ -1382,18 +1384,18 @@ tb_patch() {
 }
 
 tb_install() {
-   if [ -d "$tb_home_folder/tor-browser_$TB_LANG" ]; then
-      output_info_echo_only "Moving old folder $tb_home_folder/tor-browser_$TB_LANG..."
-      mv "$tb_home_folder/tor-browser_$TB_LANG" "$tb_home_folder/tor-browser_$TB_LANG.old.$(date '+%F-%H:%M:%S')"
+   if [ -d "$tb_browser_folder" ]; then
+      output_info_echo_only "Moving old folder $tb_browser_folder..."
+      mv "$tb_browser_folder" "$tb_browser_folder.old.$(date '+%F-%H:%M:%S')"
    fi
 
-   output_info_echo_only "Moving temporary folder $tb_home_folder/.tb/tor-browser_$TB_LANG to $tb_home_folder/tor-browser_$TB_LANG."
-   mv "$tb_home_folder/.tb/tor-browser_$TB_LANG" "$tb_home_folder/tor-browser_$TB_LANG"
+   output_info_echo_only "Moving temporary folder $tb_home_folder/.tb/tor-browser_$TB_LANG to $tb_browser_folder."
+   mv "$tb_home_folder/.tb/tor-browser_$TB_LANG" "$tb_browser_folder"
 }
 
 tb_end() {
    local TEMP
-   TEMP="$tb_home_folder/tor-browser_$TB_LANG/"
+   TEMP="$tb_browser_folder"
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       output_info_echo_only "Finished installing Tor Browser. Can be found in $TEMP."
