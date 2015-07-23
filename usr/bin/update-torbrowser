@@ -602,6 +602,7 @@ tb_connectivity_checks_curl() {
    export CURL_OUT_FILE="$tb_home_folder/.tb/tbb_remote_folder"
    curl_download_max_time="180"
    curl_download_target_url="$TBB_REMOTE_FOLDER"
+   tb_download_common_exit_on_fail="false"
    tb_download_common
 
    ## Check if curl failed.
@@ -649,19 +650,8 @@ tb_update_check() {
    export CURL_OUT_FILE="$RecommendedTBBVersions"
    curl_download_max_time="180"
    curl_download_target_url="$TBB_VERSIONS_FILE_LINK"
+   tb_download_common_exit_on_fail="8"
    tb_download_common
-
-   ## Check if curl failed.
-   if [ ! "$curl_exit_code" = "0" ]; then
-      MSG="<p><b>Failed to download:</b> $curl_download_target_url</p>
-
-<p>$DOWNLOAD_FAIL_HELP</p>
-
-<p>(Debugging information: curl_status_message: $curl_status_message)</p>"
-      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-      $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-      exit 8
-   fi
 }
 
 tb_remote_version_parser() {
@@ -859,14 +849,21 @@ $tb_notify_details"
       curl_status_message="$curl_exit_code"
    fi
 
+   if [ "$tb_download_common_exit_on_fail" = "false" ]; then
+      true "$FUNCNAME is not supposed to exit, because tb_download_common_exit_on_fail is set to $tb_download_common_exit_on_fail."
+      return 0
+   fi
+
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
       MSG="<p>Failed to download: $curl_download_target_url</p>
 
-<p>$DOWNLOAD_FAIL_HELP</p>"
+<p>$DOWNLOAD_FAIL_HELP</p>
+
+<p>(Debugging information: curl_status_message: $curl_status_message)</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-      exit 11
+      exit "$tb_download_common_exit_on_fail"
    fi
 
    output_info_echo_only "Done, downloaded $curl_download_target_url."
@@ -894,6 +891,7 @@ Downloading:
    export CURL_OUT_FILE="$tb_home_folder/.tb/$TBB_SIG_FILENAME"
    curl_download_max_time="180"
    curl_download_target_url="$TBB_SIG_LINK"
+   tb_download_common_exit_on_fail="8"
    tb_download_common
 
    ### hash file ###
@@ -915,6 +913,7 @@ Downloading:
    export CURL_OUT_FILE="$tb_home_folder/.tb/$TBB_HASH_FILENAME"
    curl_download_max_time="180"
    curl_download_target_url="$TBB_HASH_LINK"
+   tb_download_common_exit_on_fail="16"
    tb_download_common
 
    ### archive file ###
@@ -936,6 +935,7 @@ Downloading:
    export CURL_OUT_FILE="$tb_home_folder/.tb/$TBB_PACKAGE_FILENAME"
    curl_download_max_time="3600"
    curl_download_target_url="$TBB_PACKAGE_LINK"
+   tb_download_common_exit_on_fail="17"
    tb_download_common
 
    tb_download_attempt_success="true"
