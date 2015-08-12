@@ -352,14 +352,8 @@ tb_config_folder_parser() {
 }
 
 tb_preparation() {
-   ## Workaround for CI compatibility.
-   if [ "$CI" = "true" ]; then
-      [ -n "$tb_home_folder" ] || tb_home_folder=/home/user/.tb
-      [ -n "$tb_cache_folder" ] || tb_cache_folder=/home/user/.cache/tb
-   else
-      [ -n "$tb_home_folder" ] || tb_home_folder=~/.tb
-      [ -n "$tb_cache_folder" ] || tb_cache_folder=~/.cache/tb
-   fi
+   [ -n "$tb_home_folder" ] || tb_home_folder=~/.tb
+   [ -n "$tb_cache_folder" ] || tb_cache_folder=~/.cache/tb
 
    ## Required for /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh.
    TEMP_DIR="$tb_cache_folder/temp_dir"
