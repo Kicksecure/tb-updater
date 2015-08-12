@@ -1165,7 +1165,7 @@ tb_extract() {
       progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
       tb_notify_msg="Extraction
 ----------------------------------------------------------------------
-Extracting Tor Browser... This could take a moment."
+Extracting Tor Browser... This could take a moment..."
       $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
    fi
 
