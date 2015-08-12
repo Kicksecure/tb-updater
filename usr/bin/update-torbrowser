@@ -281,7 +281,7 @@ tb_stdin() {
    if [ -t "0" ]; then
       output_info_echo_only "INFO: stdin connected to terminal, setting \
 TB_INPUT to stdin, will use terminal for input, ok."
-      output_info_echo_only "INFO: alternatively, if want to run from \
+      output_info_echo_only "INFO: Alternatively, if want to run from \
 command line, but still use the graphical user interface for input, \
 you could add to command line: --input gui"
       TB_INPUT="stdin"
@@ -291,6 +291,7 @@ you could add to command line: --input gui"
 }
 
 output_info_echo_only() {
+   local MSG
    MSG="${1+"$@"}"
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 }
@@ -300,19 +301,20 @@ output() {
 }
 
 outputfunc() {
+   true "$FUNCNAME: args: ${1+$@}"
    if [ "$TB_USE_MSGCOLLECTOR" = "false" ]; then
-      while :
-      do
-          case $1 in
-              --message)
-                  local MSG
-                  MSG="$2"
-                  shift 2
-                  ;;
-              *)
-                  break
-                  ;;
-          esac
+      while true; do
+         case $1 in
+            --message)
+               local MSG
+               MSG="$2"
+               shift 2
+               break
+               ;;
+            *)
+               break
+               ;;
+         esac
       done
       MSG="$(/usr/lib/msgcollector/striphtml "$MSG")"
       echo "$MSG"
@@ -813,7 +815,9 @@ tb_download_common() {
       tb_notify_msg="Download
 ----------------------------------------------------------------------
 $tb_notify_details"
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
+      if [ "$TB_INPUT" = "" ] || [ "$TB_INPUT" = "gui" ]; then
+         $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
+      fi
       ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
       ## variables. (See above.)
       ## Define what CURL_PRGRS is supposed to eval.
@@ -1166,7 +1170,9 @@ tb_extract() {
       tb_notify_msg="Extraction
 ----------------------------------------------------------------------
 Extracting Tor Browser... This could take a moment..."
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
+      if [ "$TB_INPUT" = "" ] || [ "$TB_INPUT" = "gui" ]; then
+         $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
+      fi
    fi
 
    local timeout_after kill_after file_name
