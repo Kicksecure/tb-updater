@@ -1,3 +1,93 @@
+commit 470c9ed8a1e14fdcf411d7b1f6a8d2c19f13833a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Aug 13 00:16:00 2015 +0200
+
+    code cleanup, removed CI (continued integration) workarounds, too many of them were required, often broken anyhow
+
+commit e484db498d5cdda12e552fdca09b47d7904f6dd8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Aug 12 06:54:24 2015 +0200
+
+    don't show progress bars when run from console; refactoring; minor output
+
+commit a14e262d6418fc129252b7d3a9f0a783e4713b1c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Aug 12 06:10:51 2015 +0200
+
+    minor output
+
+commit c001080103c8f28063b0259f5443a4a63dee556b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Aug 12 06:07:20 2015 +0200
+
+    minor output
+
+commit c09197a972eb5c873011bcfb915099e36bd7cdb9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Aug 12 06:06:53 2015 +0200
+
+    refactoring
+
+commit 6e919a326bea5e21d3cee5bfd7efa884e31edde7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 29 19:01:54 2015 +0200
+
+    changed default data dir to ~/.tb and cache dir to ~/.cache/tb - https://phabricator.whonix.org/T338
+
+commit e90f928ebcbf7f25db0493de55900ce0325fa4ec
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 23 14:19:15 2015 +0200
+
+    fix, added missing build depends ruby-ronn (required for man page creation)
+
+commit 5868e3035edd3099f49610e06087f601373dfb93
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 23 14:16:06 2015 +0200
+
+    improved handling in case of download failiures and better output
+
+commit 3b2811ed97e2430f4183aadf8b8d53818ed9fe34
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 10 18:41:55 2015 +0000
+
+    fix, if download fails, notify about failed file download rather than failed hash check; refactoring, deprecated tb_download_loop
+
+commit 0e5d47f14d2271b4d1aaa9aa33a91c452b4e6279
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 10 18:04:07 2015 +0000
+
+    refactoring, made "$tb_home_folder/tor-browser_$TB_LANG" a variable tb_browser_folder, useful for later moving of the Tor Browser folder to a more appropriate location - https://phabricator.whonix.org/T338
+
+commit 1db6d4b12c64b76b8888851f6a98b886efb4bc65
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jul 6 15:05:14 2015 +0000
+
+    added currently installed version to cli output
+
+commit 274bb4ee047c27f2687c8386338b22036d351eb6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jun 27 13:50:08 2015 +0000
+
+    self document / advertise --no-tor-con-check feature
+
+commit e2f7ce58f3f9eddad605170b3cadd21c07cde839
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jun 27 13:45:31 2015 +0000
+
+    added begin and end of extraction to output in cli
+
+commit b8e5ba06c75b56dd3ad01a02f833affa4fce6135
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jun 27 13:39:19 2015 +0000
+
+    added link to download/installation documentation also to cli output
+
+commit dcb157c60110a65f3587cc66169ca6d57888e367
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jun 9 11:07:41 2015 +0000
+
+    bumped changelog version
+
 commit 285cb5c0ed3bb77c1f9d6a4c3e01a62b1fc7a650
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Jun 9 11:06:47 2015 +0000
