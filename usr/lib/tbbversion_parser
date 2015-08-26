@@ -164,10 +164,10 @@ tbbversion_installed() {
    tbb_locally_installed_version_detect_success="0"
 
    if [ ! -d "$tbb_folder" ]; then
-      tbb_locally_installed_version="None installed. ($tbb_folder does not exist.)"
+      tbb_locally_installed_version="None installed. (Folder <code>$tbb_folder</code> does not exist.)"
       return 0
    fi
 
    ## TODO
-   tbb_locally_installed_version="Locally installed Tor Browser version detection not implemented."
+   tbb_locally_installed_version="Installed. (Folder <code>$tbb_folder</code> exists.) Locally installed Tor Browser version detection not implemented."
 }

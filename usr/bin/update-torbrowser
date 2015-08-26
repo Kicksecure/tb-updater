@@ -9,7 +9,7 @@ set -o pipefail
 set -o errtrace
 
 SCRIPTNAME="$(basename "$BASH_SOURCE")"
-IDENTIFIER="$SCRIPTNAME"
+IDENTIFIER="torbrowser-downloader"
 
 ICON="/usr/share/icons/anon-icon-pack/tbupdate.ico"
 
@@ -73,7 +73,7 @@ DOWNLOAD_FAIL_HELP="<p>Possible reasons:</p>
 <p>
 <br></br>- The download server is down.
 <br></br>- File size exceeded (endless data attack triggered).
-<br></br>- Tor Browser Updater (by Whonix developers) has been broken due to upstream changes.
+<br></br>- Tor Browser Downloader (by Whonix developers) has been broken due to upstream changes.
 </p>
 <p>Recommendations:</p>
 <p>
@@ -431,7 +431,7 @@ tb_preparation() {
 
    who_ami="$(whoami)"
 
-   TITLE="Tor Browser Updater (by Whonix developers)"
+   TITLE="Tor Browser Downloader (by Whonix developers)"
 
    output_tool="/usr/lib/msgcollector/msgcollector"
    output="output"
@@ -680,6 +680,7 @@ tb_local_version_detection() {
    [ -n "$tbb_folder" ] || tbb_folder="$tb_browser_folder"
 
    ## sets: tbb_locally_installed_version
+   ## sets: tbb_locally_installed_version_detect_success
    tb_run_function tbbversion_installed
 
    if [ -d "$tb_browser_folder" ]; then
@@ -695,53 +696,86 @@ tb_local_version_detection() {
 tb_confirm_update() {
    output_info_echo_only "Currently installed version: $tbb_locally_installed_version"
 
-   if [ "$installed_or_not_result" = "true" ]; then
-      local tbb_compare_version
-      for tbb_compare_version in $tbb_recommended_versions_list; do
-         local dpkg_compare_versions_equals_exit_code="0"
-         dpkg --compare-versions "$tbb_compare_version" eq "$tbb_locally_installed_version" || { dpkg_compare_versions_equals_exit_code="$?" ; true; };
-         if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
-            break
-         fi
-         local dpkg_compare_versions_greater_than_exit_code="0"
-         dpkg --compare-versions "$tbb_compare_version" gt "$tbb_locally_installed_version" || { dpkg_compare_versions_greater_than_exit_code="$?" ; true; };
-         if [ "$dpkg_compare_versions_greater_than_exit_code" = "0" ]; then
-            break
-         fi
-         local dpkg_compare_versions_lower_than_exit_code="0"
-         dpkg --compare-versions "$tbb_compare_version" lt "$tbb_locally_installed_version" || { dpkg_compare_versions_lower_than_exit_code="$?" ; true; };
-         #if [ "$dpkg_compare_versions_lower_than_exit_code" = "0" ]; then
-            #break
-         #fi
-      done
+   if [ "$tbb_locally_installed_version_detect_success" = "1" ]; then
+      if [ "$installed_or_not_result" = "true" ]; then
+         local tbb_compare_version
+         for tbb_compare_version in $tbb_recommended_versions_list; do
+            local dpkg_compare_versions_equals_exit_code="0"
+            dpkg --compare-versions "$tbb_compare_version" eq "$tbb_locally_installed_version" || { dpkg_compare_versions_equals_exit_code="$?" ; true; };
+            if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
+               break
+            fi
+            local dpkg_compare_versions_greater_than_exit_code="0"
+            dpkg --compare-versions "$tbb_compare_version" gt "$tbb_locally_installed_version" || { dpkg_compare_versions_greater_than_exit_code="$?" ; true; };
+            if [ "$dpkg_compare_versions_greater_than_exit_code" = "0" ]; then
+               break
+            fi
+            local dpkg_compare_versions_lower_than_exit_code="0"
+            dpkg --compare-versions "$tbb_compare_version" lt "$tbb_locally_installed_version" || { dpkg_compare_versions_lower_than_exit_code="$?" ; true; };
+            #if [ "$dpkg_compare_versions_lower_than_exit_code" = "0" ]; then
+               #break
+            #fi
+         done
+      fi
    fi
 
    local MSG question button type
    button="yesno"
    question="Download now?"
 
+   local highest_version_not_always_better_text updater_vs_downloader_msg confirmation_screen_learn_more_link
+
    highest_version_not_always_better_text="\
 Only versions still considered secure should be listed here. Higher version numbers does not necessarily mean more secure here. Could be alpha or beta versions. In most cases you are best off choosing the lowest version number among them."
 
+   updater_vs_downloader_msg="\
+Since The Tor Project configured TBB to automatically update itself,
+if you would like to keep your browser profile and update rather than re-downloading TBB, you are better off using \
+<a href=https://www.whonix.org/wiki/Tor_Browser/Internal_Updater>Tor Browser's internal updater</a>. \
+In that case, say no now.<br></br>
+<br></br>
+
+This program \
+(<a href=https://www.whonix.org/wiki/Tor_Browser/Downloader_by_Whonix>Tor Browser Downloader (Whonix)</a>) \
+is incapable of keeping user data.<br></br>
+YOUR BROWSER WILL BE KILLED.<br></br>
+YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.<br></br>
+<br></br>
+A backup of your old Tor Browser and settings will be created in folder <code>$tb_home_folder</code>.
+<br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space."
+
+   confirmation_screen_learn_more_link="\
+<a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a>"
+
    if [ "$installed_or_not_result" = "true" ]; then
-      if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
-         up_to_date_or_not_text="Looks like Tor Browser is already up to date."
-         re_install_or_install_text="Please close Tor Browser if you want to (re-)install!"
-      elif [ "$dpkg_compare_versions_greater_than_exit_code" = "0" ]; then
-         up_to_date_or_not_text="Looks like there is an upgrade for Tor Browser."
-         re_install_or_install_text="Please close Tor Browser if you want to (re-)install!"
-      elif [ "$dpkg_compare_versions_lower_than_exit_code" = "0" ]; then
-         up_to_date_or_not_text="<b><u>WARNING: Looks like a downgrade attack!</u></b>"
-         re_install_or_install_text="Please close Tor Browser if you want to (re-)install!"
+      type="warning"
+      if [ "$tbb_locally_installed_version_detect_success" = "0" ]; then
+         ## installed, but local version number unknown
+         MSG="\
+<p>$updater_vs_downloader_msg</p>
+<p>$highest_version_not_always_better_text</p>
+<p>$confirmation_screen_learn_more_link</p>"
       else
-         error "Neither of the following were zero.
+         ## installed, local version number known
+         if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
+            up_to_date_or_not_text="Looks like Tor Browser is already up to date."
+            re_install_or_install_text="Please close Tor Browser if you want to (re-)install!"
+         elif [ "$dpkg_compare_versions_greater_than_exit_code" = "0" ]; then
+            up_to_date_or_not_text="Looks like there is an upgrade for Tor Browser."
+            re_install_or_install_text="Please close Tor Browser if you want to (re-)install!"
+         elif [ "$dpkg_compare_versions_lower_than_exit_code" = "0" ]; then
+            up_to_date_or_not_text="<b><u>WARNING: Looks like a downgrade attack!</u></b>"
+            re_install_or_install_text="Please close Tor Browser if you want to (re-)install!"
+         else
+            error "Neither of the following were zero.
 <br></br>dpkg_compare_versions_equals_exit_code: $dpkg_compare_versions_equals_exit_code
 <br></br>dpkg_compare_versions_lower_than_exit_code: $dpkg_compare_versions_lower_than_exit_code
-<br></br>dpkg_compare_versions_greater_than_exit_code: $dpkg_compare_versions_greater_than_exit_code"
-         exit 1
-      fi
-      type="warning"
-      MSG="\
+<br></br>dpkg_compare_versions_greater_than_exit_code: $dpkg_compare_versions_greater_than_exit_code
+<br></br>
+<br></br>tbb_locally_installed_version_detect_success: $tbb_locally_installed_version_detect_success"
+            exit 1
+         fi
+         MSG="\
 <p>$highest_version_not_always_better_text</p>
 
 <p>$up_to_date_or_not_text</p>
@@ -753,18 +787,15 @@ Only versions still considered secure should be listed here. Higher version numb
    - equal : only proceed, if you want to create a new browser profile.<br></br>
    - lower : you should upgrade.</blockquote></p>
 
-<p>YOUR BROWSER WILL BE KILLED.<br></br>
-YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.</p>
-
-<p>A backup of your old Tor Browser and settings will be created in your home folder.
-<br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space.</p>
-
-<p><a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a></p>"
+<p>$updater_vs_downloader_msg</p>
+<p>$confirmation_screen_learn_more_link</p>"
+      fi
    else
+      ## not installed
       type="info"
       MSG="\
 <p>$highest_version_not_always_better_text</p>
-<p><a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a></p>"
+<p>$confirmation_screen_learn_more_link</p>"
    fi
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
