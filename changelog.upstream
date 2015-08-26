@@ -1,3 +1,31 @@
+commit ae368f0541a3676df1e2befa738ed673e4703619
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Aug 26 14:49:15 2015 +0000
+
+    - explain that if users want to keep their user data, they are better off using TBB's automatic internal updater
+    - fix if local version detection failed
+    - renamed update-torbrowser to torbrowser-downloader
+
+commit fa50399fbd360a744709b53ac2c98f6a039d4929
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Aug 26 13:19:34 2015 +0000
+
+    removed broken local version detection code due to upstream changes
+
+commit b12bddaa34483aae0ece31182b1ca1b98a988fa0
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Aug 26 13:14:07 2015 +0000
+
+    cleanup:
+    - deprecated tb_patch_version_number_own (no longer reliable, now that Tor Browser can update itself)
+    - deprecated tb_patch_internal_updater_disable_maybe (no longer required since there are no more grave security issues with Tor Browser updates)
+
+commit e2f23b7ecf41d5c133c946ddaa6d230d51bbc904
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Aug 25 14:08:24 2015 +0000
+
+    bumped changelog version
+
 commit 71b491cf8f86b6b3947e15b99687b4407dd8da97
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Aug 24 17:47:25 2015 +0000
