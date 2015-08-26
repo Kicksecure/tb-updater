@@ -168,15 +168,6 @@ tbbversion_installed() {
       return 0
    fi
 
-   ## Prefer using our own version file which should be most reliable.
-   local temp=""
-   temp="$tbb_folder/Docs/version"
-   if [ -f "$temp" ]; then
-      tbb_locally_installed_version="$(head -1 "$temp")" || true
-      tbb_locally_installed_version_detect_success="1"
-      return 0
-   fi
-
    ## Try to fall back to the version file that comes with Tor Browser.
    ## Useful in case of previous manual installations of Tor Browser.
    local temp=""

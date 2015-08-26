@@ -1286,63 +1286,12 @@ Extracting Tor Browser... This could take a moment..."
    output_info_echo_only "Extraction of $file_name done."
 }
 
-tb_patch_version_number_own() {
-   ## In past with TBB 3.x the folder ~/"tor-browser_${TB_LANG}/Docs" already
-   ## existed. Was later changed. Since TBB's folder structure often changes we
-   ## just keep using the folder, create it ourselves and therefore make sure
-   ## the script will not break in case of further changes by upstream.
-   mkdir --parents "$tb_cache_folder/tor-browser_$TB_LANG/Docs"
-
-   ## Tor Browser changelog has been forgotten to update.
-   ## https://sourceforge.net/p/whonix/discussion/general/thread/6122990d/
-   ## Later the path was changed from
-   ## TBB 3.x ~/"tor-browser_${TB_LANG}/Docs/sources/versions" to
-   ## TBB 4.X ~/"tor-browser_${TB_LANG}/Browser/TorBrowser/Docs/sources/versions".
-   ## To play it safe and having a chance of finding out the installed version,
-   ## we create a file ourselves to remember it.
-   output_info_echo_only "Creating version file tor-browser_$TB_LANG/Docs/version."
-   echo "$tbb_version" > "$tb_cache_folder/tor-browser_$TB_LANG/Docs/version"
-}
-
 tb_patch_download_folder_create() {
    mkdir --parents "$tb_cache_folder/tor-browser_$TB_LANG/Browser/Downloads"
 }
 
-tb_patch_internal_updater_disable_maybe() {
-   local source_file target_file
-   source_file="/usr/share/tb-updater/tb_internal_updater_disable.js"
-   target_file="$tb_cache_folder/tor-browser_$TB_LANG/Browser/TorBrowser/Data/Browser/profile.default/preferences/tb_internal_updater_disable.js"
-
-   if dpkg --compare-versions "$tbb_version" ge "4.5" ; then
-      output_info_echo_only "No need to deactivate Tor Browser’s Internal \
-Updater, because tbb_version $tbb_version is equal or higher than 4.5."
-      return 0
-   fi
-
-   if [ -f "$source_file" ]; then
-      output_info_echo_only "Deactivating Tor Browser’s Internal Updater at least as long \
-it does not support verification. See also:
-- https://www.whonix.org/blog/tor-browser-updater-warning
-- https://www.whonix.org/forum/index.php/topic,807
-Feel free to delete file
-$target_file
-if you want to disable this behavior.
-To permanently disable this $SCRIPTNAME feature, create a file
-/etc/torbrowser.d/50_user
-and add:
-tb_skip_functions+=\" $FUNCNAME \""
-      cp "$source_file" "$target_file"
-   else
-      output_info_echo_only "Not Deactivating Tor Browser’s Internal Updater because file
-$source_file
-does not exist."
-   fi
-}
-
 tb_patch() {
-   tb_run_function tb_patch_version_number_own
    tb_run_function tb_patch_download_folder_create
-   tb_run_function tb_patch_internal_updater_disable_maybe
 }
 
 tb_install() {
