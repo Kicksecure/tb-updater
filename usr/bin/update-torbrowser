@@ -509,6 +509,9 @@ tb_preparation() {
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
    fi
 
+   output_info_echo_only "GATEWAY_IP: $GATEWAY_IP"
+   output_info_echo_only "SOCKS_PORT_TBB_DOWNLOAD: $SOCKS_PORT_TBB_DOWNLOAD"
+
    ## Also used by function tbbversion.
    [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
 }
