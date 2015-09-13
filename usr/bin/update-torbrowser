@@ -1348,7 +1348,7 @@ tb_end() {
    local command_v_torbrowser_exit_code="0"
    command -v torbrowser || { command_v_torbrowser_exit_code="$?" ; true; };
 
-   if [ "$command_v_torbrowser_exit_code" = "0" ]; then
+   if [ ! "$command_v_torbrowser_exit_code" = "0" ]; then
       output_info_echo_only "torbrowser binary not found in path. tb-starter is probably not installed. \
 Skipping question to start Tor Browser."
       return 0
@@ -1356,6 +1356,19 @@ Skipping question to start Tor Browser."
 
    if [ "$noaskstart" = "true" ]; then
       output_info_echo_only "noaskstart is set to true. Skipping question if Tor Browser should be started."
+   fi
+
+   if [ "$noaskstart" = "false" ]; then
+      true "noaskstart is 'false'"
+   else
+      if [ -e "/var/run/qubes-service/whonix-template" ]; then
+         MSG="<p>Finished installing Tor Browser. Can be found in $tb_browser_folder.</p>
+
+<p>Not asking to start Tor Browser, because running in a TemplateVM</p>"
+         $output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
+         $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+         return 0
+      fi
    fi
 
    MSG="<p>Finished installing Tor Browser. Can be found in $tb_browser_folder.</p>
