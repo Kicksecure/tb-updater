@@ -1339,11 +1339,8 @@ tb_install() {
 }
 
 tb_end() {
-   local TEMP
-   TEMP="$tb_browser_folder"
-
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      output_info_echo_only "Finished installing Tor Browser. Can be found in $TEMP."
+      output_info_echo_only "Finished installing Tor Browser. Can be found in $tb_browser_folder."
       output_info_echo_only "Not starting Tor Browser, because variable TB_FORCE_INSTALL is set to 1."
       return 0
    fi
@@ -1352,39 +1349,47 @@ tb_end() {
    command -v torbrowser || { command_v_torbrowser_exit_code="$?" ; true; };
 
    if [ "$command_v_torbrowser_exit_code" = "0" ]; then
-      if [ "$noaskstart" = "true" ]; then
-         output_info_echo_only "noaskstart is set to true. Skipping question if Tor Browser should be started."
-      else
-         MSG="<p>Finished installing Tor Browser. Can be found in $TEMP.</p>
+      output_info_echo_only "torbrowser binary not found in path. tb-starter is probably not installed. \
+Skipping question to start Tor Browser."
+      return 0
+   fi
+
+   if [ "$noaskstart" = "true" ]; then
+      output_info_echo_only "noaskstart is set to true. Skipping question if Tor Browser should be started."
+   fi
+
+   MSG="<p>Finished installing Tor Browser. Can be found in $tb_browser_folder.</p>
 
 <p>Please donate!
 <br></br><a href=https://www.whonix.org/wiki/Donate>https://www.whonix.org/wiki/Donate</a></p>"
-         local question="Start Tor Browser?"
-         local button="yesno"
-         local answer
-         if [ "$TB_INPUT" = "none" ]; then
-            true "INFO: TB_INPUT is set to $TB_INPUT. Skipping question if Tor Browser should be started."
-         elif [ "$TB_INPUT" = "stdin" ]; then
-            output_info_echo_only "QUESTION: $question
+   local question="Start Tor Browser?"
+   local button="yesno"
+   local answer
+
+   if [ "$TB_INPUT" = "none" ]; then
+      true "INFO: TB_INPUT is set to $TB_INPUT. Skipping question if Tor Browser should be started."
+      return 0
+   fi
+
+   if [ "$TB_INPUT" = "stdin" ]; then
+      output_info_echo_only "QUESTION: $question
 y/n?"
-            read answer
-            if [ ! "$answer" = "y" ]; then
-               output_info_echo_only "Canceled starting Tor Browser, ok."
-            else
-               torbrowser
-            fi
-         else
-            answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
-            if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-               output_info_echo_only "Canceled starting Tor Browser, ok."
-            else
-               torbrowser
-            fi
-         fi
+      read answer
+      if [ ! "$answer" = "y" ]; then
+         output_info_echo_only "Canceled starting Tor Browser, ok."
+      else
+         torbrowser
       fi
+      return 0
+   fi
+
+   answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
+   if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
+      output_info_echo_only "Canceled starting Tor Browser, ok."
+      return 0
    else
-      output_info_echo_only "torbrowser binary not found in path. tb-starter is probably not installed. \
-Skipping question to start Tor Browser."
+      torbrowser
+      return 0
    fi
 }
 
