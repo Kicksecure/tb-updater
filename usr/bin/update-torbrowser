@@ -815,6 +815,7 @@ To update Tor Browser inside existing TemplateBasedVMs, please update Tor Browse
    output_info_echo_only "https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen"
 
    if [ "$TB_INPUT" = "none" ]; then
+      output_info_echo_only "Detected versions: ${tbb_recommended_versions_slash_separated}"
       answer="$tbb_default_download_version"
    else
       local answer
