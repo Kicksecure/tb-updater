@@ -353,7 +353,9 @@ tb_config_folder_parser() {
 
 tb_preparation() {
    [ -n "$tb_home_folder" ] || tb_home_folder=~/.tb
+   [ -n "$tb_browser_folder" ] || tb_browser_folder="$tb_home_folder/tor-browser"
    [ -n "$tb_cache_folder" ] || tb_cache_folder=~/.cache/tb
+   [ -n "$tb_extract_temp_folder" ] || tb_extract_temp_folder="$tb_cache_folder/tor-browser"
 
    ## Required for /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh.
    TEMP_DIR="$tb_cache_folder/temp_dir"
@@ -405,8 +407,6 @@ tb_preparation() {
       #echo "INFO: Tor Browser language variable not found. Setting TB_LANG to the default en-US."
       TB_LANG="en-US"
    fi
-
-   [ -n "$tb_browser_folder" ] || tb_browser_folder="$tb_home_folder/tor-browser_$TB_LANG"
 
    if [ "$display" = "" ]; then
       if [ "$DISPLAY" = "" ]; then
@@ -1221,19 +1221,35 @@ Extracting Tor Browser... This could take a moment..."
 
    output_info_echo_only "Extracting $file_name ..."
 
+   ## Folder must be already exist, otherwise `tar` would fail.
+   mkdir --parents "$tb_extract_temp_folder"
+
    ## Debugging.
    #timeout_after="0.001"
    #kill_after="0.001"
 
+   ## `tar` vs `bsdtar`
+   ##
+   ## Using `bsdtar` because it can auto detect the archive type.
+   ## When using `tar` in a pipe, we would need to explicitly set '--xz'.
+   ##
+   ## Using '--strip-components 1':
+   ## - Because we are also using '--directory "$tb_extract_temp_folder"'
+   ## - To remove language specific default folder names such as tor-browser_en-US.
+
    tb_tar_exit_code="0"
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      timeout --kill-after="$kill_after" "$timeout_after" \
-         tar \
-            xfv \
-            "$file_name" \
-            -C "$tb_cache_folder/" \
-            &
+      timeout \
+         --kill-after="$kill_after" \
+         "$timeout_after" \
+            bsdtar \
+               --strip-components 1 \
+               --extract \
+               --verbose \
+               --directory "$tb_extract_temp_folder" \
+               --file "$file_name" \
+               &
 
       lastpid="$!"
       wait "$lastpid" || { tb_tar_exit_code="$?" ; true; };
@@ -1258,11 +1274,15 @@ Extracting Tor Browser... This could take a moment..."
       timeout \
          --kill-after="$kill_after" \
          "$timeout_after" \
-            tar \
-               xfvJ \
+            bsdtar \
+               --strip-components 1 \
+               --extract \
+               --verbose \
+               --directory "$tb_extract_temp_folder" \
+               --file \
                - \
-               -C "$tb_cache_folder/" \
-               < "$tar_fifo" &
+               < "$tar_fifo" \
+               &
       tar_pid="$!"
       last_pid_list+=" $tar_pid"
 
@@ -1271,7 +1291,8 @@ Extracting Tor Browser... This could take a moment..."
          "$timeout_after" \
             bash \
                /usr/lib/msgcollector/pv_wrapper \
-               < "$pv_wrapper_fifo" &
+               < "$pv_wrapper_fifo" \
+               &
       pv_wrapper_pid="$!"
       last_pid_list+=" $pv_wrapper_pid"
 
@@ -1332,7 +1353,7 @@ Extracting Tor Browser... This could take a moment..."
 }
 
 tb_patch_download_folder_create() {
-   mkdir --parents "$tb_cache_folder/tor-browser_$TB_LANG/Browser/Downloads"
+   mkdir --parents "$tb_extract_temp_folder/Browser/Downloads"
 }
 
 tb_patch() {
@@ -1345,8 +1366,8 @@ tb_install() {
       mv "$tb_browser_folder" "$tb_browser_folder.old.$(date '+%F-%H:%M:%S')"
    fi
 
-   output_info_echo_only "Moving temporary folder $tb_cache_folder/tor-browser_$TB_LANG to $tb_browser_folder."
-   mv "$tb_cache_folder/tor-browser_$TB_LANG" "$tb_browser_folder"
+   output_info_echo_only "Moving temporary folder $tb_extract_temp_folder to $tb_browser_folder."
+   mv "$tb_extract_temp_folder" "$tb_browser_folder"
 }
 
 tb_end() {
