@@ -1,3 +1,32 @@
+commit 7d835124fe93451d0fa93cfd0f6631d555bf1c52
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Nov 6 10:54:18 2015 +0000
+
+    - allow downloading TBB hardened
+    -- automatically set TB_LANG to "ALL" if tbb_version matches 'hardened'
+    - allow manually setting what version should downloaded
+    -- through environment variable tbb_version
+    -- example: tbb_version=5.5a4-hardened update-torbrowser --no-tor-con-check --devbuildpassthrough
+
+commit 718df3a9ff550b1ca3f653b57657102045a8f8e1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Nov 6 10:26:35 2015 +0000
+
+    - Extract Tor Browser to generic location.
+    -- To /home/user/.tb/tor-browser rather than language specific location such as for example /home/user/.tb/tor-browser_en-US.
+    -- Simplifies implementation.
+    -- Preparation to allow TBB hardened download.
+    - Use `bsdtar` rather than `tar`.
+    -- Because it can auto detect archive types.
+    -- No need to explicitly set --xz when using it in a pipe.
+    - refactoring
+
+commit 92b74b3be93b8b5d468309bee7f91bb558d938e5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Oct 22 23:12:40 2015 +0000
+
+    bumped changelog version
+
 commit c572679e11bb87ed7df226d9ae5162c2ed6adc0e
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Sep 22 00:20:00 2015 +0000
