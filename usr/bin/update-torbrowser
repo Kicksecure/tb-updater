@@ -397,17 +397,6 @@ tb_preparation() {
    ## provides tbbversion function
    source /usr/lib/tbbversion_parser
 
-   #echo "INFO: TB_LANG: $TB_LANG"
-
-   ## Check if TB_LANG exists and is not empty.
-   if [[ "$TB_LANG" && "${TB_LANG}" ]]; then
-      #echo "INFO: Tor Browser language variable is set to "$TB_LANG"."
-      true
-   else
-      #echo "INFO: Tor Browser language variable not found. Setting TB_LANG to the default en-US."
-      TB_LANG="en-US"
-   fi
-
    if [ "$display" = "" ]; then
       if [ "$DISPLAY" = "" ]; then
          display=":0"
@@ -814,31 +803,60 @@ To update Tor Browser inside existing TemplateBasedVMs, please update Tor Browse
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
    output_info_echo_only "https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen"
 
-   if [ "$TB_INPUT" = "none" ]; then
-      output_info_echo_only "Detected versions: ${tbb_recommended_versions_slash_separated}"
-      answer="$tbb_default_download_version"
-   else
-      local answer
-      if [ "$TB_INPUT" = "stdin" ]; then
-         output_info_echo_only "QUESTION: $question
-n/${tbb_recommended_versions_slash_separated}?"
-         read answer
-         if [ "$answer" = "n" ] || [ "$answer" = "" ]; then
-            output_info_echo_only "Canceled. Exit."
-            exit 10
-         fi
+   if [ "$tbb_version" = "" ]; then
+      if [ "$TB_INPUT" = "none" ]; then
+         output_info_echo_only "Detected versions: ${tbb_recommended_versions_slash_separated}"
+         answer="$tbb_default_download_version"
       else
-         #echo "/usr/lib/msgcollector/tb_updater_gui \"$type\" \"$TITLE\" \"$tbb_locally_installed_version\" \"$tbb_recommended_versions_comma_separated\" \"$MSG\" \"$question\" \"$button\")"
-         answer="$("/usr/lib/msgcollector/tb_updater_gui" "$type" "$TITLE" "$tbb_locally_installed_version" "$tbb_recommended_versions_comma_separated" "$MSG" "$question" "$button")"
-         if [ "$answer" = "65536" ]; then ## Button 'Yes' has not been pressed.
-            output_info_echo_only "Canceled. Exit."
-            exit 10
+         local answer
+         if [ "$TB_INPUT" = "stdin" ]; then
+            output_info_echo_only "QUESTION: $question
+n/${tbb_recommended_versions_slash_separated}?"
+            read answer
+            if [ "$answer" = "n" ] || [ "$answer" = "" ]; then
+               output_info_echo_only "Canceled. Exit."
+               exit 10
+            fi
+         else
+            #echo "/usr/lib/msgcollector/tb_updater_gui \"$type\" \"$TITLE\" \"$tbb_locally_installed_version\" \"$tbb_recommended_versions_comma_separated\" \"$MSG\" \"$question\" \"$button\")"
+            answer="$("/usr/lib/msgcollector/tb_updater_gui" "$type" "$TITLE" "$tbb_locally_installed_version" "$tbb_recommended_versions_comma_separated" "$MSG" "$question" "$button")"
+            if [ "$answer" = "65536" ]; then ## Button 'Yes' has not been pressed.
+               output_info_echo_only "Canceled. Exit."
+               exit 10
+            fi
          fi
       fi
+      tbb_version="$answer"
+      output_info_echo_only "Version $tbb_version chosen."
+   else
+      output_info_echo_only "Version $tbb_version was already set."
    fi
-   tbb_version="$answer"
-   tbb_version_folder="$answer"
-   output_info_echo_only "Version $tbb_version chosen."
+
+   if [ "$tbb_version_folder" = "" ]; then
+      tbb_version_folder="$tbb_version"
+   fi
+
+   if echo "$tbb_version" | grep -q "hardened" ; then
+      tbb_hardened_version_chosen="true"
+   else
+      tbb_hardened_version_chosen="false"
+   fi
+   output_info_echo_only "tbb_hardened_version_chosen: $tbb_hardened_version_chosen"
+
+   ## Check if TB_LANG exists and is not empty.
+   if [[ "$TB_LANG" && "${TB_LANG}" ]]; then
+      #echo "INFO: Tor Browser language variable is set to "$TB_LANG"."
+      output_info_echo_only "Tor Browser language variable TB_LANG is already set to '$TB_LANG'. Keeping it as is, ok."
+   elif [ "$tbb_hardened_version_chosen" = "true" ]; then
+      ## Quote: https://blog.torproject.org/blog/tor-browser-55a4-hardened-released
+      ## "there will only be one bundle shipped supporting all the languages found in alpha builds"
+      ## These links are not containing language specific strings such as 'en-US', but 'ALL'.
+      output_info_echo_only "Tor Browser language variable TB_LANG was not yet set and a hardened version was chosen. Therefore setting TB_LANG to 'ALL', ok."
+      TB_LANG="ALL"
+   else
+      output_info_echo_only "Tor Browser language variable TB_LANG was not yet set and no hardened version was chosen. Therefore defaulting TB_LANG to 'en-US', ok."
+      TB_LANG="en-US"
+   fi
 
    if [ ! "$NOKILLTB" = "1" ]; then
       output_info_echo_only "Because you are not using --nokilltb, now killing eventually still running instances of Tor Browser..."
