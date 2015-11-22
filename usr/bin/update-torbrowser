@@ -503,6 +503,10 @@ tb_preparation() {
 
    ## Also used by function tbbversion.
    [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
+
+   if command -v qubesdb-read >/dev/null 2>&1 ; then
+      [ -n "$qubes_vm_type" ] || qubes_vm_type="$(qubesdb-read /qubes-vm-type)"
+   fi
 }
 
 tb_connectivity_checks_tor() {
@@ -739,7 +743,7 @@ A backup of your old Tor Browser and settings will be created in folder <code>$t
    confirmation_screen_learn_more_link="\
 <a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a>"
 
-   if [ -e "/var/run/qubes-service/whonix-template" ]; then
+   if [ "$qubes_vm_type" = "TemplateVM" ]; then
       qubes_running_inside_template_vm_msg="\
 <u>Qubes specific notice</u>: Currently running inside a TemplateVM.
 Due to <a href=https://www.whonix.org/wiki/Dev/Qubes#tb-updater_vs_TemplateVM>technical limitations</a>,
@@ -1411,7 +1415,7 @@ Skipping question to start Tor Browser."
    if [ "$noaskstart" = "false" ]; then
       true "noaskstart is 'false'"
    else
-      if [ -e "/var/run/qubes-service/whonix-template" ]; then
+      if [ "$qubes_vm_type" = "TemplateVM" ]; then
          MSG="<p>Finished installing Tor Browser. Can be found in $tb_browser_folder.</p>
 
 <p>Not asking to start Tor Browser, because running in a TemplateVM</p>"
