@@ -332,6 +332,7 @@ export -f output
 export -f outputfunc
 
 tb_config_folder_parser() {
+   local i
    for i in /etc/torbrowser.d/*.conf; do
       bash -n "$i"
       source "$i"
