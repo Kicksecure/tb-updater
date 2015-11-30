@@ -98,7 +98,7 @@ https://www.torproject.org/dist/torbrowser/linux/
 
 ## CONFIG FILE
 
-/etc/torbrowser.d/30_torbrowser_default
+/etc/torbrowser.d/30_default.conf
 
 ## ENVIRONMENT VARIABLES
 You could use:
