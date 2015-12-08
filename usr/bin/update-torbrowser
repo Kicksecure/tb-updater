@@ -78,7 +78,7 @@ DOWNLOAD_FAIL_HELP="<p>Possible reasons:</p>
 <p>Recommendations:</p>
 <p>
 <br></br>- Try again later. If the error persists it probably won't solve itself before the next update.
-<br></br>- Check News: <a href=https://www.whonix.org/wiki/Download#Stay_tuned>https://www.whonix.org/wiki/Download#Stay_tuned</a>
+<br></br>- Check News: <a href=https://www.whonix.org/wiki/Stay_Tuned>https://www.whonix.org/wiki/Stay_Tuned</a>
 <br></br>- Manually update: <a href=https://www.whonix.org/wiki/Manually_Updating_Tor_Browser>https://www.whonix.org/wiki/Manually_Updating_Tor_Browser</a>
 </p>"
 
