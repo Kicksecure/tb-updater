@@ -41,7 +41,7 @@ tb_exit_function() {
    if [ "$anon_shared_inst_tb" = "open" ]; then
       if [ "$tb_postinst" = "true" ]; then
          echo "\
-INFO: failing open. More info:
+INFO: Failing open. More info:
 https://www.whonix.org/wiki/Tor_Browser#tb-updater_postinst"
       fi
       exit 0
