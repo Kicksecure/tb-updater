@@ -222,6 +222,10 @@ tb_parse_cmd_options() {
                TB_USE_MSGCOLLECTOR="false"
                shift
                ;;
+           --postinst)
+               tb_postinst="true"
+               shift
+               ;;
            --noaskstart)
                noaskstart="true"
                shift
