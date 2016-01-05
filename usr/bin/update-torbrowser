@@ -29,6 +29,10 @@ ICON="/usr/share/icons/anon-icon-pack/tbupdate.ico"
 ## - tbb-scripts
 ##   https://github.com/adrelanos/tbb-scripts
 
+tb_exit_function() {
+   exit "$1"
+}
+
 tb_error_handler() {
    local exit_code="$?"
 
@@ -64,7 +68,7 @@ tb_error_handler() {
 
    $output ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
    $output ${output_opts[@]} --messagecli --titlecli "$TITLE" --typecli "error" --message "$MSG" --done
-   exit 1
+   tb_exit_function 1
 }
 
 trap "tb_error_handler" ERR
@@ -99,7 +103,7 @@ root_check() {
       true
    else
       echo "ERROR: Do not run $SCRIPTNAME as root!"
-      exit 2
+      tb_exit_function 2
    fi
 }
 
@@ -161,7 +165,7 @@ tb_ex_funct() {
 tb_signal_sigterm() {
    SIGNAL_TYPE="sigterm"
    tb_ex_funct
-   exit 143
+   tb_exit_function 143
 }
 
 trap "tb_signal_sigterm" SIGTERM
@@ -169,7 +173,7 @@ trap "tb_signal_sigterm" SIGTERM
 tb_signal_sigint() {
    SIGNAL_TYPE="sigint"
    tb_ex_funct
-   exit 130
+   tb_exit_function 130
 }
 
 trap "tb_signal_sigint" SIGINT ## ctrl + c
@@ -177,7 +181,7 @@ trap "tb_signal_sigint" SIGINT ## ctrl + c
 trap_sigusr2() {
    SIGNAL_TYPE="SIGUSR2"
    tb_ex_funct
-   exit 3
+   tb_exit_function 3
 }
 
 trap "trap_sigusr2" SIGUSR2 ## msgcollector, zenity cancel button
@@ -259,7 +263,7 @@ tb_parse_cmd_options() {
                echo "$SCRIPTNAME unknown option: $1"
                echo "See:"
                echo "    man $SCRIPTNAME"
-               exit 4
+               tb_exit_function 4
                ;;
            *)
                break
@@ -539,7 +543,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
 
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-         exit 5
+         tb_exit_function 5
       fi
       echo "Done."
    else
@@ -568,7 +572,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
 
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-         exit 6
+         tb_exit_function 6
       fi
       echo "Done."
    else
@@ -614,7 +618,7 @@ tb_connectivity_checks_curl() {
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-      exit 7
+      tb_exit_function 7
    fi
 
    echo "INFO: Connectivity check succeeded."
@@ -625,7 +629,7 @@ tb_update_check() {
    if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
       if [ -d "$tb_browser_folder" ]; then
          echo "$SCRIPTNAME: Not downloading Tor Browser again, because $tb_browser_folder already exists."
-         exit 0
+         tb_exit_function 0
       fi
    fi
 
@@ -665,7 +669,7 @@ tb_remote_version_sanity_test() {
 <p>$DOWNLOAD_FAIL_HELP</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-      exit 9
+      tb_exit_function 9
    fi
 }
 
@@ -777,7 +781,7 @@ To update Tor Browser inside existing TemplateBasedVMs, please update Tor Browse
 <br></br>dpkg_compare_versions_greater_than_exit_code: $dpkg_compare_versions_greater_than_exit_code
 <br></br>
 <br></br>tbb_locally_installed_version_detect_success: $tbb_locally_installed_version_detect_success"
-            exit 1
+            tb_exit_function 1
          fi
          MSG="\
 <p>$highest_version_not_always_better_text</p>
@@ -817,14 +821,14 @@ n/${tbb_recommended_versions_slash_separated}?"
             read answer
             if [ "$answer" = "n" ] || [ "$answer" = "" ]; then
                output_info_echo_only "Canceled. Exit."
-               exit 10
+               tb_exit_function 10
             fi
          else
             #echo "/usr/lib/msgcollector/tb_updater_gui \"$type\" \"$TITLE\" \"$tbb_locally_installed_version\" \"$tbb_recommended_versions_comma_separated\" \"$MSG\" \"$question\" \"$button\")"
             answer="$("/usr/lib/msgcollector/tb_updater_gui" "$type" "$TITLE" "$tbb_locally_installed_version" "$tbb_recommended_versions_comma_separated" "$MSG" "$question" "$button")"
             if [ "$answer" = "65536" ]; then ## Button 'Yes' has not been pressed.
                output_info_echo_only "Canceled. Exit."
-               exit 10
+               tb_exit_function 10
             fi
          fi
       fi
@@ -930,7 +934,7 @@ $tb_notify_details"
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-      exit "$tb_download_common_exit_on_fail"
+      tb_exit_function "$tb_download_common_exit_on_fail"
    fi
 
    output_info_echo_only "Done, downloaded $curl_download_target_url."
@@ -1047,7 +1051,7 @@ tb_gpg_verify() {
 <p>$gpg_bash_lib_output_diagnostic_message</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-      exit 12
+      tb_exit_function 12
    fi
 
    output_info_echo_only "GPG signature verification ok."
@@ -1099,7 +1103,7 @@ tb_hash_verify() {
 <p>$DOWNLOAD_FAIL_HELP</p>"
    $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
    $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-   exit 13
+   tb_exit_function 13
 }
 
 tb_confirm_install() {
@@ -1210,13 +1214,13 @@ y/n?"
          read answer
          if [ ! "$answer" = "y" ]; then
             output_info_echo_only "Canceled. Exit."
-            exit 14
+            tb_exit_function 14
          fi
       else
          answer="$(/usr/lib/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
          if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
             output_info_echo_only "Canceled. Exit."
-            exit 14
+            tb_exit_function 14
          fi
       fi
    fi
@@ -1375,7 +1379,7 @@ Extracting Tor Browser... This could take a moment..."
 <br></br>Please report this bug!</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
-      exit 15
+      tb_exit_function 15
    fi
 
    output_info_echo_only "Extraction of $file_name done."
