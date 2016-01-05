@@ -222,12 +222,6 @@ tb_parse_cmd_options() {
                TB_USE_MSGCOLLECTOR="false"
                shift
                ;;
-           ## Keeping --clearnet this for compatibility. Does nothing anymore,
-           ## because --clearnet is now the default.
-           --clearnet)
-               TB_CLEARNET="1"
-               shift
-               ;;
            --noaskstart)
                noaskstart="true"
                shift
