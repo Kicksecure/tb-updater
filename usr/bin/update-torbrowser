@@ -725,6 +725,11 @@ tb_connectivity_checks_curl() {
 }
 
 tb_update_check() {
+   if [ ! "$tbb_version" = "" ]; then
+      true "INFO: tbb_version already set to '$tbb_version'. Skipping $FUNCNAME, ok."
+      return 0
+   fi
+
    ## do not re-download Tor Browser if a previous build already did
    if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
       if [ -d "$tb_browser_folder" ]; then
