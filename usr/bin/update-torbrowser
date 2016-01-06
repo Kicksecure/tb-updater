@@ -376,7 +376,21 @@ tb_config_folder_parser() {
 
 tb_preparation() {
    if command -v qubesdb-read >/dev/null 2>&1 ; then
+      [ -n "$is_qubes" ] || is_qubes=true
       [ -n "$qubes_vm_type" ] || qubes_vm_type="$(qubesdb-read /qubes-vm-type)"
+   else
+      [ -n "$is_qubes" ] || is_qubes=false
+   fi
+
+   ## Debugging.
+   #qubes_vm_type=TemplateVM
+   #TB_NO_TOR_CON_CHECK="1"
+   #CURL_PROXY="--fail"
+
+   if sudo ischroot ; then
+      [ -n "$is_chroot" ] || is_chroot=true
+   else
+      [ -n "$is_chroot" ] || is_chroot=false
    fi
 
    if [ $tb_postinst = "true" ]; then
@@ -396,38 +410,51 @@ tb_preparation() {
    [ -n "$tb_gpg_tmp_dir" ] || tb_gpg_tmp_dir="$tb_cache_folder/gpgtmpdir"
    [ -n "$tb_extract_temp_folder" ] || tb_extract_temp_folder="$tb_cache_folder/tor-browser"
 
-   if [ "$qubes_vm_type" = "TemplateVM" ]; then
-      ## Running inside Qubes TempalteVM.
-      [ -n "$tb_install_initial" ] || tb_install_initial=true
-      [ -n "$tb_install_follow" ] || tb_install_follow=true
+   if [ "$is_qubes" = "true" ]; then
+      ## Running in Qubes.
+      if [ "$is_chroot" = "true" ]; then
+         ## Running in Qubes chroot.
+         [ -n "$tb_install_in_chroot" ] || tb_install_in_chroot=true
+      else
+         [ -n "$tb_install_in_chroot" ] || tb_install_in_chroot=false
+      fi
+      if [ "$qubes_vm_type" = "TemplateVM" ]; then
+         ## Running inside Qubes TempalteVM.
+         [ -n "$tb_install_follow" ] || tb_install_follow=true
+      else
+         [ -n "$tb_install_follow" ] || tb_install_follow=false
+      fi
    else
-      ## Running inside Qubes Non-TemplateVM or Non-Qubes-Whonix.
-      [ -n "$tb_install_initial" ] || tb_install_initial=false
+      ## Running in Non-Qubes-Whonix.
+      [ -n "$tb_install_in_chroot" ] || tb_install_in_chroot=false
       [ -n "$tb_install_follow" ] || tb_install_follow=false
    fi
 
    if [ $tb_postinst = "true" ]; then
       ## running with --postinst
-      if [ "$tb_install_initial" = "true" ]; then
-         if [ ! -f "$tb_cache_folder/tb_initial_install.done" ]; then
-            tb_updater_run=true
-            [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=closed
-         fi
+      if [ "$tb_install_in_chroot" = "true" ]; then
+         [ -n "$tb_updater_run" ] || tb_updater_run=true
+         ## Fail closed, if there was an error.
+         [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=closed
+         ## Skip Tor connectivity check when running inside chroot.
+         [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
+         ## Hack to disable using proxy settings when running inside chroot.
+         ## We are using --fail anyhow. No problem to duplicate it.
+         [ -n "$CURL_PROXY" ] || CURL_PROXY="--fail"
       fi
+
       if [ "$tb_install_follow" = "true" ]; then
-         tb_updater_run=true
+         [ -n "$tb_updater_run" ] || tb_updater_run=true
+         ## Fail open, if there was an error.
          [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=open
       fi
       if [ ! "$tb_updater_run" = "true" ]; then
          tb_exit_function 0
       fi
 
-      tb_confirm_update_skip=true
-
-      ## TODO
-      TB_NO_TOR_CON_CHECK="1"
-      ## hack
-      CURL_PROXY="--fail"
+      ## Skip update [version] confirmation messages when running with
+      ## --postinst, we will be using hardcoded version numbers.
+      [ -n "$tb_confirm_update_skip" ] || tb_confirm_update_skip=true
    fi
 
    ## Required for /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh.
@@ -573,8 +600,7 @@ tb_preparation() {
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
    fi
 
-   output_echo_only "INFO: GATEWAY_IP: $GATEWAY_IP"
-   output_echo_only "INFO: SOCKS_PORT_TBB_DOWNLOAD: $SOCKS_PORT_TBB_DOWNLOAD"
+   output_echo_only "INFO: CURL_PROXY: $CURL_PROXY"
 
    ## Also used by function tbbversion.
    [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
@@ -1488,10 +1514,6 @@ tb_install() {
 
    output_echo_only "INFO: Moving temporary folder $tb_extract_temp_folder to $tb_browser_folder."
    mv "$tb_extract_temp_folder" "$tb_browser_folder"
-
-   if [ ! -f "$tb_cache_folder/tb_initial_install.done" ]; then
-      touch "$tb_cache_folder/tb_initial_install.done"
-   fi
 }
 
 tb_end() {
