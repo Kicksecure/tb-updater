@@ -26,11 +26,14 @@ true "INFO: Done with debhelper."
 mkdir --parents "/var/cache/tb-binary"
 chown --recursive user:user "/var/cache/tb-binary"
 
-echo "Running update-torbrowser..."
+if ischroot ; then
+   chroot_maybe="--is-chroot"
+fi
+
 sudo -u user \
    update-torbrowser \
+      $chroot_maybe \
       --postinst
-echo "Finished running update-torbrowser."
 
 true "
 #####################################################################

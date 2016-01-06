@@ -243,6 +243,10 @@ tb_parse_cmd_options() {
                tb_postinst="true"
                shift
                ;;
+           --is-chroot)
+               is_chroot="true"
+               shift
+               ;;
            --noaskstart)
                noaskstart="true"
                shift
@@ -387,19 +391,14 @@ tb_preparation() {
    #TB_NO_TOR_CON_CHECK="1"
    #CURL_PROXY="--fail"
 
-   if sudo ischroot ; then
-      [ -n "$is_chroot" ] || is_chroot=true
-   else
-      [ -n "$is_chroot" ] || is_chroot=false
-   fi
-
    if [ $tb_postinst = "true" ]; then
       [ -n "$NOKILLTB" ] || NOKILLTB="1"
       [ -n "$TB_NO_INSTALL" ] || TB_NO_INSTALL="true"
       [ -n "$TB_INPUT" ] || TB_INPUT="none"
       [ -n "$tb_cache_folder" ] || tb_cache_folder="/var/cache/tb-binary"
-      [ -n "$tbb_version" ] || tbb_version="5.0.6"
       [ -n "$TB_USE_MSGCOLLECTOR" ] || TB_USE_MSGCOLLECTOR="false"
+      ## Using hardcoded version numbers when running with --postinst.
+      [ -n "$tbb_version" ] || tbb_version="5.0.6"
    fi
 
    [ -n "$tb_home_folder" ] || tb_home_folder=~/.tb
@@ -453,8 +452,14 @@ tb_preparation() {
       fi
 
       ## Skip update [version] confirmation messages when running with
-      ## --postinst, we will be using hardcoded version numbers.
+      ## --postinst, because we will be using hardcoded version numbers.
       [ -n "$tb_confirm_update_skip" ] || tb_confirm_update_skip=true
+      ## Skip installation confirmation messages when running with
+      ## --postinst, because we will be using hardcoded version numbers.
+      ## Downgrade / free attacks should not be possible, because file names
+      ## that include the version number will be verified from the gpg verified
+      ## sha256sum sums file.
+      [ -n "$tb_confirm_installation_skip" ] || tb_confirm_installation_skip=true
    fi
 
    ## Required for /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh.
@@ -1161,7 +1166,7 @@ tb_gpg_verify() {
 }
 
 tb_hash_verify() {
-   output_echo_only "INFO: Checking hash..."
+   output_echo_only "INFO: Checking hash... This will take a moment..."
 
    rm --force "$tb_temp_folder/sha256_output"
 
@@ -1210,6 +1215,10 @@ tb_hash_verify() {
 }
 
 tb_confirm_install() {
+   if [ "$tb_confirm_installation_skip" = "true" ]; then
+      return 0
+   fi
+
    local MSG question button answer type clock_hint
    local signature_freshness_msg signature_creation_msg
    local last_used_gpg_bash_lib_output_signed_on_date
@@ -1334,7 +1343,7 @@ y/n?"
 
 tb_extract() {
    if [ "$TB_NO_INSTALL" = "true" ]; then
-      output_echo_only "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
+      true "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
       return 0
    fi
 
@@ -1494,7 +1503,7 @@ tb_patch_download_folder_create() {
 
 tb_patch() {
    if [ "$TB_NO_INSTALL" = "true" ]; then
-      output_echo_only "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
+      true "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
       return 0
    fi
 
@@ -1503,7 +1512,7 @@ tb_patch() {
 
 tb_install() {
    if [ "$TB_NO_INSTALL" = "true" ]; then
-      output_echo_only "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
+      true "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
       return 0
    fi
 
