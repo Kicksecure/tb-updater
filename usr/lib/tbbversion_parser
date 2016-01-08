@@ -168,6 +168,6 @@ tbbversion_installed() {
       return 0
    fi
 
-   ## TODO
+   ## TODO: https://phabricator.whonix.org/T400
    tbb_locally_installed_version="Installed. (Folder <code>$tbb_folder</code> exists.) Locally installed Tor Browser version detection not implemented."
 }
