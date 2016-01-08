@@ -401,7 +401,7 @@ tb_preparation() {
       [ -n "$TB_USE_MSGCOLLECTOR" ] || TB_USE_MSGCOLLECTOR="false"
       [ -n "$tb_user_home" ] || tb_user_home="/var/cache/tb-binary"
       ## Using hardcoded version numbers when running with --postinst.
-      [ -n "$tbb_version" ] || tbb_version="5.0.6"
+      [ -n "$tbb_version" ] || tbb_version="5.0.7"
    fi
 
    [ -n "$tb_user_home" ] || tb_user_home=~
