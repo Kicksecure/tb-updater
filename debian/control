@@ -19,7 +19,7 @@ Depends: msgcollector, curl, psmisc, gpg-bash-lib, pv, bsdtar,
 Recommends: tb-starter, anon-icon-pack, anon-shared-helper-scripts,
  curl-scripts
 Suggests: tb-default-browser, open-link-confirmation
-Description: Tor Browser Updater
+Description: Tor Browser Downloader by Whonix developers
  Without the curl-scripts package installed, the GUI will not move the progress
  bar.
  .
@@ -28,8 +28,8 @@ Description: Tor Browser Updater
  curl failed.
  .
  When having the anon-shared-helper-scripts package installed (recommended for
- Anonymity Distributions), Tor Browser Updater will check, that Tor is enabled,
- that no package manager is currently running and that Tor finished
+ Anonymity Distributions), Tor Browser Downloader will check, that Tor is
+ enabled,  that no package manager is currently running and that Tor finished
  bootstrapping before download attempts.
  .
  This package is produced independently of, and carries no guarantee from,
