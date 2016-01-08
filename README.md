@@ -1,4 +1,4 @@
-# Tor Browser Updater #
+# Tor Browser Downloader by Whonix developers #
 
 Automates download and verification of Tor Browser from The Tor Project's
 website. Useful for initial installation of Tor Browser, clean
@@ -36,7 +36,7 @@ This package is produced independently of, and carries no guarantee from,
 The Tor Project.
 
 [1] https://www.whonix.org/wiki/Tor_Browser#Download_Confirmation_Screen
-[2] https://www.whonix.org/wiki/Tor_Browser#Installation_Confirmation_Screen
+ [2] https://www.whonix.org/wiki/Tor_Browser#Installation_Confirmation_Screen
 
 (This package description has been [automatically](https://github.com/Whonix/whonix-developer-meta-files/blob/master/debug-steps/packaging-helper-script) extracted and mirrored from `debian/control`.)
 
