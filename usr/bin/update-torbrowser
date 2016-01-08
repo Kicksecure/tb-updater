@@ -78,8 +78,10 @@ tb_error_handler() {
 <br></br>## bash -x $SCRIPTNAME
 <br></br>###########################################################</p>"
 
-   mkdir --parents ~/".cache/tb"
-   echo "$MSG" >> ~/".cache/tb/torbrowser_updater_error.log"
+   [ -n "$tb_user_home" ] || tb_user_home=~
+
+   mkdir --parents "$tb_user_home/.cache/tb"
+   echo "$MSG" >> "$tb_user_home/.cache/tb/torbrowser_updater_error.log"
 
    if [ "$progressbaridx" = "" ]; then
       true
@@ -388,22 +390,24 @@ tb_preparation() {
 
    ## Debugging.
    #qubes_vm_type=TemplateVM
+   #is_chroot="true"
    #TB_NO_TOR_CON_CHECK="1"
    #CURL_PROXY="--fail"
 
-   if [ $tb_postinst = "true" ]; then
+   if [ "$tb_postinst" = "true" ]; then
       [ -n "$NOKILLTB" ] || NOKILLTB="1"
-      [ -n "$TB_NO_INSTALL" ] || TB_NO_INSTALL="true"
+      [ -n "$noaskstart" ] || noaskstart="true"
       [ -n "$TB_INPUT" ] || TB_INPUT="none"
-      [ -n "$tb_cache_folder" ] || tb_cache_folder="/var/cache/tb-binary"
       [ -n "$TB_USE_MSGCOLLECTOR" ] || TB_USE_MSGCOLLECTOR="false"
+      [ -n "$tb_user_home" ] || tb_user_home="/var/cache/tb-binary"
       ## Using hardcoded version numbers when running with --postinst.
       [ -n "$tbb_version" ] || tbb_version="5.0.6"
    fi
 
-   [ -n "$tb_home_folder" ] || tb_home_folder=~/.tb
+   [ -n "$tb_user_home" ] || tb_user_home=~
+   [ -n "$tb_home_folder" ] || tb_home_folder="$tb_user_home/.tb"
    [ -n "$tb_browser_folder" ] || tb_browser_folder="$tb_home_folder/tor-browser"
-   [ -n "$tb_cache_folder" ] || tb_cache_folder=~/.cache/tb
+   [ -n "$tb_cache_folder" ] || tb_cache_folder="$tb_user_home/.cache/tb"
    [ -n "$tb_temp_folder" ] || tb_temp_folder="$tb_cache_folder/temp"
    [ -n "$tb_downloaded_files_folder" ] || tb_downloaded_files_folder="$tb_cache_folder/files"
    [ -n "$tb_gpg_tmp_dir" ] || tb_gpg_tmp_dir="$tb_cache_folder/gpgtmpdir"
@@ -429,7 +433,7 @@ tb_preparation() {
       [ -n "$tb_install_follow" ] || tb_install_follow=false
    fi
 
-   if [ $tb_postinst = "true" ]; then
+   if [ "$tb_postinst" = "true" ]; then
       ## running with --postinst
       if [ "$tb_install_in_chroot" = "true" ]; then
          [ -n "$tb_updater_run" ] || tb_updater_run=true
@@ -460,6 +464,16 @@ tb_preparation() {
       ## that include the version number will be verified from the gpg verified
       ## sha256sum sums file.
       [ -n "$tb_confirm_installation_skip" ] || tb_confirm_installation_skip=true
+
+      ## Being careful with deletion.
+      if [ "$tb_browser_folder" = "/var/cache/tb-binary/.tb/tor-browser" ]; then
+         echo "rm -r -f '$tb_browser_folder'"
+         rm -r -f "$tb_browser_folder"
+      fi
+      if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/tb/files" ]; then
+         echo "rm -r -f '$tb_downloaded_files_folder'"
+         rm -r -f "$tb_downloaded_files_folder"
+      fi
    fi
 
    ## Required for /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh.
@@ -753,10 +767,18 @@ tb_update_check() {
    curl_download_target_url="$TBB_VERSIONS_FILE_LINK"
    tb_download_common_exit_on_fail="8"
    tb_download_common
+
+   test -f "$RecommendedTBBVersions"
 }
 
 tb_remote_version_parser() {
-   test -f "$RecommendedTBBVersions"
+   if [ ! "$tbb_version" = "" ]; then
+      true "INFO: tbb_version already set to '$tbb_version'. Simplified $FUNCNAME, ok."
+      [ -n "$tbb_recommended_versions_list" ] || tbb_recommended_versions_list="$tbb_version"
+      [ -n "$tbbversions_found" ] || tbbversions_found=1
+      [ -n "$tbb_recommended_versions_error" ] || tbb_recommended_versions_error=""
+      return 0
+   fi
 
    ## needs: $RecommendedTBBVersions
    ## sets: tbb_recommended_versions_list
@@ -1347,8 +1369,8 @@ y/n?"
 }
 
 tb_extract() {
-   if [ "$TB_NO_INSTALL" = "true" ]; then
-      true "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
+   if [ "$TB_NO_EXTRACT" = "true" ]; then
+      true "INFO: Skipping $FUNCNAME, because TB_NO_EXTRACT is 'true', ok."
       return 0
    fi
 
@@ -1507,12 +1529,24 @@ tb_patch_download_folder_create() {
 }
 
 tb_patch() {
-   if [ "$TB_NO_INSTALL" = "true" ]; then
-      true "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
+   if [ "$TB_NO_PATCH" = "true" ]; then
+      true "INFO: Skipping $FUNCNAME, because TB_NO_PATCH is 'true', ok."
       return 0
    fi
 
    tb_run_function tb_patch_download_folder_create
+}
+
+tb_move_old_version() {
+   if [ "$TB_NO_MOVE_OLD_VERSION" = "true" ]; then
+      true "INFO: Skipping $FUNCNAME, because TB_NO_MOVE_OLD_VERSION is 'true', ok."
+      return 0
+   fi
+
+   if [ -d "$tb_browser_folder" ]; then
+      output_echo_only "INFO: Moving old folder $tb_browser_folder..."
+      mv "$tb_browser_folder" "$tb_browser_folder.old.$(date '+%F-%H:%M:%S')"
+   fi
 }
 
 tb_install() {
@@ -1521,18 +1555,13 @@ tb_install() {
       return 0
    fi
 
-   if [ -d "$tb_browser_folder" ]; then
-      output_echo_only "INFO: Moving old folder $tb_browser_folder..."
-      mv "$tb_browser_folder" "$tb_browser_folder.old.$(date '+%F-%H:%M:%S')"
-   fi
-
    output_echo_only "INFO: Moving temporary folder $tb_extract_temp_folder to $tb_browser_folder."
    mv "$tb_extract_temp_folder" "$tb_browser_folder"
 }
 
-tb_end() {
-   if [ "$TB_NO_INSTALL" = "true" ]; then
-      output_echo_only "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
+tb_start_ask() {
+   if [ "$noaskstart" = "true" ]; then
+      true "INFO: noaskstart is set to true. Skipping question if Tor Browser should be started."
       return 0
    fi
 
@@ -1549,10 +1578,6 @@ tb_end() {
       output_echo_only "INFO: torbrowser binary not found in path. tb-starter is probably not installed. \
 Skipping question to start Tor Browser."
       return 0
-   fi
-
-   if [ "$noaskstart" = "true" ]; then
-      output_echo_only "INFO: noaskstart is set to true. Skipping question if Tor Browser should be started."
    fi
 
    if [ "$noaskstart" = "false" ]; then
@@ -1678,8 +1703,9 @@ main_function() {
    tb_run_function tb_confirm_install
    tb_run_function tb_extract
    tb_run_function tb_patch
+   tb_run_function tb_move_old_version
    tb_run_function tb_install
-   tb_run_function tb_end
+   tb_run_function tb_start_ask
 }
 
 tb_run_function main_function ${1+"$@"}

@@ -32,7 +32,7 @@ tbbversion() {
    tbbversions_found="0"
 
    if [ ! -f "$RecommendedTBBVersions" ]; then
-      local MSG="$SCRIPTNAME tbbversion: 1: $1 does not exist."
+      local MSG="$SCRIPTNAME tbbversion: RecommendedTBBVersions: $RecommendedTBBVersions does not exist."
       echo "$MSG"
       error "$MSG"
       return 1
