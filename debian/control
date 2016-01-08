@@ -20,6 +20,9 @@ Recommends: tb-starter, anon-icon-pack, anon-shared-helper-scripts,
  curl-scripts
 Suggests: tb-default-browser, open-link-confirmation
 Description: Tor Browser Downloader by Whonix developers
+ Automates download and verification of Tor Browser from The Tor Project's
+ website.
+ .
  Without the curl-scripts package installed, the GUI will not move the progress
  bar.
  .
