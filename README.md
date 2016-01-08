@@ -1,42 +1,42 @@
 # Tor Browser Updater #
 
- Automates download and verification of Tor Browser from The Tor Project's
- website. Useful for initial installation of Tor Browser, clean
- re-installations of Tor Browser and keeping newly created Qubes AppVMs
- inherited from updated Qubes TemplateVMs can ship up to date versions of
- Tor Browsers.
+Automates download and verification of Tor Browser from The Tor Project's
+website. Useful for initial installation of Tor Browser, clean
+re-installations of Tor Browser and keeping newly created Qubes AppVMs
+inherited from updated Qubes TemplateVMs can ship up to date versions of
+Tor Browsers.
 
- Incapable of preserving of updating and preserving user data. Use
- Tor Browser's internal updater for that purpose. Notifies about already
- exiting installations of Tor Browser. Renamed rather than deletes old versions
- of Tor Browsers to avoid user data loss.
+Incapable of preserving of updating and preserving user data. Use
+Tor Browser's internal updater for that purpose. Notifies about already
+exiting installations of Tor Browser. Renamed rather than deletes old versions
+of Tor Browsers to avoid user data loss.
 
- Has a cli and a gui mode. Can auto detect latest version numbers or use user
- configured version numbers. Comes with a download confirmation screen that
- lets users choose which version to download. [1] Has a installation
- confirmation screen [2] that enables users to detect indefinite freeze and
- rollback attacks.
+Has a cli and a gui mode. Can auto detect latest version numbers or use user
+configured version numbers. Comes with a download confirmation screen that
+lets users choose which version to download. [1] Has a installation
+confirmation screen [2] that enables users to detect indefinite freeze and
+rollback attacks.
 
- Integrates well with tb-starter, tb-default-browser and
- open-link-confirmation package as well as with Qubes.
+Integrates well with tb-starter, tb-default-browser and
+open-link-confirmation package as well as with Qubes.
 
- Without the curl-scripts package installed, the GUI will not move the progress
- bar.
+Without the curl-scripts package installed, the GUI will not move the progress
+bar.
 
- If you have the curl-scripts package installed, it will show a nicer progress
- bar when run in terminal and more meaningful curl exit code messages, when
- curl failed.
+If you have the curl-scripts package installed, it will show a nicer progress
+bar when run in terminal and more meaningful curl exit code messages, when
+curl failed.
 
- When having the anon-shared-helper-scripts package installed (recommended for
- Anonymity Distributions), Tor Browser Downloader will check, that Tor is
- enabled, that no package manager is currently running and that Tor finished
- bootstrapping before download attempts.
+When having the anon-shared-helper-scripts package installed (recommended for
+Anonymity Distributions), Tor Browser Downloader will check, that Tor is
+enabled, that no package manager is currently running and that Tor finished
+bootstrapping before download attempts.
 
- This package is produced independently of, and carries no guarantee from,
- The Tor Project.
+This package is produced independently of, and carries no guarantee from,
+The Tor Project.
 
- [1] https://www.whonix.org/wiki/Tor_Browser#Download_Confirmation_Screen
- [2] https://www.whonix.org/wiki/Tor_Browser#Installation_Confirmation_Screen
+[1] https://www.whonix.org/wiki/Tor_Browser#Download_Confirmation_Screen
+[2] https://www.whonix.org/wiki/Tor_Browser#Installation_Confirmation_Screen
 
 (This package description has been [automatically](https://github.com/Whonix/whonix-developer-meta-files/blob/master/debug-steps/packaging-helper-script) extracted and mirrored from `debian/control`.)
 
