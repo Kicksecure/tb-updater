@@ -614,7 +614,12 @@ tb_preparation() {
       ## sets: GATEWAY_IP
       eval $(/usr/lib/anon-shared-helper-scripts/settings_echo)
       [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
-      [ -n "$CURL_PROXY" ] || CURL_PROXY="--proxy socks5h://user:password@$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD"
+      if [ "$qubes_vm_type" = "TemplateVM" ]; then
+         ## Use Qubes updates proxy.
+         [ -n "$CURL_PROXY" ] || CURL_PROXY="--proxy http://10.137.255.254:8082"
+      else
+         [ -n "$CURL_PROXY" ] || CURL_PROXY="--proxy socks5h://user:password@$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD"
+      fi
    else
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
    fi
