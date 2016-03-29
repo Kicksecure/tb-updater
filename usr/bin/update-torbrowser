@@ -610,7 +610,7 @@ tb_preparation() {
 
    if [ "$DEV_PASSTHROUGH" = "1" ]; then
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
-   elif [ -d /usr/share/whonix ]; then
+   elif [ -f /usr/share/anon-dist/marker ]; then
       ## sets: GATEWAY_IP
       eval $(/usr/lib/anon-shared-helper-scripts/settings_echo)
       [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
