@@ -1295,7 +1295,7 @@ or indefinite freeze attacks skipped. Please check the Current Signature Creatio
       type="info"
    fi
 
-   if [ -d /usr/share/whonix ]; then
+   if [ -f /usr/share/whonix/marker ]; then
       clock_hint="In that case, please run Timesync: <code>Start menu -> Applications -> System -> Timesync</code>. \
 Or in Terminal: <code>timesync</code>."
    fi
