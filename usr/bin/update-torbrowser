@@ -604,7 +604,7 @@ tb_preparation() {
    ##    their hidden service.
 
    [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://dist.torproject.org/torbrowser"
-   [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1 --proto =https"
+   [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.2 --proto =https"
 
    ## }}
 
