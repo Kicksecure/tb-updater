@@ -639,6 +639,10 @@ tb_connectivity_checks_tor() {
       return 0
    fi
 
+   if [ "$CURL_PROXY" = "" ]; then
+      return 0
+   fi
+
    if [ -x /usr/lib/anon-shared-helper-scripts/tor_enabled_check ]; then
       echo -n "INFO: Running Tor enabled check... "
 
