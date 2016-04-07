@@ -1,3 +1,251 @@
+commit 71498eb64e67d65e3adb7c5985e2ac0b7a183976
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Apr 5 15:28:59 2016 +0000
+
+    skip Tor connectivity check if variable CURL_PROXY is empty
+    
+    (which would mean Tor would not be used anyhow, hence no need to test it)
+    
+    aids running update-torbrowser outside of Whonix
+    
+    (so --no-tor-con-check does not have to be used)
+
+commit 26172f8d132cb059fa5fb7584fb99feabcbfb7fb
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Mar 31 20:56:40 2016 +0000
+
+    upgrade from curl usage from --tlsv1 to --tlsv1.2
+    
+    https://phabricator.whonix.org/T489
+
+commit d894a7b2ef5ba1d13b673bbb216b237be9b127b9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Mar 29 22:49:30 2016 +0000
+
+    use more appropriate marker file /usr/share/whonix/marker
+
+commit 134a15b2bb03c97a02a3a96bc290668121ecfe02
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Mar 30 00:43:17 2016 +0200
+
+    use more appropriate marker file /usr/share/anon-dist/marker
+
+commit 42045ebcbed19241d97691293ddcdedcfe622f8a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Mar 19 18:32:40 2016 +0000
+
+    tbb_version="5.5.4"
+
+commit 9a3d8fecdb0f31df484c1b3ccc75e0cdd492dcc2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Mar 19 19:26:27 2016 +0100
+
+    use Qubes updates proxy in Qubes TemplateVMs
+    
+    https://phabricator.whonix.org/T477
+
+commit cb534ab67a31a681ce9e7b1e96dee7e3181c743e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 8 03:28:56 2016 +0000
+
+    comment
+
+commit 303d710998552ec943ace662f81469447cd98328
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 8 03:27:14 2016 +0000
+
+    readme
+
+commit 7b4edb93358a683d73e63f2aef687b1a8ba3ba48
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 8 03:26:21 2016 +0000
+
+    readme
+
+commit dad1dbdde1ad82016e6b0e4fddc1f725a92c374d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 8 03:25:43 2016 +0000
+
+    readme
+
+commit 9e2f6a794ac84f22e4897bcca93fb1406da71c6e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 8 03:25:00 2016 +0000
+
+    readme
+
+commit bb34f2bf5d420a9a4a42f54471666742be14520c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 8 03:23:59 2016 +0000
+
+    updated package description
+
+commit 1b55e2cf535e3f7eb8dde0c7c1aa7fae52aeb2f3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 8 03:08:05 2016 +0000
+
+    updated package description
+
+commit b722bec38aaa0282b2e627495c2f4c18012f24e9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 8 03:05:10 2016 +0000
+
+    updated package description
+
+commit 0c26480f9fa684ee741ea303b1ab5bf9a29c2293
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 8 02:54:49 2016 +0000
+
+    updated tbb_version
+
+commit 2324576595df433cd6614d591f777ec9e7244bde
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 8 02:40:03 2016 +0000
+
+    systemd packaging
+    
+    https://phabricator.whonix.org/T417
+
+commit b51d4580dc2f056e78ea7d83a65d0dd2f763c492
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jan 8 02:22:32 2016 +0000
+
+    work on up to date versions of Tor Browser in newly created AppVMs
+    
+    https://phabricator.whonix.org/T417
+
+commit 87dd3d3b092053861c3f054fe5d03a9ece9f79cd
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 6 22:44:11 2016 +0000
+
+    skip downloading version file, if tbb_version has been manually configured
+
+commit e3c3b0b816cba1a65992b8810517f9f2c76b181e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 6 22:37:39 2016 +0000
+
+    avoid requirement for sudoers exception thanks to suggestion by @marmarek ;
+    work on up to date versions of Tor Browser in newly created AppVMs
+    
+    https://phabricator.whonix.org/T417
+
+commit b2b79121d7149d09ce7d5d20dec766e231db4223
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 6 16:27:10 2016 +0000
+
+    work on up to date versions of Tor Browser in newly created AppVMs
+    
+    https://phabricator.whonix.org/T417
+
+commit b74b62f5a70d335629d4913b49ea220369f32ddb
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 5 23:56:16 2016 +0000
+
+    output
+
+commit cbdb6924e6deeae1381e8e4c3a6812ba71bacd46
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 5 23:19:46 2016 +0000
+
+    work on up to date versions of Tor Browser in newly created AppVMs
+    
+    https://phabricator.whonix.org/T417
+
+commit 8b164c8326e609e339a32020770ccecd599f9384
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 5 15:22:02 2016 +0000
+
+    added --postinst switch
+    
+    https://phabricator.whonix.org/T461
+
+commit ece21b70f9d8c7ff100befaae76431bd045f96ce
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 5 15:20:04 2016 +0000
+
+    removed deprecated option --clearnet
+    
+    (can be configured through environment variables)
+
+commit 9ec1b0d130154f8cc1abee865dc72c872c2d4fb1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 5 15:18:04 2016 +0000
+
+    added postinst script so chroot-script anon-shared-build-inst-tb can be removed
+    
+    https://phabricator.whonix.org/T461
+
+commit 3e5ba19798382dec216463400e224ad4cac79756
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 5 15:15:52 2016 +0000
+
+    failing open (exit 0), when $anon_shared_inst_tb = open
+
+commit 9ebafcda14eec30b3b36bb6f5fda00aa1b811f81
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 5 15:09:12 2016 +0000
+
+    refactoring
+    
+    https://phabricator.whonix.org/T461
+
+commit e2416098b64083e7079d40486a6769f309f82523
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 5 14:20:08 2016 +0000
+
+    fix
+
+commit 1c85166a20af638ceab25900fb75b9f62a9645d7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Dec 15 23:24:33 2015 +0000
+
+    allow storing downloaded archives in arbitrary folders
+    
+    https://phabricator.whonix.org/T417
+
+commit c2fae47447c81ed441b1402eaa024b59c7dc8a9c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Dec 8 21:33:30 2015 +0000
+
+    output, fixed 'stay tuned' link
+
+commit 709efa23c9ae210da76a5b1ee3c7bf4960d09497
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Dec 1 21:27:59 2015 +0000
+
+    native Qubes support;
+    fixed config file parser if config folder does not exist
+
+commit 9e4785ca0df87a597709622ae7c549f7c5daa0f3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Nov 30 20:01:56 2015 +0000
+
+    local
+
+commit 9ee254e4ab2deabe85953ba00f5dd4e829545cfa
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Nov 30 19:38:23 2015 +0000
+
+    Only source configuration files that end with the '.conf' extension.
+    
+    Thanks to @nrgaway for the suggestion!
+    
+    https://phabricator.whonix.org/T286
+
+commit ab3d60d58ab1e2ae87b1ecbe68d2b2e9a4147177
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Nov 22 22:12:12 2015 +0000
+
+    no longer depend on /var/run/qubes-service/whonix-template
+    
+    https://phabricator.whonix.org/T432
+
+commit 85769bee93ce9f41955feb8c86ef15f68a72d2ba
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Nov 6 12:00:55 2015 +0000
+
+    bumped changelog version
+
 commit 7d835124fe93451d0fa93cfd0f6631d555bf1c52
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Nov 6 10:54:18 2015 +0000
