@@ -381,6 +381,9 @@ tb_config_folder_parser() {
 }
 
 tb_preparation() {
+   ## sets: tbb_hardcoded_version
+   source /usr/share/tb-updater/tbb_hardcoded_version
+
    if command -v qubesdb-read >/dev/null 2>&1 ; then
       [ -n "$is_qubes" ] || is_qubes=true
       [ -n "$qubes_vm_type" ] || qubes_vm_type="$(qubesdb-read /qubes-vm-type)"
@@ -401,7 +404,7 @@ tb_preparation() {
       [ -n "$TB_USE_MSGCOLLECTOR" ] || TB_USE_MSGCOLLECTOR="false"
       [ -n "$tb_user_home" ] || tb_user_home="/var/cache/tb-binary"
       ## Using hardcoded version numbers when running with --postinst.
-      [ -n "$tbb_version" ] || tbb_version="5.5.4"
+      [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
    fi
 
    [ -n "$tb_user_home" ] || tb_user_home=~
