@@ -1571,6 +1571,16 @@ tb_install() {
    mv "$tb_extract_temp_folder" "$tb_browser_folder"
 }
 
+tb_cleanup() {
+   if [ "$TB_NO_INSTALL" = "true" ]; then
+      true "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
+      return 0
+   fi
+
+   output_echo_only "INFO: Deleting $tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME to save space."
+   rm -f "$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
+}
+
 tb_start_ask() {
    if [ "$noaskstart" = "true" ]; then
       true "INFO: noaskstart is set to true. Skipping question if Tor Browser should be started."
@@ -1717,6 +1727,7 @@ main_function() {
    tb_run_function tb_patch
    tb_run_function tb_move_old_version
    tb_run_function tb_install
+   tb_run_function tb_cleanup
    tb_run_function tb_start_ask
 }
 
