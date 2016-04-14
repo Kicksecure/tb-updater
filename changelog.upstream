@@ -1,3 +1,31 @@
+commit 872e47e5593efe27fd1b605daa4bca6a9e5ad753
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Apr 9 02:19:57 2016 +0000
+
+    delete old tarballs after extraction to save space
+
+commit d6ad25be17a210a094bc8d5fca7a48e7825efb7a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Apr 9 01:28:41 2016 +0000
+
+    fix
+
+commit e9469d65c457dec971a2ce31521f1707a7d69deb
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Apr 8 21:03:55 2016 +0000
+
+    moved hardcoded version for postinst into its own file for easier maintenance
+    
+    /usr/share/tb-updater/tbb_hardcoded_version
+    
+    https://phabricator.whonix.org/T417
+
+commit 6b1f9b3e08e6d4d8e113161f5f42f74330b3c0da
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Apr 7 22:54:49 2016 +0000
+
+    bumped changelog version
+
 commit 71498eb64e67d65e3adb7c5985e2ac0b7a183976
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Apr 5 15:28:59 2016 +0000
