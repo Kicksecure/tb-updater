@@ -247,7 +247,8 @@ tb_parse_cmd_options() {
                TB_FORCE_INSTALL="1"
                DEV_BUILD_PASSTHROUGH="1"
                DEV_PASSTHROUGH="1"
-               TB_USE_MSGCOLLECTOR="false"
+               ## Use export so it can be read by CURL_PRGRS.
+               [ -n "$TB_USE_MSGCOLLECTOR" ] || export TB_USE_MSGCOLLECTOR="false"
                shift
                ;;
            --postinst)
@@ -415,7 +416,8 @@ tb_preparation() {
       [ -n "$NOKILLTB" ] || NOKILLTB="1"
       [ -n "$noaskstart" ] || noaskstart="true"
       [ -n "$TB_INPUT" ] || TB_INPUT="none"
-      [ -n "$TB_USE_MSGCOLLECTOR" ] || TB_USE_MSGCOLLECTOR="false"
+      ## Use export so it can be read by CURL_PRGRS.
+      [ -n "$TB_USE_MSGCOLLECTOR" ] || export TB_USE_MSGCOLLECTOR="false"
       [ -n "$tb_user_home" ] || tb_user_home="/var/cache/tb-binary"
       ## Using hardcoded version numbers when running with --postinst.
       [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
@@ -609,7 +611,7 @@ tb_preparation() {
    fi
 
    ## Debugging CURL_PRGRS.
-   #CURL_PRGRS="bash -x /usr/lib/curl-scripts/curl-prgrs"
+   CURL_PRGRS="bash -x /usr/lib/curl-scripts/curl-prgrs"
 
    ## Debugging / disabling CURL_PRGRS.
    #CURL_PRGRS="$CURL"
