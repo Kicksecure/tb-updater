@@ -611,7 +611,7 @@ tb_preparation() {
    fi
 
    ## Debugging CURL_PRGRS.
-   CURL_PRGRS="bash -x /usr/lib/curl-scripts/curl-prgrs"
+   #CURL_PRGRS="bash -x /usr/lib/curl-scripts/curl-prgrs"
 
    ## Debugging / disabling CURL_PRGRS.
    #CURL_PRGRS="$CURL"
