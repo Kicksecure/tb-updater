@@ -83,6 +83,14 @@ tb_error_handler() {
    mkdir --parents "$tb_user_home/.cache/tb"
    echo "$MSG" >> "$tb_user_home/.cache/tb/torbrowser_updater_error.log"
 
+   ## In case variable output is not set yet.
+   [ -n "$output" ] || output="output"
+
+   ## In case function $output does not exist yet.
+   if [ ! "$(type -t "$output")" = "function" ]; then
+      output="echo"
+   fi
+
    if [ "$progressbaridx" = "" ]; then
       true
    else
@@ -336,6 +344,10 @@ output() {
 
 outputfunc() {
    true "$FUNCNAME: args: ${1+$@}"
+   if [ "$output_tool" = "" ]; then
+      local TB_USE_MSGCOLLECTOR
+      TB_USE_MSGCOLLECTOR="false"
+   fi
    if [ "$TB_USE_MSGCOLLECTOR" = "false" ]; then
       while true; do
          case $1 in
