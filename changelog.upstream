@@ -1,3 +1,15 @@
+commit 269ba646ef94cd631100947bfbde6a68dec6835f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Apr 20 00:50:42 2016 +0000
+
+    fix when running inside chroot
+
+commit 3456ddd810aa9d99f91406902e4a9a92538e73c8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Apr 20 00:09:34 2016 +0000
+
+    bumped changelog version
+
 commit 63889abbb2502357a3f4895c47bfe7455efbcd03
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Apr 20 00:07:41 2016 +0000
