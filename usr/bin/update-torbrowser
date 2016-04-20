@@ -228,8 +228,7 @@ tb_parse_cmd_options() {
    do
        case $1 in
            --ordinary)
-               true "--ordinary enabled, setting CURL_PRGRS to $CURL."
-               CURL_PRGRS="$CURL"
+               ordinary="true"
                shift
                ;;
            --update)
@@ -596,13 +595,17 @@ tb_preparation() {
       fi
    fi
 
-   if [ -x /usr/lib/curl-scripts/curl-prgrs ]; then
-      ## Curl progress wrapper.
-      CURL_PRGRS="/usr/lib/curl-scripts/curl-prgrs"
-   else
-      true "/usr/lib/curl-scripts/curl-prgrs not available, skipping."
-      true "Setting CURL_PRGRS to $CURL."
-      CURL_PRGRS="$CURL"
+   if [ "$CURL_PRGRS" = "" ]; then
+      if [ "$ordinary" = "true" ]; then
+         CURL_PRGRS="$CURL"
+      elif [ -x /usr/lib/curl-scripts/curl-prgrs ]; then
+         ## Curl progress wrapper.
+         CURL_PRGRS="/usr/lib/curl-scripts/curl-prgrs"
+      else
+         true "/usr/lib/curl-scripts/curl-prgrs not available, skipping."
+         true "Setting CURL_PRGRS to $CURL."
+         CURL_PRGRS="$CURL"
+      fi
    fi
 
    ## Debugging CURL_PRGRS.
