@@ -1323,8 +1323,7 @@ or indefinite freeze attacks skipped. Please check the Current Signature Creatio
    fi
 
    if [ -f /usr/share/whonix/marker ]; then
-      clock_hint="In that case, please run Timesync: <code>Start menu -> Applications -> System -> Timesync</code>. \
-Or in Terminal: <code>timesync</code>."
+      clock_hint="In that case, please check your clock is correct."
    fi
 
    case "$gpg_bash_lib_output_freshness_detail" in
