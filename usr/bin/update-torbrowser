@@ -400,7 +400,8 @@ tb_preparation() {
 
    if command -v qubesdb-read >/dev/null 2>&1 ; then
       [ -n "$is_qubes" ] || is_qubes=true
-      [ -n "$qubes_vm_type" ] || qubes_vm_type="$(qubesdb-read /qubes-vm-type)"
+      ## qubesdb-read fails inside chroot, therefore overwriting with '|| true'.
+      [ -n "$qubes_vm_type" ] || qubes_vm_type="$(qubesdb-read /qubes-vm-type)" || true
    else
       [ -n "$is_qubes" ] || is_qubes=false
    fi
