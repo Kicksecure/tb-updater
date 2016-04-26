@@ -9,6 +9,11 @@ Documentation=https://github.com/Whonix/tb-updater
 After=qubes-mount-dirs.service
 After=qubes-mount-home.service
 
+## Preventing race condition with user start through start menu.
+## Not the most efficient / clean solution.
+## https://phabricator.whonix.org/T424
+Before=qubes-gui-agent.service
+
 [Service]
 Type=oneshot
 RemainAfterExit=yes
