@@ -1,3 +1,17 @@
+commit 1620a4361ca719089be43bb717dcbd4536198e10
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Apr 26 05:19:51 2016 +0000
+
+    Preventing race condition with user start through start menu.
+    
+    https://phabricator.whonix.org/T417
+
+commit 9f630039340503a0d7814f1a5d7754a6167d4c47
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Apr 25 23:27:59 2016 +0000
+
+    bumped changelog version
+
 commit f533c9e554e4b9d072567824c79ba54c95f2c5c8
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Apr 20 04:18:04 2016 +0000
