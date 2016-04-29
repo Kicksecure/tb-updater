@@ -421,6 +421,7 @@ tb_preparation() {
       [ -n "$tb_user_home" ] || tb_user_home="/var/cache/tb-binary"
       ## Using hardcoded version numbers when running with --postinst.
       [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
+      [ -n "$tbb_use_hardcoded_version" ] || tbb_use_hardcoded_version="true"
    fi
 
    [ -n "$tb_user_home" ] || tb_user_home=~
@@ -851,11 +852,13 @@ tb_local_version_detection() {
 }
 
 tb_confirm_update() {
+   output_echo_only "INFO: Currently installed version: $tbb_locally_installed_version"
+   if [ "$tbb_use_hardcoded_version" = "true" ]; then
+      output_echo_only "INFO: Hardcoded version $tbb_version chosen."
+   fi
    if [ "$tb_confirm_update_skip" = "true" ]; then
       return 0
    fi
-
-   output_echo_only "INFO: Currently installed version: $tbb_locally_installed_version"
 
    if [ "$tbb_locally_installed_version_detect_success" = "1" ]; then
       if [ "$installed_or_not_result" = "true" ]; then
