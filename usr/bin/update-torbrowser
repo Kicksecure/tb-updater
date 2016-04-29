@@ -412,16 +412,32 @@ tb_preparation() {
    #TB_NO_TOR_CON_CHECK="1"
    #CURL_PROXY="--fail"
 
+   if [ "$qubes_vm_type" = "TemplateVM" ]; then
+      if [ "$tb_postinst" = "" ]; then
+         if [ "$tb_user_home" = "" ]; then
+            tb_user_home="/var/cache/tb-binary"
+            echo "INFO: Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM but not run from postinst. \
+This is useful so you get up to date versions of Tor Browsers in newly created AppVMs inherited from updated TemplateVMs.
+More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
+         fi
+      fi
+   fi
+
    if [ "$tb_postinst" = "true" ]; then
       [ -n "$NOKILLTB" ] || NOKILLTB="1"
       [ -n "$noaskstart" ] || noaskstart="true"
       [ -n "$TB_INPUT" ] || TB_INPUT="none"
       ## Use export so it can be read by CURL_PRGRS.
       [ -n "$TB_USE_MSGCOLLECTOR" ] || export TB_USE_MSGCOLLECTOR="false"
-      [ -n "$tb_user_home" ] || tb_user_home="/var/cache/tb-binary"
       ## Using hardcoded version numbers when running with --postinst.
       [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
       [ -n "$tbb_use_hardcoded_version" ] || tbb_use_hardcoded_version="true"
+      if [ "$tb_user_home" = "" ]; then
+         tb_user_home="/var/cache/tb-binary"
+         echo "INFO: Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM and from postinst. \
+This is useful so you get up to date versions of Tor Browsers in newly created AppVMs inherited from updated TemplateVMs.
+More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
+      fi
    fi
 
    [ -n "$tb_user_home" ] || tb_user_home=~
