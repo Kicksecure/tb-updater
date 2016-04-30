@@ -755,13 +755,14 @@ tb_connectivity_checks_curl() {
    tb_notify_details="Checking connectivity... Will take a moment..."
    echo "INFO: Running connectivity check... "
 
+   [ -n "$timeout_connectivity_checks_curl" ] || timeout_connectivity_checks_curl=180
    ## 1 MB = 1048576 bytes
    ## 2 MB = 2097152 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$tb_temp_folder/tbb_remote_folder"
-   curl_download_max_time="180"
+   curl_download_max_time="$timeout_connectivity_checks_curl"
    curl_download_target_url="$TBB_REMOTE_FOLDER"
    tb_download_common_exit_on_fail="false"
    tb_download_common
@@ -808,13 +809,14 @@ tb_update_check() {
    tb_notify_details="Checking Tor Browser version... Will take a moment..."
    output_echo_only "INFO: Find out latest version... Downloading: $TBB_VERSIONS_FILE_LINK... "
 
+   [ -n "$timeout_version_file_download" ] || timeout_version_file_download=180
    ## 1 MB = 1048576 bytes
    ## 2 MB = 2097152 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$RecommendedTBBVersions"
-   curl_download_max_time="180"
+   curl_download_max_time="$timeout_version_file_download"
    curl_download_target_url="$TBB_VERSIONS_FILE_LINK"
    tb_download_common_exit_on_fail="8"
    tb_download_common
@@ -1142,13 +1144,14 @@ tb_download_files() {
 INFO: Downloading:
       $TBB_SIG_LINK ... Will take a moment..."
 
+   [ -n "$timeout_signature_file_download" ] || timeout_signature_file_download=180
    ## 1 MB = 1048576 bytes
    ## 2 MB = 2097152 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
-   curl_download_max_time="180"
+   curl_download_max_time="$timeout_signature_file_download"
    curl_download_target_url="$TBB_SIG_LINK"
    tb_download_common_exit_on_fail="8"
    tb_download_common
@@ -1164,13 +1167,14 @@ INFO: Downloading:
 INFO: Downloading:
       $TBB_HASH_LINK ... Will take a moment..."
 
+   [ -n "$timeout_hash_file_download" ] || timeout_hash_file_download=180
    ## 1 MB = 1048576 bytes
    ## 2 MB = 2097152 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$tb_downloaded_files_folder/$TBB_HASH_FILENAME"
-   curl_download_max_time="180"
+   curl_download_max_time="$timeout_hash_file_download"
    curl_download_target_url="$TBB_HASH_LINK"
    tb_download_common_exit_on_fail="16"
    tb_download_common
@@ -1186,13 +1190,14 @@ INFO: Downloading:
 INFO: Downloading:
       $TBB_PACKAGE_LINK ... Will take a while..."
 
+   [ -n "$timeout_archive_file_download" ] || timeout_archive_file_download=3600
    ## 1 MB = 1048576 bytes
    ## 100 MB = 104857600 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="104857600"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
-   curl_download_max_time="3600"
+   curl_download_max_time="$timeout_archive_file_download"
    curl_download_target_url="$TBB_PACKAGE_LINK"
    tb_download_common_exit_on_fail="17"
    tb_download_common
