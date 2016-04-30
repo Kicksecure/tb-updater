@@ -320,6 +320,7 @@ tb_stdin() {
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       output_echo_only "INFO: TB_FORCE_INSTALL is set to '1', therefore setting TB_INPUT to 'none'."
       TB_INPUT="none"
+      TB_USE_MSGCOLLECTOR="false"
       return 0
    fi
    if [ -t "0" ]; then
@@ -329,6 +330,7 @@ TB_INPUT to stdin, will use terminal for input, ok."
 command line, but still use the graphical user interface for input, \
 you could add to command line: --input gui"
       TB_INPUT="stdin"
+      TB_USE_MSGCOLLECTOR="false"
       return 0
    fi
    output_echo_only "INFO: stdin not connected to terminal, probably run in graphical environment, ok."
@@ -927,15 +929,6 @@ A backup of your old Tor Browser and settings will be created in folder <code>$t
    confirmation_screen_learn_more_link="\
 <a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a>"
 
-   if [ "$qubes_vm_type" = "TemplateVM" ]; then
-      qubes_running_inside_template_vm_msg="\
-<u>Qubes specific notice</u>: Currently running inside a TemplateVM.
-Due to <a href=https://www.whonix.org/wiki/Dev/Qubes#tb-updater_vs_TemplateVM>technical limitations</a>,
-running this program in this TemplateVM will not update Tor Browser in TemplateBasedVMs, which are based on this TemplateVM.
-Only newly created TemplateBasedVMs, which are based on this TemplateVM will benefit from this.
-To update Tor Browser inside existing TemplateBasedVMs, please update Tor Browser inside TemplateBasedVMs."
-   fi
-
    if [ "$installed_or_not_result" = "true" ]; then
       type="warning"
       if [ "$tbb_locally_installed_version_detect_success" = "0" ]; then
@@ -943,8 +936,7 @@ To update Tor Browser inside existing TemplateBasedVMs, please update Tor Browse
          MSG="\
 <p>$updater_vs_downloader_msg</p>
 <p>$highest_version_not_always_better_text</p>
-<p>$confirmation_screen_learn_more_link</p>
-<p>$qubes_running_inside_template_vm_msg</p>"
+<p>$confirmation_screen_learn_more_link</p>"
       else
          ## installed, local version number known
          if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
@@ -1468,7 +1460,6 @@ Extracting Tor Browser... This could take a moment..."
             bsdtar \
                --strip-components 1 \
                --extract \
-               --verbose \
                --directory "$tb_extract_temp_folder" \
                --file "$file_name" \
                &
@@ -1499,7 +1490,6 @@ Extracting Tor Browser... This could take a moment..."
             bsdtar \
                --strip-components 1 \
                --extract \
-               --verbose \
                --directory "$tb_extract_temp_folder" \
                --file \
                - \
