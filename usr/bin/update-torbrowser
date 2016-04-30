@@ -1605,7 +1605,7 @@ tb_cleanup() {
       return 0
    fi
 
-   output_echo_only "INFO: Deleting $tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME to save space."
+   output_echo_only "INFO: Deleting no longer required file $tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME to save space."
    rm -f "$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
 }
 
