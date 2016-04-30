@@ -1078,7 +1078,7 @@ $tb_notify_details"
 
    output_echo_only "INFO: CURL_OUT_FILE: $CURL_OUT_FILE"
 
-   ## Simulating endless data attack.
+   ## Debugging: Simulating endless data attack.
    #export CURL_PRGRS_MAX_FILE_SIZE_BYTES="1048576"
 
    curl_exit_code="0"
