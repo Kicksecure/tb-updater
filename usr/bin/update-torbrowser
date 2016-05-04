@@ -418,7 +418,7 @@ tb_preparation() {
       if [ "$tb_postinst" = "" ]; then
          if [ "$tb_user_home" = "" ]; then
             tb_user_home="/var/cache/tb-binary"
-            echo "INFO: Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM but not run from postinst. \
+            tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM but not run from postinst. \
 This is useful so you get up to date versions of Tor Browsers in newly created AppVMs inherited from updated TemplateVMs.
 More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
          fi
@@ -436,7 +436,7 @@ More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
       [ -n "$tbb_use_hardcoded_version" ] || tbb_use_hardcoded_version="true"
       if [ "$tb_user_home" = "" ]; then
          tb_user_home="/var/cache/tb-binary"
-         echo "INFO: Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM and from postinst. \
+         tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM and from postinst. \
 This is useful so you get up to date versions of Tor Browsers in newly created AppVMs inherited from updated TemplateVMs.
 More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
       fi
@@ -670,6 +670,10 @@ More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
 
    ## Also used by function tbbversion.
    [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
+
+   if [ ! "$tb_auto_set_user_home_msg" = "" ]; then
+      output_echo_only "INFO: $tb_auto_set_user_home_msg"
+   fi
 }
 
 tb_connectivity_checks_tor() {
