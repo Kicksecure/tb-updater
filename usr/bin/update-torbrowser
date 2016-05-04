@@ -872,6 +872,32 @@ tb_local_version_detection() {
 }
 
 tb_confirm_update() {
+   if [ "$qubes_vm_type" = "TemplateVM" ]; then
+      local folder_name found
+      for folder_name in "/home/$who_ami/.tb" "/home/$who_ami/.cache/tb" ; do
+         if [ -d "$folder_name" ]; then
+            found=true
+            break
+         fi
+      done
+      if [ "$found" = "true" ]; then
+         local MSG="\
+<p>Obsolete folders exist. It is recommended to delete them. \
+Otherwise updating Tor Browser in this TemplateVM will not result in newly created TemplateBasedVMs to inherit the updated version of Tor Browser.
+<br />
+<br />To delete these obsolete folders, please run:
+<br />
+<br /><code>rm -r -f '/home/$who_ami/.tb'</code>
+<br /><code>rm -r -f '/home/$who_ami/.cache/tb'</code>
+<br />
+<br />(Or delete them using a file manager.)
+<br />
+<br />More info: <a href=https://www.whonix.org/wiki/Tor_Browser#Qubes_specific>https://www.whonix.org/wiki/Tor_Browser#Qubes_specific</a></p>"
+         $output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
+         $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+      fi
+   fi
+
    output_echo_only "INFO: Currently installed version: $tbb_locally_installed_version"
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
       output_echo_only "INFO: Hardcoded version $tbb_version chosen."
