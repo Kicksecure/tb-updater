@@ -1,3 +1,15 @@
+commit ee30b2c06b52f9b9a485b19ce56e155284579dd9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue May 31 16:56:41 2016 +0200
+
+    stable upgrade tbb_hardcoded_version="6.0"
+
+commit 218dd434ac35f6e15a418013a75ca6d16d739e21
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed May 4 22:06:53 2016 +0000
+
+    bumped changelog version
+
 commit bf4c90ef3e8b599eea8ab3259f32c98002c5be6e
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed May 4 21:55:12 2016 +0000
