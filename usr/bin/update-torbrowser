@@ -390,7 +390,7 @@ export -f outputfunc
 tb_config_folder_parser() {
    shopt -s nullglob
    local i
-   for i in /etc/torbrowser.d/*.conf; do
+   for i in /etc/torbrowser.d/*.conf /rw/config/torbrowser.d/*.conf; do
       bash -n "$i"
       source "$i"
    done
