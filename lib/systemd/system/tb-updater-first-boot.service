@@ -6,8 +6,13 @@
 Description=Copy Tor Browser from /var/cache/tb-binary to user home at First Boot Service
 Documentation=https://github.com/Whonix/tb-updater
 
+## Wait for bind-dirs.sh being done.
 After=qubes-mount-dirs.service
 After=qubes-mount-home.service
+
+## Legacy.
+## Wait for bind-directories being done.
+After=qubes-whonix-postinit.service
 
 ## Preventing race condition with user start through start menu.
 ## Not the most efficient / clean solution.
