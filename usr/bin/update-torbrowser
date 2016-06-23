@@ -1122,6 +1122,7 @@ $tb_notify_details"
       $CURL_FORCE_SSL \
       --max-time "$curl_download_max_time" \
       --output "$CURL_OUT_FILE" \
+      $CURL_OPTS \
       "$curl_download_target_url" \
       &
 
