@@ -660,7 +660,13 @@ More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
          ## Use Qubes updates proxy.
          [ -n "$CURL_PROXY" ] || CURL_PROXY="--proxy http://10.137.255.254:8082"
       else
-         [ -n "$CURL_PROXY" ] || CURL_PROXY="--proxy socks5h://user:password@$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD"
+         if [ "$socks_user_name" = "" ]; then
+            local uuid_temp
+            uuid_temp="$(cat "/proc/sys/kernel/random/uuid")"
+            socks_user_name="tb-updater"
+            socks_user_name="${socks_user_name}_${uuid_temp}"
+         fi
+         [ -n "$CURL_PROXY" ] || CURL_PROXY="--proxy socks5h://$socks_user_name:password@$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD"
       fi
    else
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
