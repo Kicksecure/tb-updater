@@ -766,6 +766,7 @@ tb_connectivity_checks_curl() {
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$tb_temp_folder/tbb_remote_folder"
+   rm -f "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_connectivity_checks_curl"
    curl_download_target_url="$TBB_REMOTE_FOLDER"
    tb_download_common_exit_on_fail="false"
@@ -820,6 +821,7 @@ tb_update_check() {
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$RecommendedTBBVersions"
+   rm -f "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_version_file_download"
    curl_download_target_url="$TBB_VERSIONS_FILE_LINK"
    tb_download_common_exit_on_fail="8"
@@ -1167,6 +1169,7 @@ tb_download_files() {
 
    [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="sha256sums.txt.asc"
    [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}"
+   [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
 
    tb_notify_details="Downloading Tor Browser signature... Will take a moment..."
    output_echo_only "INFO: Downloading GPG signature... Will take a moment..."
@@ -1180,7 +1183,8 @@ INFO: Downloading:
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
-   export CURL_OUT_FILE="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
+   export CURL_OUT_FILE="$TBB_SIG_FULL_PATH"
+   rm -f "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_signature_file_download"
    curl_download_target_url="$TBB_SIG_LINK"
    tb_download_common_exit_on_fail="8"
@@ -1190,6 +1194,7 @@ INFO: Downloading:
 
    [ -n "$TBB_HASH_FILENAME" ] || TBB_HASH_FILENAME="sha256sums.txt"
    [ -n "$TBB_HASH_LINK" ] || TBB_HASH_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_HASH_FILENAME}"
+   [ -n "$TBB_HASH_FULL_PATH" ] || TBB_HASH_FULL_PATH="$tb_downloaded_files_folder/$TBB_HASH_FILENAME"
 
    tb_notify_details="Downloading Tor Browser sha256sums file... Will take a moment..."
    output_echo_only "INFO: Downloading sha256sums file... Will take a moment..."
@@ -1203,7 +1208,8 @@ INFO: Downloading:
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
-   export CURL_OUT_FILE="$tb_downloaded_files_folder/$TBB_HASH_FILENAME"
+   export CURL_OUT_FILE="$TBB_HASH_FULL_PATH"
+   rm -f "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_hash_file_download"
    curl_download_target_url="$TBB_HASH_LINK"
    tb_download_common_exit_on_fail="16"
@@ -1213,6 +1219,7 @@ INFO: Downloading:
 
    [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_${TB_LANG}.tar.xz"
    [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME"
+   [ -n "$TBB_PACKAGE_FULL_PATH" ] || TBB_PACKAGE_FULL_PATH="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
 
    tb_notify_details="Downloading Tor Browser... Will take a while..."
    output_echo_only "INFO: Downloading Tor Browser Bundle: $tbb_version"
@@ -1226,7 +1233,9 @@ INFO: Downloading:
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="104857600"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
-   export CURL_OUT_FILE="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
+   export CURL_OUT_FILE="$TBB_PACKAGE_FULL_PATH"
+   ## Not deleting to support resume.
+   #rm -f "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_archive_file_download"
    curl_download_target_url="$TBB_PACKAGE_LINK"
    tb_download_common_exit_on_fail="17"
@@ -1242,8 +1251,8 @@ tb_gpg_verify() {
    gpg_bash_lib_input_verify_kill_after="10"
    gpg_bash_lib_input_key_import_dir="/usr/share/torbrowser-updater-keys.d"
    gpg_bash_lib_input_temp_folder="$tb_gpg_tmp_dir"
-   gpg_bash_lib_input_data_file="$tb_downloaded_files_folder/$TBB_HASH_FILENAME"
-   gpg_bash_lib_input_sig_file="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
+   gpg_bash_lib_input_data_file="$TBB_HASH_FULL_PATH"
+   gpg_bash_lib_input_sig_file="$TBB_SIG_FULL_PATH"
    gpg_bash_lib_input_file_name_enforce="false"
    gpg_bash_lib_input_cleanup="false"
    gpg_bash_lib_input_error_handler_extra='tb_error_handler "$gpg_bash_lib_output_error_handler_message"'
@@ -1315,7 +1324,7 @@ tb_hash_verify() {
 
    popd >/dev/null
 
-   if grep -q "$sha256sum_output" "$tb_downloaded_files_folder/$TBB_HASH_FILENAME" ; then
+   if grep -q "$sha256sum_output" "$TBB_HASH_FULL_PATH" ; then
       output_echo_only "INFO: Hash check ok."
       return 0
    fi
@@ -1476,7 +1485,7 @@ Extracting Tor Browser... This could take a moment..."
    local timeout_after kill_after file_name
    timeout_after="180"
    kill_after="30"
-   file_name="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
+   file_name="$TBB_PACKAGE_FULL_PATH"
 
    output_echo_only "INFO: Extracting $file_name ..."
 
@@ -1650,8 +1659,8 @@ tb_cleanup() {
       return 0
    fi
 
-   output_echo_only "INFO: Deleting no longer required file $tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME to save space."
-   rm -f "$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
+   output_echo_only "INFO: Deleting no longer required file $TBB_PACKAGE_FULL_PATH to save space."
+   rm -f "$TBB_PACKAGE_FULL_PATH"
 }
 
 tb_start_ask() {
