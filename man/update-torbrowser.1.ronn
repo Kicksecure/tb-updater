@@ -71,6 +71,10 @@ how you want to proceed.
     input (stdin) will be used. When using --input gui, questions would be
     asked in the graphical user environment.
 
+  * --resume
+
+    Resume previous download.
+
 ## AVAILABLE LANGUAGES
 
 As in October 2012:
