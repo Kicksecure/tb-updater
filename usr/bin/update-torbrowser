@@ -1112,12 +1112,12 @@ tb_download_common() {
 $tb_notify_details"
       if [ "$TB_INPUT" = "" ] || [ "$TB_INPUT" = "gui" ]; then
          $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
+         ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
+         ## variables. (See above.)
+         ## Define what CURL_PRGRS is supposed to eval.
+         ## ($percent is a local variable provided by $CURL_PRGRS.)
+         export CURL_PRGRS_EXEC="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
       fi
-      ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
-      ## variables. (See above.)
-      ## Define what CURL_PRGRS is supposed to eval.
-      ## ($percent is a local variable provided by $CURL_PRGRS.)
-      export CURL_PRGRS_EXEC="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
    fi
 
    output_echo_only "INFO: CURL_OUT_FILE: $CURL_OUT_FILE"
