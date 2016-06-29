@@ -293,6 +293,10 @@ tb_parse_cmd_options() {
                ;;
            --resume)
                CURL_RESUME="-C -"
+               ## XXX: Looks like curl-prgrs does not support '-C -'.
+               ##      Therefore also implying '--ordinary' progress bar when
+               ##      using --resume.
+               [ -n "$ordinary" ] || ordinary="true"
                shift
                ;;
            --)
