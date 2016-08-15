@@ -1183,7 +1183,7 @@ tb_download_files() {
 
    ### signature ###
 
-   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="sha256sums.txt.asc"
+   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="sha256sums-unsigned-build.txt.asc"
    [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}"
    [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
 
@@ -1208,7 +1208,7 @@ INFO: Downloading:
 
    ### hash file ###
 
-   [ -n "$TBB_HASH_FILENAME" ] || TBB_HASH_FILENAME="sha256sums.txt"
+   [ -n "$TBB_HASH_FILENAME" ] || TBB_HASH_FILENAME="sha256sums-unsigned-build.txt"
    [ -n "$TBB_HASH_LINK" ] || TBB_HASH_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_HASH_FILENAME}"
    [ -n "$TBB_HASH_FULL_PATH" ] || TBB_HASH_FULL_PATH="$tb_downloaded_files_folder/$TBB_HASH_FILENAME"
 
