@@ -475,7 +475,7 @@ More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
       fi
    else
       ## Running in Non-Qubes-Whonix.
-      [ -n "$tb_install_in_chroot" ] || tb_install_in_chroot=false
+      [ -n "$tb_install_in_chroot" ] || tb_install_in_chroot=true
       [ -n "$tb_install_follow" ] || tb_install_follow=false
    fi
 
