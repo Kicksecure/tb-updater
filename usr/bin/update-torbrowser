@@ -737,9 +737,9 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
       echo -n "INFO: Running Tor bootstrap check... "
       source /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh
       ## sets: tor_bootstrap_percent
-      tb_run_function check_tor_bootstrap_helper
+      tb_run_function check_tor_circuit_established
 
-      if [ ! "$tor_bootstrap_percent" = "100" ]; then
+      if [ ! "$tor_circuit_established" = "1" ]; then
          MSG="<p></b>Tor not fully bootstrapped.</b></p>
 
 <p>Possible reasons:
