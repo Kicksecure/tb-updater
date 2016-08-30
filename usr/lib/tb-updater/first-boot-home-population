@@ -33,7 +33,7 @@ shopt -s dotglob
 shopt -s nullglob
 
 for folder_name in /var/cache/tb-binary/*; do
-   sudo -u "$user_name" cp --verbose --recursive --no-clobber "$folder_name" "$home_dir"
+   sudo --non-interactive -u "$user_name" cp --verbose --recursive --no-clobber "$folder_name" "$home_dir"
 done
 
 mkdir -p "$cache_folder"

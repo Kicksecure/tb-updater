@@ -30,7 +30,7 @@ if ischroot ; then
    chroot_maybe="--is-chroot"
 fi
 
-sudo -u user \
+sudo --non-interactive -u user \
    update-torbrowser \
       $chroot_maybe \
       --postinst
