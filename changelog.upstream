@@ -1,3 +1,17 @@
+commit 4bddf7ec94360f2f8c541b14050a3d683214e825
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Oct 8 00:37:42 2016 +0200
+
+    update signing key tbb-team.asc
+    
+    (same fingerprint, new subkeys)
+
+commit 3ae0854f42dedcfd0372999a45c87863d5bbc183
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Sep 21 22:27:47 2016 +0200
+
+    bumped changelog version
+
 commit 831ceed3210022aef50bfc9b078769918f3f7f07
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Sep 21 22:26:37 2016 +0200
