@@ -29,14 +29,14 @@ curl failed.
 
 When having the anon-shared-helper-scripts package installed (recommended for
 Anonymity Distributions), Tor Browser Downloader will check, that Tor is
-enabled, that no package manager is currently running and that Tor finished
+enabled,  that no package manager is currently running and that Tor finished
 bootstrapping before download attempts.
 
 This package is produced independently of, and carries no guarantee from,
 The Tor Project.
 
 [1] https://www.whonix.org/wiki/Tor_Browser#Download_Confirmation_Screen
- [2] https://www.whonix.org/wiki/Tor_Browser#Installation_Confirmation_Screen
+[2] https://www.whonix.org/wiki/Tor_Browser#Installation_Confirmation_Screen
 
 (This package description has been [automatically](https://github.com/Whonix/whonix-developer-meta-files/blob/master/debug-steps/packaging-helper-script) extracted and mirrored from `debian/control`.)
 
@@ -89,7 +89,7 @@ gpg --export 916B8D99C38EAF5E8ADC7A2A8D66066A2EEACCDA | sudo apt-key add -
 3\. Add Whonix's APT repository.
 
 ```
-echo "deb http://sourceforge.net/projects/whonixdevelopermetafiles/files/internal/ wheezy main" > /etc/apt/sources.list.d/whonix.list
+echo "deb http://deb.whonix.org jessie main" > /etc/apt/sources.list.d/whonix.list
 ```
 
 4\. Update your package lists.
