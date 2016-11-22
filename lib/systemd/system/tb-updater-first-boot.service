@@ -5,6 +5,7 @@
 [Unit]
 Description=Copy Tor Browser from /var/cache/tb-binary to user home at First Boot Service
 Documentation=https://github.com/Whonix/tb-updater
+ConditionPathExists=!/var/run/qubes/this-is-templatevm
 
 ## Wait for bind-dirs.sh being done.
 After=qubes-mount-dirs.service
