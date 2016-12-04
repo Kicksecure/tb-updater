@@ -8,6 +8,27 @@
 ## - /usr/bin/whonixcheck
 ## - /usr/bin/torbrowser
 
+## Example https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions
+##
+## [
+## "6.0.7",
+## "6.0.7-Linux",
+## "6.0.7-MacOS",
+## "6.0.7-Windows",
+## "6.5a4",
+## "6.5a4-Linux",
+## "6.5a4-MacOS",
+## "6.5a4-Windows",
+## "6.5a4-hardened",
+## "6.5a4-hardened-Linux",
+## "6.5a5",
+## "6.5a5-Linux",
+## "6.5a5-MacOS",
+## "6.5a5-Windows",
+## "6.5a5-hardened",
+## "6.5a5-hardened-Linux"
+## ]
+
 tbbversion() {
    ## code shared between torbrowser and whonixcheck
 
@@ -43,6 +64,7 @@ tbbversion() {
    local line
    while read -r -d $'\n' line; do
       line_number="$(( $line_number + 1 ))"
+      true "line: $line"
 
       ## Check if RecommendedTBBVersions versions file is excessively long.
       if [ "$line_number" -gt "100" ]; then
@@ -66,21 +88,37 @@ Either check.torproject.org has been compromised or this is a Whonix bug."
       if [ "$TB_VERSIONS_ALPHA" = "1" ]; then
          true
       else
-         if echo "$line" | grep -q -i -s "\-alpha\-" ; then
+         if echo "$line" | grep -q -i -s "alpha" ; then
             continue
          fi
       fi
       if [ "$TB_VERSIONS_BETA" = "1" ]; then
          true
       else
-         if echo "$line" | grep -q -i -s "\-beta\-" ; then
+         if echo "$line" | grep -q -i -s "beta" ; then
             continue
          fi
       fi
       if [ "$TB_VERSIONS_RC" = "1" ]; then
          true
       else
-         if echo "$line" | grep -q -i -s "\-rc\-" ; then
+         if echo "$line" | grep -q -i -s "rc" ; then
+            continue
+         fi
+      fi
+      if [ "$TB_VERSIONS_HARDENED" = "1" ]; then
+         true
+      else
+         if echo "$line" | grep -q -i -s "hardened" ; then
+            continue
+         fi
+      fi
+      ## Does not exist yet and may never exist. Maybe it just gets hardened.
+      ## However allows us to keep the patch size small.
+      if [ "$TB_VERSIONS_SANDBOXED" = "1" ]; then
+         true
+      else
+         if echo "$line" | grep -q -i -s "sandboxed" ; then
             continue
          fi
       fi
