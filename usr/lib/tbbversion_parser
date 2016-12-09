@@ -85,43 +85,6 @@ Either check.torproject.org has been compromised or this is a Whonix bug."
          continue
       fi
 
-      if [ "$TB_VERSIONS_ALPHA" = "1" ]; then
-         true
-      else
-         if echo "$line" | grep -q -i -s "alpha" ; then
-            continue
-         fi
-      fi
-      if [ "$TB_VERSIONS_BETA" = "1" ]; then
-         true
-      else
-         if echo "$line" | grep -q -i -s "beta" ; then
-            continue
-         fi
-      fi
-      if [ "$TB_VERSIONS_RC" = "1" ]; then
-         true
-      else
-         if echo "$line" | grep -q -i -s "rc" ; then
-            continue
-         fi
-      fi
-      if [ "$TB_VERSIONS_HARDENED" = "1" ]; then
-         true
-      else
-         if echo "$line" | grep -q -i -s "hardened" ; then
-            continue
-         fi
-      fi
-      ## Does not exist yet and may never exist. Maybe it just gets hardened.
-      ## However allows us to keep the patch size small.
-      if [ "$TB_VERSIONS_SANDBOXED" = "1" ]; then
-         true
-      else
-         if echo "$line" | grep -q -i -s "sandboxed" ; then
-            continue
-         fi
-      fi
       if echo "$line" | grep -q -i -s "MacOS" ; then
          continue
       fi

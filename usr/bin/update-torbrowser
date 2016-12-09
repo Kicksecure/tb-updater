@@ -271,28 +271,6 @@ tb_parse_cmd_options() {
                TB_NO_TOR_CON_CHECK="1"
                shift 1
                ;;
-           --alpha)
-               TB_VERSIONS_ALPHA="1"
-               shift 1
-               ;;
-           --beta)
-               TB_VERSIONS_BETA="1"
-               shift 1
-               ;;
-           --rc)
-               TB_VERSIONS_RC="1"
-               shift 1
-               ;;
-           --hardened)
-               TB_VERSIONS_HARDENED="1"
-               shift 1
-               ;;
-           ## Does not exist yet and may never exist. Maybe it just gets hardened.
-           ## However allows us to keep the patch size small.
-           --sandboxed)
-               TB_VERSIONS_SANDBOXED="1"
-               shift 1
-               ;;
            --input)
                TB_INPUT="$2"
                shift 2
