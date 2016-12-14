@@ -9,6 +9,12 @@
    #source /usr/lib/pre.bsh
 #fi
 
+if [ ! "$DEBDEBUG" = "" ]; then
+   if [ "$DEBDEBUG" -ge "1" ]; then
+      set -x
+   fi
+fi
+
 set -e
 
 true "
