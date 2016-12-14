@@ -4,7 +4,12 @@
 ## Copyright (C) 2012 - 2014 Patrick Schleizer <adrelanos@riseup.net>
 ## See the file COPYING for copying conditions.
 
-#set -x
+if [ ! "$tpo_downloader_debug" = "" ]; then
+   if [ "$tpo_downloader_debug" -ge "1" ]; then
+      set -x
+   fi
+fi
+
 set -o pipefail
 set -o errtrace
 
