@@ -430,11 +430,13 @@ More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
       ## Using hardcoded version numbers when running with --postinst.
       [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
       [ -n "$tbb_use_hardcoded_version" ] || tbb_use_hardcoded_version="true"
-      if [ "$tb_user_home" = "" ]; then
-         tb_user_home="/var/cache/tb-binary"
-         tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM and from postinst. \
+      if [ "$qubes_vm_type" = "TemplateVM" ]; then
+         if [ "$tb_user_home" = "" ]; then
+            tb_user_home="/var/cache/tb-binary"
+            tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM and from postinst. \
 This is useful so you get up to date versions of Tor Browsers in newly created AppVMs inherited from updated TemplateVMs.
 More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
+         fi
       fi
    fi
 
