@@ -402,8 +402,28 @@ tb_preparation() {
 
    if command -v qubesdb-read >/dev/null 2>&1 ; then
       [ -n "$is_qubes" ] || is_qubes=true
-      ## qubesdb-read fails inside chroot, therefore overwriting with '|| true'.
+
+      if [ "$qubes_vm_type" = "" ]; then
+         ## Works since Qubes R3.2.
+         if [ -e /var/run/qubes/this-is-appvm ]; then
+            qubes_vm_type="AppVM"
+         fi
+         if [ -e /var/run/qubes/this-is-netvm ]; then
+            qubes_vm_type="NetVM"
+         fi
+         if [ -e /var/run/qubes/this-is-templatevm ]; then
+            qubes_vm_type="TemplateVM"
+         fi
+      fi
+      ## qubesdb-read fails
+      ## - inside chroot,
+      ## - perhaps during upgrades
+      ##   - https://github.com/QubesOS/qubes-issues/issues/2497
+      ##   - https://github.com/QubesOS/qubes-issues/issues/2509
+      ## therefore overwriting with '|| true'.
+      ## For Qubes R3.1 compatibility.
       [ -n "$qubes_vm_type" ] || qubes_vm_type="$(qubesdb-read /qubes-vm-type)" || true
+
    else
       [ -n "$is_qubes" ] || is_qubes=false
    fi
