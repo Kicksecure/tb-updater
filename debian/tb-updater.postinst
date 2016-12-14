@@ -26,7 +26,7 @@ true "INFO: Done with debhelper."
 mkdir --parents "/var/cache/tb-binary"
 chown --recursive user:user "/var/cache/tb-binary"
 
-if ischroot ; then
+if ischroot --default-false ; then
    chroot_maybe="--is-chroot"
 fi
 
