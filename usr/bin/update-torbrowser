@@ -483,6 +483,7 @@ More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
       if [ "$is_chroot" = "true" ]; then
          ## Running in Qubes chroot.
          [ -n "$tb_install_in_chroot" ] || tb_install_in_chroot=true
+         echo "INFO: is_chroot: $is_chroot"
       else
          [ -n "$tb_install_in_chroot" ] || tb_install_in_chroot=false
       fi
