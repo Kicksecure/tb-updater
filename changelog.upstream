@@ -1,3 +1,21 @@
+commit 0d2a7aa09217e2e292a625695bcf7f2c6870c688
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 16 17:15:49 2016 +0000
+
+    fix, set tb_install_in_chroot=true only if is_chroot=true
+
+commit 76508964b32830f0b45dea02dbf1f0ce7fe31f1b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 16 17:00:45 2016 +0000
+
+    pass environment variable tpo_downloader_debug in postinst to update-torbrowser
+
+commit ac745ce78f6667ebec6c941fc983af8fb537b793
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 16 16:19:07 2016 +0000
+
+    bumped changelog version
+
 commit 0fdd2c7f34fd117f19a18e58da2e8694b00ca944
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Dec 14 18:59:56 2016 +0000
