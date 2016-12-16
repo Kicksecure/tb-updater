@@ -1,3 +1,57 @@
+commit 0fdd2c7f34fd117f19a18e58da2e8694b00ca944
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 14 18:59:56 2016 +0000
+
+    debugging, add info if chroot is detected
+
+commit 06866ec94d1e0aa20cf6c6d83ce8f04d57487b68
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 14 18:56:57 2016 +0000
+
+    tbb_hardcoded_version="6.0.8"
+
+commit e1ded53820d7e889a60e5813aee7122eb6e57258
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 14 18:55:34 2016 +0000
+
+    set -x if tpo_downloader_debug greater or equal 1
+
+commit 46de8e4458aae98b0d6584f3fb6361f78d0076e8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 14 18:51:47 2016 +0000
+
+    set -x in postinst when DEBDEBUG is greater or equal 1
+
+commit a5cd04dfa079c6bcd4c319d4b512df98ae62f0eb
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 14 18:48:46 2016 +0000
+
+    ischroot --default-false
+    
+    https://github.com/QubesOS/qubes-issues/issues/2497
+
+commit 570ec9cab89353eacbf457e819e416831949e5e3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 14 18:07:00 2016 +0000
+
+    prefer Qubes VM type detection without using qubes-db to fix upgrade issue
+    
+    https://github.com/QubesOS/qubes-issues/issues/2497
+
+commit be4e762d0cc2a7bd9b2ad5efbc7031476c42f4a6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 14 18:46:19 2016 +0100
+
+    fix set tb_user_home="/var/cache/tb-binary" only when running in Qubes TemplateVM
+    
+    same for tb_auto_set_user_home_msg
+
+commit 7fa1306cfce6a415cd2dc5bf3eb956d58ed0f2d4
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Dec 10 02:33:27 2016 +0000
+
+    bumped changelog version
+
 commit a5bed7790f2da34c9843869b0dd43f59fad0b769
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Dec 9 22:14:40 2016 +0000
