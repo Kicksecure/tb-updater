@@ -1,3 +1,75 @@
+commit 8da29f278c989d85018e5d5385a2da40d77f637c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 14 18:59:56 2016 +0000
+
+    debugging, add info if chroot is detected
+
+commit 93e70a906e19b07a53035ea7cf7e7373e33a892e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 16 17:15:49 2016 +0000
+
+    fix, set tb_install_in_chroot=true only if is_chroot=true
+    
+    Conflicts:
+    	usr/bin/update-torbrowser
+
+commit 87f2e5c90df2a4b58d003457e21496ddf9fb2f9b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 16 17:00:45 2016 +0000
+
+    pass environment variable tpo_downloader_debug in postinst to update-torbrowser
+    
+    Conflicts:
+    	debian/tb-updater.postinst
+
+commit 06712e1cce84ec8be1d4556eeabe8e234e7c3801
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 14 18:56:57 2016 +0000
+
+    tbb_hardcoded_version="6.0.8"
+
+commit 0204e567d6b876860f07c5555d10c164fa7d24c0
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 14 18:55:34 2016 +0000
+
+    set -x if tpo_downloader_debug greater or equal 1
+
+commit 86030d68bef11ddb362bb2121c75c86e3f15f273
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 14 18:51:47 2016 +0000
+
+    set -x in postinst when DEBDEBUG is greater or equal 1
+
+commit 13c05f9b0ace163d8e0024d3ebd36018400e50dc
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 14 18:48:46 2016 +0000
+
+    ischroot --default-false
+    
+    https://github.com/QubesOS/qubes-issues/issues/2497
+
+commit b2eb34e64c143eedcb3a80e5edb54301ef666f46
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 14 18:07:00 2016 +0000
+
+    prefer Qubes VM type detection without using qubes-db to fix upgrade issue
+    
+    https://github.com/QubesOS/qubes-issues/issues/2497
+
+commit d3041885390450fcda4e1b73a2df4f93a85923bd
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 14 18:46:19 2016 +0100
+
+    fix set tb_user_home="/var/cache/tb-binary" only when running in Qubes TemplateVM
+    
+    same for tb_auto_set_user_home_msg
+
+commit 0e858c2f492648d1134157de22f906c776e45978
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 2 15:19:04 2016 +0000
+
+    bumped changelog version
+
 commit 3d191be30fe5d85b6410e6070dfb6c54cf2aa959
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Dec 2 16:16:21 2016 +0100
