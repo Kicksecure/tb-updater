@@ -37,9 +37,10 @@ if ischroot --default-false ; then
 fi
 
 sudo --non-interactive -u user \
-   update-torbrowser \
-      $chroot_maybe \
-      --postinst
+   tpo_downloader_debug="$tpo_downloader_debug" \
+      update-torbrowser \
+         $chroot_maybe \
+         --postinst
 
 true "
 #####################################################################
