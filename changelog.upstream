@@ -1,3 +1,17 @@
+commit 3fc5edf142b06af8f450aca8f0bbccf9ff3e0f62
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Dec 19 05:13:09 2016 +0100
+
+    fix, if is_chroot=true, set qubes_vm_type="TemplateVM"
+    
+    https://github.com/QubesOS/qubes-issues/issues/2520#issuecomment-267877209
+
+commit fffb39dd2800831b070b67abbd6886210ad8d9bf
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 16 18:12:45 2016 +0000
+
+    bumped changelog version
+
 commit 8da29f278c989d85018e5d5385a2da40d77f637c
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Dec 14 18:59:56 2016 +0000
