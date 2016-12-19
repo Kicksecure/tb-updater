@@ -415,6 +415,9 @@ tb_preparation() {
          if [ -e /var/run/qubes/this-is-templatevm ]; then
             qubes_vm_type="TemplateVM"
          fi
+         if [ "$is_chroot" = "true" ]; then
+            qubes_vm_type="TemplateVM"
+         fi
       fi
       ## qubesdb-read fails
       ## - inside chroot,
