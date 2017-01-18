@@ -137,6 +137,10 @@ tb_run_function() {
 }
 
 root_check() {
+   if echo "$@" | grep -q "\-\-postinst" ; then
+      return 0
+   fi
+
    if [ "$(id -u)" != "0" ]; then
       #echo "$SCRIPTNAME running as user."
       true
@@ -1817,7 +1821,7 @@ tb_sort_remote_versions() {
 }
 
 main_function() {
-   tb_run_function root_check
+   tb_run_function root_check ${1+"$@"}
    tb_run_function tb_sanity_tests
    tb_run_function tb_config_folder_parser
    tb_run_function tb_parse_cmd_options ${1+"$@"}
