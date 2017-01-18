@@ -1,3 +1,17 @@
+commit 061716fe2307b6dfd5449c44e8bb0c81539fc716
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 18 14:26:37 2017 +0000
+
+    no longer run under user 'user' in postinst, run as root
+    
+    because running as user 'user' is broken in Debian stretch
+
+commit e5e05f5aaeeb001e2563002a716d37f824e73108
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jan 15 15:36:24 2017 +0000
+
+    bumped changelog version
+
 commit bc9708dd49038c9bdc82a09deaa39a38c93b488f
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun Jan 15 08:35:42 2017 +0100
