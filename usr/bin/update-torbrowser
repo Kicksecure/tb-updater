@@ -401,9 +401,78 @@ tb_config_folder_parser() {
    done
 }
 
+tb_settings_chroot_common() {
+   ## Do not run in chroot if tb_install_in_chroot=false.
+   if [ ! "$tb_install_in_chroot" = "false" ]; then
+      [ -n "$tb_updater_run" ] || tb_updater_run=true
+   fi
+   ## Fail closed, if there was an error.
+   [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=closed
+   ## Skip Tor connectivity check when running inside chroot.
+   [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
+   ## Hack to disable using proxy settings when running inside chroot.
+   ## We are using --fail anyhow. No problem to duplicate it.
+   [ -n "$CURL_PROXY" ] || CURL_PROXY="--fail"
+}
+
+tb_settings_postinst_common() {
+   ## Skip update [version] confirmation messages when running with
+   ## --postinst, because we will be using hardcoded version numbers.
+   [ -n "$tb_confirm_update_skip" ] || tb_confirm_update_skip=true
+   ## Skip installation confirmation messages when running with
+   ## --postinst, because we will be using hardcoded version numbers.
+   ## Downgrade / free attacks should not be possible, because file names
+   ## that include the version number will be verified from the gpg verified
+   ## sha256sum sums file.
+   [ -n "$tb_confirm_installation_skip" ] || tb_confirm_installation_skip=true
+
+   [ -n "$NOKILLTB" ] || NOKILLTB="1"
+   [ -n "$noaskstart" ] || noaskstart="true"
+   [ -n "$TB_INPUT" ] || TB_INPUT="none"
+   ## Use export so it can be read by CURL_PRGRS.
+   [ -n "$TB_USE_MSGCOLLECTOR" ] || export TB_USE_MSGCOLLECTOR="false"
+   ## Using hardcoded version numbers when running with --postinst.
+   [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
+   [ -n "$tbb_use_hardcoded_version" ] || tbb_use_hardcoded_version="true"
+
+   ## Fail open, if there was an error.
+   [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=open
+}
+
+tb_settings_qubes_postinst_templatevm() {
+   ## Do not run during Qubes TempalteVM postinst if tb_install_follow=false.
+   if [ ! "$tb_install_follow" = "false" ]; then
+      [ -n "$tb_updater_run" ] || tb_updater_run=true
+   fi
+   if [ "$tb_user_home" = "" ]; then
+      tb_user_home="/var/cache/tb-binary"
+      tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM and from postinst. \
+This is useful so you get up to date versions of Tor Browsers in newly created AppVMs inherited from updated TemplateVMs.
+More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
+   fi
+}
+
+tb_settings_qubes_manual_run_templatevm() {
+   [ -n "$tb_updater_run" ] || tb_updater_run=true
+   if [ "$tb_user_home" = "" ]; then
+      tb_user_home="/var/cache/tb-binary"
+      tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM but not run from postinst. \
+This is useful so you get up to date versions of Tor Browsers in newly created AppVMs inherited from updated TemplateVMs.
+More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
+   fi
+}
+
+tb_settings_manual_run_common() {
+   [ -n "$tb_updater_run" ] || tb_updater_run=true
+}
+
 tb_preparation() {
    ## sets: tbb_hardcoded_version
    source /usr/share/tb-updater/tbb_hardcoded_version
+
+   if [ ! "$tb_postinst" = "true" ]; then
+      [ -n "$tb_manual_run" ] || tb_manual_run=true
+   fi
 
    if command -v qubesdb-read >/dev/null 2>&1 ; then
       [ -n "$is_qubes" ] || is_qubes=true
@@ -436,43 +505,32 @@ tb_preparation() {
       [ -n "$is_qubes" ] || is_qubes=false
    fi
 
-   ## Debugging.
-   #qubes_vm_type=TemplateVM
-   #is_chroot="true"
-   #TB_NO_TOR_CON_CHECK="1"
-   #CURL_PROXY="--fail"
-
-   if [ "$qubes_vm_type" = "TemplateVM" ]; then
-      if [ "$tb_postinst" = "" ]; then
-         if [ "$tb_user_home" = "" ]; then
-            tb_user_home="/var/cache/tb-binary"
-            tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM but not run from postinst. \
-This is useful so you get up to date versions of Tor Browsers in newly created AppVMs inherited from updated TemplateVMs.
-More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
-         fi
-      fi
+   if [ "$is_chroot" = "true" ]; then
+      tb_settings_chroot_common
    fi
-
    if [ "$tb_postinst" = "true" ]; then
-      [ -n "$NOKILLTB" ] || NOKILLTB="1"
-      [ -n "$noaskstart" ] || noaskstart="true"
-      [ -n "$TB_INPUT" ] || TB_INPUT="none"
-      ## Use export so it can be read by CURL_PRGRS.
-      [ -n "$TB_USE_MSGCOLLECTOR" ] || export TB_USE_MSGCOLLECTOR="false"
-      ## Using hardcoded version numbers when running with --postinst.
-      [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
-      [ -n "$tbb_use_hardcoded_version" ] || tbb_use_hardcoded_version="true"
+      tb_settings_postinst_common
       if [ "$qubes_vm_type" = "TemplateVM" ]; then
-         if [ "$tb_user_home" = "" ]; then
-            tb_user_home="/var/cache/tb-binary"
-            tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM and from postinst. \
-This is useful so you get up to date versions of Tor Browsers in newly created AppVMs inherited from updated TemplateVMs.
-More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
-         fi
+         tb_settings_qubes_postinst_templatevm
       fi
    fi
 
-   [ -n "$tb_user_home" ] || tb_user_home=~
+   if [ "$tb_manual_run" = "true" ]; then
+      tb_settings_manual_run_common
+      if [ "$qubes_vm_type" = "TemplateVM" ]; then
+         tb_settings_qubes_manual_run_templatevm
+      fi
+   fi
+
+   if [ "$tb_user_home" = "" ]; then
+      tb_user_home=~
+      ## In case of running as root from postinst.
+      if [ "$tb_user_home" = "/root" ]; then
+         tb_user_home="/var/cache/tb-binary"
+         tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running as root."
+      fi
+   fi
+
    [ -n "$tb_home_folder" ] || tb_home_folder="$tb_user_home/.tb"
    [ -n "$tb_browser_folder" ] || tb_browser_folder="$tb_home_folder/tor-browser"
    [ -n "$tb_cache_folder" ] || tb_cache_folder="$tb_user_home/.cache/tb"
@@ -481,61 +539,11 @@ More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
    [ -n "$tb_gpg_tmp_dir" ] || tb_gpg_tmp_dir="$tb_cache_folder/gpgtmpdir"
    [ -n "$tb_extract_temp_folder" ] || tb_extract_temp_folder="$tb_cache_folder/tor-browser"
 
-   if [ "$is_qubes" = "true" ]; then
-      ## Running in Qubes.
-      if [ "$is_chroot" = "true" ]; then
-         ## Running in Qubes chroot.
-         [ -n "$tb_install_in_chroot" ] || tb_install_in_chroot=true
-         echo "INFO: is_chroot: $is_chroot"
-      else
-         [ -n "$tb_install_in_chroot" ] || tb_install_in_chroot=false
-      fi
-      if [ "$qubes_vm_type" = "TemplateVM" ]; then
-         ## Running inside Qubes TempalteVM.
-         [ -n "$tb_install_follow" ] || tb_install_follow=true
-      else
-         [ -n "$tb_install_follow" ] || tb_install_follow=false
-      fi
-   else
-      ## Running in Non-Qubes-Whonix.
-      if [ "$is_chroot" = "true" ]; then
-         [ -n "$tb_install_in_chroot" ] || tb_install_in_chroot=true
-      fi
-      [ -n "$tb_install_follow" ] || tb_install_follow=false
+   if [ ! "$tb_updater_run" = "true" ]; then
+      tb_exit_function 0
    fi
 
    if [ "$tb_postinst" = "true" ]; then
-      ## running with --postinst
-      if [ "$tb_install_in_chroot" = "true" ]; then
-         [ -n "$tb_updater_run" ] || tb_updater_run=true
-         ## Fail closed, if there was an error.
-         [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=closed
-         ## Skip Tor connectivity check when running inside chroot.
-         [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
-         ## Hack to disable using proxy settings when running inside chroot.
-         ## We are using --fail anyhow. No problem to duplicate it.
-         [ -n "$CURL_PROXY" ] || CURL_PROXY="--fail"
-      fi
-
-      if [ "$tb_install_follow" = "true" ]; then
-         [ -n "$tb_updater_run" ] || tb_updater_run=true
-         ## Fail open, if there was an error.
-         [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=open
-      fi
-      if [ ! "$tb_updater_run" = "true" ]; then
-         tb_exit_function 0
-      fi
-
-      ## Skip update [version] confirmation messages when running with
-      ## --postinst, because we will be using hardcoded version numbers.
-      [ -n "$tb_confirm_update_skip" ] || tb_confirm_update_skip=true
-      ## Skip installation confirmation messages when running with
-      ## --postinst, because we will be using hardcoded version numbers.
-      ## Downgrade / free attacks should not be possible, because file names
-      ## that include the version number will be verified from the gpg verified
-      ## sha256sum sums file.
-      [ -n "$tb_confirm_installation_skip" ] || tb_confirm_installation_skip=true
-
       ## Being careful with deletion.
       if [ "$tb_browser_folder" = "/var/cache/tb-binary/.tb/tor-browser" ]; then
          echo "rm -r -f '$tb_browser_folder'"
