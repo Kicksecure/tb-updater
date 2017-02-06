@@ -1,3 +1,24 @@
+commit 5a911e3bf95feea66f8603dfadf2f2b7d4ac3d32
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Feb 3 21:09:59 2017 +0100
+
+    fix permission issue resulting from requirement to run tb-updater as root
+    
+    from postinst since Debian stretch
+    
+    refactor settings detection code to make it more understandable
+    
+    This also prevents /home/user/.cache being owned by root, which causes various
+    follow up issues such as a broken KDE kickoff (start menu).
+    
+    https://forums.whonix.org/t/whonix-13-0-0-1-4-developers-only
+
+commit 8cd410bc93ef9d859dc22340804ff864a21d39e1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jan 18 14:33:10 2017 +0000
+
+    bumped changelog version
+
 commit 061716fe2307b6dfd5449c44e8bb0c81539fc716
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Jan 18 14:26:37 2017 +0000
