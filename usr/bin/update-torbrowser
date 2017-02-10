@@ -1810,7 +1810,7 @@ tb_sort_remote_versions() {
    ## 2.3.25-15
 
    ## Choose lowest version number for default file download. Only used for TB_FORCE_INSTALL.
-   read -r tbb_default_download_version _ <<< "$tbb_recommended_versions_list"
+   read -r -t 2 tbb_default_download_version _ <<< "$tbb_recommended_versions_list"
 
    ## Thanks to:
    ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
