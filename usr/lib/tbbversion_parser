@@ -62,7 +62,7 @@ tbbversion() {
    local line_number
    line_number="0"
    local line
-   while read -r -d $'\n' line; do
+   while read -r -t 2 -d $'\n' line; do
       line_number="$(( $line_number + 1 ))"
       true "line: $line"
 
