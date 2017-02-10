@@ -525,7 +525,7 @@ tb_preparation() {
    if [ "$tb_user_home" = "" ]; then
       tb_user_home=~
       ## In case of running as root from postinst.
-      if [ "$tb_user_home" = "/root" ]; then
+      if [ "$tb_user_home" = "/root" ] || [ "$(whoami)" = "root" ]; then
          tb_user_home="/var/cache/tb-binary"
          tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running as root."
       fi
