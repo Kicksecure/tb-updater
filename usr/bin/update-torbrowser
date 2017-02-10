@@ -1083,7 +1083,7 @@ To update Tor Browser inside existing TemplateBasedVMs, please update Tor Browse
          if [ "$TB_INPUT" = "stdin" ]; then
             output_echo_only "QUESTION: $question
 n/${tbb_recommended_versions_slash_separated}?"
-            read answer
+            read -r answer
             if [ "$answer" = "n" ] || [ "$answer" = "" ]; then
                output_echo_only "INFO: Canceled. Exit."
                tb_exit_function 10
@@ -1495,7 +1495,7 @@ $gpg_bash_lib_output_gpg_verify_output_br_added</p>
       if [ "$TB_INPUT" = "stdin" ]; then
          output_echo_only "QUESTION: $question
 y/n?"
-         read answer
+         read -r answer
          if [ ! "$answer" = "y" ]; then
             output_echo_only "INFO: Canceled. Exit."
             tb_exit_function 14
@@ -1762,7 +1762,7 @@ Skipping question to start Tor Browser."
    if [ "$TB_INPUT" = "stdin" ]; then
       output_echo_only "QUESTION: $question
 y/n?"
-      read answer
+      read -r answer
       if [ ! "$answer" = "y" ]; then
          output_echo_only "INFO: Canceled starting Tor Browser, ok."
       else
