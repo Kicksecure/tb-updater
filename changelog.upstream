@@ -1,3 +1,15 @@
+commit 548823321da8dd47c7cc7f4c5c0b3082d425d1ff
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Feb 24 23:29:16 2017 +0100
+
+    tbb_hardcoded_version="6.5"
+
+commit 42124646d47e84e92a0d52d526806dcc96315605
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Dec 19 04:16:43 2016 +0000
+
+    bumped changelog version
+
 commit 3fc5edf142b06af8f450aca8f0bbccf9ff3e0f62
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Dec 19 05:13:09 2016 +0100
@@ -25,7 +37,7 @@ Date:   Fri Dec 16 17:15:49 2016 +0000
     fix, set tb_install_in_chroot=true only if is_chroot=true
     
     Conflicts:
-    	usr/bin/update-torbrowser
+            usr/bin/update-torbrowser
 
 commit 87f2e5c90df2a4b58d003457e21496ddf9fb2f9b
 Author: Patrick Schleizer <adrelanos@riseup.net>
@@ -34,7 +46,7 @@ Date:   Fri Dec 16 17:00:45 2016 +0000
     pass environment variable tpo_downloader_debug in postinst to update-torbrowser
     
     Conflicts:
-    	debian/tb-updater.postinst
+            debian/tb-updater.postinst
 
 commit 06712e1cce84ec8be1d4556eeabe8e234e7c3801
 Author: Patrick Schleizer <adrelanos@riseup.net>
