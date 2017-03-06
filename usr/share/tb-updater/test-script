@@ -25,7 +25,7 @@ export CURL_FORCE_SSL=" "
 
 ## Using --ordinary because curl-prgrs does not work with local files.
 if [ -o xtrace ]; then
-   bash -x ./usr/bin/update-torbrowser --ordinary ${1+"$@"}
+   bash -x ./usr/bin/update-torbrowser --ordinary "$@"
 else
-   ./usr/bin/update-torbrowser --ordinary ${1+"$@"}
+   ./usr/bin/update-torbrowser --ordinary "$@"
 fi
