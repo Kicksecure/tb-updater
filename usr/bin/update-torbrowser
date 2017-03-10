@@ -112,7 +112,8 @@ tb_error_handler() {
 
 trap "tb_error_handler" ERR
 
-DOWNLOAD_FAIL_HELP="<p>Possible reasons:</p>
+download_fail_help_set() {
+   DOWNLOAD_FAIL_HELP="<p>Possible reasons:</p>
 <p>
 <br></br>- The download server is down.
 <br></br>- File size exceeded (endless data attack triggered).
@@ -124,6 +125,7 @@ DOWNLOAD_FAIL_HELP="<p>Possible reasons:</p>
 <br></br>- Check News: <a href=https://www.whonix.org/wiki/Stay_Tuned>https://www.whonix.org/wiki/Stay_Tuned</a>
 <br></br>- Manually update: <a href=https://www.whonix.org/wiki/Manually_Updating_Tor_Browser>https://www.whonix.org/wiki/Manually_Updating_Tor_Browser</a>
 </p>"
+}
 
 tb_run_function() {
    case $tb_skip_functions in
@@ -895,6 +897,7 @@ tb_remote_version_parser() {
 
 tb_remote_version_sanity_test() {
    if [ "$tbb_recommended_versions_list" = "UNKNOWN" ]; then
+      download_fail_help_set
       local MSG="<p>$installed_or_not_text</p>
 
 <p>Could not find out latest Tor Browser version! $tbb_recommended_versions_error</p>
@@ -1198,6 +1201,7 @@ $tb_notify_details"
 
    ## Check if curl failed.
    if [ ! "$curl_exit_code" = "0" ]; then
+      download_fail_help_set
       MSG="<p>Failed to download: $curl_download_target_url</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>
@@ -1378,6 +1382,7 @@ tb_hash_verify() {
       return 0
    fi
 
+   download_fail_help_set
    output_echo_only "ERROR: Hash check failed! (tb_sha_exit_code: $tb_sha_exit_code) Exiting." >&2
    local MSG="<p><b>Hash could NOT be verified. (tb_sha_exit_code: $tb_sha_exit_code)</b>
 
