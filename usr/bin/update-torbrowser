@@ -1657,6 +1657,9 @@ tb_patch() {
 }
 
 tb_move_old_version() {
+   shopt -s nullglob
+   local keep_counter
+
    if [ "$TB_NO_MOVE_OLD_VERSION" = "true" ]; then
       true "INFO: Skipping $FUNCNAME, because TB_NO_MOVE_OLD_VERSION is 'true', ok."
       return 0
@@ -1666,6 +1669,28 @@ tb_move_old_version() {
       output_echo_only "INFO: Moving old folder $tb_browser_folder..."
       mv "$tb_browser_folder" "$tb_browser_folder.old.$(date '+%F-%H:%M:%S')"
    fi
+
+   if [ -z "$TB_KEEP_OLD_VERSIONS_COUNT" ]; then
+      TB_KEEP_OLD_VERSIONS_COUNT=3
+   fi
+   if [ "$TB_KEEP_OLD_VERSIONS_COUNT" = "all" ]; then
+      true "INFO: Keeping all old versions because TB_KEEP_OLD_VERSIONS_COUNT set to 'all', ok."
+      return 0
+   fi
+
+   keep_count="$TB_KEEP_OLD_VERSIONS_COUNT"
+
+   for old_folder in $(ls -r "$tb_browser_folder.old."*); do
+      if ! [ -d "$old_folder" ]; then
+         continue
+      fi
+      if [ "$keep_count" -eq 0 ]; then
+         output_echo_only "INFO: Removing '$old_folder'"
+         rm -rf "$old_folder"
+      else
+         ((keep_count--))
+      fi
+   done
 }
 
 tb_install() {
