@@ -1,3 +1,29 @@
+commit 9bfd4539757f82ec151c2268434fd047f89eecc1
+Author: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+Date:   Sat Aug 12 12:29:40 2017 +0200
+
+    Remove old versions of tor-browser
+    
+    Do not accumulate them indefinitely. By default keep last 3 versions -
+    when user have made some customization, he/she will be able to migrate
+    them to newer version. This limit is customizable with
+    TB_KEEP_OLD_VERSIONS_COUNT - set it either to a number of previous
+    versions to keep, or "all" to keep them all (previous behaviour).
+    
+    Fixes https://phabricator.whonix.org/T671
+
+commit b03e75f2af0b38fc4220e7f11f4cde3e1cd22bc5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Aug 15 15:10:27 2017 +0200
+
+    tbb_hardcoded_version="7.0.4"
+
+commit 14dc4e019833c034ae6ad30557cb8230d90ec8d8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jun 7 23:28:00 2017 +0000
+
+    bumped changelog version
+
 commit dc0e43c0168dce9f344c064c6c7dd03cf5cec5ff
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Jun 7 23:26:49 2017 +0000
