@@ -1,3 +1,21 @@
+commit a3ad03574aed014b7f7378b26554507dc95a8480
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Aug 24 11:15:56 2017 +0200
+
+    fix tb_move_old_version ls -tdr
+
+commit db5c0455c87cb7c42f27895038d9788ab5def2c9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Aug 24 11:01:04 2017 +0200
+
+    tb_move_old_version fix ls -dr
+
+commit 052aa2632cba8bf3103bac5d535f950c071c82dc
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Aug 15 14:06:33 2017 +0000
+
+    bumped changelog version
+
 commit 9bfd4539757f82ec151c2268434fd047f89eecc1
 Author: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
 Date:   Sat Aug 12 12:29:40 2017 +0200
