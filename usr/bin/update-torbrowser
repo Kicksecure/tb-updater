@@ -1709,7 +1709,7 @@ tb_move_old_version() {
 
    keep_count="$TB_KEEP_OLD_VERSIONS_COUNT"
 
-   for old_folder in $(ls -tdr "$tb_browser_folder.old."*); do
+   for old_folder in $(ls -dr "$tb_browser_folder.old."*); do
       if ! [ -d "$old_folder" ]; then
          continue
       fi
