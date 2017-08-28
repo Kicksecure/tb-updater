@@ -1,3 +1,15 @@
+commit 9e3a449691ea34007414cca27c139f2ff6b87e28
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Aug 28 10:44:56 2017 +0000
+
+    fix tb_move_old_version ls -dr
+
+commit d37971403f221d00e92811489ed3fbb56c10557e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Aug 24 11:00:23 2017 +0000
+
+    bumped changelog version
+
 commit a3ad03574aed014b7f7378b26554507dc95a8480
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Aug 24 11:15:56 2017 +0200
