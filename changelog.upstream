@@ -1,3 +1,63 @@
+commit 6b4811ec346863b17e221603c28954c86bc78078
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Aug 28 10:44:56 2017 +0000
+
+    fix tb_move_old_version ls -dr
+
+commit d2f7486f3ca860e3f8a6e2e3e640184076c6cc1f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Aug 24 11:15:56 2017 +0200
+
+    fix tb_move_old_version ls -tdr
+
+commit 0ed49937689b108d6821e175021035e85e2c354c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Aug 24 11:01:04 2017 +0200
+
+    tb_move_old_version fix ls -dr
+
+commit e4ddbf0df04fbb7c21975d513c1419fe174bdaf7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Aug 15 15:10:27 2017 +0200
+
+    tbb_hardcoded_version="7.0.4"
+
+commit c6341a828fe1e18eb0a18ebd468087649ac881a4
+Merge: 29bdd17 e01fab8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Aug 15 15:09:12 2017 +0200
+
+    Merge remote-tracking branch 'origin/master'
+
+commit e01fab86ff5c4f60e925d706244d2e1c9fe8253b
+Merge: 29bdd17 6363982
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Aug 15 15:06:27 2017 +0200
+
+    Merge pull request #1 from marmarek/update-cleanup
+    
+    Remove old versions of tor-browser
+
+commit 63639829065b52f20880f027f75aa298d0174f8f
+Author: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+Date:   Sat Aug 12 12:29:40 2017 +0200
+
+    Remove old versions of tor-browser
+    
+    Do not accumulate them indefinitely. By default keep last 3 versions -
+    when user have made some customization, he/she will be able to migrate
+    them to newer version. This limit is customizable with
+    TB_KEEP_OLD_VERSIONS_COUNT - set it either to a number of previous
+    versions to keep, or "all" to keep them all (previous behaviour).
+    
+    Fixes https://phabricator.whonix.org/T671
+
+commit 29bdd1750ea9e9017a3f174697f37ee54253e5f6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 29 14:21:52 2017 +0000
+
+    bumped changelog version
+
 commit 72661b9cb92b15ce06229b34ce2b977ea6629c37
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat Jul 29 16:15:25 2017 +0200
