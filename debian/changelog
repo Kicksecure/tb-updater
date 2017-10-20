@@ -1,3 +1,9 @@
+tb-updater (3:3.7.19-1) unstable; urgency=medium
+
+  * New upstream version (local package).
+
+ -- Patrick Schleizer <adrelanos@riseup.net>  Fri, 20 Oct 2017 14:05:38 +0000
+
 tb-updater (3:3.7.18-1) unstable; urgency=medium
 
   * New upstream version (local package).

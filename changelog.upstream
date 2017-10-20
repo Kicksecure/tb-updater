@@ -1,3 +1,30 @@
+commit e3ac6e23c954c99885b1710cfe3ecfc1e7c49bac
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Oct 20 15:48:57 2017 +0200
+
+    Skip Tor connectivity check when running inside Qubes TempalteVM,
+    because since Qubes R4 TemplateVMs are non-networked by default.
+
+commit 229efa817cda7e468994a6bb77cbacdae1fe473a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Oct 20 15:37:40 2017 +0200
+
+    tbb_hardcoded_version="7.0.6"
+
+commit 20707be7d474ec6181343d0626e503841c0b839b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Oct 20 15:35:08 2017 +0200
+
+    tb-updater Qubes R4 qrexec based updates proxy compatibility fix
+    
+    https://phabricator.whonix.org/T491
+
+commit ec1700403e1198bc2b0c2fa9b1c7d26fd401b73e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Aug 28 10:47:11 2017 +0000
+
+    bumped changelog version
+
 commit 9e3a449691ea34007414cca27c139f2ff6b87e28
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Aug 28 10:44:56 2017 +0000
