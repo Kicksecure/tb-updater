@@ -692,7 +692,10 @@ More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
       [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
       if [ "$qubes_vm_type" = "TemplateVM" ]; then
          ## Use Qubes updates proxy.
-         [ -n "$CURL_PROXY" ] || CURL_PROXY="--proxy http://10.137.255.254:8082"
+         if [ "$CURL_PROXY" = "" ]; then
+            source /usr/lib/qubes-whonix/utility_functions.sh
+            CURL_PROXY="--proxy $PROXY_SERVER"
+         fi
       else
          [ -n "$CURL_PROXY" ] || CURL_PROXY="--proxy socks5h://user:password@$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD"
       fi
