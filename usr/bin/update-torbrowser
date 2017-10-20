@@ -441,6 +441,12 @@ tb_settings_postinst_common() {
    [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=open
 }
 
+tb_settings_qubes_common_templatevm() {
+   ## Skip Tor connectivity check when running inside Qubes TempalteVM,
+   ## because since Qubes R4 TemplateVMs are non-networked by default.
+   [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
+}
+
 tb_settings_qubes_postinst_templatevm() {
    ## Do not run during Qubes TempalteVM postinst if tb_install_follow=false.
    if [ ! "$tb_install_follow" = "false" ]; then
@@ -510,6 +516,11 @@ tb_preparation() {
    if [ "$is_chroot" = "true" ]; then
       tb_settings_chroot_common
    fi
+
+   if [ "$qubes_vm_type" = "TemplateVM" ]; then
+      tb_settings_qubes_common_templatevm
+   fi
+
    if [ "$tb_postinst" = "true" ]; then
       tb_settings_postinst_common
       if [ "$qubes_vm_type" = "TemplateVM" ]; then
