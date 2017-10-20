@@ -492,6 +492,9 @@ More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
       fi
       if [ "$qubes_vm_type" = "TemplateVM" ]; then
          ## Running inside Qubes TempalteVM.
+         ## Skip Tor connectivity check when running inside Qubes TempalteVM,
+         ## because since Qubes R4 TemplateVMs are non-networked by default.
+         [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
          [ -n "$tb_install_follow" ] || tb_install_follow=true
       else
          [ -n "$tb_install_follow" ] || tb_install_follow=false
