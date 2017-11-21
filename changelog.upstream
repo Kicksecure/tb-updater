@@ -1,3 +1,28 @@
+commit 9362faf0d751c907b94b99c3f6a063c535943c8e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Nov 21 22:55:34 2017 +0000
+
+    tbb_hardcoded_version="7.1.0"
+
+commit 0b6d94af7fe567e72244bd19e39bbe8e6241fb56
+Merge: 522ea49 a4e27d8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Nov 21 22:54:51 2017 +0000
+
+    Merge remote-tracking branch 'origin/master'
+
+commit 522ea49ef18ab0804492fbdbb4aad932e2745e84
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Nov 21 22:52:38 2017 +0000
+
+    bumped changelog version
+
+commit a4e27d8904d68ae4a17e18b1b844bbf11be17c91
+Author: Jason J. Ayala P <JasonJAyalaP+Github@Gmail.com>
+Date:   Wed Nov 8 20:54:00 2017 -0600
+
+    Update tbb_hardcoded_version
+
 commit f331f2b3073743f0a6e1f21a53415e068563be43
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Oct 20 15:54:30 2017 +0200
