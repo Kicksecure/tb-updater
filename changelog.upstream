@@ -1,3 +1,17 @@
+commit 49a23475915e809b9a58403181fb0218d349952d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 15 18:13:59 2017 +0000
+
+    first-boot-home-population: avoid running in Qubes DVM Template
+    
+    https://phabricator.whonix.org/T726
+
+commit ba25d76e8b52fb370a30dfad72222e92f88abd99
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Nov 21 22:56:13 2017 +0000
+
+    bumped changelog version
+
 commit 9362faf0d751c907b94b99c3f6a063c535943c8e
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Nov 21 22:55:34 2017 +0000
