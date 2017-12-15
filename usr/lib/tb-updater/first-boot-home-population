@@ -16,6 +16,13 @@ fi
 
 if command -v qubesdb-read >/dev/null 2>&1 ; then
    qubes_vm_type="$(qubesdb-read /qubes-vm-type)"
+   qubes_vm_name="$(qubesdb-read /name)"
+fi
+
+## Avoid running in Qubes DVM Template.
+## https://phabricator.whonix.org/T726
+if echo "$qubes_vm_name" | grep -q "\-dvm" ; then
+   exit 0
 fi
 
 if [ "$qubes_vm_type" = "TemplateVM" ]; then
