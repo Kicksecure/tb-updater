@@ -1,3 +1,15 @@
+commit 7551231f69947c038ea287cf6e4bb26cf153a8db
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 6 18:06:17 2018 +0000
+
+    update connectivity check url
+
+commit 5d470c0d313c8f27fceadba527db3641fa4b3a22
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Dec 16 21:47:18 2017 +0000
+
+    bumped changelog version
+
 commit 5250c8ff791e6c871d03d5d59578e4d57773acd3
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat Dec 16 21:46:44 2017 +0000
