@@ -831,7 +831,7 @@ tb_connectivity_checks_curl() {
    export CURL_OUT_FILE="$tb_temp_folder/tbb_remote_folder"
    rm -f "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_connectivity_checks_curl"
-   curl_download_target_url="$TBB_REMOTE_FOLDER"
+   curl_download_target_url="$TBB_REMOTE_FOLDER/"
    tb_download_common_exit_on_fail="false"
    tb_download_common
 
