@@ -1,3 +1,21 @@
+commit 998ab907177195db61cf833bf7cf3da2de35656b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jan 7 21:43:24 2018 +0000
+
+    fix connectivity check
+
+commit 6bdfed0a3bcc47879b30eb3df273f673fc1a3e17
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jan 7 21:36:16 2018 +0000
+
+    fix DNS resolution inside Qubes chroot
+
+commit 1d6c8ef90c1d4a8832b89642d2a419e4204cc2f7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jan 6 18:07:20 2018 +0000
+
+    bumped changelog version
+
 commit 7551231f69947c038ea287cf6e4bb26cf153a8db
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat Jan 6 18:06:17 2018 +0000
