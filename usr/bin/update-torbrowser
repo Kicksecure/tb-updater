@@ -415,6 +415,13 @@ tb_settings_chroot_common() {
    ## Hack to disable using proxy settings when running inside chroot.
    ## We are using --fail anyhow. No problem to duplicate it.
    [ -n "$CURL_PROXY" ] || CURL_PROXY="--fail"
+
+   if [ -f "/etc/resolv.conf.anondist" ]; then
+      LD_PRELOAD+=" libresolv_wrapper.so"
+      RESOLV_WRAPPER_CONF="/etc/resolv.conf.anondist"
+      RESOLV_WRAPPER_DEBUGLEVEL=4
+      export LD_PRELOAD RESOLV_WRAPPER_CONF RESOLV_WRAPPER_DEBUGLEVEL
+   fi
 }
 
 tb_settings_postinst_common() {

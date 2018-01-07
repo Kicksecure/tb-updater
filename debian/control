@@ -15,7 +15,7 @@ Standards-Version: 3.9.8
 Package: tb-updater
 Architecture: all
 Depends: msgcollector, curl, psmisc, gpg-bash-lib, pv, bsdtar,
- sudo, ${misc:Depends}
+ sudo, libresolv-wrapper, ${misc:Depends}
 Recommends: tb-starter, anon-icon-pack, anon-shared-helper-scripts,
  curl-scripts
 Suggests: tb-default-browser, open-link-confirmation
