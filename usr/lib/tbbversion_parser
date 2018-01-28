@@ -171,4 +171,10 @@ tbbversion_installed() {
 
    ## TODO: https://phabricator.whonix.org/T400
    tbb_locally_installed_version="Installed. (Folder <code>$tbb_folder</code> exists.) Locally installed Tor Browser version detection not implemented."
+
+#    tbb_locally_installed_version="$(cat "$tbb_folder/Browser/TorBrowser/Data/Browser/profile.default/prefs.js")" || true
+#    tbb_locally_installed_version="$(echo "$tbb_locally_installed_version" | grep "browser.startup.homepage_override.torbrowser.version")"
+#
+#    tbb_locally_installed_version="$(echo "$tbb_locally_installed_version" | sed 's/user_pref("browser.startup.homepage_override.torbrowser.version", "//g')" || true
+#    tbb_locally_installed_version="$(echo "$tbb_locally_installed_version" | sed 's/user_pref("");//g')" || true
 }
