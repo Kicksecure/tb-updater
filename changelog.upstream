@@ -1,3 +1,51 @@
+commit d514fc9e977acf400dab3fa9a2007cf9944beb14
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 29 15:57:58 2018 +0000
+
+    tbb_hardcoded_version="7.5"
+
+commit f3fa00bdb44d9eb87e21b43119575f56eceef8d2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 29 15:50:38 2018 +0000
+
+    readme
+
+commit 7d345a421aadc2d212d5de83ed410d86f16fb0b2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 29 15:38:59 2018 +0000
+
+    update copyright
+
+commit fe8a5dd478734574b17ce6a928465e26d34623a2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 29 15:22:08 2018 +0000
+
+    update copyright
+
+commit 4d2a74c5b1fc87540454156b02ac0111d4f78200
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 29 15:15:20 2018 +0000
+
+    update copyright
+
+commit 44a63a97c4995bb0b0c04c8f121a99880d63251c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jan 29 15:09:45 2018 +0000
+
+    update copyright
+
+commit 2211bb56f441013d7d72f42297b7c2af6c6127a1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jan 28 23:11:44 2018 +0000
+
+    comment
+
+commit 13adaded09ac7f68cabcf8e1a1f95a2579f31246
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jan 7 21:44:55 2018 +0000
+
+    bumped changelog version
+
 commit 998ab907177195db61cf833bf7cf3da2de35656b
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun Jan 7 21:43:24 2018 +0000
