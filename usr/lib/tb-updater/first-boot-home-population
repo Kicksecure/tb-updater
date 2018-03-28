@@ -6,7 +6,9 @@
 set -e
 set -x
 
-cache_folder="/var/cache/tb-updater"
+user_name="user"
+home_dir="/home/$user_name"
+cache_folder="$home_dir/.tb"
 done_file="$cache_folder/first-boot-home-population.done"
 
 if [ -e "$done_file" ]; then
@@ -28,9 +30,6 @@ if [ "$qubes_vm_type" = "TemplateVM" ]; then
    exit 0
 fi
 
-user_name="user"
-home_dir="/home/$user_name"
-
 if [ ! -d "$home_dir" ]; then
    exit 0
 fi
@@ -48,3 +47,4 @@ done
 
 mkdir -p "$cache_folder"
 touch "$done_file"
+chown --recursive "$user_name:$user_name" "$cache_folder"
