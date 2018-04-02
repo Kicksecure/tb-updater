@@ -1,3 +1,23 @@
+commit 8a923d959fb2c0a3e2a4af554cfb2decef0dfa91
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Mar 28 14:01:17 2018 +0200
+
+    move done_file to home folder
+    
+    https://github.com/Whonix/tb-updater/issues/2
+
+commit 436307b6ceeb71d1ed017037aff105fc1e6a1c04
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Mar 28 13:38:05 2018 +0200
+
+    tbb_hardcoded_version="7.5.3"
+
+commit 1766f0222e6502f5b43d9e4938a64ca8a24b500d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Feb 1 15:23:12 2018 +0000
+
+    bumped changelog version
+
 commit d514fc9e977acf400dab3fa9a2007cf9944beb14
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Jan 29 15:57:58 2018 +0000
