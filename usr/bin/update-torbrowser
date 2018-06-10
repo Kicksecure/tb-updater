@@ -304,9 +304,9 @@ tb_parse_cmd_options() {
                ## browser itself.
                tb_install_folder="i2pb"
                tb_install_folder_dot=".i2pb"
-               tb_proxy_name="i2p"
                tb_browser_name="i2p-browser"
                tb_settings_folder="i2p-browser.d"
+               tb_proxy_name="i2p"
                shift
                ;;
            --)
@@ -571,9 +571,10 @@ tb_preparation() {
 
    [ -n "$tb_install_folder" ] || tb_install_folder="tb"
    [ -n "$tb_install_folder_dot" ] || tb_install_folder_dot=".tb"
-   [ -n "$tb_home_folder" ] || tb_home_folder="$tb_user_home/$tb_install_folder_dot"
    [ -n "$tb_browser_name" ] || tb_browser_name="tor-browser"
    [ -n "$tb_settings_folder" ] || tb_settings_folder="tor-browser.d"
+
+   [ -n "$tb_home_folder" ] || tb_home_folder="$tb_user_home/$tb_install_folder_dot"
    [ -n "$tb_browser_folder" ] || tb_browser_folder="$tb_home_folder/$tb_browser_name"
    [ -n "$tb_cache_folder" ] || tb_cache_folder="$tb_user_home/.cache/$tb_install_folder"
    [ -n "$tb_temp_folder" ] || tb_temp_folder="$tb_cache_folder/temp"
