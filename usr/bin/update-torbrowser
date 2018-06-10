@@ -299,8 +299,11 @@ tb_parse_cmd_options() {
                shift
                ;;
            --i2p)
-               tb_install_folder="i2pb"
-               tb_proxy_name="i2p"
+               ## This option downloads a Tor Browser Bundle to a custom path,
+               ## intended to be used with i2p. It does no modification to the
+               ## browser itself.
+               export tb_install_folder="i2pb"
+               export tb_proxy_name="i2p"
                shift
                ;;
            --)
@@ -402,7 +405,7 @@ export -f outputfunc
 tb_config_folder_parser() {
    shopt -s nullglob
    local i
-   for i in /etc/torbrowser.d/*.conf /rw/config/torbrowser.d/*.conf; do
+   for i in /etc/"$tb_proxy_name"browser.d/*.conf /rw/config/"$tb_proxy_name"browser.d/*.conf; do
       bash -n "$i"
       source "$i"
    done
