@@ -408,7 +408,7 @@ export -f outputfunc
 tb_config_folder_parser() {
    shopt -s nullglob
    local i
-   for i in /etc/$tb_settings_folder/*.conf /rw/config/$tb_settings_folder/*.conf; do
+   for i in /etc/${tb_settings_folder}/*.conf /rw/config/${tb_settings_folder}/*.conf; do
       bash -n "$i"
       source "$i"
    done
