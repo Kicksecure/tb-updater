@@ -305,7 +305,7 @@ tb_parse_cmd_options() {
                tb_install_folder="i2pb"
                tb_install_folder_dot=".i2pb"
                tb_browser_name="i2p-browser"
-               tb_settings_folder="i2p-browser.d"
+               tb_settings_folder="i2pbrowser.d"
                tb_proxy_name="i2p"
                shift
                ;;
@@ -408,7 +408,7 @@ export -f outputfunc
 tb_config_folder_parser() {
    shopt -s nullglob
    local i
-   for i in /etc/${tb_settings_folder}/*.conf /rw/config/${tb_settings_folder}/*.conf; do
+   for i in /etc/$tb_settings_folder/*.conf /rw/config/$tb_settings_folder/*.conf; do
       bash -n "$i"
       source "$i"
    done
@@ -572,7 +572,7 @@ tb_preparation() {
    [ -n "$tb_install_folder" ] || tb_install_folder="tb"
    [ -n "$tb_install_folder_dot" ] || tb_install_folder_dot=".tb"
    [ -n "$tb_browser_name" ] || tb_browser_name="tor-browser"
-   [ -n "$tb_settings_folder" ] || tb_settings_folder="tor-browser.d"
+   [ -n "$tb_settings_folder" ] || tb_settings_folder="torbrowser.d"
 
    [ -n "$tb_home_folder" ] || tb_home_folder="$tb_user_home/$tb_install_folder_dot"
    [ -n "$tb_browser_folder" ] || tb_browser_folder="$tb_home_folder/$tb_browser_name"
@@ -588,7 +588,7 @@ tb_preparation() {
 
    if [ "$tb_postinst" = "true" ]; then
       ## Being careful with deletion.
-      if [ "$tb_browser_folder" = "/var/cache/tb-binary/.${tb_install_folder}/$tb_browser_name" ]; then
+      if [ "$tb_browser_folder" = "/var/cache/tb-binary/.$tb_install_folder/$tb_browser_name" ]; then
          echo "rm -r -f '$tb_browser_folder'"
          rm -r -f "$tb_browser_folder"
       fi
@@ -1913,9 +1913,10 @@ tb_sort_remote_versions() {
 main_function() {
    tb_run_function root_check "$@"
    tb_run_function tb_sanity_tests
-   tb_run_function tb_config_folder_parser
    tb_run_function tb_parse_cmd_options "$@"
    tb_run_function tb_preparation
+   tb_run_function tb_config_folder_parser
+
    tb_run_function tb_stdin
    tb_run_function tb_local_version_detection
    tb_run_function tb_connectivity_checks_tor
