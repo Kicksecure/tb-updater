@@ -975,7 +975,7 @@ tb_local_version_detection() {
 tb_confirm_update() {
    if [ "$qubes_vm_type" = "TemplateVM" ]; then
       local folder_name found
-      for folder_name in "/home/$who_ami/.${tb_install_folder}" "/home/$who_ami/.cache/${tb_install_folder}" ; do
+      for folder_name in "/home/$who_ami/$tb_install_folder_dot" "/home/$who_ami/.cache/${tb_install_folder}" ; do
          if [ -d "$folder_name" ]; then
             found=true
             break
@@ -988,7 +988,7 @@ Otherwise updating Tor Browser in this TemplateVM will not result in newly creat
 <br />
 <br />To delete these obsolete folders, please run:
 <br />
-<br /><code>rm -r -f '/home/$who_ami/.${tb_install_folder}'</code>
+<br /><code>rm -r -f '/home/$who_ami/$tb_install_folder_dot'</code>
 <br /><code>rm -r -f '/home/$who_ami/.cache/${tb_install_folder}'</code>
 <br />
 <br />(Or delete them using a file manager.)
