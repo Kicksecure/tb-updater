@@ -119,7 +119,7 @@ For example, for Vietnamese use:
 
 Replace "vi" with "zh-CN" for Chinese and so on.
 
-To make this change permanent, create a file `/etc/torbrowser.d/50_torbrowser` and add for
+To make this change permanent, create a file `/etc/torbrowser.d/50_torbrowser.conf` and add for
 example
 
     TB_LANG="ar"
