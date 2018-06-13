@@ -1,3 +1,107 @@
+commit bf97f1aa312e8aa84c9b47308295ff28d66503b7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jun 13 05:22:19 2018 +0000
+
+    tbb_hardcoded_version="7.5.5"
+
+commit b82a6af443754e485b92e469a8384729cfd4db88
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jun 12 14:02:50 2018 +0200
+
+    fix
+
+commit cfab391d7320f40c536eb3fa1a4e9e1e8703da92
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jun 12 13:49:11 2018 +0200
+
+    fix
+
+commit 5556612474485740c6cd0d1103c6da1ab053b3dd
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jun 12 13:48:36 2018 +0200
+
+    fix
+
+commit 8559c8c46d0946ddce577e8c4d8b7f7d0896a560
+Merge: 8549f38 d2ce6a7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jun 12 13:46:25 2018 +0200
+
+    Merge remote-tracking branch 'origin/master'
+
+commit d2ce6a7f8199e4f67b286034fddd2b87a92b6bb3
+Merge: 8549f38 9dbd790
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jun 12 13:43:11 2018 +0200
+
+    Merge pull request #4 from eyedeekay/master
+    
+    Make sure variables are available to tb_preparation
+
+commit 9dbd79093ac5901016f39b54f7780f0a8dc84575
+Author: idk <problemsolver@openmailbox.org>
+Date:   Mon Jun 11 16:26:52 2018 -0400
+
+    fix shellcheck thing. Didn't mean to do that.
+
+commit 76ee8046605fba9f77f51c5662648b16cd397629
+Author: idk <problemsolver@openmailbox.org>
+Date:   Sun Jun 10 21:54:29 2018 -0400
+
+    use tb_install_folder_dot
+
+commit bee4ed4d52b8525e8b6d86e058ff176abebea7f4
+Author: idk <problemsolver@openmailbox.org>
+Date:   Sun Jun 10 21:28:16 2018 -0400
+
+    fixed issue with new vars not being available to the subsequent functions
+
+commit 8549f38a4a8df9842b7b20e76fcd896f2bdc01a0
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jun 10 21:41:55 2018 +0200
+
+    refactoring
+
+commit 8b881a013da8d676a6d8ec2b2c19e0e32f6f96b0
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jun 10 21:39:19 2018 +0200
+
+    refactoring
+
+commit bee2cb163688345729b1eea258647374bf3751fa
+Merge: 0cc4df0 fffd868
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jun 10 21:12:08 2018 +0200
+
+    Merge remote-tracking branch 'origin/master'
+
+commit fffd8680ce826d0ec5a2dad80130cc357a1af5f5
+Merge: 0cc4df0 f88aba5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jun 10 21:10:04 2018 +0200
+
+    Merge pull request #3 from eyedeekay/master
+    
+    Add support for downloading to a separate path for an i2p-specific Tor Browser
+
+commit f88aba58039898a6514be247a3916f50b8cf4302
+Author: idk <problemsolver@openmailbox.org>
+Date:   Sun Jun 10 01:37:04 2018 -0400
+
+    use per-proxy conf folders
+
+commit 0cced2be0669b87426d4add36029c323b7f254ae
+Author: idk <problemsolver@openmailbox.org>
+Date:   Sat Jun 2 02:11:31 2018 -0400
+
+    made the home and install folder configurable in preparation for custom(i2p) proxies.
+
+commit 0cc4df08ec48093ac85b2fce5450b56eefa4cfe1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu May 10 08:14:26 2018 +0000
+
+    bumped changelog version
+
 commit f0233db0939b5193b4eec03ffcdb90ac3918b3fb
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu May 10 09:59:06 2018 +0200
