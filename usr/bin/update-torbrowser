@@ -354,6 +354,22 @@ you could add to command line: --input gui"
    output_echo_only "INFO: stdin not connected to terminal, probably run in graphical environment, ok."
 }
 
+tb_qubes_dvm_template() {
+   if echo "$qubes_vm_name" | grep -q --invert-match "\-dvm" ; then
+      output_echo_only "INFO: not running inside Qubes DVM Template, ok."
+      return 0
+   fi
+
+   local MSG="\
+<p>Do not run Tor Browser in Qubes DVM Template!<br></br>
+<br></br>
+More info: <a href=https://www.whonix.org/wiki/Tor_Browser#Running_Tor_Browser_in_Qubes_DVM_Template>https://www.whonix.org/wiki/Tor_Browser#Running_Tor_Browser_in_Qubes_DVM_Template</a></p>"
+
+   $output ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
+   $output ${output_opts[@]} --messagecli --titlecli "$TITLE" --typecli "error" --message "$MSG" --done
+   tb_exit_function 1
+}
+
 output_echo_only() {
    local MSG
    MSG="$@"
@@ -531,6 +547,7 @@ tb_preparation() {
       ##   - https://github.com/QubesOS/qubes-issues/issues/2497
       ##   - https://github.com/QubesOS/qubes-issues/issues/2509
       ## therefore overwriting with '|| true'.
+      [ -n "$qubes_vm_name" ] || qubes_vm_name="$(qubesdb-read /name)" || true
       ## For Qubes R3.1 compatibility.
       [ -n "$qubes_vm_type" ] || qubes_vm_type="$(qubesdb-read /qubes-vm-type)" || true
 
@@ -1918,6 +1935,7 @@ main_function() {
    tb_run_function tb_config_folder_parser
 
    tb_run_function tb_stdin
+   tb_run_function tb_qubes_dvm_template
    tb_run_function tb_local_version_detection
    tb_run_function tb_connectivity_checks_tor
    tb_run_function tb_connectivity_checks_curl
