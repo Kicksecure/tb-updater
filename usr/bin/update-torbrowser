@@ -302,8 +302,10 @@ tb_parse_cmd_options() {
                ## This option downloads a Tor Browser Bundle to a custom path,
                ## intended to be used with i2p. It does no modification to the
                ## browser itself.
+               IDENTIFIER="i2pbrowser-downloader"
                tb_install_folder="i2pb"
                tb_install_folder_dot=".i2pb"
+               tb_name="i2p"
                tb_browser_name="i2p-browser"
                tb_settings_folder="i2pbrowser.d"
                tb_proxy_name="i2p"
@@ -571,6 +573,7 @@ tb_preparation() {
 
    [ -n "$tb_install_folder" ] || tb_install_folder="tb"
    [ -n "$tb_install_folder_dot" ] || tb_install_folder_dot=".tb"
+   [ -n "$tb_name" ] || tb_name="tor"
    [ -n "$tb_browser_name" ] || tb_browser_name="tor-browser"
    [ -n "$tb_settings_folder" ] || tb_settings_folder="torbrowser.d"
 
@@ -661,7 +664,7 @@ tb_preparation() {
 
    who_ami="$(whoami)"
 
-   TITLE="Tor Browser Downloader (by Whonix developers)"
+   TITLE="$tb_name Browser Downloader (by Whonix developers)"
 
    output_tool="/usr/lib/msgcollector/msgcollector"
    output="output"
