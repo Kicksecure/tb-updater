@@ -1,8 +1,10 @@
-#! /bin/sh
 #!/bin/bash
 
 ## Copyright (C) 2012 - 2018 ENCRYPTED SUPPORT LP <adrelanos@riseup.net>
 ## See the file COPYING for copying conditions.
+
+set -o pipefail
+set -o errtrace
 
 if [ ! "$tpo_downloader_debug" = "" ]; then
    if [ "$tpo_downloader_debug" -ge "1" ]; then
@@ -10,8 +12,6 @@ if [ ! "$tpo_downloader_debug" = "" ]; then
    fi
 fi
 
-set -o pipefail
-set -o errtrace
 
 SCRIPTNAME="$(basename "$BASH_SOURCE")"
 IDENTIFIER="i2pbrowser-downloader"
