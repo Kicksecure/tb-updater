@@ -306,6 +306,7 @@ tb_parse_cmd_options() {
                tb_install_folder="i2pb"
                tb_install_folder_dot=".i2pb"
                tb_name="i2p"
+               tb_title="i2p Browser"
                tb_browser_name="i2p-browser"
                tb_settings_folder="i2pbrowser.d"
                tb_proxy_name="i2p"
@@ -482,7 +483,7 @@ tb_settings_qubes_postinst_templatevm() {
    if [ "$tb_user_home" = "" ]; then
       tb_user_home="/var/cache/tb-binary"
       tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM and from postinst. \
-This is useful so you get up to date versions of Tor Browsers in newly created AppVMs inherited from updated TemplateVMs.
+This is useful so you get up to date versions of $tb_titles in newly created AppVMs inherited from updated TemplateVMs.
 More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
    fi
 }
@@ -492,7 +493,7 @@ tb_settings_qubes_manual_run_templatevm() {
    if [ "$tb_user_home" = "" ]; then
       tb_user_home="/var/cache/tb-binary"
       tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM but not run from postinst. \
-This is useful so you get up to date versions of Tor Browsers in newly created AppVMs inherited from updated TemplateVMs.
+This is useful so you get up to date versions of $tb_titles in newly created AppVMs inherited from updated TemplateVMs.
 More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
    fi
 }
@@ -574,6 +575,7 @@ tb_preparation() {
    [ -n "$tb_install_folder" ] || tb_install_folder="tb"
    [ -n "$tb_install_folder_dot" ] || tb_install_folder_dot=".tb"
    [ -n "$tb_name" ] || tb_name="tor"
+   [ -n "$tb_title" ] || tb_title="Tor Browser"
    [ -n "$tb_browser_name" ] || tb_browser_name="tor-browser"
    [ -n "$tb_settings_folder" ] || tb_settings_folder="torbrowser.d"
 
@@ -802,7 +804,7 @@ tb_connectivity_checks_tor() {
 
 <p>Run whonixcheck on Whonix-Gateway as well.</p>
 
-<p>If whonixcheck reports no problems with internet activity and downloading Tor Browser still fails, please report a bug!</p>
+<p>If whonixcheck reports no problems with internet activity and downloading $tb_title still fails, please report a bug!</p>
 
 <p>Debugging information:<br />
 You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCNAME</code> should be skipped.</p>"
@@ -834,7 +836,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
 
 <p>Run whonixcheck on Whonix-Gateway as well.</p>
 
-<p>If whonixcheck reports no problems with internet activity and downloading Tor Browser still fails, please report a bug!</p>"
+<p>If whonixcheck reports no problems with internet activity and downloading $tb_title still fails, please report a bug!</p>"
 
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
@@ -881,7 +883,7 @@ tb_connectivity_checks_curl() {
               <br></br>or in Terminal: whonixcheck
               <br></br>or in Terminal with debugging: whonixcheck -v</blockquote></p>
 
-<p>If whonixcheck reports no problems with internet activity and downloading Tor Browser keeps failing, please report a bug!</p>
+<p>If whonixcheck reports no problems with internet activity and downloading $tb_title keeps failing, please report a bug!</p>
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
@@ -901,14 +903,14 @@ tb_update_check() {
    ## do not re-download Tor Browser if a previous build already did
    if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
       if [ -d "$tb_browser_folder" ]; then
-         echo "$SCRIPTNAME: Not downloading Tor Browser again, because $tb_browser_folder already exists."
+         echo "$SCRIPTNAME: Not downloading $tb_title again, because $tb_browser_folder already exists."
          tb_exit_function 0
       fi
    fi
 
    [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
 
-   tb_notify_details="Checking Tor Browser version... Will take a moment..."
+   tb_notify_details="Checking $tb_title version... Will take a moment..."
    output_echo_only "INFO: Find out latest version... Downloading: $TBB_VERSIONS_FILE_LINK... "
 
    [ -n "$timeout_version_file_download" ] || timeout_version_file_download=180
@@ -948,7 +950,7 @@ tb_remote_version_sanity_test() {
       download_fail_help_set
       local MSG="<p>$installed_or_not_text</p>
 
-<p>Could not find out latest Tor Browser version! $tbb_recommended_versions_error</p>
+<p>Could not find out latest $tb_title version! $tbb_recommended_versions_error</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
@@ -970,7 +972,7 @@ tb_local_version_detection() {
       installed_or_not_text=""
    else
       installed_or_not_result="false"
-      installed_or_not_text="Tor Browser is currently not installed.
+      installed_or_not_text="$tb_title is currently not installed.
 (Folder $tb_browser_folder does not exist.)"
    fi
 }
@@ -987,7 +989,7 @@ tb_confirm_update() {
       if [ "$found" = "true" ]; then
          local MSG="\
 <p>Obsolete folders exist. It is recommended to delete them. \
-Otherwise updating Tor Browser in this TemplateVM will not result in newly created TemplateBasedVMs to inherit the updated version of Tor Browser.
+Otherwise updating $tb_title in this TemplateVM will not result in newly created TemplateBasedVMs to inherit the updated version of $tb_title.
 <br />
 <br />To delete these obsolete folders, please run:
 <br />
@@ -1045,17 +1047,17 @@ Only versions still considered secure should be listed here. Higher version numb
    updater_vs_downloader_msg="\
 Since The Tor Project configured TBB to automatically update itself,
 if you would like to keep your browser profile and update rather than re-downloading TBB, you are better off using \
-<a href=https://www.whonix.org/wiki/Tor_Browser/Internal_Updater>Tor Browser's internal updater</a>. \
+<a href=https://www.whonix.org/wiki/Tor_Browser/Internal_Updater>$tb_title's internal updater</a>. \
 In that case, say no now.<br></br>
 <br></br>
 
 This program \
-(<a href=https://www.whonix.org/wiki/Tor_Browser/Downloader_by_Whonix>Tor Browser Downloader (Whonix)</a>) \
+(<a href=https://www.whonix.org/wiki/Tor_Browser/Downloader_by_Whonix>$tb_title Downloader (Whonix)</a>) \
 is incapable of keeping user data.<br></br>
 YOUR BROWSER WILL BE KILLED.<br></br>
 YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.<br></br>
 <br></br>
-A backup of your old Tor Browser and settings will be created in folder <code>$tb_home_folder</code>.
+A backup of your old $tb_title and settings will be created in folder <code>$tb_home_folder</code>.
 <br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space."
 
    confirmation_screen_learn_more_link="\
@@ -1065,9 +1067,9 @@ A backup of your old Tor Browser and settings will be created in folder <code>$t
       qubes_running_inside_template_vm_msg="\
 <u>Qubes specific notice</u>: Currently running inside a TemplateVM.
 Due to <a href=https://www.whonix.org/wiki/Dev/Qubes#tb-updater_vs_TemplateVM>technical limitations</a>,
-running this program in this TemplateVM will not update Tor Browser in TemplateBasedVMs, which are based on this TemplateVM.
+running this program in this TemplateVM will not update $tb_title in TemplateBasedVMs, which are based on this TemplateVM.
 Only newly created TemplateBasedVMs, which are based on this TemplateVM will benefit from this.
-To update Tor Browser inside existing TemplateBasedVMs, please update Tor Browser inside TemplateBasedVMs."
+To update $tb_title inside existing TemplateBasedVMs, please update $tb_title inside TemplateBasedVMs."
    fi
 
    if [ "$installed_or_not_result" = "true" ]; then
@@ -1082,14 +1084,14 @@ To update Tor Browser inside existing TemplateBasedVMs, please update Tor Browse
       else
          ## installed, local version number known
          if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
-            up_to_date_or_not_text="Looks like Tor Browser is already up to date."
-            re_install_or_install_text="Please close Tor Browser if you want to (re-)install!"
+            up_to_date_or_not_text="Looks like $tb_title is already up to date."
+            re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
          elif [ "$dpkg_compare_versions_greater_than_exit_code" = "0" ]; then
-            up_to_date_or_not_text="Looks like there is an upgrade for Tor Browser."
-            re_install_or_install_text="Please close Tor Browser if you want to (re-)install!"
+            up_to_date_or_not_text="Looks like there is an upgrade for $tb_title."
+            re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
          elif [ "$dpkg_compare_versions_lower_than_exit_code" = "0" ]; then
             up_to_date_or_not_text="<b><u>WARNING: Looks like a downgrade attack!</u></b>"
-            re_install_or_install_text="Please close Tor Browser if you want to (re-)install!"
+            re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
          else
             error "Neither of the following were zero.
 <br></br>dpkg_compare_versions_equals_exit_code: $dpkg_compare_versions_equals_exit_code
@@ -1170,22 +1172,22 @@ tb_version_processing() {
    ## Check if TB_LANG exists and is not empty.
    if [[ "$TB_LANG" && "${TB_LANG}" ]]; then
       #echo "INFO: Tor Browser language variable is set to "$TB_LANG"."
-      output_echo_only "INFO: Tor Browser language variable TB_LANG is already set to '$TB_LANG'. Keeping it as is, ok."
+      output_echo_only "INFO: $tb_title language variable TB_LANG is already set to '$TB_LANG'. Keeping it as is, ok."
    elif [ "$tbb_hardened_version_chosen" = "true" ]; then
       ## Quote: https://blog.torproject.org/blog/tor-browser-55a4-hardened-released
       ## "there will only be one bundle shipped supporting all the languages found in alpha builds"
       ## These links are not containing language specific strings such as 'en-US', but 'ALL'.
-      output_echo_only "INFO: Tor Browser language variable TB_LANG was not yet set and a hardened version was chosen. Therefore setting TB_LANG to 'ALL', ok."
+      output_echo_only "INFO: $tb_title language variable TB_LANG was not yet set and a hardened version was chosen. Therefore setting TB_LANG to 'ALL', ok."
       TB_LANG="ALL"
    else
-      output_echo_only "INFO: Tor Browser language variable TB_LANG was not yet set and no hardened version was chosen. Therefore defaulting TB_LANG to 'en-US', ok."
+      output_echo_only "INFO: $tb_title language variable TB_LANG was not yet set and no hardened version was chosen. Therefore defaulting TB_LANG to 'en-US', ok."
       TB_LANG="en-US"
    fi
 }
 
 tb_kill_already_running_tb_maybe() {
    if [ ! "$NOKILLTB" = "1" ]; then
-      output_echo_only "INFO: Because you are not using --nokilltb, now killing eventually still running instances of Tor Browser..."
+      output_echo_only "INFO: Because you are not using --nokilltb, now killing eventually still running instances of $tb_title..."
       killall firefox || true
    fi
 }
@@ -1272,7 +1274,7 @@ tb_download_files() {
    [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}"
    [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
 
-   tb_notify_details="Downloading Tor Browser signature... Will take a moment..."
+   tb_notify_details="Downloading $tb_title signature... Will take a moment..."
    output_echo_only "INFO: Downloading GPG signature... Will take a moment..."
    output_echo_only "\
 INFO: Downloading:
@@ -1297,7 +1299,7 @@ INFO: Downloading:
    [ -n "$TBB_HASH_LINK" ] || TBB_HASH_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_HASH_FILENAME}"
    [ -n "$TBB_HASH_FULL_PATH" ] || TBB_HASH_FULL_PATH="$tb_downloaded_files_folder/$TBB_HASH_FILENAME"
 
-   tb_notify_details="Downloading Tor Browser sha256sums file... Will take a moment..."
+   tb_notify_details="Downloading $tb_title sha256sums file... Will take a moment..."
    output_echo_only "INFO: Downloading sha256sums file... Will take a moment..."
    output_echo_only "\
 INFO: Downloading:
@@ -1322,8 +1324,8 @@ INFO: Downloading:
    [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME"
    [ -n "$TBB_PACKAGE_FULL_PATH" ] || TBB_PACKAGE_FULL_PATH="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
 
-   tb_notify_details="Downloading Tor Browser... Will take a while..."
-   output_echo_only "INFO: Downloading Tor Browser Bundle: $tbb_version"
+   tb_notify_details="Downloading $tb_title... Will take a while..."
+   output_echo_only "INFO: Downloading $tb_title Bundle: $tbb_version"
    output_echo_only "\
 INFO: Downloading:
       $TBB_PACKAGE_LINK ... Will take a while..."
@@ -1374,7 +1376,7 @@ tb_gpg_verify() {
    ## guaranteed to have a new stable TBB release every three months.
    if [ ! "$gpg_bash_lib_output_validsig_status" = "true" ] || [ "$gpg_bash_lib_output_failure" = "true" ] ; then
       local MSG="<p><b>GPG download signature could NOT be verified.</b>
-<br></br>Tor Browser update failed! Try again later.</p>
+<br></br>$tb_title update failed! Try again later.</p>
 
 <p>gpg_bash_lib_output_alright_status: $gpg_bash_lib_output_alright_status
 <br></br>gpg_bash_lib_output_failure: $gpg_bash_lib_output_failure</p>
@@ -1578,7 +1580,7 @@ tb_extract() {
       progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
       tb_notify_msg="Extraction
 ----------------------------------------------------------------------
-Extracting Tor Browser... This could take a moment..."
+Extracting $tb_title... This could take a moment..."
       if [ "$TB_INPUT" = "" ] || [ "$TB_INPUT" = "gui" ]; then
          $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
       fi
@@ -1799,13 +1801,13 @@ tb_chroot_pre_exit() {
 
 tb_start_ask() {
    if [ "$noaskstart" = "true" ]; then
-      true "INFO: noaskstart is set to true. Skipping question if Tor Browser should be started."
+      true "INFO: noaskstart is set to true. Skipping question if $tb_title should be started."
       return 0
    fi
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      output_echo_only "INFO: Finished installing Tor Browser. Can be found in $tb_browser_folder."
-      output_echo_only "INFO: Not starting Tor Browser, because variable TB_FORCE_INSTALL is set to 1."
+      output_echo_only "INFO: Finished installing $tb_title. Can be found in $tb_browser_folder."
+      output_echo_only "INFO: Not starting $tb_title, because variable TB_FORCE_INSTALL is set to 1."
       return 0
    fi
 
@@ -1814,7 +1816,7 @@ tb_start_ask() {
 
    if [ ! "$command_v_torbrowser_exit_code" = "0" ]; then
       output_echo_only "INFO: torbrowser binary not found in path. tb-starter is probably not installed. \
-Skipping question to start Tor Browser."
+Skipping question to start $tb_title."
       return 0
    fi
 
@@ -1822,25 +1824,25 @@ Skipping question to start Tor Browser."
       true "noaskstart is 'false'"
    else
       if [ "$qubes_vm_type" = "TemplateVM" ]; then
-         MSG="<p>Finished installing Tor Browser. Can be found in $tb_browser_folder.</p>
+         MSG="<p>Finished installing $tb_title. Can be found in $tb_browser_folder.</p>
 
-<p>Not asking to start Tor Browser, because running in a TemplateVM</p>"
+<p>Not asking to start $tb_title, because running in a TemplateVM</p>"
          $output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
          return 0
       fi
    fi
 
-   MSG="<p>Finished installing Tor Browser. Can be found in $tb_browser_folder.</p>
+   MSG="<p>Finished installing $tb_title. Can be found in $tb_browser_folder.</p>
 
 <p>Please donate!
 <br></br><a href=https://www.whonix.org/wiki/Donate>https://www.whonix.org/wiki/Donate</a></p>"
-   local question="Start Tor Browser?"
+   local question="Start $tb_title?"
    local button="yesno"
    local answer
 
    if [ "$TB_INPUT" = "none" ]; then
-      true "INFO: TB_INPUT is set to $TB_INPUT. Skipping question if Tor Browser should be started."
+      true "INFO: TB_INPUT is set to $TB_INPUT. Skipping question if $tb_title should be started."
       return 0
    fi
 
@@ -1849,7 +1851,7 @@ Skipping question to start Tor Browser."
 y/n?"
       read -r answer
       if [ ! "$answer" = "y" ]; then
-         output_echo_only "INFO: Canceled starting Tor Browser, ok."
+         output_echo_only "INFO: Canceled starting $tb_title, ok."
       else
          torbrowser
       fi
@@ -1858,7 +1860,7 @@ y/n?"
 
    answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
    if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-      output_echo_only "INFO: Canceled starting Tor Browser, ok."
+      output_echo_only "INFO: Canceled starting $tb_title, ok."
       return 0
    else
       torbrowser
