@@ -1,3 +1,100 @@
+commit 9bb89416c7e30e91f6abf8bfe00c95b56ce128b2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 14 07:06:05 2018 +0000
+
+    output
+
+commit 5358c2c20c7dedbb98b239d2774906df98c97d49
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 14 07:04:02 2018 +0000
+
+    simplify i2pbrowser man page
+
+commit e053656deede9dee2c79b41b5f31c411f8dd6237
+Merge: 44cf7d3 f6ed4ed
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 14 07:01:40 2018 +0000
+
+    Merge remote-tracking branch 'origin/master'
+
+commit f6ed4ed880ceaf2341a3244b4e02437e772c1c1a
+Merge: 44cf7d3 779620c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 14 08:58:01 2018 +0200
+
+    Merge pull request #5 from eyedeekay/master
+    
+    Show different strings when downloading with --i2p, add update-i2pbrowser script
+
+commit 44cf7d33cc7b3c101791eb7ad25cadf771e2e127
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 14 06:45:16 2018 +0000
+
+    refuse running inside Qubes DVM Template
+    
+    https://forums.whonix.org/t/qubes-dispvm-technical-discussion/3232/60
+
+commit 779620caf8f177c6bb5c80c0082b567f209d0883
+Author: idk <problemsolver@openmailbox.org>
+Date:   Thu Jun 14 02:11:46 2018 -0400
+
+    add update-i2pbrower.1.ronn
+
+commit 2ad67c00beaae029c771021af2b81f73fa283a3e
+Author: idk <problemsolver@openmailbox.org>
+Date:   Thu Jun 14 01:52:58 2018 -0400
+
+    switch to original log filename for now.
+
+commit 187163f3974c0fc031fe1ec58bd2434613b000ad
+Author: idk <problemsolver@openmailbox.org>
+Date:   Thu Jun 14 01:49:11 2018 -0400
+
+    fixed the unused variables from the update-i2browser script
+
+commit da38e28812c5570a1007aa3ab8486039cfb40e50
+Merge: 0bde176 d966dfd
+Author: idk <problemsolver@openmailbox.org>
+Date:   Wed Jun 13 22:39:02 2018 -0400
+
+    Merge branch 'master' of https://github.com/Whonix/tb-updater
+
+commit 0bde1763d87411304075c84e9969ed30932e89f4
+Author: idk <problemsolver@openmailbox.org>
+Date:   Wed Jun 13 21:44:34 2018 -0400
+
+    use a variable tb_bin to point to the binary to run after the script when called by tb-starter
+
+commit 2045a31e815706a4b911cd0e7d70266209098451
+Author: idk <problemsolver@openmailbox.org>
+Date:   Wed Jun 13 21:32:13 2018 -0400
+
+    use a script-wide variable to name the browser
+
+commit e24a915c63c66eb7c83535d662155c0ff85c275b
+Author: idk <problemsolver@openmailbox.org>
+Date:   Wed Jun 13 21:09:36 2018 -0400
+
+    postinstall script for i2pbrowser
+
+commit f95960f0898021a0f96012e5d893a684e6a580c4
+Author: idk <problemsolver@openmailbox.org>
+Date:   Wed Jun 13 21:04:56 2018 -0400
+
+    add early /usr/bin/update-i2pbrowser
+
+commit 4d489a0059b478f3db3d85812198f7e27408f03e
+Author: idk <problemsolver@openmailbox.org>
+Date:   Wed Jun 13 20:58:43 2018 -0400
+
+    Change strings when running with --i2p
+
+commit d966dfd04b1e6ee0eef7182366195cf01e3b9cae
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jun 13 07:12:19 2018 +0000
+
+    bumped changelog version
+
 commit bf97f1aa312e8aa84c9b47308295ff28d66503b7
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Jun 13 05:22:19 2018 +0000
