@@ -87,7 +87,7 @@ tb_error_handler() {
    [ -n "$tb_install_folder" ] || tb_install_folder="tb"
 
    mkdir --parents "$tb_user_home/.cache/$tb_install_folder"
-   echo "$MSG" >> "$tb_user_home/.cache/$tb_install_folder/$tb_bin.updater_error.log"
+   echo "$MSG" >> "$tb_user_home/.cache/$tb_install_folder/torbrowser_updater_error.log"
 
    ## In case variable output is not set yet.
    [ -n "$output" ] || output="output"
