@@ -88,7 +88,7 @@ tb_error_handler() {
    [ -n "$tb_install_folder" ] || tb_install_folder="tb"
 
    mkdir --parents "$tb_user_home/.cache/$tb_install_folder"
-   echo "$MSG" >> "$tb_user_home/.cache/$tb_install_folder/torbrowser_updater_error.log"
+   echo "$MSG" >> "$tb_user_home/.cache/$tb_install_folder/$tb_bin.updater_error.log"
 
    ## In case variable output is not set yet.
    [ -n "$output" ] || output="output"
@@ -307,9 +307,11 @@ tb_parse_cmd_options() {
                tb_install_folder_dot=".i2pb"
                tb_name="i2p"
                tb_title="i2p Browser"
+               tb_wiki="i2p_Browser"
                tb_browser_name="i2p-browser"
                tb_settings_folder="i2pbrowser.d"
                tb_proxy_name="i2p"
+               tb_bin="i2pbrowser"
                shift
                ;;
            --)
@@ -483,7 +485,7 @@ tb_settings_qubes_postinst_templatevm() {
    if [ "$tb_user_home" = "" ]; then
       tb_user_home="/var/cache/tb-binary"
       tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM and from postinst. \
-This is useful so you get up to date versions of $tb_titles in newly created AppVMs inherited from updated TemplateVMs.
+This is useful so you get up to date versions of $tb_title in newly created AppVMs inherited from updated TemplateVMs.
 More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
    fi
 }
@@ -493,7 +495,7 @@ tb_settings_qubes_manual_run_templatevm() {
    if [ "$tb_user_home" = "" ]; then
       tb_user_home="/var/cache/tb-binary"
       tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM but not run from postinst. \
-This is useful so you get up to date versions of $tb_titles in newly created AppVMs inherited from updated TemplateVMs.
+This is useful so you get up to date versions of $tb_title in newly created AppVMs inherited from updated TemplateVMs.
 More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
    fi
 }
@@ -576,8 +578,10 @@ tb_preparation() {
    [ -n "$tb_install_folder_dot" ] || tb_install_folder_dot=".tb"
    [ -n "$tb_name" ] || tb_name="tor"
    [ -n "$tb_title" ] || tb_title="Tor Browser"
+   [ -n "$tb_wiki" ] || tb_wiki="Tor_Browser"
    [ -n "$tb_browser_name" ] || tb_browser_name="tor-browser"
    [ -n "$tb_settings_folder" ] || tb_settings_folder="torbrowser.d"
+   [ -n "$tb_bin" ] || tb_bin="torbrowser"
 
    [ -n "$tb_home_folder" ] || tb_home_folder="$tb_user_home/$tb_install_folder_dot"
    [ -n "$tb_browser_folder" ] || tb_browser_folder="$tb_home_folder/$tb_browser_name"
@@ -1352,7 +1356,7 @@ tb_gpg_verify() {
 
    gpg_bash_lib_input_verify_timeout_after="60"
    gpg_bash_lib_input_verify_kill_after="10"
-   gpg_bash_lib_input_key_import_dir="/usr/share/torbrowser-updater-keys.d"
+   gpg_bash_lib_input_key_import_dir="/usr/share/$tb_bin-updater-keys.d"
    gpg_bash_lib_input_temp_folder="$tb_gpg_tmp_dir"
    gpg_bash_lib_input_data_file="$TBB_HASH_FULL_PATH"
    gpg_bash_lib_input_sig_file="$TBB_SIG_FULL_PATH"
@@ -1812,10 +1816,10 @@ tb_start_ask() {
    fi
 
    local command_v_torbrowser_exit_code="0"
-   command -v torbrowser || { command_v_torbrowser_exit_code="$?" ; true; };
+   command -v $tb_bin || { command_v_torbrowser_exit_code="$?" ; true; };
 
    if [ ! "$command_v_torbrowser_exit_code" = "0" ]; then
-      output_echo_only "INFO: torbrowser binary not found in path. tb-starter is probably not installed. \
+      output_echo_only "INFO: $tb_bin binary not found in path. tb-starter is probably not installed. \
 Skipping question to start $tb_title."
       return 0
    fi
@@ -1853,7 +1857,7 @@ y/n?"
       if [ ! "$answer" = "y" ]; then
          output_echo_only "INFO: Canceled starting $tb_title, ok."
       else
-         torbrowser
+         $tb_bin
       fi
       return 0
    fi
@@ -1863,7 +1867,7 @@ y/n?"
       output_echo_only "INFO: Canceled starting $tb_title, ok."
       return 0
    else
-      torbrowser
+      $tb_bin
       return 0
    fi
 }
