@@ -1,0 +1,197 @@
+update-i2pbrowser(1) -- i2p Browser Updater by Whonix developers
+================================================================
+
+<span class="comment">
+# This file is part of Whonix.
+# Copyright (C) 2012 - 2018 ENCRYPTED SUPPORT LP <adrelanos@riseup.net>
+# See the file COPYING for copying conditions.
+
+# Not using angle brackets in copyright notice for e-mail address, because
+# angle brackets would result in this file being non-deterministic. (There
+# must be a bug in Debian wheezy in ruby-ronn.)
+
+# Not using "##", because for some reason this comment would be visible in the
+# resulting man page.
+</span>
+
+## SYNOPSIS
+`update-i2pbrowser` [option(s)]
+
+## DESCRIPTION
+Lets you safely download the Tor Browser Bundle (TBB)
+from The Tor Project's (TPO) website, then it modifiess it for use with the
+i2p network. It enforces TLS encryption (https) for
+TPO's website, downloads TBB from the TPO's website,
+and uses OpenPGP verification.
+
+In case there is already a `~/tor-browser_en-US` folder, it renames it
+to ~/tor-browser_en-US_(current date and time). It extracts freshly
+downloaded TBB too to `~/tor-browser_en-US`.
+
+Default action when no options are given is to performs an update check and ask
+how you want to proceed.
+
+## OPTIONS
+  * --ordinary
+
+    Uses curl's ordinary progress bar. Only affects run in terminal. When using
+    this option, the GUI progress bar will be stuck but downloading will still
+    work. Note, when using this option, it wouldn't notice if the download
+    server were to run an endless data attack, for example the server claiming
+    to provide a 500.000 GB big file. (It does not use
+    `/usr/lib/curl-scripts/curl-prgrs`s `CURL_PRGRS_MAX_FILE_SIZE_BYTES`.)
+    However, it can be compensated by either manually terminating
+    `update-i2pbrowser` or by using the timeout utility as in the example
+    below.
+
+  * --noask
+
+    Installs whatever https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions
+    claims to be the latest version without user interaction.
+
+  * --nokilltb
+
+    Advanced users only. Do not kill all eventually still running  instances of
+    i2p Browser. Useful in case you want to update
+    `~/tor-browser_en-US`, while still using
+    `~/tor-browser_something_else`.
+
+  * --language lang
+
+    Specify which language specific version of i2p Browser you want to start or
+    update.
+
+  * --no-tor-con-check
+
+    Skip Tor bootstrap connectivity check. (Only relevant in anonymity
+    distributions.)
+
+  * --input input
+
+    What to use as input method. When run in command line, by default, standard
+    input (stdin) will be used. When using --input gui, questions would be
+    asked in the graphical user environment.
+
+  * --resume
+
+    Resume previous download.
+
+## AVAILABLE LANGUAGES
+
+As in October 2012:
+
+* ar
+* de
+* en-US
+* es-ES
+* fa
+* fr
+* it
+* ko
+* nl
+* pl
+* pt-PT
+* ru
+* vi
+* zh-CN
+
+## MORE LANGUAGES
+
+To check if further languages are supported visit:
+
+https://www.torproject.org/dist/torbrowser/linux/
+
+## CONFIG FILE
+
+/etc/torbrowser.d/30_default.conf
+
+## ENVIRONMENT VARIABLES
+You could use:
+
+    export TB_LANG="<language code>"
+
+to set the language before running
+
+    update-i2pbrowser
+
+For example, for Vietnamese use:
+
+    export TB_LANG="vi"
+
+Replace "vi" with "zh-CN" for Chinese and so on.
+
+To make this change permanent, create a file `/etc/torbrowser.d/50_user.conf` and add for
+example
+
+    TB_LANG="ar"
+
+## EXIT CODES
+0 Success.
+
+0 When using --devbuildpassthrough $tb_home_folder/tor-browser_$TB_LANG already exists.
+
+1 Internal Error.
+
+2 Aborted because running as root.
+
+3 Cancel button pressed.
+
+4 Unknown command line option.
+
+5 Tor not enabled yet. (Only when using Tor connection check.)
+
+6 Tor not fully bootstrapped yet. (Only when using Tor connection check.)
+
+7 Connectivity test failed.
+
+8 Downloading version file failed.
+
+9 Could not find out latest i2p Browser version.
+
+10 User aborted update confirmation.
+
+11 Download failed.
+
+12 Gpg verification error.
+
+13 Hash verification error.
+
+14 User aborted installation confirmation.
+
+15 Extraction failed.
+
+130 Signal sigint received.
+
+143 Signal sigterm received.
+
+## EXAMPLES
+`update-i2pbrowser`
+
+`update-i2pbrowser --update --lang="vi"`
+
+`timeout 600 update-i2pbrowser --ordinary`
+
+## BUGS
+This script may break when the file name or RecommendedTBBVersions format
+changes or when upstream makes other changes to the start process or proxy
+settings detection method.
+
+In this case, Whonix developers will try to provide a fix as fast as possible.
+Please check Whonix News Blogs, Whonix Forum for a fix or workaround.
+
+In meanwhile you can also try the instructions for manually update i2p Browser
+in Whonix:
+https://www.whonix.org/wiki/Manually_Updating_Tor_Browser
+
+## NOTES
+Do not run as root!
+
+## PORTING
+This script is currently only tested in Whonix. It could be easily made to work
+in Tails or on any Linux.
+
+## WWW
+https://www.whonix.org/wiki/Tor_Browser
+
+## AUTHOR
+This man page has been written by Patrick Schleizer (adrelanos@riseup.net).
