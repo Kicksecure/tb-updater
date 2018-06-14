@@ -12,8 +12,7 @@ fi
 set -o pipefail
 set -o errtrace
 
-SCRIPTNAME="$(basename "$BASH_SOURCE")"
-IDENTIFIER="torbrowser-downloader"
+[ -n "$SCRIPTNAME" ] || SCRIPTNAME="$(basename "$BASH_SOURCE")"
 
 ICON="/usr/share/icons/anon-icon-pack/tbupdate.ico"
 
@@ -574,6 +573,7 @@ tb_preparation() {
       fi
    fi
 
+   [ -n "$IDENTIFIER" ] || IDENTIFIER="torbrowser-downloader"
    [ -n "$tb_install_folder" ] || tb_install_folder="tb"
    [ -n "$tb_install_folder_dot" ] || tb_install_folder_dot=".tb"
    [ -n "$tb_name" ] || tb_name="tor"
