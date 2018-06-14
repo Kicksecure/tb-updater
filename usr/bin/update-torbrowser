@@ -1356,7 +1356,7 @@ tb_gpg_verify() {
 
    gpg_bash_lib_input_verify_timeout_after="60"
    gpg_bash_lib_input_verify_kill_after="10"
-   gpg_bash_lib_input_key_import_dir="/usr/share/$tb_bin-updater-keys.d"
+   gpg_bash_lib_input_key_import_dir="/usr/share/torbrowser-updater-keys.d"
    gpg_bash_lib_input_temp_folder="$tb_gpg_tmp_dir"
    gpg_bash_lib_input_data_file="$TBB_HASH_FULL_PATH"
    gpg_bash_lib_input_sig_file="$TBB_SIG_FULL_PATH"
