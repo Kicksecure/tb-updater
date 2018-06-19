@@ -1,3 +1,17 @@
+commit 24c9f42d2c0594c906928e2efc68d47017fec815
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jun 19 07:58:11 2018 +0000
+
+    store last downloaded version during postinst to not needlessly redownload it
+    
+    if hardcoded tbb version number has not been bumped
+
+commit 1a39b6b5a5e15544aa4e037c1ef98f163616ac9b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 14 07:38:13 2018 +0000
+
+    bumped changelog version
+
 commit 9bb89416c7e30e91f6abf8bfe00c95b56ce128b2
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 14 07:06:05 2018 +0000
