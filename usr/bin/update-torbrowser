@@ -791,8 +791,33 @@ tb_preparation() {
    ## Also used by function tbbversion.
    [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
 
+   [ -n "$tbb_version_last_downloaded_save_file" ] || tbb_version_last_downloaded_save_file="$tb_cache_folder/tbb_version_last_downloaded_save_file"
+
+   if [ -f "$tbb_version_last_downloaded_save_file" ]; then
+      [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="$(cat "$tbb_version_last_downloaded_save_file")"
+   fi
+   [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="none"
+
    if [ ! "$tb_auto_set_user_home_msg" = "" ]; then
       output_echo_only "INFO: $tb_auto_set_user_home_msg"
+   fi
+
+   output_echo_only "INFO: tbb_version_previous_downloaded_version: $tbb_version_previous_downloaded_version"
+}
+
+tb_skip_if_higher_or_equal_version_already_downloaded() {
+   if [ ! "$tb_postinst" = "true" ]; then
+      return 0
+   fi
+   if [ "$tbb_version_previous_downloaded_version" = "none" ]; then
+      return 0
+   fi
+   if [ "$tbb_version" = "" ]; then
+      return 0
+   fi
+   if dpkg --compare-versions "$tbb_version_previous_downloaded_version" ge "$tbb_version" ; then
+      output_echo_only "INFO: tbb_version_previous_downloaded_version: $tbb_version_previous_downloaded_version is greater or equal $tbb_version, therefore skipping to download, ok."
+      tb_exit_function 0
    fi
 }
 
@@ -1820,6 +1845,11 @@ tb_chroot_pre_exit() {
    fi
 }
 
+tb_hardcoded_version_last_downloaded_save() {
+   echo "$tbb_version" > "$tbb_version_last_downloaded_save_file"
+   output_echo_only "INFO: Saved $tbb_version in $tbb_version_last_downloaded_save_file."
+}
+
 tb_start_ask() {
    if [ "$noaskstart" = "true" ]; then
       true "INFO: noaskstart is set to true. Skipping question if $tb_title should be started."
@@ -1946,6 +1976,7 @@ main_function() {
    tb_run_function tb_stdin
    tb_run_function tb_qubes_dvm_template
    tb_run_function tb_local_version_detection
+   tb_run_function tb_skip_if_higher_or_equal_version_already_downloaded
    tb_run_function tb_connectivity_checks_tor
    tb_run_function tb_connectivity_checks_curl
    tb_run_function tb_update_check
@@ -1969,6 +2000,7 @@ main_function() {
    tb_run_function tb_move_old_version
    tb_run_function tb_install
    tb_run_function tb_cleanup
+   tb_run_function tb_hardcoded_version_last_downloaded_save
    tb_run_function tb_chroot_pre_exit
    tb_run_function tb_start_ask
 }
