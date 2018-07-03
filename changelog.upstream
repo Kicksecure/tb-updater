@@ -1,3 +1,25 @@
+commit 53ab1e6f2683f42aad66bb36f0e720f74ebe0419
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 28 08:36:35 2018 +0800
+
+    tbb_hardcoded_version="7.5.6"
+
+commit 64436d0bad01971cee833a16991eec2f7606b5b1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 28 07:57:13 2018 +0800
+
+    update tbb signing key with new sub keys
+    
+    Thanks to @pgerber for the heads up!
+    
+    closes https://github.com/Whonix/tb-updater/pull/6
+
+commit 0a2367f093752c09b4c8a77359b36324cfa25b8d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jun 19 08:02:21 2018 +0000
+
+    bumped changelog version
+
 commit 24c9f42d2c0594c906928e2efc68d47017fec815
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Jun 19 07:58:11 2018 +0000
