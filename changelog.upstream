@@ -1,3 +1,15 @@
+commit d9dbf2a915c65b666f213753e9f0cdd4c4eecc84
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Aug 9 17:49:01 2018 +0000
+
+    Depends: msgcollector-gui
+
+commit da40eaf3538bc7b5b53c04feb3204d992e7149dc
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jul 3 05:40:54 2018 +0000
+
+    bumped changelog version
+
 commit 53ab1e6f2683f42aad66bb36f0e720f74ebe0419
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 28 08:36:35 2018 +0800
