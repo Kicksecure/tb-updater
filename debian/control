@@ -13,7 +13,7 @@ Standards-Version: 3.9.8
 
 Package: tb-updater
 Architecture: all
-Depends: msgcollector, curl, psmisc, gpg-bash-lib, pv, bsdtar,
+Depends: msgcollector-gui, curl, psmisc, gpg-bash-lib, pv, bsdtar,
  sudo, ${misc:Depends}
 Recommends: tb-starter, anon-icon-pack, anon-shared-helper-scripts,
  curl-scripts
