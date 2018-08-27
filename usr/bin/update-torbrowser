@@ -614,10 +614,6 @@ tb_preparation() {
 
    if [ "$tb_postinst" = "true" ]; then
       ## Being careful with deletion.
-      if [ "$tb_browser_folder" = "/var/cache/tb-binary/$tb_install_folder_dot/$tb_browser_name" ]; then
-         echo "rm -r -f '$tb_browser_folder'"
-         rm -r -f "$tb_browser_folder"
-      fi
       if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/$tb_install_folder/files" ]; then
          echo "rm -r -f '$tb_downloaded_files_folder'"
          rm -r -f "$tb_downloaded_files_folder"
