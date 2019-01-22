@@ -28,6 +28,9 @@ true "INFO: debhelper beginning here."
 
 true "INFO: Done with debhelper."
 
+true "anon_shared_inst_tb: $anon_shared_inst_tb"
+true "tb_onion: $tb_onion"
+
 mkdir --parents "/var/cache/tb-binary"
 chown --recursive user:user "/var/cache/tb-binary"
 
