@@ -31,6 +31,10 @@ Default action when no options are given is to performs an update check and ask
 how you want to proceed.
 
 ## OPTIONS
+  * --onion
+
+    Download from Tor Project's onion rather than clearnet domain.
+
   * --ordinary
 
     Uses curl's ordinary progress bar. Only affects run in terminal. When using
