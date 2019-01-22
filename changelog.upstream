@@ -1,3 +1,27 @@
+commit fcdb63d8d5a991645a977cc911edd3700ba0f5d2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 22 07:23:28 2019 +0000
+
+    debugging
+
+commit 911e10ed4f9c78451d482bb56b69597a0cbb5eb8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 22 07:11:29 2019 +0000
+
+    man
+
+commit 9f758e241d1a699de96de0784a9e6cf93fe0d440
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 22 07:10:29 2019 +0000
+
+    implement --onion
+
+commit bc897d8b7b5c8159c20a9bbe1d6122cb66b32a00
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Dec 17 09:18:59 2018 +0000
+
+    bumped changelog version
+
 commit 456b5f92ec8a45ecf8576538f2ebc89f352fc166
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Dec 17 04:12:20 2018 -0500
