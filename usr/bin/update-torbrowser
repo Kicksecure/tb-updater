@@ -297,6 +297,10 @@ tb_parse_cmd_options() {
                [ -n "$ordinary" ] || ordinary="true"
                shift
                ;;
+           --onion)
+               [ -n "$tb_onion" ] || tb_onion="true"
+               shift
+               ;;
            --i2p)
                ## This option downloads a Tor Browser Bundle to a custom path,
                ## intended to be used with i2p. It does no modification to the
@@ -748,14 +752,17 @@ tb_preparation() {
    mkdir --parents "$tb_cache_folder"
    mkdir --parents "$tb_downloaded_files_folder"
 
-   ## {{ Download from the torproject.org clearnet by default instead from
-   ##    their hidden service.
+   if [ "$tb_onion" = "true" ]; then
+      [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://rqef5a5mebgq46y5.onion"
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="http://expyuzz4wqqyqhjn.onion/projects/torbrowser/RecommendedTBBVersions"
+   else
+      ## Download from the torproject.org clearnet by default.
+      [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://dist.torproject.org"
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
+      [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.2 --proto =https"
+   fi
 
-   [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://dist.torproject.org"
    [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="$tbb_download_base_url/torbrowser"
-   [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.2 --proto =https"
-
-   ## }}
 
    if [ "$DEV_PASSTHROUGH" = "1" ]; then
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
@@ -949,8 +956,6 @@ tb_update_check() {
          tb_exit_function 0
       fi
    fi
-
-   [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
 
    tb_notify_details="Checking $tb_title version... Will take a moment..."
    output_echo_only "INFO: Find out latest version... Downloading: $TBB_VERSIONS_FILE_LINK... "
