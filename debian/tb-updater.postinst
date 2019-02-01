@@ -30,6 +30,7 @@ true "INFO: Done with debhelper."
 
 true "anon_shared_inst_tb: $anon_shared_inst_tb"
 true "tb_onion: $tb_onion"
+true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
 
 mkdir --parents "/var/cache/tb-binary"
 chown --recursive user:user "/var/cache/tb-binary"
