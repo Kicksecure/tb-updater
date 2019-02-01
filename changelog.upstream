@@ -1,3 +1,25 @@
+commit 9c0c9814a8e1ac1e71c81a034a1dcce7001ddd33
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Feb 1 08:45:44 2019 +0000
+
+    debugging
+
+commit 22c77da33e359252f52baca1ac0fc2ab91460727
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Feb 1 08:41:46 2019 +0000
+
+    fix, run anon-ws-dns-conf handling at appropriate time
+    
+    after parsing all variables, config and command line input
+    
+    thereby fix an issue breaking the build process
+
+commit 4898edaef8f3e4ad4871c3ea97f7c5f4396b03aa
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Feb 1 07:22:41 2019 +0000
+
+    bumped changelog version
+
 commit 9a107265b899ad3118cbf658af3b7786b50133a1
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jan 31 14:55:45 2019 -0500
