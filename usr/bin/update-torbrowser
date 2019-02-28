@@ -814,6 +814,10 @@ tb_preparation() {
    fi
    [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="none"
 
+   if ! test -f /usr/share/whonix/marker ; then
+      [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
+   fi
+
    if [ ! "$tb_auto_set_user_home_msg" = "" ]; then
       output_echo_only "INFO: $tb_auto_set_user_home_msg"
    fi
