@@ -1,3 +1,49 @@
+commit a803b6e0f314fbeb6269bbd4bd1c9ecc8ac63d6c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Feb 28 19:21:39 2019 +0000
+
+    cleanup
+
+commit 1e9a3d28f527d9a4d2e4d4e8389a6292e12db11c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Feb 28 18:14:04 2019 +0000
+
+    skip Tor connectivity check if running outside of Whonix
+
+commit 40177c2a99f6706e00dcdf54ff94216b78b4307a
+Merge: cbb55ac 867c23c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Feb 28 05:22:28 2019 -0500
+
+    Merge remote-tracking branch 'origin/master'
+
+commit 867c23c1e2b4f7b270bd59ea84ccadbd4c5c5f6c
+Merge: cbb55ac 8da835d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Feb 28 05:21:53 2019 -0500
+
+    Merge pull request #8 from 0brand/master
+    
+    Tor Browser without Tor with normal browser settings.
+
+commit 8da835d900783d5a3472d6aa7ac2c3a3ee70a85d
+Author: 0brand <0brand@protonmail.com>
+Date:   Wed Feb 27 23:55:35 2019 +0000
+
+    Check if Tor is working in Browser
+
+commit d69dce9f404d8df3d0e963384e93671968b29c62
+Author: 0brand <0brand@protonmail.com>
+Date:   Fri Feb 22 01:38:53 2019 +0000
+
+    Tor Browser without Tor with normal browser settings.
+
+commit cbb55ac1266651c0223792e76d350e08a9ef5516
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Feb 16 08:26:19 2019 +0000
+
+    bumped changelog version
+
 commit 69165b1b33929bf27a5228f0f3c32b23e150e0d9
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat Feb 16 03:25:15 2019 -0500
