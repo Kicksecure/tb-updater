@@ -1,3 +1,15 @@
+commit 7edfd2e846fd7dd75c2e3265029ccc066932f095
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Mar 1 07:29:47 2019 +0000
+
+    fix UpdatesProxy detection in non-Whonix TemplateVM
+
+commit 2e547d4efb190c15713a3f83c587d115b67a4259
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Mar 1 05:19:19 2019 +0000
+
+    bumped changelog version
+
 commit a803b6e0f314fbeb6269bbd4bd1c9ecc8ac63d6c
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Feb 28 19:21:39 2019 +0000
