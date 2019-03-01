@@ -779,25 +779,27 @@ tb_preparation() {
 
    if [ "$DEV_PASSTHROUGH" = "1" ]; then
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
+   elif [ "$qubes_vm_type" = "TemplateVM" ]; then
+      ## Use Qubes updates proxy.
+      if [ "$CURL_PROXY" = "" ]; then
+         if systemctl -q is-active qubes-updates-proxy-forwarder.socket; then
+            PROXY_SERVER='http://127.0.0.1:8082/'
+         else
+            PROXY_SERVER='http://10.137.255.254:8082/'
+         fi
+         CURL_PROXY="--proxy $PROXY_SERVER"
+      fi
    elif [ -f /usr/share/anon-dist/marker ]; then
       ## sets: GATEWAY_IP
       eval $(/usr/lib/anon-shared-helper-scripts/settings_echo)
       [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
-      if [ "$qubes_vm_type" = "TemplateVM" ]; then
-         ## Use Qubes updates proxy.
-         if [ "$CURL_PROXY" = "" ]; then
-            source /usr/lib/qubes-whonix/utility_functions.sh
-            CURL_PROXY="--proxy $PROXY_SERVER"
-         fi
-      else
-         if [ "$socks_user_name" = "" ]; then
-            local uuid_temp
-            uuid_temp="$(cat "/proc/sys/kernel/random/uuid")"
-            socks_user_name="tb-updater"
-            socks_user_name="${socks_user_name}_${uuid_temp}"
-         fi
-         [ -n "$CURL_PROXY" ] || CURL_PROXY="--proxy socks5h://$socks_user_name:password@$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD"
+      if [ "$socks_user_name" = "" ]; then
+         local uuid_temp
+         uuid_temp="$(cat "/proc/sys/kernel/random/uuid")"
+         socks_user_name="tb-updater"
+         socks_user_name="${socks_user_name}_${uuid_temp}"
       fi
+      [ -n "$CURL_PROXY" ] || CURL_PROXY="--proxy socks5h://$socks_user_name:password@$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD"
    else
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
    fi
