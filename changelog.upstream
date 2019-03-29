@@ -1,3 +1,27 @@
+commit 77ea96a6c1cfb51ddb3d16e69a5d7444130b46e7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Mar 29 09:03:19 2019 +0000
+
+    https://www.whonix.org/wiki/Dev/Licensing
+
+commit 870d1ba4a879c954529e5ad715d390b05fbf031f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Mar 25 11:56:34 2019 -0400
+
+    tbb_hardcoded_version="8.0.8"
+
+commit 153d41bc883e1bf09ac00f9d1d8ab91901626a90
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Mar 21 04:57:29 2019 -0400
+
+    tbb_hardcoded_version="8.0.7"
+
+commit f778bc65740059706c734c211f72b583363caacd
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Mar 12 11:39:35 2019 +0000
+
+    bumped changelog version
+
 commit 74994965d2db575fb80a89e307b4b80953279e0e
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Mar 1 14:32:42 2019 +0000
