@@ -39,12 +39,13 @@ if ischroot --default-false ; then
    chroot_maybe="--is-chroot"
 fi
 
-tpo_downloader_debug="$tpo_downloader_debug" \
-   update-torbrowser \
-      $chroot_maybe \
-      --postinst
+## TODO:
+#tpo_downloader_debug="$tpo_downloader_debug"
 
-chown user:user "/var/cache/tb-binary"
+runuser --preserve-environment -u user -- \
+      update-torbrowser \
+         $chroot_maybe \
+         --postinst
 
 true "
 #####################################################################
