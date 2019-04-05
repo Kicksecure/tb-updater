@@ -1,2 +1,5 @@
 ## see var/cache/tb-updater/placeholder
 tb-updater: file-in-unusual-dir var/cache/tb-updater/placeholder
+
+## Only during build in chroot.
+tb-updater: uses-dpkg-database-directly usr/bin/update-torbrowser

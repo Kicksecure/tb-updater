@@ -33,7 +33,7 @@ true "tb_onion: $tb_onion"
 true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
 
 mkdir --parents "/var/cache/tb-binary"
-chown --recursive user:user "/var/cache/tb-binary"
+chown user:user "/var/cache/tb-binary"
 
 if ischroot --default-false ; then
    chroot_maybe="--is-chroot"
@@ -44,7 +44,7 @@ tpo_downloader_debug="$tpo_downloader_debug" \
       $chroot_maybe \
       --postinst
 
-chown --recursive user:user "/var/cache/tb-binary"
+chown user:user "/var/cache/tb-binary"
 
 true "
 #####################################################################
