@@ -1,3 +1,43 @@
+commit 1e6366f2bed200be6bfc99eaec90cc6f1988cfb5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Apr 5 09:45:56 2019 -0400
+
+    user runuser instead since we no longer can use chown --recursive
+    
+    to avoid file permission issues
+
+commit 25c2a7a3ef9a21b126c254b690e7e2916808ecda
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Apr 5 09:32:25 2019 -0400
+
+    fix lintian warnings
+    
+    maintainer-script-should-not-use-recursive-chown-or-chmod
+
+commit 49d09ba41c7b80c0b40b43a56aca2edc6d208bc9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Apr 4 11:07:58 2019 -0400
+
+    port to debian buster
+
+commit ba5cf068affcc7a484a67264d532073f6bfe03ec
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Apr 4 05:51:07 2019 -0400
+
+    port to debian buster
+
+commit b9e05d5740ed8c2e780563c33a5d7e62cb65d7ad
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Apr 3 18:05:57 2019 -0400
+
+    readme
+
+commit 8b63a8f161e93d9779b25deba37f06a5ddc2b193
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Mar 31 10:59:17 2019 +0000
+
+    bumped changelog version
+
 commit c80a4233003564fd648555110e17de9210cd72e5
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun Mar 31 10:55:14 2019 +0000
