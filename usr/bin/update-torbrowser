@@ -456,7 +456,7 @@ tb_anon_ws_dns_conf() {
          if test -x /var/lib/dpkg/info/anon-ws-dns-conf.prerm ; then
             [ -n "$tb_reenable_anon_ws_dnf_conf" ] || tb_reenable_anon_ws_dnf_conf=true
             ## Restore original /etc/resolv.conf.
-            bash -x /var/lib/dpkg/info/anon-ws-dns-conf.prerm remove
+            sudo --non-interactive /bin/bash -x /var/lib/dpkg/info/anon-ws-dns-conf.prerm remove
             tb_resolv_conf_debugging
          fi
       fi
@@ -1862,7 +1862,7 @@ tb_cleanup() {
 tb_chroot_pre_exit() {
    if [ "$tb_reenable_anon_ws_dnf_conf" = "true" ]; then
       ## Restore anon-ws-dns-conf /etc/resolv.conf.
-      bash -x /var/lib/dpkg/info/anon-ws-dns-conf.postinst configure
+      sudo --non-interactive /bin/bash -x /var/lib/dpkg/info/anon-ws-dns-conf.postinst configure
       tb_resolv_conf_debugging
    fi
 }
