@@ -4,8 +4,8 @@
 ## See the file COPYING for copying conditions.
 
 ## Not using pre.bsh, so output during download will be shown.
-#if [ -f /usr/lib/pre.bsh ]; then
-   #source /usr/lib/pre.bsh
+#if [ -f /usr/lib/helper-scripts/pre.bsh ]; then
+   #source /usr/lib/helper-scripts/pre.bsh
 #fi
 
 if [ ! "$DEBDEBUG" = "" ]; then
