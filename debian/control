@@ -48,7 +48,7 @@ Description: Tor Browser Downloader by Whonix developers
  .
  When having the helper-scripts package installed (recommended for
  Anonymity Distributions), Tor Browser Downloader will check, that Tor is
- enabled,  that no package manager is currently running and that Tor finished
+ enabled, that no package manager is currently running and that Tor finished
  bootstrapping before download attempts.
  .
  This package is produced independently of, and carries no guarantee from,
