@@ -27,7 +27,7 @@ If you have the curl-scripts package installed, it will show a nicer progress
 bar when run in terminal and more meaningful curl exit code messages, when
 curl failed.
 
-When having the anon-shared-helper-scripts package installed (recommended for
+When having the helper-scripts package installed (recommended for
 Anonymity Distributions), Tor Browser Downloader will check, that Tor is
 enabled,  that no package manager is currently running and that Tor finished
 bootstrapping before download attempts.

@@ -637,7 +637,7 @@ tb_preparation() {
       fi
    fi
 
-   ## Required for /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh.
+   ## Required for /usr/lib/helper-scripts/tor_bootstrap_check.bsh.
    TEMP_DIR="$tb_temp_folder"
    export TEMP_DIR
    rm --recursive --force "$TEMP_DIR"
@@ -791,7 +791,7 @@ tb_preparation() {
       fi
    elif [ -f /usr/share/anon-dist/marker ]; then
       ## sets: GATEWAY_IP
-      eval $(/usr/lib/anon-shared-helper-scripts/settings_echo)
+      eval $(/usr/lib/helper-scripts/settings_echo)
       [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
       if [ "$socks_user_name" = "" ]; then
          local uuid_temp
@@ -856,10 +856,10 @@ tb_connectivity_checks_tor() {
       return 0
    fi
 
-   if [ -x /usr/lib/anon-shared-helper-scripts/tor_enabled_check ]; then
+   if [ -x /usr/lib/helper-scripts/tor_enabled_check ]; then
       echo -n "INFO: Running Tor enabled check... "
 
-      source /usr/lib/anon-shared-helper-scripts/tor_enabled_check
+      source /usr/lib/helper-scripts/tor_enabled_check
       ## sets: TOR_ENABLED
       check_tor_enabled_do
 
@@ -883,12 +883,12 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
       fi
       echo "Done."
    else
-      true "/usr/lib/anon-shared-helper-scripts/tor_enabled_check does not exist, skipping."
+      true "/usr/lib/helper-scripts/tor_enabled_check does not exist, skipping."
    fi
 
-   if [ -x /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh ]; then
+   if [ -x /usr/lib/helper-scripts/tor_bootstrap_check.bsh ]; then
       echo -n "INFO: Running Tor bootstrap check... "
-      source /usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh
+      source /usr/lib/helper-scripts/tor_bootstrap_check.bsh
       ## sets: tor_bootstrap_percent
       tb_run_function check_tor_circuit_established
 
@@ -912,7 +912,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
       fi
       echo "Done."
    else
-      true "/usr/lib/anon-shared-helper-scripts/tor_bootstrap_check.bsh not available, skipping."
+      true "/usr/lib/helper-scripts/tor_bootstrap_check.bsh not available, skipping."
    fi
 
    true "Tor fully bootstrapped."
