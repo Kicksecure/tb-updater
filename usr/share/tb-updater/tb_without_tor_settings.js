@@ -4,11 +4,11 @@
 
 // Warning! These settings disable Tor. You will not be anonymous!
 
-// Configure Tor Browser without Tor settings for an everyday use 
-// security hardened browser. Take advantag of its excellent 
+// Configure Tor Browser without Tor settings for an everyday use
+// security hardened browser. Take advantag of its excellent
 // enhancements for reducing linkability, that is, "the ability
-// for a user's activity on one site to be linked with their 
-// activity on another site without their knowledge or explicit 
+// for a user's activity on one site to be linked with their
+// activity on another site without their knowledge or explicit
 // consent."
 // - See https://whonix.org/wiki/Tor_Browser_without_Tor
 
