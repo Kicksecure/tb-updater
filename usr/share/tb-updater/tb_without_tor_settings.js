@@ -5,7 +5,7 @@
 // Warning! These settings disable Tor. You will not be anonymous!
 
 // Configure Tor Browser without Tor settings for an everyday use
-// security hardened browser. Take advantag of its excellent
+// security hardened browser. Take advantage of its excellent
 // enhancements for reducing linkability, that is, "the ability
 // for a user's activity on one site to be linked with their
 // activity on another site without their knowledge or explicit
