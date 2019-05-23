@@ -1,3 +1,47 @@
+commit a2b56e6058a20dcd8d18c03667210cd9fbb55d37
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu May 23 22:36:45 2019 +0000
+
+    tbb_hardcoded_version="8.5"
+
+commit 063e32593b3ff34ee3528d16940f56300a9a8398
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu May 23 06:45:26 2019 -0400
+
+    save passwords by default for Non-Whonix ™ Tor Browser
+    
+    https://www.whonix.org/wiki/Install_Tor_Browser_Outside_of_Whonix
+
+commit c047a66b4fe61ceee63e4ab72e097e8997e3fa78
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu May 23 06:43:20 2019 -0400
+
+    coypright
+
+commit b4c74536aa58a3ce82070e1c530f4bc996ba4269
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu May 23 06:43:05 2019 -0400
+
+    minor
+
+commit 19ae966faf5796db91d6f7050dfcb86cd2dec1cb
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu May 23 06:42:52 2019 -0400
+
+    typo
+
+commit 8d0bc710ad2673b317330ca8da06837015d1e204
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu May 23 06:42:25 2019 -0400
+
+    minor
+
+commit 86ac38879ab4711c389ecc2450a991ecb5a7c89d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun May 12 10:50:44 2019 +0000
+
+    bumped changelog version
+
 commit 69100bd44ff74deb6801fd568904358333f05941
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun May 12 03:10:19 2019 -0400
