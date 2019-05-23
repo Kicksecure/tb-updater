@@ -20,3 +20,10 @@ user_pref("network.proxy.socks_remote_dns", false);
 // Normalize Tor Browser behavior
 user_pref("extensions.torbutton.noscript_persist", true);
 user_pref("browser.privatebrowsing.autostart", false);
+
+// Save passwords.
+user_pref("signon.rememberSignons", true);
+
+// Required for saving passwords.
+// https://trac.torproject.org/projects/tor/ticket/30565#comment:7
+user_pref("security.nocertdb", false);
