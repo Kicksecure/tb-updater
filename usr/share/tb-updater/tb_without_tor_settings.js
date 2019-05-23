@@ -16,6 +16,7 @@
 user_pref("extensions.torbutton.startup", false);
 user_pref("extensions.torlauncher.start_tor", false);
 user_pref("network.proxy.socks_remote_dns", false);
+
 // Normalize Tor Browser behavior
 user_pref("extensions.torbutton.noscript_persist", true);
 user_pref("browser.privatebrowsing.autostart", false);
