@@ -5,17 +5,17 @@ Source: tb-updater
 Section: misc
 Priority: optional
 Maintainer: Patrick Schleizer <adrelanos@riseup.net>
-Build-Depends: debhelper (>= 9), genmkfile, ruby-ronn, dh-systemd
+Build-Depends: debhelper (>= 12), genmkfile, ronn
 Homepage: https://github.com/Whonix/tb-updater
 Vcs-Browser: https://github.com/Whonix/tb-updater
 Vcs-Git: https://github.com/Whonix/tb-updater.git
-Standards-Version: 3.9.8
+Standards-Version: 4.3.0
 
 Package: tb-updater
 Architecture: all
 Depends: msgcollector-gui, curl, psmisc, gpg-bash-lib, pv, bsdtar,
  sudo, ${misc:Depends}
-Recommends: tb-starter, anon-icon-pack, anon-shared-helper-scripts,
+Recommends: tb-starter, anon-icon-pack, helper-scripts,
  curl-scripts
 Suggests: tb-default-browser, open-link-confirmation
 Description: Tor Browser Downloader by Whonix developers
@@ -46,9 +46,9 @@ Description: Tor Browser Downloader by Whonix developers
  bar when run in terminal and more meaningful curl exit code messages, when
  curl failed.
  .
- When having the anon-shared-helper-scripts package installed (recommended for
+ When having the helper-scripts package installed (recommended for
  Anonymity Distributions), Tor Browser Downloader will check, that Tor is
- enabled,  that no package manager is currently running and that Tor finished
+ enabled, that no package manager is currently running and that Tor finished
  bootstrapping before download attempts.
  .
  This package is produced independently of, and carries no guarantee from,

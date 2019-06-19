@@ -4,8 +4,8 @@
 ## See the file COPYING for copying conditions.
 
 ## Not using pre.bsh, so output during download will be shown.
-#if [ -f /usr/lib/pre.bsh ]; then
-   #source /usr/lib/pre.bsh
+#if [ -f /usr/lib/helper-scripts/pre.bsh ]; then
+   #source /usr/lib/helper-scripts/pre.bsh
 #fi
 
 if [ ! "$DEBDEBUG" = "" ]; then
@@ -33,18 +33,19 @@ true "tb_onion: $tb_onion"
 true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
 
 mkdir --parents "/var/cache/tb-binary"
-chown --recursive user:user "/var/cache/tb-binary"
+chown user:user "/var/cache/tb-binary"
 
 if ischroot --default-false ; then
    chroot_maybe="--is-chroot"
 fi
 
-tpo_downloader_debug="$tpo_downloader_debug" \
-   update-torbrowser \
-      $chroot_maybe \
-      --postinst
+## TODO:
+#tpo_downloader_debug="$tpo_downloader_debug"
 
-chown --recursive user:user "/var/cache/tb-binary"
+runuser --preserve-environment -u user -- \
+      update-torbrowser \
+         $chroot_maybe \
+         --postinst
 
 true "
 #####################################################################

@@ -108,6 +108,9 @@ Either check.torproject.org has been compromised or this is a Whonix bug."
       fi
       ## }} parsing old format
 
+      ## https://trac.torproject.org/projects/tor/ticket/29936#comment:5
+      temp="$(echo "$temp" | sed 's/&#34;//g')"
+
       tbbversions_found="$(( $tbbversions_found + 1 ))"
 
       if [ "$tbb_recommended_versions_list" = "UNKNOWN" ]; then

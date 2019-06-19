@@ -1,3 +1,315 @@
+commit a3efaa83299d0c45ff670946704f4470e029ba5f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jun 9 05:18:46 2019 -0400
+
+    tbb_hardcoded_version="8.5.1"
+
+commit b4aeabde5258bec272d7cf1d47cc0db8da3d3d38
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jun 8 11:35:37 2019 +0000
+
+    bumped changelog version
+
+commit 7a5a64b7d2ccdc9528229808ad198ddf52855917
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jun 8 00:05:36 2019 -0400
+
+    fix debian/watch lintian warning debian-watch-contains-dh_make-template
+
+commit 7ffc4e0a8b9fc691f0fabe5eb44a550c124fd0ce
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri May 24 20:55:33 2019 +0000
+
+    bumped changelog version
+
+commit cbe3b456fe3ee407f691969cb78c38afd2ee929b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri May 24 12:29:10 2019 -0400
+
+    readme
+
+commit 4f8b57f4ca4fa0ba7d2db55e0d931488181ffe2b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu May 23 22:38:41 2019 +0000
+
+    bumped changelog version
+
+commit a2b56e6058a20dcd8d18c03667210cd9fbb55d37
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu May 23 22:36:45 2019 +0000
+
+    tbb_hardcoded_version="8.5"
+
+commit 063e32593b3ff34ee3528d16940f56300a9a8398
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu May 23 06:45:26 2019 -0400
+
+    save passwords by default for Non-Whonix ™ Tor Browser
+    
+    https://www.whonix.org/wiki/Install_Tor_Browser_Outside_of_Whonix
+
+commit c047a66b4fe61ceee63e4ab72e097e8997e3fa78
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu May 23 06:43:20 2019 -0400
+
+    coypright
+
+commit b4c74536aa58a3ce82070e1c530f4bc996ba4269
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu May 23 06:43:05 2019 -0400
+
+    minor
+
+commit 19ae966faf5796db91d6f7050dfcb86cd2dec1cb
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu May 23 06:42:52 2019 -0400
+
+    typo
+
+commit 8d0bc710ad2673b317330ca8da06837015d1e204
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu May 23 06:42:25 2019 -0400
+
+    minor
+
+commit 86ac38879ab4711c389ecc2450a991ecb5a7c89d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun May 12 10:50:44 2019 +0000
+
+    bumped changelog version
+
+commit 69100bd44ff74deb6801fd568904358333f05941
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun May 12 03:10:19 2019 -0400
+
+    minor
+
+commit 35777be2facce04ec519e68cf3c3ffe521a01699
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun May 12 02:58:45 2019 -0400
+
+    update path to pre.bsh
+
+commit 8c45de0a16e09fc07fc442279c1768ada707d249
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun May 12 02:50:16 2019 -0400
+
+    anon-shared-helper-scripts -> helper-scripts
+
+commit 55b9b8d361bb1c3f4500cc565e5d9a7171620c28
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed May 8 10:33:26 2019 +0000
+
+    bumped changelog version
+
+commit 35b1da98cd9ec3b5fdfcede95117ec736c2dc0b9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed May 8 10:32:33 2019 +0000
+
+    tbb_hardcoded_version="8.0.9"
+
+commit f87b1c012af609b04d31b1f7600a4cc224815164
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri May 3 11:37:32 2019 +0000
+
+    bumped changelog version
+
+commit 6034fc325b1b83ada96fb662edcc9d12614860a0
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri May 3 10:56:57 2019 +0000
+
+    update
+
+commit a08ce38012b0523dd3607b9608bb0b3da4d1a117
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Apr 10 17:27:07 2019 -0400
+
+    bumped changelog version
+
+commit b0a5566dc4b568c0642a19c27a551759a83bc16c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Apr 10 17:26:12 2019 -0400
+
+    sudo
+
+commit 291c06a0f8929fe5d3d2d8715a1b33f4ca0322ef
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Apr 6 12:16:44 2019 +0000
+
+    bumped changelog version
+
+commit 1e6366f2bed200be6bfc99eaec90cc6f1988cfb5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Apr 5 09:45:56 2019 -0400
+
+    user runuser instead since we no longer can use chown --recursive
+    
+    to avoid file permission issues
+
+commit 25c2a7a3ef9a21b126c254b690e7e2916808ecda
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Apr 5 09:32:25 2019 -0400
+
+    fix lintian warnings
+    
+    maintainer-script-should-not-use-recursive-chown-or-chmod
+
+commit 49d09ba41c7b80c0b40b43a56aca2edc6d208bc9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Apr 4 11:07:58 2019 -0400
+
+    port to debian buster
+
+commit ba5cf068affcc7a484a67264d532073f6bfe03ec
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Apr 4 05:51:07 2019 -0400
+
+    port to debian buster
+
+commit b9e05d5740ed8c2e780563c33a5d7e62cb65d7ad
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Apr 3 18:05:57 2019 -0400
+
+    readme
+
+commit 8b63a8f161e93d9779b25deba37f06a5ddc2b193
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Mar 31 10:59:17 2019 +0000
+
+    bumped changelog version
+
+commit c80a4233003564fd648555110e17de9210cd72e5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Mar 31 10:55:14 2019 +0000
+
+    support version format using &#34;
+    
+    https://trac.torproject.org/projects/tor/ticket/29936#comment:5
+    
+    https://forums.whonix.org/t/tor-browser-downloader-by-whonix-error-could-not-find-out-latest-tor-browser-version-excessive-version-string-length-323-characters/7063
+
+commit a4c80e4aec6a9d2378d070878f86b9ef2b985cfa
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Mar 31 10:44:21 2019 +0000
+
+    follow redirects
+    
+    https://forums.whonix.org/t/tor-browser-downloader-by-whonix-error-could-not-find-out-latest-tor-browser-version-excessive-version-string-length-323-characters/7063/8
+
+commit 5112520eb6b89b4124f859b6760e96b1c64d0676
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Mar 29 10:05:55 2019 +0000
+
+    bumped changelog version
+
+commit 77ea96a6c1cfb51ddb3d16e69a5d7444130b46e7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Mar 29 09:03:19 2019 +0000
+
+    https://www.whonix.org/wiki/Dev/Licensing
+
+commit 870d1ba4a879c954529e5ad715d390b05fbf031f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Mar 25 11:56:34 2019 -0400
+
+    tbb_hardcoded_version="8.0.8"
+
+commit 153d41bc883e1bf09ac00f9d1d8ab91901626a90
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Mar 21 04:57:29 2019 -0400
+
+    tbb_hardcoded_version="8.0.7"
+
+commit f778bc65740059706c734c211f72b583363caacd
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Mar 12 11:39:35 2019 +0000
+
+    bumped changelog version
+
+commit 74994965d2db575fb80a89e307b4b80953279e0e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Mar 1 14:32:42 2019 +0000
+
+    add improved legal protections clauses
+    
+    The license for software created by Whonix is the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version with additional terms applicable per GNU GPL version 3 section 7.
+    
+    The additional terms are based on the Doom 3 license which is Debian refers to as `GPL-3+-with-id-software-additional-terms`, which is Debian DFSG [1] (The Debian Free Software Guidelines) approved and which is therefore suitable for Debian `main`. Whonix made applied minimal changes to it:
+    
+    * Rewrite `The Doom 3 BFG Edition GPL Source Code` to the more common `this program` which is used throughout the GPL.
+    * Added a "trump clause" [2], in other words, any conflicts or disputes between the additional terms and the GPLv3 shall be resolved in favor of the GPLv3 by adding `Notwithstanding any other provision of this License` (as mentioned in GPL FAQ [3]) at the beginning of the additional terms.
+    
+    [1] https://www.debian.org/social_contract#guidelines
+    [2] https://www.fsf.org/news/canonical-updated-licensing-terms
+    [3] https://www.gnu.org/licenses/gpl-faq.html#v3Notwithstanding
+    
+    For more considerations, see also:
+    https://www.whonix.org/wiki/Dev/Licensing
+
+commit 3b90f003c36f3cea133e00fa96c99d905be13e05
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Mar 1 07:30:32 2019 +0000
+
+    bumped changelog version
+
+commit 7edfd2e846fd7dd75c2e3265029ccc066932f095
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Mar 1 07:29:47 2019 +0000
+
+    fix UpdatesProxy detection in non-Whonix TemplateVM
+
+commit 2e547d4efb190c15713a3f83c587d115b67a4259
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Mar 1 05:19:19 2019 +0000
+
+    bumped changelog version
+
+commit a803b6e0f314fbeb6269bbd4bd1c9ecc8ac63d6c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Feb 28 19:21:39 2019 +0000
+
+    cleanup
+
+commit 1e9a3d28f527d9a4d2e4d4e8389a6292e12db11c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Feb 28 18:14:04 2019 +0000
+
+    skip Tor connectivity check if running outside of Whonix
+
+commit 40177c2a99f6706e00dcdf54ff94216b78b4307a
+Merge: cbb55ac 867c23c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Feb 28 05:22:28 2019 -0500
+
+    Merge remote-tracking branch 'origin/master'
+
+commit 867c23c1e2b4f7b270bd59ea84ccadbd4c5c5f6c
+Merge: cbb55ac 8da835d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Feb 28 05:21:53 2019 -0500
+
+    Merge pull request #8 from 0brand/master
+    
+    Tor Browser without Tor with normal browser settings.
+
+commit 8da835d900783d5a3472d6aa7ac2c3a3ee70a85d
+Author: 0brand <0brand@protonmail.com>
+Date:   Wed Feb 27 23:55:35 2019 +0000
+
+    Check if Tor is working in Browser
+
+commit d69dce9f404d8df3d0e963384e93671968b29c62
+Author: 0brand <0brand@protonmail.com>
+Date:   Fri Feb 22 01:38:53 2019 +0000
+
+    Tor Browser without Tor with normal browser settings.
+
+commit cbb55ac1266651c0223792e76d350e08a9ef5516
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Feb 16 08:26:19 2019 +0000
+
+    bumped changelog version
+
 commit 69165b1b33929bf27a5228f0f3c32b23e150e0d9
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat Feb 16 03:25:15 2019 -0500

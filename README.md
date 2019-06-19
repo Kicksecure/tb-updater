@@ -27,9 +27,9 @@ If you have the curl-scripts package installed, it will show a nicer progress
 bar when run in terminal and more meaningful curl exit code messages, when
 curl failed.
 
-When having the anon-shared-helper-scripts package installed (recommended for
+When having the helper-scripts package installed (recommended for
 Anonymity Distributions), Tor Browser Downloader will check, that Tor is
-enabled,  that no package manager is currently running and that Tor finished
+enabled, that no package manager is currently running and that Tor finished
 bootstrapping before download attempts.
 
 This package is produced independently of, and carries no guarantee from,
@@ -48,7 +48,7 @@ sudo apt-key --keyring /etc/apt/trusted.gpg.d/whonix.gpg adv --keyserver hkp://i
 3\. Add Whonix's APT repository.
 
 ```
-echo "deb http://deb.whonix.org stretch main" | sudo tee /etc/apt/sources.list.d/whonix.list
+echo "deb http://deb.whonix.org buster main contrib non-free" | sudo tee /etc/apt/sources.list.d/whonix.list
 ```
 
 4\. Update your package lists.
@@ -72,6 +72,6 @@ Replace `apparmor-profile-torbrowser` with the actual name of this package with 
 * [Free Forum Support](https://forums.whonix.org)
 * [Professional Support](https://www.whonix.org/wiki/Professional_Support)
 
-## Payments ##
+## Donate ##
 
-`tb-updater` requires [payments](https://www.whonix.org/wiki/Payments) to stay alive!
+`tb-updater` requires [donations](https://www.whonix.org/wiki/Donate) to stay alive!
