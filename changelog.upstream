@@ -1,3 +1,15 @@
+commit bc427469b54ca5e59c87dd2a457ddc9e6eb0026c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 00:32:10 2019 -0400
+
+    tbb_hardcoded_version="8.5.2"
+
+commit 4f62bfc361603fcb80eff928bac07cd0686406fc
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jun 10 15:43:30 2019 +0000
+
+    bumped changelog version
+
 commit a3efaa83299d0c45ff670946704f4470e029ba5f
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun Jun 9 05:18:46 2019 -0400
