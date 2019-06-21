@@ -1929,12 +1929,15 @@ y/n?"
       return 0
    fi
 
+   output_echo_only "INFO: GUI is asking to start $tb_title."
    answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
    if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
       output_echo_only "INFO: Canceled starting $tb_title, ok."
       return 0
    else
+      output_echo_only "INFO: Running $tb_title."
       $tb_bin
+      output_echo_only "INFO: $tb_title was terminated, ok."
       return 0
    fi
 }
