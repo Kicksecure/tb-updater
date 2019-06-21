@@ -1109,7 +1109,7 @@ Only versions still considered secure should be listed here. Higher version numb
 
    updater_vs_downloader_msg="\
 Since The Tor Project configured TBB to automatically update itself,
-if you would like to keep your browser profile and update rather than re-downloading TBB, you are better off using \
+if you would like to keep your browser profile and update rather than re-downloading $tb_title, you are better off using \
 <a href=https://www.whonix.org/wiki/Tor_Browser/Internal_Updater>$tb_title's internal updater</a>. \
 In that case, say no now.<br></br>
 <br></br>
@@ -1121,7 +1121,7 @@ YOUR BROWSER WILL BE KILLED.<br></br>
 YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.<br></br>
 <br></br>
 A backup of your old $tb_title and settings will be created in folder <code>$tb_home_folder</code>.
-<br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space."
+<br></br>It is a good idea to delete old $tb_title backups once in a while if you are running low with disk space."
 
    confirmation_screen_learn_more_link="\
 <a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a>"
