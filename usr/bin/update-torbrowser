@@ -1108,8 +1108,8 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
 Only versions still considered secure should be listed here. Higher version numbers does not necessarily mean more secure here. Could be alpha or beta versions. In most cases you are best off choosing the lowest version number among them."
 
    updater_vs_downloader_msg="\
-Since The Tor Project configured TBB to automatically update itself,
-if you would like to keep your browser profile and update rather than re-downloading $tb_title, you are better off using \
+If you would like to keep your browser profile and update rather than re-downloading $tb_title, \
+you must use \
 <a href=https://www.whonix.org/wiki/Tor_Browser/Internal_Updater>$tb_title's internal updater</a>. \
 In that case, say no now.<br></br>
 <br></br>
