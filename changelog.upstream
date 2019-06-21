@@ -1,3 +1,137 @@
+commit f34fd09770548bbe8aeb6538766fd1d00fee86ba
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 23:23:09 2019 -0400
+
+    output
+
+commit 09db795697aa1c7fd7968aeec8307ecc4eb0ae13
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 23:18:35 2019 -0400
+
+    output
+
+commit 7238a3e9ece82fd48807616a7dcf33ac1c27496a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 23:13:15 2019 -0400
+
+    output
+
+commit 36561b7f8b54605ea33f4842930f2cdabcd17365
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 23:04:33 2019 -0400
+
+    re-implement Tor Browser local version number detection
+    
+    https://phabricator.whonix.org/T400
+
+commit 3bd352a4c3da2c0c196388d42a6ea462176da668
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 22:41:18 2019 -0400
+
+    output
+
+commit b9aa971eb5c9adde6a874a2a7d87e095db1fb5a9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 22:11:50 2019 -0400
+
+    output
+
+commit a2fb1c329927a9cc9ade32f8631705b558266891
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 22:10:48 2019 -0400
+
+    output
+
+commit 01ee1b4a13a1e7f760bc950b6addba986c6532c6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 22:07:58 2019 -0400
+
+    output
+
+commit f310ec92926ed9a572c32957becc9b91f5f880f6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 22:04:25 2019 -0400
+
+    output
+
+commit dde30921d73fd5b4e466d635532b348318b108a4
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 22:01:59 2019 -0400
+
+    output
+
+commit c95c765f10f1c6df32f8a4bf345e6560851019b7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:57:45 2019 -0400
+
+    output
+
+commit 290de503353e4f3a6213d2573bceb4fa20747ee9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:57:05 2019 -0400
+
+    output
+
+commit 2d9d1d390af638a71504e7b9a714caf48bc4f5e9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:51:57 2019 -0400
+
+    renamed:    man/update-secbrowser.1.ronn -> man/download-secbrowser.1.ronn
+
+commit 9e67d749aa57ad0cab908476938315adf1d03bce
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:51:37 2019 -0400
+
+    man page
+
+commit cb10e224ffc9d94c4f1c242382ebe9e8a78ac707
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:49:13 2019 -0400
+
+    typo
+
+commit 2315e7a87f6e55315cab280c966643f4e9f189a2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:48:06 2019 -0400
+
+    implement /usr/bin/download-secbrowser
+
+commit 20e2e148e6d3f282c70dfdd355272f4d42b356d4
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:39:12 2019 -0400
+
+    chmod +x update-i2pbrowser
+
+commit cd4bf455321b339d17622fe8c6079cd86620778e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:04:59 2019 -0400
+
+    abolish variable tb_proxy_name
+
+commit 4774d93d451fd2f124cb6f777796de71888e45db
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 20:57:58 2019 -0400
+
+    allow overwriting ICON variable
+
+commit bfdd65e9b50f77c1896befac01acde84461dbe13
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 20:56:10 2019 -0400
+
+    fix, export ICON
+
+commit 71ff4c5cb7c7913f67c87f5d406115dc80d7a0bf
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 20:53:45 2019 -0400
+
+    abolish tb_name variable (replaced by tb_title)
+
+commit 16f6dedd8b98af6f41c60879adfef07020a84355
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 04:40:21 2019 +0000
+
+    bumped changelog version
+
 commit bc427469b54ca5e59c87dd2a457ddc9e6eb0026c
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 20 00:32:10 2019 -0400
