@@ -27,3 +27,6 @@ user_pref("signon.rememberSignons", true);
 // Required for saving passwords.
 // https://trac.torproject.org/projects/tor/ticket/30565#comment:7
 user_pref("security.nocertdb", false);
+
+// Set security slider to 'safest'.
+user_pref("extensions.torbutton.security_slider", 1);
