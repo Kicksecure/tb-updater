@@ -1981,6 +1981,11 @@ tb_sort_remote_versions() {
 
    local temp
 
+   temp="$tbb_recommended_versions_list"
+   temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
+   temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
+   tbb_recommended_versions_list="$temp"
+
    temp="${tbb_recommended_versions_list//$'\n'/,}"
    temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
    temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
@@ -1992,14 +1997,19 @@ tb_sort_remote_versions() {
    tbb_recommended_versions_slash_separated="$temp"
 
    ## Only used for TB_FORCE_INSTALL.
-   if [ "$tbb_download_alpha_version" = "false" ]; then
-      ## Choose lowest version number for default file download.
-      read -r -t 2 tbb_default_download_version _ <<< "$tbb_recommended_versions_list"
    if [ "$tbb_download_alpha_version" = "true" ]; then
       ## Choose highest version number for default file download.
       tbb_default_download_version="${tbb_recommended_versions_list##*$'\n'}"
+   else
+      ## Choose lowest version number for default file download.
+      read -r -t 2 tbb_default_download_version _ <<< "$tbb_recommended_versions_list"
    fi
    true "tbb_default_download_version: $tbb_default_download_version"
+
+   temp="$tbb_default_download_version"
+   temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
+   temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
+   tbb_default_download_version="$temp"
 }
 
 main_function() {
