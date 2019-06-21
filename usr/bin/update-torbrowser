@@ -122,7 +122,7 @@ download_fail_help_set() {
 <p>
 <br></br>- Try again later. If the error persists it probably won't solve itself before the next update.
 <br></br>- Check News: <a href=https://www.whonix.org/wiki/Stay_Tuned>https://www.whonix.org/wiki/Stay_Tuned</a>
-<br></br>- Manually update: <a href=https://www.whonix.org/wiki/Tor_Browser/Manual_Download>https://www.whonix.org/wiki/Tor_Browser/Manual_Download</a>
+<br></br>- Manually update: <a href=https://www.whonix.org/wiki/$tb_wiki/Manual_Download>https://www.whonix.org/wiki/$tb_wiki/Manual_Download</a>
 </p>"
 }
 
@@ -444,8 +444,6 @@ tb_resolv_conf_debugging() {
 }
 
 tb_anon_ws_dns_conf() {
-   tb_resolv_conf_debugging
-
    true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
    if [ "$tb_disable_anon_ws_dnf_conf" = "true" ]; then
       ## Check if /etc/resolv.conf is a symlink. This is only the case
@@ -453,6 +451,7 @@ tb_anon_ws_dns_conf() {
       if test -h /etc/resolv.conf ; then
          if test -x /var/lib/dpkg/info/anon-ws-dns-conf.prerm ; then
             [ -n "$tb_reenable_anon_ws_dnf_conf" ] || tb_reenable_anon_ws_dnf_conf=true
+            tb_resolv_conf_debugging
             ## Restore original /etc/resolv.conf.
             sudo --non-interactive /bin/bash -x /var/lib/dpkg/info/anon-ws-dns-conf.prerm remove
             tb_resolv_conf_debugging
