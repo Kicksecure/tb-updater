@@ -308,7 +308,6 @@ tb_parse_cmd_options() {
                IDENTIFIER="i2pbrowser-downloader"
                tb_install_folder="i2pb"
                tb_install_folder_dot=".i2pb"
-               tb_name="i2p"
                tb_title="i2p Browser"
                tb_wiki="i2p_Browser"
                tb_browser_name="i2p-browser"
@@ -610,7 +609,6 @@ tb_preparation() {
    [ -n "$IDENTIFIER" ] || IDENTIFIER="torbrowser-downloader"
    [ -n "$tb_install_folder" ] || tb_install_folder="tb"
    [ -n "$tb_install_folder_dot" ] || tb_install_folder_dot=".tb"
-   [ -n "$tb_name" ] || tb_name="tor"
    [ -n "$tb_title" ] || tb_title="Tor Browser"
    [ -n "$tb_wiki" ] || tb_wiki="Tor_Browser"
    [ -n "$tb_browser_name" ] || tb_browser_name="tor-browser"
@@ -700,7 +698,7 @@ tb_preparation() {
 
    who_ami="$(whoami)"
 
-   TITLE="$tb_name Browser Downloader (by Whonix developers)"
+   TITLE="$tb_title Downloader (by Whonix developers)"
 
    output_tool="/usr/lib/msgcollector/msgcollector"
    output="output"
