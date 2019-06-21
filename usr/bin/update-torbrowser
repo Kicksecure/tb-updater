@@ -1592,11 +1592,11 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
    gpg_bash_lib_output_gpg_verify_output_br_added="$(/usr/lib/msgcollector/br_add "$gpg_bash_lib_output_gpg_verify_output")"
 
    MSG="<p><b>Installation confirmation</b></p><p><table><tr>
-<td>Currently installed version:</td> <td><tt> $tbb_locally_installed_version</tt></td></tr><tr>
-<td>Downloaded version         :</td> <td><tt> $tbb_version</tt></td></tr></table></p>
+<td>Currently installed version:</td> <td><tt> <code>$tbb_locally_installed_version</code></tt></td></tr><tr>
+<td>Downloaded version         :</td> <td><tt> <code>$tbb_version</code></tt></td></tr></table></p>
 <p>$signature_freshness_msg</p><p><table><tr>
-<td>Previous Signature Creation Date:</td> <td><tt> $last_used_gpg_bash_lib_output_signed_on_date</tt></td></tr><tr>
-<td>Last Signature Creation Date    :</td> <td><tt> $gpg_bash_lib_output_signed_on_date</tt></td></tr></table></p>
+<td>Previous Signature Creation Date:</td> <td><tt> <code>$last_used_gpg_bash_lib_output_signed_on_date</code></tt></td></tr><tr>
+<td>Last Signature Creation Date    :</td> <td><tt> <code>$gpg_bash_lib_output_signed_on_date</code></tt></td></tr></table></p>
 <p>$signature_creation_msg</p>
 <p><u>gpg reports</u>:<br></br>
 $gpg_bash_lib_output_gpg_verify_output_br_added</p>
