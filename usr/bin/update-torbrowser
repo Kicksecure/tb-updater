@@ -430,9 +430,13 @@ export -f outputfunc
 tb_config_folder_parser() {
    shopt -s nullglob
    local i
-   for i in /etc/${tb_settings_folder}/*.conf /rw/config/${tb_settings_folder}/*.conf; do
-      bash -n "$i"
-      source "$i"
+   for i in \
+      /etc/${tb_settings_folder}/*.conf \
+      /rw/config/${tb_settings_folder}/*.conf \
+      /usr/local/etc/${tb_settings_folder}/*.conf \
+      ; do
+         bash -n "$i"
+         source "$i"
    done
 }
 
@@ -492,10 +496,19 @@ tb_settings_postinst_common() {
    [ -n "$TB_INPUT" ] || TB_INPUT="none"
    ## Use export so it can be read by CURL_PRGRS.
    [ -n "$TB_USE_MSGCOLLECTOR" ] || export TB_USE_MSGCOLLECTOR="false"
-   ## Using hardcoded version numbers when running with --postinst.
-   [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
+
    [ -n "$tbb_use_alpha_hardcoded_version" ] || tbb_use_alpha_hardcoded_version="false"
    [ -n "$tbb_use_hardcoded_version" ] || tbb_use_hardcoded_version="true"
+
+   ## sets: tbb_hardcoded_version
+   if [ "$tbb_use_alpha_hardcoded_version" = "true" ]; then
+      source /usr/share/tb-updater/tbb_hardcoded_version
+   elif [ "$tbb_use_hardcoded_version" = "true" ]; then
+      source /usr/share/tb-updater/tbb_hardcoded_version_alpha
+   fi
+
+   ## Using hardcoded version numbers when running with --postinst.
+   [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
 
    ## Fail open, if there was an error.
    [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=open
@@ -535,13 +548,6 @@ tb_settings_manual_run_common() {
 }
 
 tb_preparation() {
-   ## sets: tbb_hardcoded_version
-   if [ "$tbb_use_alpha_hardcoded_version" = "true" ]; then
-      source /usr/share/tb-updater/tbb_hardcoded_version
-   elif [ "$tbb_use_hardcoded_version" = "true" ]; then
-      source /usr/share/tb-updater/tbb_hardcoded_version_alpha
-   fi
-
    if [ ! "$tb_postinst" = "true" ]; then
       [ -n "$tb_manual_run" ] || tb_manual_run=true
    fi
@@ -629,7 +635,13 @@ tb_preparation() {
    [ -n "$tb_local_version_file" ] || tb_local_version_file="$tb_browser_folder/Browser/tbb_version.json"
    [ -n "$tbb_download_alpha_version" ] || tbb_download_alpha_version="false"
 
+   if [ "$tbb_download_alpha_version" = "true" ]; then
+      tbb_use_alpha_hardcoded_version="true"
+   fi
+
    if [ ! "$tb_updater_run" = "true" ]; then
+      true "tb_updater_run is set to: $tb_updater_run"
+      true "therefore running: tb_exit_function 0"
       tb_exit_function 0
    fi
 
