@@ -1,3 +1,91 @@
+commit e9bfbe1eb07afca9596e8fabfdacccd7f586ac9d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 09:10:49 2019 +0000
+
+    Revert "SecBrowser: Set security slider to 'safest' by default."
+    
+    Since doe not work.
+    
+    This reverts commit 88bd9ac4e9c4bb1e441432923ade2a6d980b30ac.
+
+commit 88bd9ac4e9c4bb1e441432923ade2a6d980b30ac
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 08:56:41 2019 +0000
+
+    SecBrowser: Set security slider to 'safest' by default.
+
+commit 23c206e2db03c5166185aec2388f699c6886072c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 08:49:06 2019 +0000
+
+    fix alpha version setting
+
+commit 2d0d744022b309aca49522a1017448c25c7a521a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 08:29:13 2019 +0000
+
+    debugging
+
+commit 261ed44ec26da8fc01089b3301daa9cd4b344397
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 08:23:27 2019 +0000
+
+    output
+
+commit 229b843d5590b30b42b2488e5808bddc2e49a55f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 08:19:58 2019 +0000
+
+    implement /usr/local/etc/${tb_settings_folder}/*.conf
+
+commit 9c730731b98314260a6c26263f4cd6a24180ac9d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 07:59:24 2019 +0000
+
+    default to tbb_download_alpha_version="false"
+
+commit aea2503f07d080c9cd35fe6cc55b52751f33f538
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 07:58:02 2019 +0000
+
+    harden version parsing; fix
+
+commit ccb1aec2a1ad5fd36c6d20c389234d19b98a1e68
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 07:51:59 2019 +0000
+
+    refactoring
+
+commit b250708eebc33faae2ceda9f8c281b965dfc9cc7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 07:49:54 2019 +0000
+
+    refactoring
+
+commit 89f362ff3009ac352a84de1e7e6461e04d3c494b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 07:49:07 2019 +0000
+
+    implement option to set tbb_download_alpha_version=true
+
+commit 90de95d5a1fea484b8a9d560ada8372d42c7848c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 07:35:23 2019 +0000
+
+    implement option to set tbb_use_alpha_hardcoded_version="true"
+
+commit 7bc1d199c275d50eb50cd8648b5dadaa83e785e3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 07:31:33 2019 +0000
+
+    add usr/share/tb-updater/tbb_hardcoded_version_alpha
+
+commit 037852e74d140862215a89fcd90e8cd190f954b6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 05:41:08 2019 +0000
+
+    bumped changelog version
+
 commit 82d3dfd8aad2261e0d5c606050fe26e7eed2299d
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Jun 21 03:52:52 2019 +0000
