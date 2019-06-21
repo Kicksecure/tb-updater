@@ -312,7 +312,6 @@ tb_parse_cmd_options() {
                tb_wiki="i2p_Browser"
                tb_browser_name="i2p-browser"
                tb_settings_folder="i2pbrowser.d"
-               tb_proxy_name="i2p"
                tb_bin="i2pbrowser"
                shift
                ;;
