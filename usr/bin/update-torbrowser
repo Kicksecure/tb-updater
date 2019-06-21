@@ -1980,6 +1980,7 @@ tb_sort_remote_versions() {
    ## for the leading/trailing whitespace removal code
 
    local temp
+
    temp="${tbb_recommended_versions_list//$'\n'/,}"
    temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
    temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
