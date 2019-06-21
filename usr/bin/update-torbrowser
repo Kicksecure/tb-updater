@@ -494,6 +494,7 @@ tb_settings_postinst_common() {
    [ -n "$TB_USE_MSGCOLLECTOR" ] || export TB_USE_MSGCOLLECTOR="false"
    ## Using hardcoded version numbers when running with --postinst.
    [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
+   [ -n "$tbb_use_alpha_hardcoded_version" ] || tbb_use_alpha_hardcoded_version="false"
    [ -n "$tbb_use_hardcoded_version" ] || tbb_use_hardcoded_version="true"
 
    ## Fail open, if there was an error.
@@ -535,7 +536,11 @@ tb_settings_manual_run_common() {
 
 tb_preparation() {
    ## sets: tbb_hardcoded_version
-   source /usr/share/tb-updater/tbb_hardcoded_version
+   if [ "$tbb_use_alpha_hardcoded_version" = "true" ]; then
+      source /usr/share/tb-updater/tbb_hardcoded_version
+   elif [ "$tbb_use_hardcoded_version" = "true" ]; then
+      source /usr/share/tb-updater/tbb_hardcoded_version_alpha
+   fi
 
    if [ ! "$tb_postinst" = "true" ]; then
       [ -n "$tb_manual_run" ] || tb_manual_run=true
