@@ -428,6 +428,7 @@ export -f output
 export -f outputfunc
 
 tb_config_folder_parser() {
+   true "tb_settings_folder: $tb_settings_folder"
    shopt -s nullglob
    local i
    for i in \
