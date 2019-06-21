@@ -1230,7 +1230,7 @@ tb_version_processing() {
    else
       tbb_hardened_version_chosen="false"
    fi
-   output_echo_only "INFO: tbb_hardened_version_chosen: $tbb_hardened_version_chosen"
+   #output_echo_only "INFO: tbb_hardened_version_chosen: $tbb_hardened_version_chosen"
 
    ## Check if TB_LANG exists and is not empty.
    if [[ "$TB_LANG" && "${TB_LANG}" ]]; then
@@ -1243,7 +1243,7 @@ tb_version_processing() {
       output_echo_only "INFO: $tb_title language variable TB_LANG was not yet set and a hardened version was chosen. Therefore setting TB_LANG to 'ALL', ok."
       TB_LANG="ALL"
    else
-      output_echo_only "INFO: $tb_title language variable TB_LANG was not yet set and no hardened version was chosen. Therefore defaulting TB_LANG to 'en-US', ok."
+      output_echo_only "INFO: $tb_title language variable TB_LANG was not yet set. Therefore defaulting TB_LANG to 'en-US', ok."
       TB_LANG="en-US"
    fi
 }
