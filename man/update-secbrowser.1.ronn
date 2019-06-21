@@ -25,7 +25,7 @@ clearnet, i.e. not using The Tor network.
 It enforces TLS encryption (https) for TPO's website, downloads TBB from
 TPO's website, and uses OpenPGP verification.
 
-In case there is already a `~/.secbrowser/secbrowser` folder, it renames it
+In case there is already a `~/.secbrowser` folder, it renames it
 to ~/.secbrowser/secbrowser_(current date and time). It extracts freshly
 downloaded TBB too to `~/.secbrowser/secbrowser`.
 
