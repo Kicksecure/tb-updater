@@ -47,14 +47,14 @@ tb_exit_function() {
       if [ "$tb_postinst" = "true" ]; then
          echo "\
 INFO: Failing open. More info:
-https://www.whonix.org/wiki/Tor_Browser#tb-updater_postinst"
+https://www.whonix.org/wiki/$tb_wiki#tb-updater_postinst"
       fi
       exit 0
    else
       if [ "$tb_postinst" = "true" ]; then
          echo "\
 INFO: Failing closed. More info:
-https://www.whonix.org/wiki/Tor_Browser#tb-updater_postinst"
+https://www.whonix.org/wiki/$tb_wiki#tb-updater_postinst"
       fi
       exit "$exit_code"
    fi
@@ -69,7 +69,7 @@ tb_error_handler() {
 <br></br>## has been hit. Try again later. There is likely a
 <br></br>## solution for this problem. Please see the Whonix News,
 <br></br>## Whonix User Help Forum and Whonix Documentation.
-<br></br>## <a href=https://www.whonix.org/wiki/Tor_Browser>https://www.whonix.org/wiki/Tor_Browser</a>
+<br></br>## <a href=https://www.whonix.org/wiki/$tb_wiki>https://www.whonix.org/wiki/$tb_wiki</a>
 <br></br>## Please report this bug!
 <br></br>##
 <br></br>## BASH_COMMAND: $BASH_COMMAND
@@ -369,7 +369,7 @@ tb_qubes_dvm_template() {
    local MSG="\
 <p>Do not run $tb_title in Qubes DVM Template!<br></br>
 <br></br>
-More info: <a href=https://www.whonix.org/wiki/Tor_Browser#Running_Tor_Browser_in_Qubes_DVM_Template>https://www.whonix.org/wiki/Tor_Browser#Running_Tor_Browser_in_Qubes_DVM_Template</a></p>"
+More info: <a href=https://www.whonix.org/wiki/$tb_wiki#Running_in_Qubes_DVM_Template>https://www.whonix.org/wiki/$tb_wiki#Running_in_Qubes_DVM_Template</a></p>"
 
    $output ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
    $output ${output_opts[@]} --messagecli --titlecli "$TITLE" --typecli "error" --message "$MSG" --done
@@ -516,7 +516,7 @@ tb_settings_qubes_postinst_templatevm() {
       tb_user_home="/var/cache/tb-binary"
       tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM and from postinst. \
 This is useful so you get up to date versions of $tb_title in newly created AppVMs inherited from updated TemplateVMs.
-More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
+More info: https://www.whonix.org/wiki/$tb_wiki#Qubes_specific"
    fi
 }
 
@@ -526,7 +526,7 @@ tb_settings_qubes_manual_run_templatevm() {
       tb_user_home="/var/cache/tb-binary"
       tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM but not run from postinst. \
 This is useful so you get up to date versions of $tb_title in newly created AppVMs inherited from updated TemplateVMs.
-More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
+More info: https://www.whonix.org/wiki/$tb_wiki#Qubes_specific"
    fi
 }
 
@@ -1061,7 +1061,7 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
 <br />
 <br />(Or delete them using a file manager.)
 <br />
-<br />More info: <a href=https://www.whonix.org/wiki/Tor_Browser#Qubes_specific>https://www.whonix.org/wiki/Tor_Browser#Qubes_specific</a></p>"
+<br />More info: <a href=https://www.whonix.org/wiki/$tb_wiki#Qubes_specific>https://www.whonix.org/wiki/$tb_wiki#Qubes_specific</a></p>"
          $output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
       fi
@@ -1110,11 +1110,11 @@ Only versions still considered secure should be listed here. Higher version numb
    updater_vs_downloader_msg="\
 If you would like to keep your browser profile and update rather than re-downloading $tb_title, \
 you must use \
-<a href=https://www.whonix.org/wiki/Tor_Browser/Internal_Updater>$tb_title's internal updater</a>. \
+<a href=https://www.whonix.org/wiki/$tb_wiki/Internal_Updater>$tb_title's internal updater</a>. \
 In that case, say no now.<br></br>
 <br></br>
 This program \
-(<a href=https://www.whonix.org/wiki/Tor_Browser/Downloader_by_Whonix>$tb_title Downloader (by Whonix developers)</a>) \
+(<a href=https://www.whonix.org/wiki/$tb_wiki/Downloader_by_Whonix>$tb_title Downloader (by Whonix developers)</a>) \
 is incapable of keeping user data.<br></br>
 YOUR BROWSER WILL BE KILLED.<br></br>
 YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.<br></br>
@@ -1123,7 +1123,7 @@ A backup of your old $tb_title and settings will be created in folder <code>$tb_
 <br></br>It is a good idea to delete old $tb_title backups once in a while if you are running low with disk space."
 
    confirmation_screen_learn_more_link="\
-<a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a>"
+<a href=https://www.whonix.org/wiki/$tb_wiki/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a>"
 
    if [ "$qubes_vm_type" = "TemplateVM" ]; then
       qubes_running_inside_template_vm_msg="\
@@ -1187,7 +1187,7 @@ To update $tb_title inside existing TemplateBasedVMs, please update $tb_title in
    fi
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
-   output_echo_only "https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen"
+   output_echo_only "https://www.whonix.org/wiki/$tb_wiki/Download_Confirmation_Screen"
 
    if [ "$tbb_version" = "" ]; then
       if [ "$TB_INPUT" = "none" ]; then
@@ -1599,10 +1599,10 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
 <p>$signature_creation_msg</p>
 <p><u>gpg reports</u>:<br></br>
 $gpg_bash_lib_output_gpg_verify_output_br_added</p>
-<p><a href=https://www.whonix.org/wiki/Tor_Browser/Installation_Confirmation_Screen>Learn more about this Installation Confirmation Screen.</a></p>"
+<p><a href=https://www.whonix.org/wiki/$tb_wiki/Installation_Confirmation_Screen>Learn more about this Installation Confirmation Screen.</a></p>"
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
-   output_echo_only "https://www.whonix.org/wiki/Tor_Browser/Installation_Confirmation_Screen"
+   output_echo_only "https://www.whonix.org/wiki/$tb_wiki/Installation_Confirmation_Screen"
 
    button="yesno"
    question="Install now?"
