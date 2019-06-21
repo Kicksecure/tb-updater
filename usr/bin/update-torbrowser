@@ -1914,7 +1914,10 @@ Skipping question to start $tb_title."
       if [ "$qubes_vm_type" = "TemplateVM" ]; then
          MSG="<p>Finished installing $tb_title. Can be found in $tb_browser_folder.</p>
 
-<p>Not asking to start $tb_title, because running in a TemplateVM</p>"
+<p>Not asking to start $tb_title, because running in a TemplateVM.</p>
+
+<p>To run $tb_title, run in a TemplateBasedVM, StandaloneVM or DispVM, run:<br />
+<code>$tb_bin</code></p>"
          $output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
          return 0
