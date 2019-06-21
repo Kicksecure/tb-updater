@@ -498,18 +498,7 @@ tb_settings_postinst_common() {
    ## Use export so it can be read by CURL_PRGRS.
    [ -n "$TB_USE_MSGCOLLECTOR" ] || export TB_USE_MSGCOLLECTOR="false"
 
-   [ -n "$tbb_use_alpha_hardcoded_version" ] || tbb_use_alpha_hardcoded_version="false"
    [ -n "$tbb_use_hardcoded_version" ] || tbb_use_hardcoded_version="true"
-
-   ## sets: tbb_hardcoded_version
-   if [ "$tbb_use_alpha_hardcoded_version" = "true" ]; then
-      source /usr/share/tb-updater/tbb_hardcoded_version
-   elif [ "$tbb_use_hardcoded_version" = "true" ]; then
-      source /usr/share/tb-updater/tbb_hardcoded_version_alpha
-   fi
-
-   ## Using hardcoded version numbers when running with --postinst.
-   [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
 
    ## Fail open, if there was an error.
    [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=open
@@ -635,10 +624,6 @@ tb_preparation() {
 
    [ -n "$tb_local_version_file" ] || tb_local_version_file="$tb_browser_folder/Browser/tbb_version.json"
    [ -n "$tbb_download_alpha_version" ] || tbb_download_alpha_version="false"
-
-   if [ "$tbb_download_alpha_version" = "true" ]; then
-      tbb_use_alpha_hardcoded_version="true"
-   fi
 
    if [ ! "$tb_updater_run" = "true" ]; then
       true "tb_updater_run is set to: $tb_updater_run"
@@ -1043,6 +1028,19 @@ tb_remote_version_sanity_test() {
 }
 
 tb_local_version_detection() {
+   ## sets: tbb_hardcoded_version
+   output_echo_only "INFO: tbb_download_alpha_version: $tbb_download_alpha_version"
+   if [ "$tbb_download_alpha_version" = "true" ]; then
+      source /usr/share/tb-updater/tbb_hardcoded_version_alpha
+   else
+      source /usr/share/tb-updater/tbb_hardcoded_version
+   fi
+
+   if [ "$tbb_use_hardcoded_version" = "true" ]; then
+      [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
+      output_echo_only "INFO: tbb_hardcoded_version: $tbb_hardcoded_version"
+   fi
+
    ## Used by tbbversion_installed
    [ -n "$tbb_folder" ] || tbb_folder="$tb_browser_folder"
 
@@ -2010,15 +2008,17 @@ tb_sort_remote_versions() {
    temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
    tbb_recommended_versions_slash_separated="$temp"
 
+   output_echo_only "INFO: tbb_download_alpha_version: $tbb_download_alpha_version"
+
    ## Only used for TB_FORCE_INSTALL.
    if [ "$tbb_download_alpha_version" = "true" ]; then
       ## Choose highest version number for default file download.
       tbb_default_download_version="${tbb_recommended_versions_list##*$'\n'}"
-      output_echo_only "INFO: Lowest online version might be: $tbb_default_download_version"
+      output_echo_only "INFO: Highest online version might be: $tbb_default_download_version"
    else
       ## Choose lowest version number for default file download.
       read -r -t 2 tbb_default_download_version _ <<< "$tbb_recommended_versions_list"
-      output_echo_only "INFO: Highest online version might be: $tbb_default_download_version"
+      output_echo_only "INFO: Lowest online version might be: $tbb_default_download_version"
    fi
    true "tbb_default_download_version: $tbb_default_download_version"
 
