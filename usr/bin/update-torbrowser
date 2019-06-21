@@ -2013,9 +2013,11 @@ tb_sort_remote_versions() {
    if [ "$tbb_download_alpha_version" = "true" ]; then
       ## Choose highest version number for default file download.
       tbb_default_download_version="${tbb_recommended_versions_list##*$'\n'}"
+      output_echo_only "INFO: Lowest online version might be: $tbb_default_download_version"
    else
       ## Choose lowest version number for default file download.
       read -r -t 2 tbb_default_download_version _ <<< "$tbb_recommended_versions_list"
+      output_echo_only "INFO: Highest online version might be: $tbb_default_download_version"
    fi
    true "tbb_default_download_version: $tbb_default_download_version"
 
