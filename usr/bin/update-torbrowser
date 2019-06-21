@@ -1975,8 +1975,15 @@ tb_sort_remote_versions() {
    ## 2.3.25-16
    ## 2.3.25-15
 
-   ## Choose lowest version number for default file download. Only used for TB_FORCE_INSTALL.
-   read -r -t 2 tbb_default_download_version _ <<< "$tbb_recommended_versions_list"
+   ## Only used for TB_FORCE_INSTALL.
+   if [ "$tbb_download_alpha_version" = "false" ]; then
+      ## Choose lowest version number for default file download.
+      read -r -t 2 tbb_default_download_version _ <<< "$tbb_recommended_versions_list"
+   if [ "$tbb_download_alpha_version" = "true" ]; then
+      ## Choose highest version number for default file download.
+      tbb_default_download_version="${tbb_recommended_versions_list##*$'\n'}"
+   fi
+   true "tbb_default_download_version: $tbb_default_download_version"
 
    ## Thanks to:
    ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
