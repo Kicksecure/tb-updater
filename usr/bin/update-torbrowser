@@ -1975,16 +1975,6 @@ tb_sort_remote_versions() {
    ## 2.3.25-16
    ## 2.3.25-15
 
-   ## Only used for TB_FORCE_INSTALL.
-   if [ "$tbb_download_alpha_version" = "false" ]; then
-      ## Choose lowest version number for default file download.
-      read -r -t 2 tbb_default_download_version _ <<< "$tbb_recommended_versions_list"
-   if [ "$tbb_download_alpha_version" = "true" ]; then
-      ## Choose highest version number for default file download.
-      tbb_default_download_version="${tbb_recommended_versions_list##*$'\n'}"
-   fi
-   true "tbb_default_download_version: $tbb_default_download_version"
-
    ## Thanks to:
    ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
    ## for the leading/trailing whitespace removal code
@@ -1999,6 +1989,16 @@ tb_sort_remote_versions() {
    temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
    temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
    tbb_recommended_versions_slash_separated="$temp"
+
+   ## Only used for TB_FORCE_INSTALL.
+   if [ "$tbb_download_alpha_version" = "false" ]; then
+      ## Choose lowest version number for default file download.
+      read -r -t 2 tbb_default_download_version _ <<< "$tbb_recommended_versions_list"
+   if [ "$tbb_download_alpha_version" = "true" ]; then
+      ## Choose highest version number for default file download.
+      tbb_default_download_version="${tbb_recommended_versions_list##*$'\n'}"
+   fi
+   true "tbb_default_download_version: $tbb_default_download_version"
 }
 
 main_function() {
