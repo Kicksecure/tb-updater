@@ -538,6 +538,8 @@ tb_settings_manual_run_common() {
 }
 
 tb_preparation() {
+   [ -n "$tb_wiki" ] || tb_wiki="Tor_Browser"
+
    if [ ! "$tb_postinst" = "true" ]; then
       [ -n "$tb_manual_run" ] || tb_manual_run=true
    fi
@@ -609,7 +611,6 @@ tb_preparation() {
    [ -n "$tb_install_folder" ] || tb_install_folder="tb"
    [ -n "$tb_install_folder_dot" ] || tb_install_folder_dot=".tb"
    [ -n "$tb_title" ] || tb_title="Tor Browser"
-   [ -n "$tb_wiki" ] || tb_wiki="Tor_Browser"
    [ -n "$tb_browser_name" ] || tb_browser_name="tor-browser"
    [ -n "$tb_settings_folder" ] || tb_settings_folder="torbrowser.d"
    [ -n "$tb_bin" ] || tb_bin="torbrowser"
