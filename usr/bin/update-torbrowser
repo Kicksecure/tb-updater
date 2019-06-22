@@ -625,6 +625,8 @@ tb_preparation() {
    [ -n "$tb_local_version_file" ] || tb_local_version_file="$tb_browser_folder/Browser/tbb_version.json"
    [ -n "$tbb_download_alpha_version" ] || tbb_download_alpha_version="false"
 
+   [ -n "$TB_KEEP_OLD_VERSIONS_COUNT" ] || TB_KEEP_OLD_VERSIONS_COUNT="3"
+
    if [ ! "$tb_updater_run" = "true" ]; then
       true "tb_updater_run is set to: $tb_updater_run"
       true "therefore running: tb_exit_function 0"
@@ -1831,9 +1833,6 @@ tb_move_old_version() {
       mv "$tb_browser_folder" "$tb_browser_folder.old.$(date '+%F-%H:%M:%S')"
    fi
 
-   if [ -z "$TB_KEEP_OLD_VERSIONS_COUNT" ]; then
-      TB_KEEP_OLD_VERSIONS_COUNT=3
-   fi
    if [ "$TB_KEEP_OLD_VERSIONS_COUNT" = "all" ]; then
       true "INFO: Keeping all old versions because TB_KEEP_OLD_VERSIONS_COUNT set to 'all', ok."
       return 0
