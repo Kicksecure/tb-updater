@@ -1819,7 +1819,7 @@ tb_patch() {
 
 tb_move_old_version() {
    shopt -s nullglob
-   local keep_counter
+   local keep_count
 
    if [ "$TB_NO_MOVE_OLD_VERSION" = "true" ]; then
       true "INFO: Skipping $FUNCNAME, because TB_NO_MOVE_OLD_VERSION is 'true', ok."
