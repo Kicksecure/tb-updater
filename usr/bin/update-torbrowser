@@ -1138,10 +1138,7 @@ This program \
 (<a href=https://www.whonix.org/wiki/$tb_wiki/Downloader_by_Whonix>$tb_title Downloader (by Whonix developers)</a>) \
 is incapable of keeping user data.<br></br>
 YOUR BROWSER WILL BE KILLED.<br></br>
-YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.<br></br>
-<br></br>
-A backup of your old $tb_title and settings will be created in folder <code>$tb_home_folder</code>.
-<br></br>It is a good idea to delete old $tb_title backups once in a while if you are running low with disk space."
+YOUR OLD BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET DELETED."
 
    confirmation_screen_learn_more_link="\
 <a href=https://www.whonix.org/wiki/$tb_wiki/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a>"
