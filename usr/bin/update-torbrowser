@@ -626,7 +626,7 @@ tb_preparation() {
    [ -n "$tb_local_version_file" ] || tb_local_version_file="$tb_browser_folder/Browser/tbb_version.json"
    [ -n "$tbb_download_alpha_version" ] || tbb_download_alpha_version="false"
 
-   [ -n "$TB_KEEP_OLD_VERSIONS_COUNT" ] || TB_KEEP_OLD_VERSIONS_COUNT="3"
+   [ -n "$TB_KEEP_OLD_VERSIONS_COUNT" ] || TB_KEEP_OLD_VERSIONS_COUNT="0"
 
    if [ ! "$tb_updater_run" = "true" ]; then
       true "tb_updater_run is set to: $tb_updater_run"
