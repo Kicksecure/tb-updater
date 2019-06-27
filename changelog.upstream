@@ -1,3 +1,45 @@
+commit 2c3b4491d35a70bf79e663145c65d3533a1bac61
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 27 12:33:30 2019 +0000
+
+    do not copy Tor Browser by default to user home at first boot
+    
+    because that wastes space in VMs that will never use Tor Browser
+    
+    do it at actual first start of Tor Browser instead
+    
+    https://github.com/QubesOS/qubes-issues/issues/4918
+
+commit 072a2b8851bf01a254acc4a51e917153ee74fe97
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 27 12:24:26 2019 +0000
+
+    output
+
+commit e223cee0d7de4adcbbc4931449b3ab8257b9e71f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 27 12:21:00 2019 +0000
+
+    output
+    
+    https://github.com/QubesOS/qubes-issues/issues/4918#issuecomment-505838582
+
+commit 2b6209fa4c1bac8e84d676a0aec36628bdf5f3c0
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 27 12:18:08 2019 +0000
+
+    reduce old versions being kept to 0
+    
+    TB_KEEP_OLD_VERSIONS_COUNT="0"
+    
+    https://github.com/QubesOS/qubes-issues/issues/4918
+
+commit 8163b06f7c9084888ea0d97c932761a1cf2963e7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jun 23 08:39:06 2019 +0000
+
+    bumped changelog version
+
 commit 3a2ebc302d17f2a04128bbf084a5b2f3f14ace0d
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun Jun 23 08:36:07 2019 +0000
