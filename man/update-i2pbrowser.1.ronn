@@ -19,14 +19,14 @@ update-i2pbrowser(1) -- i2p Browser Updater by Whonix developers
 
 ## DESCRIPTION
 Lets you safely download the Tor Browser Bundle (TBB)
-from The Tor Project's (TPO) website, then it modifiess it for use with the
+from The Tor Project's (TPO) website, then it modifies it for use with the
 i2p network. It enforces TLS encryption (https) for
 TPO's website, downloads TBB from the TPO's website,
 and uses OpenPGP verification.
 
-In case there is already a `~/tor-browser_en-US` folder, it renames it
-to ~/tor-browser_en-US_(current date and time). It extracts freshly
-downloaded TBB too to `~/tor-browser_en-US`.
+In case there is already a `~/.i2pb` folder, it renames it
+to ~/.i2pb_(current date and time). It extracts freshly
+downloaded TBB too to `~/.i2pb/i2p-browser_(current date and time)`.
 
 Default action when no options are given is to performs an update check and ask
 how you want to proceed.

@@ -14,7 +14,7 @@ set -o errtrace
 
 [ -n "$SCRIPTNAME" ] || SCRIPTNAME="$(basename "$BASH_SOURCE")"
 
-ICON="/usr/share/icons/anon-icon-pack/tbupdate.ico"
+[ -n "$ICON" ] || ICON="/usr/share/icons/anon-icon-pack/tbupdate.ico"
 
 ## Developer comment on this script:
 ## I would be very happy if this script would not be required.
@@ -47,14 +47,14 @@ tb_exit_function() {
       if [ "$tb_postinst" = "true" ]; then
          echo "\
 INFO: Failing open. More info:
-https://www.whonix.org/wiki/Tor_Browser#tb-updater_postinst"
+https://www.whonix.org/wiki/$tb_wiki#tb-updater_postinst"
       fi
       exit 0
    else
       if [ "$tb_postinst" = "true" ]; then
          echo "\
 INFO: Failing closed. More info:
-https://www.whonix.org/wiki/Tor_Browser#tb-updater_postinst"
+https://www.whonix.org/wiki/$tb_wiki#tb-updater_postinst"
       fi
       exit "$exit_code"
    fi
@@ -69,7 +69,7 @@ tb_error_handler() {
 <br></br>## has been hit. Try again later. There is likely a
 <br></br>## solution for this problem. Please see the Whonix News,
 <br></br>## Whonix User Help Forum and Whonix Documentation.
-<br></br>## <a href=https://www.whonix.org/wiki/Tor_Browser>https://www.whonix.org/wiki/Tor_Browser</a>
+<br></br>## <a href=https://www.whonix.org/wiki/$tb_wiki>https://www.whonix.org/wiki/$tb_wiki</a>
 <br></br>## Please report this bug!
 <br></br>##
 <br></br>## BASH_COMMAND: $BASH_COMMAND
@@ -122,7 +122,7 @@ download_fail_help_set() {
 <p>
 <br></br>- Try again later. If the error persists it probably won't solve itself before the next update.
 <br></br>- Check News: <a href=https://www.whonix.org/wiki/Stay_Tuned>https://www.whonix.org/wiki/Stay_Tuned</a>
-<br></br>- Manually update: <a href=https://www.whonix.org/wiki/Manually_Updating_Tor_Browser>https://www.whonix.org/wiki/Manually_Updating_Tor_Browser</a>
+<br></br>- Manually update: <a href=https://www.whonix.org/wiki/$tb_wiki/Manual_Download>https://www.whonix.org/wiki/$tb_wiki/Manual_Download</a>
 </p>"
 }
 
@@ -308,12 +308,10 @@ tb_parse_cmd_options() {
                IDENTIFIER="i2pbrowser-downloader"
                tb_install_folder="i2pb"
                tb_install_folder_dot=".i2pb"
-               tb_name="i2p"
                tb_title="i2p Browser"
                tb_wiki="i2p_Browser"
                tb_browser_name="i2p-browser"
                tb_settings_folder="i2pbrowser.d"
-               tb_proxy_name="i2p"
                tb_bin="i2pbrowser"
                shift
                ;;
@@ -371,7 +369,7 @@ tb_qubes_dvm_template() {
    local MSG="\
 <p>Do not run $tb_title in Qubes DVM Template!<br></br>
 <br></br>
-More info: <a href=https://www.whonix.org/wiki/Tor_Browser#Running_Tor_Browser_in_Qubes_DVM_Template>https://www.whonix.org/wiki/Tor_Browser#Running_Tor_Browser_in_Qubes_DVM_Template</a></p>"
+More info: <a href=https://www.whonix.org/wiki/$tb_wiki#Running_in_Qubes_DVM_Template>https://www.whonix.org/wiki/$tb_wiki#Running_in_Qubes_DVM_Template</a></p>"
 
    $output ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
    $output ${output_opts[@]} --messagecli --titlecli "$TITLE" --typecli "error" --message "$MSG" --done
@@ -430,11 +428,16 @@ export -f output
 export -f outputfunc
 
 tb_config_folder_parser() {
+   true "tb_settings_folder: $tb_settings_folder"
    shopt -s nullglob
    local i
-   for i in /etc/${tb_settings_folder}/*.conf /rw/config/${tb_settings_folder}/*.conf; do
-      bash -n "$i"
-      source "$i"
+   for i in \
+      /etc/${tb_settings_folder}/*.conf \
+      /rw/config/${tb_settings_folder}/*.conf \
+      /usr/local/etc/${tb_settings_folder}/*.conf \
+      ; do
+         bash -n "$i"
+         source "$i"
    done
 }
 
@@ -446,8 +449,6 @@ tb_resolv_conf_debugging() {
 }
 
 tb_anon_ws_dns_conf() {
-   tb_resolv_conf_debugging
-
    true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
    if [ "$tb_disable_anon_ws_dnf_conf" = "true" ]; then
       ## Check if /etc/resolv.conf is a symlink. This is only the case
@@ -455,6 +456,7 @@ tb_anon_ws_dns_conf() {
       if test -h /etc/resolv.conf ; then
          if test -x /var/lib/dpkg/info/anon-ws-dns-conf.prerm ; then
             [ -n "$tb_reenable_anon_ws_dnf_conf" ] || tb_reenable_anon_ws_dnf_conf=true
+            tb_resolv_conf_debugging
             ## Restore original /etc/resolv.conf.
             sudo --non-interactive /bin/bash -x /var/lib/dpkg/info/anon-ws-dns-conf.prerm remove
             tb_resolv_conf_debugging
@@ -495,8 +497,7 @@ tb_settings_postinst_common() {
    [ -n "$TB_INPUT" ] || TB_INPUT="none"
    ## Use export so it can be read by CURL_PRGRS.
    [ -n "$TB_USE_MSGCOLLECTOR" ] || export TB_USE_MSGCOLLECTOR="false"
-   ## Using hardcoded version numbers when running with --postinst.
-   [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
+
    [ -n "$tbb_use_hardcoded_version" ] || tbb_use_hardcoded_version="true"
 
    ## Fail open, if there was an error.
@@ -518,7 +519,7 @@ tb_settings_qubes_postinst_templatevm() {
       tb_user_home="/var/cache/tb-binary"
       tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM and from postinst. \
 This is useful so you get up to date versions of $tb_title in newly created AppVMs inherited from updated TemplateVMs.
-More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
+More info: https://www.whonix.org/wiki/$tb_wiki#Qubes_specific"
    fi
 }
 
@@ -528,7 +529,7 @@ tb_settings_qubes_manual_run_templatevm() {
       tb_user_home="/var/cache/tb-binary"
       tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM but not run from postinst. \
 This is useful so you get up to date versions of $tb_title in newly created AppVMs inherited from updated TemplateVMs.
-More info: https://www.whonix.org/wiki/Tor_Browser#Qubes_specific"
+More info: https://www.whonix.org/wiki/$tb_wiki#Qubes_specific"
    fi
 }
 
@@ -537,8 +538,8 @@ tb_settings_manual_run_common() {
 }
 
 tb_preparation() {
-   ## sets: tbb_hardcoded_version
-   source /usr/share/tb-updater/tbb_hardcoded_version
+   [ -n "$tb_wiki" ] || tb_wiki="Tor_Browser"
+   [ -n "$tb_title" ] || tb_title="Tor Browser"
 
    if [ ! "$tb_postinst" = "true" ]; then
       [ -n "$tb_manual_run" ] || tb_manual_run=true
@@ -610,9 +611,6 @@ tb_preparation() {
    [ -n "$IDENTIFIER" ] || IDENTIFIER="torbrowser-downloader"
    [ -n "$tb_install_folder" ] || tb_install_folder="tb"
    [ -n "$tb_install_folder_dot" ] || tb_install_folder_dot=".tb"
-   [ -n "$tb_name" ] || tb_name="tor"
-   [ -n "$tb_title" ] || tb_title="Tor Browser"
-   [ -n "$tb_wiki" ] || tb_wiki="Tor_Browser"
    [ -n "$tb_browser_name" ] || tb_browser_name="tor-browser"
    [ -n "$tb_settings_folder" ] || tb_settings_folder="torbrowser.d"
    [ -n "$tb_bin" ] || tb_bin="torbrowser"
@@ -625,7 +623,14 @@ tb_preparation() {
    [ -n "$tb_gpg_tmp_dir" ] || tb_gpg_tmp_dir="$tb_cache_folder/gpgtmpdir"
    [ -n "$tb_extract_temp_folder" ] || tb_extract_temp_folder="$tb_cache_folder/$tb_browser_name"
 
+   [ -n "$tb_local_version_file" ] || tb_local_version_file="$tb_browser_folder/Browser/tbb_version.json"
+   [ -n "$tbb_download_alpha_version" ] || tbb_download_alpha_version="false"
+
+   [ -n "$TB_KEEP_OLD_VERSIONS_COUNT" ] || TB_KEEP_OLD_VERSIONS_COUNT="0"
+
    if [ ! "$tb_updater_run" = "true" ]; then
+      true "tb_updater_run is set to: $tb_updater_run"
+      true "therefore running: tb_exit_function 0"
       tb_exit_function 0
    fi
 
@@ -700,7 +705,7 @@ tb_preparation() {
 
    who_ami="$(whoami)"
 
-   TITLE="$tb_name Browser Downloader (by Whonix developers)"
+   TITLE="$tb_title Downloader (by Whonix developers)"
 
    output_tool="/usr/lib/msgcollector/msgcollector"
    output="output"
@@ -1026,6 +1031,19 @@ tb_remote_version_sanity_test() {
 }
 
 tb_local_version_detection() {
+   ## sets: tbb_hardcoded_version
+   output_echo_only "INFO: tbb_download_alpha_version: $tbb_download_alpha_version"
+   if [ "$tbb_download_alpha_version" = "true" ]; then
+      source /usr/share/tb-updater/tbb_hardcoded_version_alpha
+   else
+      source /usr/share/tb-updater/tbb_hardcoded_version
+   fi
+
+   if [ "$tbb_use_hardcoded_version" = "true" ]; then
+      [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
+      output_echo_only "INFO: tbb_hardcoded_version: $tbb_hardcoded_version"
+   fi
+
    ## Used by tbbversion_installed
    [ -n "$tbb_folder" ] || tbb_folder="$tb_browser_folder"
 
@@ -1064,7 +1082,7 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
 <br />
 <br />(Or delete them using a file manager.)
 <br />
-<br />More info: <a href=https://www.whonix.org/wiki/Tor_Browser#Qubes_specific>https://www.whonix.org/wiki/Tor_Browser#Qubes_specific</a></p>"
+<br />More info: <a href=https://www.whonix.org/wiki/$tb_wiki#Qubes_specific>https://www.whonix.org/wiki/$tb_wiki#Qubes_specific</a></p>"
          $output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
       fi
@@ -1111,23 +1129,20 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
 Only versions still considered secure should be listed here. Higher version numbers does not necessarily mean more secure here. Could be alpha or beta versions. In most cases you are best off choosing the lowest version number among them."
 
    updater_vs_downloader_msg="\
-Since The Tor Project configured TBB to automatically update itself,
-if you would like to keep your browser profile and update rather than re-downloading TBB, you are better off using \
-<a href=https://www.whonix.org/wiki/Tor_Browser/Internal_Updater>$tb_title's internal updater</a>. \
+If you would like to keep your browser profile and update rather than re-downloading $tb_title, \
+you must use \
+<a href=https://www.whonix.org/wiki/$tb_wiki/Internal_Updater>$tb_title's internal updater</a>. \
 In that case, say no now.<br></br>
 <br></br>
-
 This program \
-(<a href=https://www.whonix.org/wiki/Tor_Browser/Downloader_by_Whonix>$tb_title Downloader (Whonix)</a>) \
+(<a href=https://www.whonix.org/wiki/$tb_wiki/Downloader_by_Whonix>$tb_title Downloader (by Whonix developers)</a>) \
 is incapable of keeping user data.<br></br>
-YOUR BROWSER WILL BE KILLED.<br></br>
-YOUR WHOLE BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET REPLACED.<br></br>
 <br></br>
-A backup of your old $tb_title and settings will be created in folder <code>$tb_home_folder</code>.
-<br></br>It is a good idea to delete old TBB backups once in a while if you are running low with disk space."
+YOUR BROWSER WILL BE KILLED.<br></br>
+YOUR OLD BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET DELETED."
 
    confirmation_screen_learn_more_link="\
-<a href=https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a>"
+<a href=https://www.whonix.org/wiki/$tb_wiki/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a>"
 
    if [ "$qubes_vm_type" = "TemplateVM" ]; then
       qubes_running_inside_template_vm_msg="\
@@ -1191,7 +1206,7 @@ To update $tb_title inside existing TemplateBasedVMs, please update $tb_title in
    fi
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
-   output_echo_only "https://www.whonix.org/wiki/Tor_Browser/Download_Confirmation_Screen"
+   output_echo_only "https://www.whonix.org/wiki/$tb_wiki/Download_Confirmation_Screen"
 
    if [ "$tbb_version" = "" ]; then
       if [ "$TB_INPUT" = "none" ]; then
@@ -1208,6 +1223,7 @@ n/${tbb_recommended_versions_slash_separated}?"
                tb_exit_function 10
             fi
          else
+            output_echo_only "INFO: Detected versions: ${tbb_recommended_versions_slash_separated}"
             #echo "/usr/lib/msgcollector/tb_updater_gui \"$type\" \"$TITLE\" \"$tbb_locally_installed_version\" \"$tbb_recommended_versions_comma_separated\" \"$MSG\" \"$question\" \"$button\")"
             answer="$("/usr/lib/msgcollector/tb_updater_gui" "$type" "$TITLE" "$tbb_locally_installed_version" "$tbb_recommended_versions_comma_separated" "$MSG" "$question" "$button")"
             if [ "$answer" = "65536" ]; then ## Button 'Yes' has not been pressed.
@@ -1233,7 +1249,7 @@ tb_version_processing() {
    else
       tbb_hardened_version_chosen="false"
    fi
-   output_echo_only "INFO: tbb_hardened_version_chosen: $tbb_hardened_version_chosen"
+   #output_echo_only "INFO: tbb_hardened_version_chosen: $tbb_hardened_version_chosen"
 
    ## Check if TB_LANG exists and is not empty.
    if [[ "$TB_LANG" && "${TB_LANG}" ]]; then
@@ -1246,7 +1262,7 @@ tb_version_processing() {
       output_echo_only "INFO: $tb_title language variable TB_LANG was not yet set and a hardened version was chosen. Therefore setting TB_LANG to 'ALL', ok."
       TB_LANG="ALL"
    else
-      output_echo_only "INFO: $tb_title language variable TB_LANG was not yet set and no hardened version was chosen. Therefore defaulting TB_LANG to 'en-US', ok."
+      output_echo_only "INFO: $tb_title language variable TB_LANG was not yet set. Therefore defaulting TB_LANG to 'en-US', ok."
       TB_LANG="en-US"
    fi
 }
@@ -1595,18 +1611,18 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
    gpg_bash_lib_output_gpg_verify_output_br_added="$(/usr/lib/msgcollector/br_add "$gpg_bash_lib_output_gpg_verify_output")"
 
    MSG="<p><b>Installation confirmation</b></p><p><table><tr>
-<td>Currently installed version:</td> <td><tt> $tbb_locally_installed_version</tt></td></tr><tr>
-<td>Downloaded version         :</td> <td><tt> $tbb_version</tt></td></tr></table></p>
+<td>Currently installed version:</td> <td><tt> <code>$tbb_locally_installed_version</code></tt></td></tr><tr>
+<td>Downloaded version         :</td> <td><tt> <code>$tbb_version</code></tt></td></tr></table></p>
 <p>$signature_freshness_msg</p><p><table><tr>
-<td>Previous Signature Creation Date:</td> <td><tt> $last_used_gpg_bash_lib_output_signed_on_date</tt></td></tr><tr>
-<td>Last Signature Creation Date    :</td> <td><tt> $gpg_bash_lib_output_signed_on_date</tt></td></tr></table></p>
+<td>Previous Signature Creation Date:</td> <td><tt> <code>$last_used_gpg_bash_lib_output_signed_on_date</code></tt></td></tr><tr>
+<td>Last Signature Creation Date    :</td> <td><tt> <code>$gpg_bash_lib_output_signed_on_date</code></tt></td></tr></table></p>
 <p>$signature_creation_msg</p>
 <p><u>gpg reports</u>:<br></br>
 $gpg_bash_lib_output_gpg_verify_output_br_added</p>
-<p><a href=https://www.whonix.org/wiki/Tor_Browser/Installation_Confirmation_Screen>Learn more about this Installation Confirmation Screen.</a></p>"
+<p><a href=https://www.whonix.org/wiki/$tb_wiki/Installation_Confirmation_Screen>Learn more about this Installation Confirmation Screen.</a></p>"
 
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
-   output_echo_only "https://www.whonix.org/wiki/Tor_Browser/Installation_Confirmation_Screen"
+   output_echo_only "https://www.whonix.org/wiki/$tb_wiki/Installation_Confirmation_Screen"
 
    button="yesno"
    question="Install now?"
@@ -1804,7 +1820,7 @@ tb_patch() {
 
 tb_move_old_version() {
    shopt -s nullglob
-   local keep_counter
+   local keep_count old_folder
 
    if [ "$TB_NO_MOVE_OLD_VERSION" = "true" ]; then
       true "INFO: Skipping $FUNCNAME, because TB_NO_MOVE_OLD_VERSION is 'true', ok."
@@ -1816,9 +1832,6 @@ tb_move_old_version() {
       mv "$tb_browser_folder" "$tb_browser_folder.old.$(date '+%F-%H:%M:%S')"
    fi
 
-   if [ -z "$TB_KEEP_OLD_VERSIONS_COUNT" ]; then
-      TB_KEEP_OLD_VERSIONS_COUNT=3
-   fi
    if [ "$TB_KEEP_OLD_VERSIONS_COUNT" = "all" ]; then
       true "INFO: Keeping all old versions because TB_KEEP_OLD_VERSIONS_COUNT set to 'all', ok."
       return 0
@@ -1899,7 +1912,10 @@ Skipping question to start $tb_title."
       if [ "$qubes_vm_type" = "TemplateVM" ]; then
          MSG="<p>Finished installing $tb_title. Can be found in $tb_browser_folder.</p>
 
-<p>Not asking to start $tb_title, because running in a TemplateVM</p>"
+<p>Not asking to start $tb_title, because running in a TemplateVM.</p>
+
+<p>To run $tb_title, run in a TemplateBasedVM, StandaloneVM or DispVM, run:<br />
+<code>$tb_bin</code></p>"
          $output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
          $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
          return 0
@@ -1931,12 +1947,15 @@ y/n?"
       return 0
    fi
 
+   output_echo_only "INFO: GUI is asking to start $tb_title."
    answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
    if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
       output_echo_only "INFO: Canceled starting $tb_title, ok."
       return 0
    else
+      output_echo_only "INFO: Running $tb_title."
       $tb_bin
+      output_echo_only "INFO: $tb_title was terminated, ok."
       return 0
    fi
 }
@@ -1969,14 +1988,17 @@ tb_sort_remote_versions() {
    ## 2.3.25-16
    ## 2.3.25-15
 
-   ## Choose lowest version number for default file download. Only used for TB_FORCE_INSTALL.
-   read -r -t 2 tbb_default_download_version _ <<< "$tbb_recommended_versions_list"
-
    ## Thanks to:
    ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
    ## for the leading/trailing whitespace removal code
 
    local temp
+
+   temp="$tbb_recommended_versions_list"
+   temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
+   temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
+   tbb_recommended_versions_list="$temp"
+
    temp="${tbb_recommended_versions_list//$'\n'/,}"
    temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
    temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
@@ -1986,6 +2008,25 @@ tb_sort_remote_versions() {
    temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
    temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
    tbb_recommended_versions_slash_separated="$temp"
+
+   output_echo_only "INFO: tbb_download_alpha_version: $tbb_download_alpha_version"
+
+   ## Only used for TB_FORCE_INSTALL.
+   if [ "$tbb_download_alpha_version" = "true" ]; then
+      ## Choose highest version number for default file download.
+      tbb_default_download_version="${tbb_recommended_versions_list##*$'\n'}"
+      output_echo_only "INFO: Highest online version might be: $tbb_default_download_version"
+   else
+      ## Choose lowest version number for default file download.
+      read -r -t 2 tbb_default_download_version _ <<< "$tbb_recommended_versions_list"
+      output_echo_only "INFO: Lowest online version might be: $tbb_default_download_version"
+   fi
+   true "tbb_default_download_version: $tbb_default_download_version"
+
+   temp="$tbb_default_download_version"
+   temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
+   temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
+   tbb_default_download_version="$temp"
 }
 
 main_function() {

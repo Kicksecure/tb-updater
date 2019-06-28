@@ -2,7 +2,7 @@
 ## See the file COPYING for copying conditions.
 
 [Unit]
-Description=Copy Tor Browser from /var/cache/tb-binary to user home at First Boot Service
+Description=Helper Service for /usr/bin/torbrowser to determine when it is save to Copy Tor Browser from /var/cache/tb-binary to user home by Whonix developers
 Documentation=https://github.com/Whonix/tb-updater
 ConditionPathExists=!/var/run/qubes/this-is-templatevm
 
@@ -22,7 +22,7 @@ Before=qubes-gui-agent.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/lib/tb-updater/first-boot-home-population
+ExecStart=/bin/true
 
 [Install]
 WantedBy=multi-user.target

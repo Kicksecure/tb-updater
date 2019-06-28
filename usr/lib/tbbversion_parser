@@ -171,12 +171,21 @@ tbbversion_installed() {
       return 0
    fi
 
-   ## TODO: https://phabricator.whonix.org/T400
-   tbb_locally_installed_version="Installed. (Folder <code>$tbb_folder</code> exists.) Locally installed Tor Browser version detection not implemented."
+   if [ ! -f "$tb_local_version_file" ]; then
+      tbb_locally_installed_version="Version file not found. (File <code>$tb_local_version_file</code> does not exist.) Please report this Whonix Bug!"
+      return 0
+   fi
 
-#    tbb_locally_installed_version="$(cat "$tbb_folder/Browser/TorBrowser/Data/Browser/profile.default/prefs.js")" || true
-#    tbb_locally_installed_version="$(echo "$tbb_locally_installed_version" | grep "browser.startup.homepage_override.torbrowser.version")"
-#
-#    tbb_locally_installed_version="$(echo "$tbb_locally_installed_version" | sed 's/user_pref("browser.startup.homepage_override.torbrowser.version", "//g')" || true
-#    tbb_locally_installed_version="$(echo "$tbb_locally_installed_version" | sed 's/user_pref("");//g')" || true
+   local tb_local_version_contents temp
+   tb_local_version_contents="$(cat "$tb_local_version_file")" || \
+      { tbb_locally_installed_version="Reading version file <code>$tb_local_version_file</code> failed. Please report this Whonix Bug!" ; return 0; };
+
+   temp="$(echo "$tb_local_version_contents" | jq ".version")" || \
+      { tbb_locally_installed_version="Parsing version file (part 1) <code>$tb_local_version_file</code> failed. Please report this Whonix Bug!" ; return 0; };
+
+   temp="$(echo "$temp" | xargs printf)" || \
+      { tbb_locally_installed_version="Parsing version file (part 2) <code>$tb_local_version_file</code> failed. Please report this Whonix Bug!" ; return 0; };
+
+   tbb_locally_installed_version="$temp"
+   tbb_locally_installed_version_detect_success="1"
 }

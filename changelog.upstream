@@ -1,3 +1,339 @@
+commit 2c3b4491d35a70bf79e663145c65d3533a1bac61
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 27 12:33:30 2019 +0000
+
+    do not copy Tor Browser by default to user home at first boot
+    
+    because that wastes space in VMs that will never use Tor Browser
+    
+    do it at actual first start of Tor Browser instead
+    
+    https://github.com/QubesOS/qubes-issues/issues/4918
+
+commit 072a2b8851bf01a254acc4a51e917153ee74fe97
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 27 12:24:26 2019 +0000
+
+    output
+
+commit e223cee0d7de4adcbbc4931449b3ab8257b9e71f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 27 12:21:00 2019 +0000
+
+    output
+    
+    https://github.com/QubesOS/qubes-issues/issues/4918#issuecomment-505838582
+
+commit 2b6209fa4c1bac8e84d676a0aec36628bdf5f3c0
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 27 12:18:08 2019 +0000
+
+    reduce old versions being kept to 0
+    
+    TB_KEEP_OLD_VERSIONS_COUNT="0"
+    
+    https://github.com/QubesOS/qubes-issues/issues/4918
+
+commit 8163b06f7c9084888ea0d97c932761a1cf2963e7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jun 23 08:39:06 2019 +0000
+
+    bumped changelog version
+
+commit 3a2ebc302d17f2a04128bbf084a5b2f3f14ace0d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jun 23 08:36:07 2019 +0000
+
+    tbb_hardcoded_version="8.5.3"
+
+commit 68f15ee844e8cc93239f99e82a66d3f34cea1985
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jun 22 06:14:03 2019 -0400
+
+    fix output
+
+commit 97c40f5cc67c126e2719ff01ab1939c660ccbd25
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jun 22 06:13:18 2019 -0400
+
+    fix output
+
+commit 76a6ee8909d6be6f90d44426d18216248f852768
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jun 22 06:10:40 2019 -0400
+
+    refactoring
+
+commit e6c903b77fc04f3abeda1a20d373974d440613e7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jun 22 06:02:03 2019 -0400
+
+    local
+
+commit 642981085e7d2d9d5ca1390b6747b025d5a2bb3c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jun 22 06:01:48 2019 -0400
+
+    fix variable name
+
+commit 48aa84be53fd37af94212d6109a5ccd9e20bfcd5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 09:27:17 2019 +0000
+
+    output
+
+commit a3a01cd301aa425fcf957d27b08bd0f7fdd27a80
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 09:12:47 2019 +0000
+
+    bumped changelog version
+
+commit e9bfbe1eb07afca9596e8fabfdacccd7f586ac9d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 09:10:49 2019 +0000
+
+    Revert "SecBrowser: Set security slider to 'safest' by default."
+    
+    Since doe not work.
+    
+    This reverts commit 88bd9ac4e9c4bb1e441432923ade2a6d980b30ac.
+
+commit 88bd9ac4e9c4bb1e441432923ade2a6d980b30ac
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 08:56:41 2019 +0000
+
+    SecBrowser: Set security slider to 'safest' by default.
+
+commit 23c206e2db03c5166185aec2388f699c6886072c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 08:49:06 2019 +0000
+
+    fix alpha version setting
+
+commit 2d0d744022b309aca49522a1017448c25c7a521a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 08:29:13 2019 +0000
+
+    debugging
+
+commit 261ed44ec26da8fc01089b3301daa9cd4b344397
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 08:23:27 2019 +0000
+
+    output
+
+commit 229b843d5590b30b42b2488e5808bddc2e49a55f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 08:19:58 2019 +0000
+
+    implement /usr/local/etc/${tb_settings_folder}/*.conf
+
+commit 9c730731b98314260a6c26263f4cd6a24180ac9d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 07:59:24 2019 +0000
+
+    default to tbb_download_alpha_version="false"
+
+commit aea2503f07d080c9cd35fe6cc55b52751f33f538
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 07:58:02 2019 +0000
+
+    harden version parsing; fix
+
+commit ccb1aec2a1ad5fd36c6d20c389234d19b98a1e68
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 07:51:59 2019 +0000
+
+    refactoring
+
+commit b250708eebc33faae2ceda9f8c281b965dfc9cc7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 07:49:54 2019 +0000
+
+    refactoring
+
+commit 89f362ff3009ac352a84de1e7e6461e04d3c494b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 07:49:07 2019 +0000
+
+    implement option to set tbb_download_alpha_version=true
+
+commit 90de95d5a1fea484b8a9d560ada8372d42c7848c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 07:35:23 2019 +0000
+
+    implement option to set tbb_use_alpha_hardcoded_version="true"
+
+commit 7bc1d199c275d50eb50cd8648b5dadaa83e785e3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 07:31:33 2019 +0000
+
+    add usr/share/tb-updater/tbb_hardcoded_version_alpha
+
+commit 037852e74d140862215a89fcd90e8cd190f954b6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 05:41:08 2019 +0000
+
+    bumped changelog version
+
+commit 82d3dfd8aad2261e0d5c606050fe26e7eed2299d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 03:52:52 2019 +0000
+
+    output
+
+commit aab4a5df1552fa8547dafad8cf5e90f9f800101b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jun 21 03:40:58 2019 +0000
+
+    bumped changelog version
+
+commit f34fd09770548bbe8aeb6538766fd1d00fee86ba
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 23:23:09 2019 -0400
+
+    output
+
+commit 09db795697aa1c7fd7968aeec8307ecc4eb0ae13
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 23:18:35 2019 -0400
+
+    output
+
+commit 7238a3e9ece82fd48807616a7dcf33ac1c27496a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 23:13:15 2019 -0400
+
+    output
+
+commit 36561b7f8b54605ea33f4842930f2cdabcd17365
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 23:04:33 2019 -0400
+
+    re-implement Tor Browser local version number detection
+    
+    https://phabricator.whonix.org/T400
+
+commit 3bd352a4c3da2c0c196388d42a6ea462176da668
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 22:41:18 2019 -0400
+
+    output
+
+commit b9aa971eb5c9adde6a874a2a7d87e095db1fb5a9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 22:11:50 2019 -0400
+
+    output
+
+commit a2fb1c329927a9cc9ade32f8631705b558266891
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 22:10:48 2019 -0400
+
+    output
+
+commit 01ee1b4a13a1e7f760bc950b6addba986c6532c6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 22:07:58 2019 -0400
+
+    output
+
+commit f310ec92926ed9a572c32957becc9b91f5f880f6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 22:04:25 2019 -0400
+
+    output
+
+commit dde30921d73fd5b4e466d635532b348318b108a4
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 22:01:59 2019 -0400
+
+    output
+
+commit c95c765f10f1c6df32f8a4bf345e6560851019b7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:57:45 2019 -0400
+
+    output
+
+commit 290de503353e4f3a6213d2573bceb4fa20747ee9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:57:05 2019 -0400
+
+    output
+
+commit 2d9d1d390af638a71504e7b9a714caf48bc4f5e9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:51:57 2019 -0400
+
+    renamed:    man/update-secbrowser.1.ronn -> man/download-secbrowser.1.ronn
+
+commit 9e67d749aa57ad0cab908476938315adf1d03bce
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:51:37 2019 -0400
+
+    man page
+
+commit cb10e224ffc9d94c4f1c242382ebe9e8a78ac707
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:49:13 2019 -0400
+
+    typo
+
+commit 2315e7a87f6e55315cab280c966643f4e9f189a2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:48:06 2019 -0400
+
+    implement /usr/bin/download-secbrowser
+
+commit 20e2e148e6d3f282c70dfdd355272f4d42b356d4
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:39:12 2019 -0400
+
+    chmod +x update-i2pbrowser
+
+commit cd4bf455321b339d17622fe8c6079cd86620778e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 21:04:59 2019 -0400
+
+    abolish variable tb_proxy_name
+
+commit 4774d93d451fd2f124cb6f777796de71888e45db
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 20:57:58 2019 -0400
+
+    allow overwriting ICON variable
+
+commit bfdd65e9b50f77c1896befac01acde84461dbe13
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 20:56:10 2019 -0400
+
+    fix, export ICON
+
+commit 71ff4c5cb7c7913f67c87f5d406115dc80d7a0bf
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 20:53:45 2019 -0400
+
+    abolish tb_name variable (replaced by tb_title)
+
+commit 16f6dedd8b98af6f41c60879adfef07020a84355
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 04:40:21 2019 +0000
+
+    bumped changelog version
+
+commit bc427469b54ca5e59c87dd2a457ddc9e6eb0026c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 20 00:32:10 2019 -0400
+
+    tbb_hardcoded_version="8.5.2"
+
+commit 4f62bfc361603fcb80eff928bac07cd0686406fc
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jun 10 15:43:30 2019 +0000
+
+    bumped changelog version
+
 commit a3efaa83299d0c45ff670946704f4470e029ba5f
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun Jun 9 05:18:46 2019 -0400
