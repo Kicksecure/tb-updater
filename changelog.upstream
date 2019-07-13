@@ -1,3 +1,37 @@
+commit 798e23c1f9ac1f0ccdfe22c2f79fb0e9f637e51e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 12 12:23:53 2019 -0400
+
+    move usr/share/tb-updater/tb_without_tor_settings.js to tb-starter usr/share/secbrowser/user.js
+
+commit 7b599a33616d8242366bcfa501685b26716c2349
+Merge: c6b4d44 f29ff96
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 12 12:21:04 2019 -0400
+
+    Merge remote-tracking branch 'origin/master'
+
+commit f29ff963a76f534a4cebce66b7eb5f0d22d705a6
+Merge: c6b4d44 91bf98e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 12 16:20:45 2019 +0000
+
+    Merge pull request #10 from 0brand/master
+    
+    Set security slider to safest.
+
+commit 91bf98e9e1baedf0c048a4ccbefb8a74c55f3c5c
+Author: 0brand <0brand@mailbox.org>
+Date:   Fri Jul 12 03:16:09 2019 +0000
+
+    prefs to set security slider to safest
+
+commit c6b4d44d8ff19ab0b02485a5f37925f1b7f6abb8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 11 07:17:39 2019 +0000
+
+    bumped changelog version
+
 commit 9656e0a35d115c07281ebe29becb5e3f5ec571e3
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jul 11 07:01:00 2019 +0000
@@ -37,6 +71,15 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat Jun 29 13:45:41 2019 +0000
 
     man page
+
+commit 8de3a29008a08890234d8fa47ce359f522b6b8fc
+Merge: c6e0ab8 1bb2c19
+Author: 0brand <0brand@mailbox.org>
+Date:   Fri Jun 28 23:24:42 2019 +0000
+
+    Merge pull request #2 from Whonix/master
+    
+    Sync with upstream
 
 commit 1bb2c1917ff68ca1b9293d26d61da6c64dc5bb77
 Author: Patrick Schleizer <adrelanos@riseup.net>
@@ -385,6 +428,15 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 20 00:32:10 2019 -0400
 
     tbb_hardcoded_version="8.5.2"
+
+commit c6e0ab82d6dfb5c285b4460f1a0bbd492ae2319f
+Merge: 8da835d 4f62bfc
+Author: 0brand <0brand@mailbox.org>
+Date:   Wed Jun 19 03:17:06 2019 +0000
+
+    Merge pull request #1 from Whonix/master
+    
+    Merge Whonix with 0brand
 
 commit 4f62bfc361603fcb80eff928bac07cd0686406fc
 Author: Patrick Schleizer <adrelanos@riseup.net>
