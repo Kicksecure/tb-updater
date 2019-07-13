@@ -1,3 +1,27 @@
+commit 6336fad67fc96ed646f91b37c4bbc7c0e7dfdc56
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 13 15:35:38 2019 +0000
+
+    Debian support
+    
+    do not break if user 'user' does not exist
+
+commit ff33e22a76931100c41bdcf293a0db69a05aa837
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 13 15:31:32 2019 +0000
+
+    support download SecBrowser in Qubes TemplateVM
+    
+    by creating either file:
+    - /etc/secbrowser-qubes
+    - /usr/local/etc/secbrowser-qubes
+
+commit 4048cd19b8e697a224f32cf0dc7be0581bf82186
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 13 11:29:36 2019 +0000
+
+    bumped changelog version
+
 commit 798e23c1f9ac1f0ccdfe22c2f79fb0e9f637e51e
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Jul 12 12:23:53 2019 -0400
