@@ -39,11 +39,17 @@ if ischroot --default-false ; then
    chroot_maybe="--is-chroot"
 fi
 
+if [ -f /etc/secbrowser-qubes ] || [ -f /usr/local/etc/secbrowser-qubes ]; then
+   tool=download-secbrowser
+else
+   tool=update-torbrowser
+fi
+
 ## TODO:
 #tpo_downloader_debug="$tpo_downloader_debug"
 
 runuser --preserve-environment -u user -- \
-      update-torbrowser \
+      $tool  \
          $chroot_maybe \
          --postinst
 
