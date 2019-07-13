@@ -22,6 +22,29 @@ true "
 #####################################################################
 "
 
+download() {
+   mkdir --parents "/var/cache/tb-binary"
+   chown user:user "/var/cache/tb-binary"
+
+   if ischroot --default-false ; then
+      chroot_maybe="--is-chroot"
+   fi
+
+   if [ -f /etc/secbrowser-qubes ] || [ -f /usr/local/etc/secbrowser-qubes ]; then
+      tool=download-secbrowser
+   else
+      tool=update-torbrowser
+   fi
+
+   ## TODO:
+   #tpo_downloader_debug="$tpo_downloader_debug"
+
+   runuser --preserve-environment -u user -- \
+         $tool  \
+            $chroot_maybe \
+            --postinst
+}
+
 true "INFO: debhelper beginning here."
 
 #DEBHELPER#
@@ -32,26 +55,11 @@ true "anon_shared_inst_tb: $anon_shared_inst_tb"
 true "tb_onion: $tb_onion"
 true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
 
-mkdir --parents "/var/cache/tb-binary"
-chown user:user "/var/cache/tb-binary"
-
-if ischroot --default-false ; then
-   chroot_maybe="--is-chroot"
-fi
-
-if [ -f /etc/secbrowser-qubes ] || [ -f /usr/local/etc/secbrowser-qubes ]; then
-   tool=download-secbrowser
+if id user >&/dev/null ; then
+   download
 else
-   tool=update-torbrowser
+   true "INFO: user 'user' does not exist. Skip downloading."
 fi
-
-## TODO:
-#tpo_downloader_debug="$tpo_downloader_debug"
-
-runuser --preserve-environment -u user -- \
-      $tool  \
-         $chroot_maybe \
-         --postinst
 
 true "
 #####################################################################
