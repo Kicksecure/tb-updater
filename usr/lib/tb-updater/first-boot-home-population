@@ -34,10 +34,6 @@ if [ ! -d "$home_dir" ]; then
    exit 0
 fi
 
-if [ -d /var/cache/tb-binary ]; then
-   chown --recursive "$user_name:$user_name" /var/cache/tb-binary
-fi
-
 shopt -s dotglob
 shopt -s nullglob
 
