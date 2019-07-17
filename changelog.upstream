@@ -1,3 +1,53 @@
+commit 5d3c3f4ddf672773507176b67890633b1132cd61
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 23:16:00 2019 +0000
+
+    permissions fix for DispVM
+    
+    to run directly from /var/cache/tb-binary
+
+commit 4d67ed7303c2497a56c60d7628d47e43c422eef6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 23:08:29 2019 +0000
+
+    Revert "permissions fix for DispVM"
+    
+    This reverts commit 09e4de069a222ac7586c1c92061a270a73163dc8.
+
+commit 09e4de069a222ac7586c1c92061a270a73163dc8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 23:07:03 2019 +0000
+
+    permissions fix for DispVM
+    
+    to run directly from /var/cache/tb-binary
+
+commit a337946488ef4978ece8402c110ca3b7f0f838e5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 22:49:42 2019 +0000
+
+    no longer run tb-updater during postinst as user "user", run as root
+    since existence is not guaranteed
+    
+    permission hardening:
+    no longer set /var/cache/tb-binary to user "user" unconditionally
+
+commit e272f056b978e4c3902a6660dad35c3ccb49054f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 22:49:11 2019 +0000
+
+    no longer run tb-updater during postinst as user "user", run as root
+    since existence is not guaranteed
+    
+    permission hardening:
+    no longer set /var/cache/tb-binary to user "user" unconditionally
+
+commit 01f53a9ebc3485757ba1eaaac9f8b8313d11123e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 13 15:37:16 2019 +0000
+
+    bumped changelog version
+
 commit 6336fad67fc96ed646f91b37c4bbc7c0e7dfdc56
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat Jul 13 15:35:38 2019 +0000
