@@ -1,3 +1,15 @@
+commit cad4ae5039324768c0cf5727c61c0145903e2305
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 23:18:34 2019 +0000
+
+    chmod +x usr/lib/tb-updater/dispvm
+
+commit ba526acdafd20076d25e2c12aa5d29975fe1fa95
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 23:17:05 2019 +0000
+
+    bumped changelog version
+
 commit 5d3c3f4ddf672773507176b67890633b1132cd61
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Jul 17 23:16:00 2019 +0000
