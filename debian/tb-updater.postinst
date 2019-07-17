@@ -24,7 +24,6 @@ true "
 
 download() {
    mkdir --parents "/var/cache/tb-binary"
-   chown user:user "/var/cache/tb-binary"
 
    if ischroot --default-false ; then
       chroot_maybe="--is-chroot"
@@ -39,10 +38,9 @@ download() {
    ## TODO:
    #tpo_downloader_debug="$tpo_downloader_debug"
 
-   runuser --preserve-environment -u user -- \
-         $tool  \
-            $chroot_maybe \
-            --postinst
+   $tool \
+      $chroot_maybe \
+      --postinst
 }
 
 true "INFO: debhelper beginning here."
@@ -55,11 +53,7 @@ true "anon_shared_inst_tb: $anon_shared_inst_tb"
 true "tb_onion: $tb_onion"
 true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
 
-if id user >&/dev/null ; then
-   download
-else
-   true "INFO: user 'user' does not exist. Skip downloading."
-fi
+download
 
 true "
 #####################################################################
