@@ -18,7 +18,6 @@ fi
 if command -v qubesdb-read >/dev/null 2>&1 ; then
    qubes_vm_type="$(qubesdb-read /qubes-vm-type)"
    qubes_vm_name="$(qubesdb-read /name)"
-   qubes_vm_persistence="$(qubesdb-read /qubes-vm-persistence)"
 fi
 
 ## Avoid running in Qubes DVM Template.
@@ -30,18 +29,6 @@ fi
 if [ "$qubes_vm_type" = "TemplateVM" ]; then
    exit 0
 fi
-
-if [ ! -d /var/cache/tb-binary ]; then
-   exit 0
-fi
-
-if [ "$qubes_vm_persistence" = "none" ]; then
-   ## Running in DispVM. Fixing permissions so Tor Browser can run from
-   ## that folder directly rather than copying to user home to save time.
-   chown --recursive "$user_name:$user_name" /var/cache/tb-binary
-   exit 0
-fi
-
 
 if [ ! -d "$home_dir" ]; then
    exit 0
