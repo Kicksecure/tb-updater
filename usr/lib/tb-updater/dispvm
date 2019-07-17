@@ -1,0 +1,35 @@
+#!/bin/bash
+
+## Copyright (C) 2019 - 2019 ENCRYPTED SUPPORT LP <adrelanos@riseup.net>
+## See the file COPYING for copying conditions.
+
+set -x
+set -e
+
+user_name="user"
+
+if command -v qubesdb-read >/dev/null 2>&1 ; then
+   qubes_vm_type="$(qubesdb-read /qubes-vm-type)"
+   qubes_vm_name="$(qubesdb-read /name)"
+   qubes_vm_persistence="$(qubesdb-read /qubes-vm-persistence)"
+fi
+
+## Avoid running in Qubes DVM Template.
+## https://phabricator.whonix.org/T726
+if echo "$qubes_vm_name" | grep -q "\-dvm" ; then
+   exit 0
+fi
+
+if [ "$qubes_vm_type" = "TemplateVM" ]; then
+   exit 0
+fi
+
+if [ ! "$qubes_vm_persistence" = "none" ]; then
+   exit 0
+fi
+
+if [ ! -d /var/cache/tb-binary ]; then
+   exit 0
+fi
+
+chown --recursive "$user_name:$user_name" /var/cache/tb-binary
