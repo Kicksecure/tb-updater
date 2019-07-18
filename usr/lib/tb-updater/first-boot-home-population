@@ -6,8 +6,8 @@
 set -e
 set -x
 
-user_name="user"
-home_dir="/home/$user_name"
+user_name="$(whoami)"
+home_dir=~
 cache_folder="$home_dir/.tb"
 done_file="$cache_folder/first-boot-home-population.done"
 
@@ -38,9 +38,8 @@ shopt -s dotglob
 shopt -s nullglob
 
 for folder_name in /var/cache/tb-binary/*; do
-   sudo --non-interactive -u "$user_name" cp --verbose --recursive --no-clobber "$folder_name" "$home_dir"
+   cp --verbose --recursive --no-clobber "$folder_name" "$home_dir"
 done
 
 mkdir -p "$cache_folder"
 touch "$done_file"
-chown --recursive "$user_name:$user_name" "$cache_folder"
