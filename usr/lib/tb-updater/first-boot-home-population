@@ -34,6 +34,10 @@ if [ ! -d "$home_dir" ]; then
    exit 0
 fi
 
+if [ ! -d /var/cache/tb-binary ]; then
+   exit 0
+fi
+
 shopt -s dotglob
 shopt -s nullglob
 
