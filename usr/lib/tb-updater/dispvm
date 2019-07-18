@@ -24,7 +24,12 @@ if [ "$qubes_vm_type" = "TemplateVM" ]; then
    exit 0
 fi
 
+## Do this only in a DispVM.
 if [ ! "$qubes_vm_persistence" = "none" ]; then
+   exit 0
+fi
+
+if [ ! -d "/home/$user_name" ]; then
    exit 0
 fi
 
@@ -32,4 +37,17 @@ if [ ! -d /var/cache/tb-binary ]; then
    exit 0
 fi
 
+## Mount point must be existing to be able to use mount.
+sudo -u user mkdir --parents "/home/$user_name/.tb"
+sudo -u user mkdir --parents "/home/$user_name/.cache/tb"
+
 chown --recursive "$user_name:$user_name" /var/cache/tb-binary
+## Could alternatively do after mounting:
+#chown --recursive "$user_name:$user_name" "/home/$user_name/.tb"
+#chown --recursive "$user_name:$user_name" "/home/$user_name/.cache/tb"
+## But that would not give any security advantage since changing permissions
+## after bind mount will also result in the original folder changing
+## permissions.
+
+mount --bind /var/cache/tb-binary/.tb "/home/$user_name/.tb"
+mount --bind /var/cache/tb-binary/.cache/tb "/home/$user_name/.cache/tb"
