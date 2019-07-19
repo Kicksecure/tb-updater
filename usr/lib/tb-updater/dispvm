@@ -8,6 +8,10 @@ set -e
 
 user_name="user"
 
+if ischroot --default-false ; then
+   exit 0
+fi
+
 if command -v qubesdb-read >/dev/null 2>&1 ; then
    qubes_vm_type="$(qubesdb-read /qubes-vm-type)"
    qubes_vm_name="$(qubesdb-read /name)"
