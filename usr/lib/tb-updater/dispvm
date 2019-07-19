@@ -45,12 +45,8 @@ if [ ! -d /var/cache/tb-binary ]; then
 fi
 
 ## Mount point must be existing to be able to use mount.
-if [ -f /etc/secbrowser-qubes ] || [ -f /usr/local/etc/secbrowser-qubes ]; then
-   true
-else
-   sudo -u user mkdir --parents "/home/$user_name/.tb"
-   sudo -u user mkdir --parents "/home/$user_name/.cache/tb"
-fi
+sudo -u user mkdir --parents "/home/$user_name/.tb"
+sudo -u user mkdir --parents "/home/$user_name/.cache/tb"
 
 chown --recursive "$user_name:$user_name" /var/cache/tb-binary
 ## Could alternatively do after mounting:
@@ -60,13 +56,9 @@ chown --recursive "$user_name:$user_name" /var/cache/tb-binary
 ## after bind mount will also result in the original folder changing
 ## permissions.
 
-if [ -f /etc/secbrowser-qubes ] || [ -f /usr/local/etc/secbrowser-qubes ]; then
-   true
-else
-   if [ -d /var/cache/tb-binary/.tb ]; then
-      mount --bind /var/cache/tb-binary/.tb "/home/$user_name/.tb"
-   fi
-   if [ -d /var/cache/tb-binary/.cache/tb ]; then
-      mount --bind /var/cache/tb-binary/.cache/tb "/home/$user_name/.cache/tb"
-   fi
+if [ -d /var/cache/tb-binary/.tb ]; then
+   mount --bind /var/cache/tb-binary/.tb "/home/$user_name/.tb"
+fi
+if [ -d /var/cache/tb-binary/.cache/tb ]; then
+   mount --bind /var/cache/tb-binary/.cache/tb "/home/$user_name/.cache/tb"
 fi
