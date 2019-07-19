@@ -1,3 +1,47 @@
+commit 291a34c993f1e1738254ea6422377ebd6b00e4f5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:28:55 2019 +0000
+
+    usr/lib/tb-updater/dispvm: add secbrowser support
+
+commit f98e515f7a0a1ad4c42f21c344b1e339ddd1aca9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:25:16 2019 +0000
+
+    Revert "usr/lib/tb-updater/dispvm: add SecBrowser support skeleton"
+    
+    This reverts commit 6b18ce9579d98d95176b5f229dd812c35f9d5a58.
+
+commit 6b18ce9579d98d95176b5f229dd812c35f9d5a58
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:23:54 2019 +0000
+
+    usr/lib/tb-updater/dispvm: add SecBrowser support skeleton
+
+commit 3341e9e712797538c3097d2f6561546b1512c231
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:21:29 2019 +0000
+
+    usr/lib/tb-updater/dispvm: do none of this inside chroot
+
+commit fc3008f4d7cd07e84b84785d9af25d1e3e49c62e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:20:30 2019 +0000
+
+    usr/lib/tb-updater/dispvm: do not run outside of Qubes
+
+commit 3e5af06e707f50c0f4db50bd53c9f07558de89ce
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:18:31 2019 +0000
+
+    check if folder exists before using bind mount
+
+commit db756b9a2e46242ee66711c274a6275178923de1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:09:41 2019 +0000
+
+    bumped changelog version
+
 commit ee7418a81eeae70c502cad0bb17aa4742580fc6f
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jul 18 12:13:44 2019 -0400
