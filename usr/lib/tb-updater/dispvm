@@ -49,5 +49,9 @@ chown --recursive "$user_name:$user_name" /var/cache/tb-binary
 ## after bind mount will also result in the original folder changing
 ## permissions.
 
-mount --bind /var/cache/tb-binary/.tb "/home/$user_name/.tb"
-mount --bind /var/cache/tb-binary/.cache/tb "/home/$user_name/.cache/tb"
+if [ -d /var/cache/tb-binary/.tb ]; then
+   mount --bind /var/cache/tb-binary/.tb "/home/$user_name/.tb"
+fi
+if [ -d /var/cache/tb-binary/.cache/tb ]; then
+   mount --bind /var/cache/tb-binary/.cache/tb "/home/$user_name/.cache/tb"
+fi
