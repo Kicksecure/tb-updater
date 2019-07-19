@@ -55,12 +55,15 @@ true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
 
 download
 
-## Permissions fix.
+## Permissions fixes.
 ## gpg-bash-lib sets permissions to chmod 700.
 if [ -d /var/cache/tb-binary/.cache/tb/gpgtmpdir ]; then
    find /var/cache/tb-binary/.cache/tb/gpgtmpdir -type d -print0 | xargs -0 chmod 0775
    find /var/cache/tb-binary/.cache/tb/gpgtmpdir -type f -print0 | xargs -0 chmod 0664
 fi
+## Allow user to copy this to root.
+chmod --recursive o+r /var/cache/tb-binary
+find /var/cache/tb-binary -type d -print0 | xargs -0 chmod 0775
 
 true "
 #####################################################################
