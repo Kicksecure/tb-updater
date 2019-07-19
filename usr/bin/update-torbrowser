@@ -1818,40 +1818,6 @@ tb_patch() {
    tb_run_function tb_patch_download_folder_create
 }
 
-tb_move_old_version() {
-   shopt -s nullglob
-   local keep_count old_folder
-
-   if [ "$TB_NO_MOVE_OLD_VERSION" = "true" ]; then
-      true "INFO: Skipping $FUNCNAME, because TB_NO_MOVE_OLD_VERSION is 'true', ok."
-      return 0
-   fi
-
-   if [ -d "$tb_browser_folder" ]; then
-      output_echo_only "INFO: Moving old folder $tb_browser_folder..."
-      mv "$tb_browser_folder" "$tb_browser_folder.old.$(date '+%F-%H:%M:%S')"
-   fi
-
-   if [ "$TB_KEEP_OLD_VERSIONS_COUNT" = "all" ]; then
-      true "INFO: Keeping all old versions because TB_KEEP_OLD_VERSIONS_COUNT set to 'all', ok."
-      return 0
-   fi
-
-   keep_count="$TB_KEEP_OLD_VERSIONS_COUNT"
-
-   for old_folder in $(ls -dr "$tb_browser_folder.old."*); do
-      if ! [ -d "$old_folder" ]; then
-         continue
-      fi
-      if [ "$keep_count" -eq 0 ]; then
-         output_echo_only "INFO: Removing '$old_folder'"
-         rm -rf "$old_folder"
-      else
-         ((keep_count--))
-      fi
-   done
-}
-
 tb_install() {
    if [ "$TB_NO_INSTALL" = "true" ]; then
       true "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
@@ -2061,7 +2027,6 @@ main_function() {
    tb_run_function tb_confirm_install
    tb_run_function tb_extract
    tb_run_function tb_patch
-   tb_run_function tb_move_old_version
    tb_run_function tb_install
    tb_run_function tb_cleanup
    tb_run_function tb_hardcoded_version_last_downloaded_save
