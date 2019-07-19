@@ -1,3 +1,43 @@
+commit ee7418a81eeae70c502cad0bb17aa4742580fc6f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 18 12:13:44 2019 -0400
+
+    move code to copy Tor Browser from /var/cache/tb-binary to user home
+    
+    to tb-starter package /usr/bin/torbrowser
+
+commit 243f446d4d38226062de3431b4481e53aa47e9d3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 18 12:12:11 2019 -0400
+
+    skip if folder /var/cache/tb-binary does not exist
+
+commit 29d729927e623e977ee14b1a5ebdce77e73ed224
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 18 12:04:47 2019 -0400
+
+    use bind mount rather then executing directly in /var/cache/tb-binary
+    
+    https://github.com/QubesOS/qubes-issues/issues/4918#issuecomment-512860113
+
+commit 6a36f77dc741402dde0e081ac1c050ec6ad3b2ef
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 18 11:04:06 2019 -0400
+
+    fix permissions
+
+commit b803726f0ce7ab81b2eb9e0fdff8a8f9fc223ec2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 18 10:41:54 2019 -0400
+
+    no longer need to use sudo
+
+commit 5bc8018af4db69d58c82e758ce5eec6797848d2c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 23:18:55 2019 +0000
+
+    bumped changelog version
+
 commit cad4ae5039324768c0cf5727c61c0145903e2305
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Jul 17 23:18:34 2019 +0000
