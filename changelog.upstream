@@ -1,3 +1,21 @@
+commit f9440c7066bc08e6725c85c92b1db9f7ceba8740
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 15:19:56 2019 +0000
+
+    no longer keep / delete / rename old versions
+
+commit b86699f30be727e902153e213980d3698f7357c3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 14:29:12 2019 +0000
+
+    permission fixes
+
+commit b7c02e008796622ec84e3f079a58559c869f8294
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:30:03 2019 +0000
+
+    bumped changelog version
+
 commit 291a34c993f1e1738254ea6422377ebd6b00e4f5
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Jul 19 10:28:55 2019 +0000
