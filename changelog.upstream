@@ -1,3 +1,31 @@
+commit 2729adc1d50a521bb55d9acacd977bc66eb2f1c9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jul 29 12:55:02 2019 +0000
+
+    TODO AUDIT: see comment in debian/tb-updater.postinst
+    
+    suppress lintian warning
+    
+    --suppress-tags maintainer-script-should-not-use-recursive-chown-or-chmod
+
+commit 52fd47103317ab561786869713b858fa2513a647
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jul 29 12:45:23 2019 +0000
+
+    comment
+
+commit bcb1f5e6f1a5d0131a5e0924c837bd130c2df541
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jul 29 12:38:06 2019 +0000
+
+    comment
+
+commit b9138d0a82e5adbbe1273151caaf7a48582c73fe
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jul 22 01:18:51 2019 +0000
+
+    bumped changelog version
+
 commit f9440c7066bc08e6725c85c92b1db9f7ceba8740
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Jul 19 15:19:56 2019 +0000
