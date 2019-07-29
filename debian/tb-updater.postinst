@@ -73,7 +73,7 @@ fi
 # N:    This arises through altering permissions or ownership within a directory
 # N:    that may be owned by a non-privileged user - such a user can link to
 # N:    files that they do not own such as /etc/shadow or files within
-# N:    /var/lib/dpkg/. The promiscuous chown or chmod would convert the
+# N:    /var/lib/ dpkg/. The promiscuous chown or chmod would convert the
 # N:    ownership or permissions of these files so that they are manipulable by
 # N:    the non-privileged user.
 # N:
