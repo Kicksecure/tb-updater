@@ -4,7 +4,7 @@
 [Unit]
 Description=Helper Service for /usr/bin/torbrowser to determine when it is save to Copy Tor Browser from /var/cache/tb-binary to user home by Whonix developers
 Documentation=https://github.com/Whonix/tb-updater
-ConditionPathExists=!/var/run/qubes/this-is-templatevm
+ConditionPathExists=!/run/qubes/this-is-templatevm
 
 ## Wait for bind-dirs.sh being done.
 After=qubes-mount-dirs.service

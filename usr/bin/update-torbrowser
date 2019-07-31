@@ -550,13 +550,13 @@ tb_preparation() {
 
       if [ "$qubes_vm_type" = "" ]; then
          ## Works since Qubes R3.2.
-         if [ -e /var/run/qubes/this-is-appvm ]; then
+         if [ -e /run/qubes/this-is-appvm ]; then
             qubes_vm_type="AppVM"
          fi
-         if [ -e /var/run/qubes/this-is-netvm ]; then
+         if [ -e /run/qubes/this-is-netvm ]; then
             qubes_vm_type="NetVM"
          fi
-         if [ -e /var/run/qubes/this-is-templatevm ]; then
+         if [ -e /run/qubes/this-is-templatevm ]; then
             qubes_vm_type="TemplateVM"
          fi
          if [ "$is_chroot" = "true" ]; then

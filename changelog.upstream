@@ -1958,7 +1958,7 @@ commit 93613a1288d6aba9adaf6602ccad5f5765983046
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Nov 22 04:06:10 2016 +0000
 
-    tb-updater-first-boot.service ConditionPathExists=!/var/run/qubes/this-is-templatevm
+    tb-updater-first-boot.service ConditionPathExists=!/run/qubes/this-is-templatevm
 
 commit 46950c7ec4beefa1dbf32d5232aeb46f77b24dd9
 Author: Patrick Schleizer <adrelanos@riseup.net>
@@ -2575,7 +2575,7 @@ commit ab3d60d58ab1e2ae87b1ecbe68d2b2e9a4147177
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun Nov 22 22:12:12 2015 +0000
 
-    no longer depend on /var/run/qubes-service/whonix-template
+    no longer depend on /run/qubes-service/whonix-template
     
     https://phabricator.whonix.org/T432
 
@@ -3996,7 +3996,7 @@ commit 604599729c07752c66f322b31cb7cc9a3d153c85
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun Nov 2 08:25:36 2014 +0000
 
-    refactoring, fewer leftover files in /var/run/msgcollector
+    refactoring, fewer leftover files in /run/msgcollector
 
 commit 6b059d7187308d7bb0c7105b05218c5437b1b121
 Author: Patrick Schleizer <adrelanos@riseup.net>
