@@ -45,19 +45,19 @@ The Tor Project.
 sudo apt-key --keyring /etc/apt/trusted.gpg.d/whonix.gpg adv --keyserver hkp://ipv4.pool.sks-keyservers.net:80 --recv-keys 916B8D99C38EAF5E8ADC7A2A8D66066A2EEACCDA
 ```
 
-3\. Add Whonix's APT repository.
+2\. Add Whonix's APT repository.
 
 ```
 echo "deb http://deb.whonix.org buster main contrib non-free" | sudo tee /etc/apt/sources.list.d/whonix.list
 ```
 
-4\. Update your package lists.
+3\. Update your package lists.
 
 ```
 sudo apt-get update
 ```
 
-5\. Install `tb-updater`.
+4\. Install `tb-updater`.
 
 ```
 sudo apt-get install tb-updater
