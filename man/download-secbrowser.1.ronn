@@ -2,16 +2,8 @@ download-secbrowser(1) -- SecBrowser Downloader by Whonix developers
 ================================================================
 
 <span class="comment">
-# This file is part of Whonix.
 # Copyright (C) 2019 - 2019 ENCRYPTED SUPPORT LP <adrelanos@riseup.net>
 # See the file COPYING for copying conditions.
-
-# Not using angle brackets in copyright notice for e-mail address, because
-# angle brackets would result in this file being non-deterministic. (There
-# must be a bug in Debian wheezy in ruby-ronn.)
-
-# Not using "##", because for some reason this comment would be visible in the
-# resulting man page.
 </span>
 
 ## SYNOPSIS

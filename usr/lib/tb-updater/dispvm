@@ -1,0 +1,70 @@
+#!/bin/bash
+
+## Copyright (C) 2019 - 2019 ENCRYPTED SUPPORT LP <adrelanos@riseup.net>
+## See the file COPYING for copying conditions.
+
+set -x
+set -e
+
+user_name="user"
+
+if ischroot --default-false ; then
+   exit 0
+fi
+
+if command -v qubesdb-read >/dev/null 2>&1 ; then
+   qubes_vm_type="$(qubesdb-read /qubes-vm-type)"
+   qubes_vm_name="$(qubesdb-read /name)"
+   qubes_vm_persistence="$(qubesdb-read /qubes-vm-persistence)"
+else
+   ## Do not do any of this outside of Qubes.
+   exit 0
+fi
+
+## Avoid running in Qubes DVM Template.
+## https://phabricator.whonix.org/T726
+if echo "$qubes_vm_name" | grep -q "\-dvm" ; then
+   exit 0
+fi
+
+if [ "$qubes_vm_type" = "TemplateVM" ]; then
+   exit 0
+fi
+
+## Do this only in a DispVM.
+if [ ! "$qubes_vm_persistence" = "none" ]; then
+   exit 0
+fi
+
+if [ ! -d "/home/$user_name" ]; then
+   exit 0
+fi
+
+if [ ! -d /var/cache/tb-binary ]; then
+   exit 0
+fi
+
+if [ -f /etc/secbrowser-qubes ] || [ -f /usr/local/etc/secbrowser-qubes ]; then
+   tool="secbrowser"
+else
+   tool="tb"
+fi
+
+## Mount point must be existing to be able to use mount.
+sudo -u user mkdir --parents "/home/$user_name/.${tool}"
+sudo -u user mkdir --parents "/home/$user_name/.cache/${tool}"
+
+chown --recursive "$user_name:$user_name" /var/cache/tb-binary
+## Could alternatively do after mounting:
+#chown --recursive "$user_name:$user_name" "/home/$user_name/.${tool}"
+#chown --recursive "$user_name:$user_name" "/home/$user_name/.cache/${tool}"
+## But that would not give any security advantage since changing permissions
+## after bind mount will also result in the original folder changing
+## permissions.
+
+if [ -d "/var/cache/tb-binary/.${tool}" ]; then
+   mount --bind "/var/cache/tb-binary/.${tool}" "/home/$user_name/.${tool}"
+fi
+if [ -d "/var/cache/tb-binary/.cache/${tool}" ]; then
+   mount --bind "/var/cache/tb-binary/.cache/${tool}" "/home/$user_name/.cache/${tool}"
+fi

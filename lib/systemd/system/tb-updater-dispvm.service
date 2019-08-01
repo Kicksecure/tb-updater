@@ -1,8 +1,8 @@
-## Copyright (C) 2012 - 2018 ENCRYPTED SUPPORT LP <adrelanos@riseup.net>
+## Copyright (C) 2019 - 2019 ENCRYPTED SUPPORT LP <adrelanos@riseup.net>
 ## See the file COPYING for copying conditions.
 
 [Unit]
-Description=Helper Service for /usr/bin/torbrowser to determine when it is save to Copy Tor Browser from /var/cache/tb-binary to user home by Whonix developers
+Description=Helper Service for /usr/bin/torbrowser to set file owner of /var/cache/tb-binary to user in Qubes DispVMs by Whonix developers
 Documentation=https://github.com/Whonix/tb-updater
 ConditionPathExists=!/run/qubes/this-is-templatevm
 
@@ -14,9 +14,6 @@ After=qubes-mount-home.service
 ## Wait for bind-directories being done.
 After=qubes-whonix-postinit.service
 
-## Wait until eventual (if this is a DispVM) permission fix is done.
-After=tb-updater-dispvm.service
-
 ## Preventing race condition with user start through start menu.
 ## Not the most efficient / clean solution.
 ## https://phabricator.whonix.org/T424
@@ -25,7 +22,7 @@ Before=qubes-gui-agent.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/bin/true
+ExecStart=/usr/lib/tb-updater/dispvm
 
 [Install]
 WantedBy=multi-user.target

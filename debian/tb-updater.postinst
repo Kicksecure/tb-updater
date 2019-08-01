@@ -3,15 +3,8 @@
 ## Copyright (C) 2012 - 2018 ENCRYPTED SUPPORT LP <adrelanos@riseup.net>
 ## See the file COPYING for copying conditions.
 
-## Not using pre.bsh, so output during download will be shown.
-#if [ -f /usr/lib/helper-scripts/pre.bsh ]; then
-   #source /usr/lib/helper-scripts/pre.bsh
-#fi
-
-if [ ! "$DEBDEBUG" = "" ]; then
-   if [ "$DEBDEBUG" -ge "1" ]; then
-      set -x
-   fi
+if [ -f /usr/lib/helper-scripts/pre.bsh ]; then
+   source /usr/lib/helper-scripts/pre.bsh
 fi
 
 set -e
@@ -21,6 +14,27 @@ true "
 ## INFO: BEGIN: $DPKG_MAINTSCRIPT_PACKAGE $DPKG_MAINTSCRIPT_NAME $@
 #####################################################################
 "
+
+download() {
+   mkdir --parents "/var/cache/tb-binary"
+
+   if ischroot --default-false ; then
+      chroot_maybe="--is-chroot"
+   fi
+
+   if [ -f /etc/secbrowser-qubes ] || [ -f /usr/local/etc/secbrowser-qubes ]; then
+      tool=download-secbrowser
+   else
+      tool=update-torbrowser
+   fi
+
+   ## TODO:
+   #tpo_downloader_debug="$tpo_downloader_debug"
+
+   $tool \
+      $chroot_maybe \
+      --postinst
+}
 
 true "INFO: debhelper beginning here."
 
@@ -32,20 +46,50 @@ true "anon_shared_inst_tb: $anon_shared_inst_tb"
 true "tb_onion: $tb_onion"
 true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
 
-mkdir --parents "/var/cache/tb-binary"
-chown user:user "/var/cache/tb-binary"
+download
 
-if ischroot --default-false ; then
-   chroot_maybe="--is-chroot"
+## Permissions fixes.
+## gpg-bash-lib sets permissions to chmod 700.
+if [ -d /var/cache/tb-binary/.cache/tb/gpgtmpdir ]; then
+   find /var/cache/tb-binary/.cache/tb/gpgtmpdir -type d -print0 | xargs -0 chmod 0775
+   find /var/cache/tb-binary/.cache/tb/gpgtmpdir -type f -print0 | xargs -0 chmod 0664
 fi
 
-## TODO:
-#tpo_downloader_debug="$tpo_downloader_debug"
+# W: tb-updater: maintainer-script-should-not-use-recursive-chown-or-chmod postinst:112
+# N:
+# N:    The maintainer script appears to call chmod or chown with a
+# N:    --recursive/-R argument, or uses find(1) in a similar manner.
+# N:
+# N:    This is vulnerable to hardlink attacks on mainline, non-Debian kernels
+# N:    that do not have fs.protected_hardlinks=1,
+# N:
+# N:    This arises through altering permissions or ownership within a directory
+# N:    that may be owned by a non-privileged user - such a user can link to
+# N:    files that they do not own such as /etc/shadow or files within
+# N:    /var/lib/ dpkg/. The promiscuous chown or chmod would convert the
+# N:    ownership or permissions of these files so that they are manipulable by
+# N:    the non-privileged user.
+# N:
+# N:    Ways to avoid this problem include:
+# N:
+# N:     - If your package uses a static uid, please perform the chown at
+# N:       package build time instead of installation time.
+# N:     - Use a non-recursive call instead, ensuring that you do not change
+# N:       ownership of files that are in user-controlled directories.
+# N:     - Use runuser(1) to perform any initialization work as the
+# N:       user you were previously chowning to.
+# N:
+# N:    Refer to https://bugs.debian.org/889060, https://bugs.debian.org/889488,
+# N:    and the runuser(1) manual page for details.
+# N:
+# N:    Severity: normal, Certainty: certain
+# N:
+# N:    Check: scripts, Type: binary
 
-runuser --preserve-environment -u user -- \
-      update-torbrowser \
-         $chroot_maybe \
-         --postinst
+## Allow user in regular VM (i.e. non-DispVM) to copy this to root.
+## In DispVM 'mount' is being used rather than 'cp'.
+chmod --recursive o+r /var/cache/tb-binary
+find /var/cache/tb-binary -type d -print0 | xargs -0 chmod 0775
 
 true "
 #####################################################################

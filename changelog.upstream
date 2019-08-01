@@ -1,3 +1,332 @@
+commit 72bf7039b61c98669d94299c98af20816cb33b03
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 31 10:57:55 2019 -0400
+
+    can use pre.bsh now since it enables echo by default
+
+commit d1243bbd361b519197342fe61597bebd39fba19e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 31 07:46:34 2019 +0000
+
+    bumped changelog version
+
+commit aa72eebb8cc9997bff34fb4062db4600f4f35e8c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 31 03:12:13 2019 -0400
+
+    /var/run -> /run
+
+commit 65d96f43bbc88ff999372d84b8c96edf8e8ad886
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jul 29 12:56:55 2019 +0000
+
+    bumped changelog version
+
+commit 2729adc1d50a521bb55d9acacd977bc66eb2f1c9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jul 29 12:55:02 2019 +0000
+
+    TODO AUDIT: see comment in debian/tb-updater.postinst
+    
+    suppress lintian warning
+    
+    --suppress-tags maintainer-script-should-not-use-recursive-chown-or-chmod
+
+commit 52fd47103317ab561786869713b858fa2513a647
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jul 29 12:45:23 2019 +0000
+
+    comment
+
+commit bcb1f5e6f1a5d0131a5e0924c837bd130c2df541
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jul 29 12:38:06 2019 +0000
+
+    comment
+
+commit b9138d0a82e5adbbe1273151caaf7a48582c73fe
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Jul 22 01:18:51 2019 +0000
+
+    bumped changelog version
+
+commit f9440c7066bc08e6725c85c92b1db9f7ceba8740
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 15:19:56 2019 +0000
+
+    no longer keep / delete / rename old versions
+
+commit b86699f30be727e902153e213980d3698f7357c3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 14:29:12 2019 +0000
+
+    permission fixes
+
+commit b7c02e008796622ec84e3f079a58559c869f8294
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:30:03 2019 +0000
+
+    bumped changelog version
+
+commit 291a34c993f1e1738254ea6422377ebd6b00e4f5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:28:55 2019 +0000
+
+    usr/lib/tb-updater/dispvm: add secbrowser support
+
+commit f98e515f7a0a1ad4c42f21c344b1e339ddd1aca9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:25:16 2019 +0000
+
+    Revert "usr/lib/tb-updater/dispvm: add SecBrowser support skeleton"
+    
+    This reverts commit 6b18ce9579d98d95176b5f229dd812c35f9d5a58.
+
+commit 6b18ce9579d98d95176b5f229dd812c35f9d5a58
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:23:54 2019 +0000
+
+    usr/lib/tb-updater/dispvm: add SecBrowser support skeleton
+
+commit 3341e9e712797538c3097d2f6561546b1512c231
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:21:29 2019 +0000
+
+    usr/lib/tb-updater/dispvm: do none of this inside chroot
+
+commit fc3008f4d7cd07e84b84785d9af25d1e3e49c62e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:20:30 2019 +0000
+
+    usr/lib/tb-updater/dispvm: do not run outside of Qubes
+
+commit 3e5af06e707f50c0f4db50bd53c9f07558de89ce
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:18:31 2019 +0000
+
+    check if folder exists before using bind mount
+
+commit db756b9a2e46242ee66711c274a6275178923de1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 19 10:09:41 2019 +0000
+
+    bumped changelog version
+
+commit ee7418a81eeae70c502cad0bb17aa4742580fc6f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 18 12:13:44 2019 -0400
+
+    move code to copy Tor Browser from /var/cache/tb-binary to user home
+    
+    to tb-starter package /usr/bin/torbrowser
+
+commit 243f446d4d38226062de3431b4481e53aa47e9d3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 18 12:12:11 2019 -0400
+
+    skip if folder /var/cache/tb-binary does not exist
+
+commit 29d729927e623e977ee14b1a5ebdce77e73ed224
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 18 12:04:47 2019 -0400
+
+    use bind mount rather then executing directly in /var/cache/tb-binary
+    
+    https://github.com/QubesOS/qubes-issues/issues/4918#issuecomment-512860113
+
+commit 6a36f77dc741402dde0e081ac1c050ec6ad3b2ef
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 18 11:04:06 2019 -0400
+
+    fix permissions
+
+commit b803726f0ce7ab81b2eb9e0fdff8a8f9fc223ec2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 18 10:41:54 2019 -0400
+
+    no longer need to use sudo
+
+commit 5bc8018af4db69d58c82e758ce5eec6797848d2c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 23:18:55 2019 +0000
+
+    bumped changelog version
+
+commit cad4ae5039324768c0cf5727c61c0145903e2305
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 23:18:34 2019 +0000
+
+    chmod +x usr/lib/tb-updater/dispvm
+
+commit ba526acdafd20076d25e2c12aa5d29975fe1fa95
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 23:17:05 2019 +0000
+
+    bumped changelog version
+
+commit 5d3c3f4ddf672773507176b67890633b1132cd61
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 23:16:00 2019 +0000
+
+    permissions fix for DispVM
+    
+    to run directly from /var/cache/tb-binary
+
+commit 4d67ed7303c2497a56c60d7628d47e43c422eef6
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 23:08:29 2019 +0000
+
+    Revert "permissions fix for DispVM"
+    
+    This reverts commit 09e4de069a222ac7586c1c92061a270a73163dc8.
+
+commit 09e4de069a222ac7586c1c92061a270a73163dc8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 23:07:03 2019 +0000
+
+    permissions fix for DispVM
+    
+    to run directly from /var/cache/tb-binary
+
+commit a337946488ef4978ece8402c110ca3b7f0f838e5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 22:49:42 2019 +0000
+
+    no longer run tb-updater during postinst as user "user", run as root
+    since existence is not guaranteed
+    
+    permission hardening:
+    no longer set /var/cache/tb-binary to user "user" unconditionally
+
+commit e272f056b978e4c3902a6660dad35c3ccb49054f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 17 22:49:11 2019 +0000
+
+    no longer run tb-updater during postinst as user "user", run as root
+    since existence is not guaranteed
+    
+    permission hardening:
+    no longer set /var/cache/tb-binary to user "user" unconditionally
+
+commit 01f53a9ebc3485757ba1eaaac9f8b8313d11123e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 13 15:37:16 2019 +0000
+
+    bumped changelog version
+
+commit 6336fad67fc96ed646f91b37c4bbc7c0e7dfdc56
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 13 15:35:38 2019 +0000
+
+    Debian support
+    
+    do not break if user 'user' does not exist
+
+commit ff33e22a76931100c41bdcf293a0db69a05aa837
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 13 15:31:32 2019 +0000
+
+    support download SecBrowser in Qubes TemplateVM
+    
+    by creating either file:
+    - /etc/secbrowser-qubes
+    - /usr/local/etc/secbrowser-qubes
+
+commit 4048cd19b8e697a224f32cf0dc7be0581bf82186
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jul 13 11:29:36 2019 +0000
+
+    bumped changelog version
+
+commit 798e23c1f9ac1f0ccdfe22c2f79fb0e9f637e51e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 12 12:23:53 2019 -0400
+
+    move usr/share/tb-updater/tb_without_tor_settings.js to tb-starter usr/share/secbrowser/user.js
+
+commit 7b599a33616d8242366bcfa501685b26716c2349
+Merge: c6b4d44 f29ff96
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 12 12:21:04 2019 -0400
+
+    Merge remote-tracking branch 'origin/master'
+
+commit f29ff963a76f534a4cebce66b7eb5f0d22d705a6
+Merge: c6b4d44 91bf98e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Jul 12 16:20:45 2019 +0000
+
+    Merge pull request #10 from 0brand/master
+    
+    Set security slider to safest.
+
+commit 91bf98e9e1baedf0c048a4ccbefb8a74c55f3c5c
+Author: 0brand <0brand@mailbox.org>
+Date:   Fri Jul 12 03:16:09 2019 +0000
+
+    prefs to set security slider to safest
+
+commit c6b4d44d8ff19ab0b02485a5f37925f1b7f6abb8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 11 07:17:39 2019 +0000
+
+    bumped changelog version
+
+commit 9656e0a35d115c07281ebe29becb5e3f5ec571e3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 11 07:01:00 2019 +0000
+
+    tbb_hardcoded_version
+
+commit d6eceacf16735994e62ed66a5ad8378830192fcf
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Jun 30 08:24:58 2019 +0000
+
+    bumped changelog version
+
+commit 4c6b06efa9965c896eb547ba362598321ea1fa15
+Merge: 2104d8b 5fb1ce5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jun 29 16:45:37 2019 -0400
+
+    Merge remote-tracking branch 'origin/master'
+
+commit 5fb1ce5ac698f700f41ccbaf7688f98d26d9cc74
+Merge: 2104d8b 55ef9c5
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jun 29 20:45:24 2019 +0000
+
+    Merge pull request #9 from adrelanos/master
+    
+    do not copy Tor Browser by default to user home at first boot
+
+commit 2104d8b4bfaaf597e0b38d8316b4f4ae1cf8e38f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jun 29 16:39:22 2019 -0400
+
+    man page
+
+commit 48cbdf31d635aee624d31a4fa5d041ed8817cdf7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Jun 29 13:45:41 2019 +0000
+
+    man page
+
+commit 8de3a29008a08890234d8fa47ce359f522b6b8fc
+Merge: c6e0ab8 1bb2c19
+Author: 0brand <0brand@mailbox.org>
+Date:   Fri Jun 28 23:24:42 2019 +0000
+
+    Merge pull request #2 from Whonix/master
+    
+    Sync with upstream
+
+commit 1bb2c1917ff68ca1b9293d26d61da6c64dc5bb77
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 27 12:39:53 2019 +0000
+
+    bumped changelog version
+
 commit 2c3b4491d35a70bf79e663145c65d3533a1bac61
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 27 12:33:30 2019 +0000
@@ -9,6 +338,18 @@ Date:   Thu Jun 27 12:33:30 2019 +0000
     do it at actual first start of Tor Browser instead
     
     https://github.com/QubesOS/qubes-issues/issues/4918
+
+commit 55ef9c596b8d97319ef1bffce3035a4b4df79605
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jun 27 12:33:30 2019 +0000
+
+    do not copy Tor Browser by default to user home at first boot
+    
+    because that wastes space in VMs that will never use Tor Browser
+    
+    do it at actual first start of Tor Browser instead
+    
+    /usr/lib/tb-updater/first-boot-home-population
 
 commit 072a2b8851bf01a254acc4a51e917153ee74fe97
 Author: Patrick Schleizer <adrelanos@riseup.net>
@@ -327,6 +668,15 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 20 00:32:10 2019 -0400
 
     tbb_hardcoded_version="8.5.2"
+
+commit c6e0ab82d6dfb5c285b4460f1a0bbd492ae2319f
+Merge: 8da835d 4f62bfc
+Author: 0brand <0brand@mailbox.org>
+Date:   Wed Jun 19 03:17:06 2019 +0000
+
+    Merge pull request #1 from Whonix/master
+    
+    Merge Whonix with 0brand
 
 commit 4f62bfc361603fcb80eff928bac07cd0686406fc
 Author: Patrick Schleizer <adrelanos@riseup.net>

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+## Copyright (C) 2019 - 2019 Patrick Schleizer <adrelanos@riseup.net>
+## See the file COPYING for copying conditions.
+
+## AUDIT: see comment in debian/tb-updater.postinst
+genmkfile_lintian_post_opts+=" --suppress-tags maintainer-script-should-not-use-recursive-chown-or-chmod"
