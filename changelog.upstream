@@ -1,3 +1,15 @@
+commit 228b2e2a1bedd7aed9178d73a902831cc2f2c247
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Aug 7 06:28:40 2019 +0000
+
+    permissions fix when copying from Qubes root image to AppVM private image
+
+commit cb113d82befa544c3c0a012cb0d0c0a9990674b2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Aug 1 12:06:27 2019 +0000
+
+    bumped changelog version
+
 commit dd980d6c3619bcdca2aaf658e547ca07c215379a
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Aug 1 11:13:45 2019 +0000
