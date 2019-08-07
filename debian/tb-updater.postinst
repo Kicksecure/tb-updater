@@ -48,12 +48,8 @@ true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
 
 download
 
-## Permissions fixes.
-## gpg-bash-lib sets permissions to chmod 700.
-if [ -d /var/cache/tb-binary/.cache/tb/gpgtmpdir ]; then
-   find /var/cache/tb-binary/.cache/tb/gpgtmpdir -type d -print0 | xargs -0 chmod 0775
-   find /var/cache/tb-binary/.cache/tb/gpgtmpdir -type f -print0 | xargs -0 chmod 0664
-fi
+## Not needed?
+#rm --recursive --force /var/cache/tb-binary/.cache/tb/gpgtmpdir
 
 # W: tb-updater: maintainer-script-should-not-use-recursive-chown-or-chmod postinst:112
 # N:
@@ -89,7 +85,13 @@ fi
 ## Allow user in regular VM (i.e. non-DispVM) to copy this to root.
 ## In DispVM 'mount' is being used rather than 'cp'.
 chmod --recursive o+r /var/cache/tb-binary
+## Somehow needed too.
+chmod --recursive g+r /var/cache/tb-binary
+
 find /var/cache/tb-binary -type d -print0 | xargs -0 chmod 0775
+
+## Needed?
+#chmod --recursive +X /var/cache/tb-binary
 
 true "
 #####################################################################
