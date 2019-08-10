@@ -28,6 +28,9 @@ how you want to proceed.
 Same as `download-secbrowser`. See:
 man download-secbrowser
 
+## ENVIRONMENT VARIABLES
+`CURL_PROXY` will be passed to `curl`.
+
 ## AVAILABLE LANGUAGES
 Same as `download-secbrowser`. See:
 man download-secbrowser
@@ -50,6 +53,10 @@ man download-secbrowser
 `update-secbrowser --update --lang="vi"`
 
 `timeout 600 update-secbrowser --ordinary`
+
+Using a socks proxy (Tor) to download SecBrowser.
+
+`CURL_PROXY="--proxy socks5h://127.0.0.1:9050" download-secbrowser`
 
 ## BUGS
 Same as `download-secbrowser`. See:
