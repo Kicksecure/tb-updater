@@ -1222,6 +1222,21 @@ n/${tbb_recommended_versions_slash_separated}?"
                output_echo_only "INFO: Canceled. Exit."
                tb_exit_function 10
             fi
+            local available_version valid_version_chosen
+            for available_version in $tbb_recommended_versions_list ; do
+               if [ "$answer" = "$available_version" ]; then
+                  valid_version_chosen=true
+                  break
+               fi
+            done
+            if [ ! "$valid_version_chosen" = "true" ]; then
+               output_echo_only "ERROR: invalid answer. Choose a version number. Type any of the following."
+               for available_version in $tbb_recommended_versions_list ; do
+                  echo "$available_version"
+               done
+               output_echo_only "INFO: Then press enter. Exit. Try again."
+               tb_exit_function 10
+            fi
          else
             output_echo_only "INFO: Detected versions: ${tbb_recommended_versions_slash_separated}"
             #echo "/usr/lib/msgcollector/tb_updater_gui \"$type\" \"$TITLE\" \"$tbb_locally_installed_version\" \"$tbb_recommended_versions_comma_separated\" \"$MSG\" \"$question\" \"$button\")"
