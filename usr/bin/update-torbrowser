@@ -794,7 +794,7 @@ tb_preparation() {
          fi
          CURL_PROXY="--proxy $PROXY_SERVER"
       fi
-   elif [ -f /usr/share/anon-dist/marker ]; then
+   elif [ -f /usr/share/whonix/marker ]; then
       ## sets: GATEWAY_IP
       eval $(/usr/lib/helper-scripts/settings_echo)
       [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
