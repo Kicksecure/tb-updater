@@ -1,3 +1,15 @@
+commit 9b242fbc1183505ce77597e82bc1c52e75a16da9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Aug 11 14:10:03 2019 +0000
+
+    use marker file /usr/share/whonix/marker instead
+
+commit 9503e83ef5e2ae513dc5a7d8633c3a37ffa5b106
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sat Aug 10 11:37:37 2019 +0000
+
+    bumped changelog version
+
 commit 29aa6120e2494ef49f47046715487580212d47f9
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat Aug 10 07:04:26 2019 -0400
