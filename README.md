@@ -32,6 +32,15 @@ Anonymity Distributions), Tor Browser Downloader will check, that Tor is
 enabled, that no package manager is currently running and that Tor finished
 bootstrapping before download attempts.
 
+Supports being run inside chroot and from Debian maintainer postinst script.
+
+Qubes integration:
+
+- Up-to-date browser versions made available to freshly created AppVMs and
+DispVMs.
+- In DispVM mounts browser folder which resides in root image to user home
+folder rather than copying for faster browser startup.
+
 This package is produced independently of, and carries no guarantee from,
 The Tor Project.
 
