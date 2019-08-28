@@ -63,8 +63,8 @@ chown --recursive "$user_name:$user_name" /var/cache/tb-binary
 ## permissions.
 
 if [ -d "/var/cache/tb-binary/.${tool}" ]; then
-   mount --bind "/var/cache/tb-binary/.${tool}" "/home/$user_name/.${tool}"
+   mount --bind -o nosuid,nodev "/var/cache/tb-binary/.${tool}" "/home/$user_name/.${tool}"
 fi
 if [ -d "/var/cache/tb-binary/.cache/${tool}" ]; then
-   mount --bind "/var/cache/tb-binary/.cache/${tool}" "/home/$user_name/.cache/${tool}"
+   mount --bind -o nosuid,nodev "/var/cache/tb-binary/.cache/${tool}" "/home/$user_name/.cache/${tool}"
 fi
