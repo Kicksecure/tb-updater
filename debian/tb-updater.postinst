@@ -90,8 +90,7 @@ chmod --recursive g+r /var/cache/tb-binary
 
 find /var/cache/tb-binary -type d -print0 | xargs -0 chmod 0775
 
-## Needed?
-#chmod --recursive +X /var/cache/tb-binary
+chmod --recursive u+X /var/cache/tb-binary
 
 true "
 #####################################################################
