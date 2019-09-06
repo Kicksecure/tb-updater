@@ -138,6 +138,10 @@ tb_run_function() {
 }
 
 root_check() {
+   if [ -e /run/qubes/this-is-templatevm ]; then
+      return 0
+   fi
+
    if echo "$@" | grep -q "\-\-postinst" ; then
       return 0
    fi
