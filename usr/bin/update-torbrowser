@@ -1853,6 +1853,9 @@ tb_install() {
       return 0
    fi
 
+   output_echo_only "INFO: Deleting old folder $tb_browser_folder."
+   rm -rf "$tb_browser_folder"
+
    output_echo_only "INFO: Moving temporary folder $tb_extract_temp_folder to $tb_browser_folder."
    mv "$tb_extract_temp_folder" "$tb_browser_folder"
 }
