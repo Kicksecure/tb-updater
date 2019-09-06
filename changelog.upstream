@@ -1,3 +1,15 @@
+commit da5392e2bbe4c3f49f9c81d38c0c21bbc831de9a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 6 11:40:33 2019 +0000
+
+    syntax fix
+
+commit 605d7fcc746dafc0bf454f9451c38deaf43260a8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 6 11:19:12 2019 +0000
+
+    bumped changelog version
+
 commit de8e77bf3d1233705a790ae19aa01d451e683340
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Sep 6 11:18:14 2019 +0000
