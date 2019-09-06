@@ -2,7 +2,7 @@
 ## See the file COPYING for copying conditions.
 
 [Desktop Entry]
-Exec=update-torbrowser
+Exec=/usr/lib/tb-updater/desktop-starter-wrapper
 Type=Application
 Name=Tor Browser Downloader (AnonDist)
 GenericName=Download Tor Browser

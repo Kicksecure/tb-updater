@@ -1,0 +1,13 @@
+#!/bin/bash
+
+## Copyright (C) 2019 - 2019 ENCRYPTED SUPPORT LP <adrelanos@riseup.net>
+## See the file COPYING for copying conditions.
+
+set -x
+set -e
+
+if [ -e /run/qubes/this-is-templatevm ]; then
+   lxsudo update-torbrowser --input gui
+elif
+   update-torbrowser --input gui
+fi
