@@ -1037,7 +1037,7 @@ tb_remote_version_sanity_test() {
 
 <p>Could not find out latest $tb_title version! $tbb_recommended_versions_error</p>
 
-<p>Either $TBB_VERSIONS_FILE_LINK has been compromised or this is a $SCRIPTNAME (by Whonix developers) bug.</p>
+<p>Either $TBB_VERSIONS_FILE_LINK is invalid or this is a $SCRIPTNAME (by Whonix developers) bug.</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
