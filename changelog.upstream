@@ -1,3 +1,17 @@
+commit 28cbdd3d78badec1db09df71bcb534f547a061ac
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 6 11:58:41 2019 +0000
+
+    fix, delete old folder
+    
+    this was broken in https://github.com/Whonix/tb-updater/commit/f9440c7066bc08e6725c85c92b1db9f7ceba8740
+
+commit 4fec175d3a2503ceb6fed54aa0a01e74fc8e8c93
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 6 11:41:18 2019 +0000
+
+    bumped changelog version
+
 commit da5392e2bbe4c3f49f9c81d38c0c21bbc831de9a
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Sep 6 11:40:33 2019 +0000
