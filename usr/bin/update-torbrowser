@@ -581,6 +581,16 @@ tb_preparation() {
       [ -n "$is_qubes" ] || is_qubes=false
    fi
 
+   if [ "$qubes_vm_type" = "TemplateVM" ]; then
+      if [ "$(id -u)" != "0" ]; then
+         echo "ERROR: Needs to run as root in Qubes TemplateVM. Run:"
+         echo "sudo $SCRIPTNAME"
+         tb_exit_function 2
+      else
+         true
+      fi
+   fi
+
    if [ "$is_chroot" = "true" ]; then
       tb_settings_chroot_common
    fi
