@@ -8,6 +8,6 @@ set -e
 
 if [ -e /run/qubes/this-is-templatevm ]; then
    lxsudo update-torbrowser --input gui
-elif
+else
    update-torbrowser --input gui
 fi
