@@ -1,3 +1,29 @@
+commit de8e77bf3d1233705a790ae19aa01d451e683340
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 6 11:18:14 2019 +0000
+
+    run update-torbrowser under lxsudo in Qubes TemplateVM
+
+commit b4f195e6512fb6c97ff2531c6202bcd6486ee043
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 6 11:11:25 2019 +0000
+
+    needs to run as root in Qubes TemplateVM for manual run
+    notify user to run
+    sudo update-torbrowser
+
+commit cb3f687ff6b539831a849e553dccb023c16f5769
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 6 11:06:31 2019 +0000
+
+    allow running as root in TemplateVM to allow manual run
+
+commit 132e70acae71f0ba2638b20b0bccb8cbc207ae35
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 6 09:34:17 2019 +0000
+
+    bumped changelog version
+
 commit bfca0ce412ebc5184abfa0ed548b10e79cc9cf7a
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Sep 6 09:25:48 2019 +0000
