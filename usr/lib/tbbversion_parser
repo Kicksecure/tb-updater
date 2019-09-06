@@ -68,7 +68,8 @@ tbbversion() {
       ## Check if RecommendedTBBVersions versions file is excessively long.
       if [ "$line_number" -gt "100" ]; then
          tbb_recommended_versions_list="UNKNOWN"
-         tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. (Longer than 100 lines.)"
+         tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(File is longer than 100 lines.)"
          return 0
       fi
 
@@ -151,7 +152,8 @@ tbbversion() {
 
       tbb_recommended_versions_list="UNKNOWN"
 
-      tbb_recommended_versions_error="Excessive version string length. ($actual_string_length characters)"
+      tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(Excessive version string length of $actual_string_length characters.)"
 
       return 0
    fi
