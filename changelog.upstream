@@ -1,3 +1,33 @@
+commit 703afa4c9e51e6a0b9d9def7fed9106eb6359b58
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 6 12:28:35 2019 +0000
+
+    fix dependency lxsudo -> lxqt-sudo
+
+commit afcff41567254a5a49eefb165574327b3cfab692
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 6 12:23:30 2019 +0000
+
+    output
+
+commit aa20a39c9edfc7add259bee83cf252e73104f6b7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 6 12:22:24 2019 +0000
+
+    output
+
+commit f759ef292c69c4c2a78ceeb18cab6e616e4cb264
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 6 12:18:13 2019 +0000
+
+    comment
+
+commit 0149ebe944b0d1174343a03b5adf631d439f77c0
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 6 12:03:46 2019 +0000
+
+    bumped changelog version
+
 commit 28cbdd3d78badec1db09df71bcb534f547a061ac
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Sep 6 11:58:41 2019 +0000
