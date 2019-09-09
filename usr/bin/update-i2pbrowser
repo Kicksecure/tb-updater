@@ -7,4 +7,13 @@ export SCRIPTNAME="$(basename "$BASH_SOURCE")"
 
 export ICON="/usr/share/icons/anon-icon-pack/tbupdate.ico"
 
-update-torbrowser --i2p "$@"
+export IDENTIFIER="i2pbrowser-downloader"
+export tb_install_folder="i2pb"
+export tb_install_folder_dot=".i2pb"
+export tb_title="i2p Browser"
+export tb_wiki="i2p_Browser"
+export tb_browser_name="i2p-browser"
+export tb_settings_folder="i2pbrowser.d"
+export tb_bin="i2pbrowser"
+
+update-torbrowser "$@"

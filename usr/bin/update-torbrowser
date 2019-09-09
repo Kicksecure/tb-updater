@@ -305,20 +305,6 @@ tb_parse_cmd_options() {
                [ -n "$tb_onion" ] || tb_onion="true"
                shift
                ;;
-           --i2p)
-               ## This option downloads a Tor Browser Bundle to a custom path,
-               ## intended to be used with i2p. It does no modification to the
-               ## browser itself.
-               IDENTIFIER="i2pbrowser-downloader"
-               tb_install_folder="i2pb"
-               tb_install_folder_dot=".i2pb"
-               tb_title="i2p Browser"
-               tb_wiki="i2p_Browser"
-               tb_browser_name="i2p-browser"
-               tb_settings_folder="i2pbrowser.d"
-               tb_bin="i2pbrowser"
-               shift
-               ;;
            --)
                shift
                break
