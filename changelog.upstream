@@ -1,3 +1,33 @@
+commit a927394d17bec986a3bfbccd8d4f50a0eee8cf7c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Sep 9 10:27:43 2019 +0000
+
+    fix "update-torbrowser tb_onion config setting ignored."
+    
+    run tb_config_folder_parser before tb_parse_cmd_options and before tb_preparation
+    
+    https://forums.whonix.org/t/update-torbrowser-tb-onion-config-setting-ignored/8049
+    
+    Thanks to anon3567998 for the bug report!
+
+commit e926b87e06fed76a892b30b01fcc378cc1850c84
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Sep 9 10:24:43 2019 +0000
+
+    refactoring, set tb_settings_folder in function tb_config_folder_parser
+
+commit ac21f887493e9f6645af360108c69a62f379e68d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Sep 9 10:23:52 2019 +0000
+
+    abolish --i2p and move to update-i2pbrowser instead
+
+commit 188cc1e12c01b57cf9e363e87ddd57aed464feba
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 6 12:29:20 2019 +0000
+
+    bumped changelog version
+
 commit 703afa4c9e51e6a0b9d9def7fed9106eb6359b58
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Sep 6 12:28:35 2019 +0000
