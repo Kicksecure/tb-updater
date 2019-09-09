@@ -419,6 +419,7 @@ export -f outputfunc
 
 tb_config_folder_parser() {
    true "tb_settings_folder: $tb_settings_folder"
+   [ -n "$tb_settings_folder" ] || tb_settings_folder="torbrowser.d"
    shopt -s nullglob
    local i
    for i in \
@@ -612,7 +613,6 @@ tb_preparation() {
    [ -n "$tb_install_folder" ] || tb_install_folder="tb"
    [ -n "$tb_install_folder_dot" ] || tb_install_folder_dot=".tb"
    [ -n "$tb_browser_name" ] || tb_browser_name="tor-browser"
-   [ -n "$tb_settings_folder" ] || tb_settings_folder="torbrowser.d"
    [ -n "$tb_bin" ] || tb_bin="torbrowser"
 
    [ -n "$tb_home_folder" ] || tb_home_folder="$tb_user_home/$tb_install_folder_dot"
