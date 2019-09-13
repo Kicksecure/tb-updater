@@ -1,3 +1,15 @@
+commit 8f1533d2e1f2d35c757cd686684495bef441a04c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 13 13:25:35 2019 +0000
+
+    install SecBrowser in Kicksecure by default rather than Tor Browser
+
+commit f1d0f161e828785ac5cbef80866d13840b3bb5ec
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Sep 9 12:11:01 2019 +0000
+
+    bumped changelog version
+
 commit a927394d17bec986a3bfbccd8d4f50a0eee8cf7c
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Sep 9 10:27:43 2019 +0000
