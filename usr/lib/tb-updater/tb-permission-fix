@@ -1,0 +1,55 @@
+#!/bin/bash
+
+## Copyright (C) 2019 - 2019 ENCRYPTED SUPPORT LP <adrelanos@riseup.net>
+## See the file COPYING for copying conditions.
+
+set -x
+set -e
+
+if [ -f /usr/lib/helper-scripts/pre.bsh ]; then
+   source /usr/lib/helper-scripts/pre.bsh
+fi
+
+## Not needed?
+#rm --recursive --force /var/cache/tb-binary/.cache/tb/gpgtmpdir
+
+# W: tb-updater: maintainer-script-should-not-use-recursive-chown-or-chmod postinst:112
+# N:
+# N:    The maintainer script appears to call chmod or chown with a
+# N:    --recursive/-R argument, or uses find(1) in a similar manner.
+# N:
+# N:    This is vulnerable to hardlink attacks on mainline, non-Debian kernels
+# N:    that do not have fs.protected_hardlinks=1,
+# N:
+# N:    This arises through altering permissions or ownership within a directory
+# N:    that may be owned by a non-privileged user - such a user can link to
+# N:    files that they do not own such as /etc/shadow or files within
+# N:    /var/lib/ dpkg/. The promiscuous chown or chmod would convert the
+# N:    ownership or permissions of these files so that they are manipulable by
+# N:    the non-privileged user.
+# N:
+# N:    Ways to avoid this problem include:
+# N:
+# N:     - If your package uses a static uid, please perform the chown at
+# N:       package build time instead of installation time.
+# N:     - Use a non-recursive call instead, ensuring that you do not change
+# N:       ownership of files that are in user-controlled directories.
+# N:     - Use runuser(1) to perform any initialization work as the
+# N:       user you were previously chowning to.
+# N:
+# N:    Refer to https://bugs.debian.org/889060, https://bugs.debian.org/889488,
+# N:    and the runuser(1) manual page for details.
+# N:
+# N:    Severity: normal, Certainty: certain
+# N:
+# N:    Check: scripts, Type: binary
+
+## Allow user in regular VM (i.e. non-DispVM) to copy this to root.
+## In DispVM 'mount' is being used rather than 'cp'.
+chmod --recursive o+r /var/cache/tb-binary
+## Somehow needed too.
+chmod --recursive g+r /var/cache/tb-binary
+
+find /var/cache/tb-binary -type d -print0 | xargs -0 chmod 0775
+
+chmod --recursive u+X /var/cache/tb-binary
