@@ -1858,6 +1858,16 @@ tb_cleanup() {
    rm -f "$TBB_PACKAGE_FULL_PATH"
 }
 
+tb_postinst_pre_exit() {
+   if [ "$(id -u)" != "0" ]; then
+      return 0
+   else
+      ## Running as root.
+      ## Requires root.
+      /usr/lib/tb-updater/tb-permission-fix
+   fi
+}
+
 tb_chroot_pre_exit() {
    if [ "$tb_reenable_anon_ws_dnf_conf" = "true" ]; then
       ## Restore anon-ws-dns-conf /etc/resolv.conf.
@@ -2050,6 +2060,7 @@ main_function() {
    tb_run_function tb_install
    tb_run_function tb_cleanup
    tb_run_function tb_hardcoded_version_last_downloaded_save
+   tb_run_function tb_postinst_pre_exit
    tb_run_function tb_chroot_pre_exit
    tb_run_function tb_start_ask
 }
