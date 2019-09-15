@@ -1,3 +1,23 @@
+commit b71b5de0aabeb41fbba5888e49935cdd12021f2d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Sep 15 06:27:51 2019 -0400
+
+    fix permissions on manual run as root
+    
+    https://forums.whonix.org/t/secbrowser-in-qubes-templatevm-issues/8116/7
+
+commit d00539d5d5976d4f985b8cf0530d852622c5cbfd
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Sep 15 06:22:51 2019 -0400
+
+    refactoring
+
+commit 5c06e6648dc3f0cb0f9f6b405d3705e82b3a0432
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Sep 13 13:38:57 2019 +0000
+
+    bumped changelog version
+
 commit 8f1533d2e1f2d35c757cd686684495bef441a04c
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Sep 13 13:25:35 2019 +0000
