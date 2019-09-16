@@ -9,4 +9,6 @@ export SCRIPTNAME="$(basename "$BASH_SOURCE")"
 
 source /usr/share/secbrowser/variables.bsh
 
+export IDENTIFIER="$SCRIPTNAME"
+
 update-torbrowser "$@"
