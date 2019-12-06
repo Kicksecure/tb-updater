@@ -6,6 +6,13 @@ Description=Helper Service for /usr/bin/torbrowser to set file owner of /var/cac
 Documentation=https://github.com/Whonix/tb-updater
 ConditionPathExists=!/run/qubes/this-is-templatevm
 
+DefaultDependencies=no
+Before=sysinit.target
+Requires=local-fs.target
+After=local-fs.target
+
+After=remount-secure.service
+
 ## Wait for bind-dirs.sh being done.
 After=qubes-mount-dirs.service
 After=qubes-mount-home.service
