@@ -1,3 +1,15 @@
+commit 42c7f4219e02c71623051f7529ff2bd06590083c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 6 10:47:58 2019 -0500
+
+    tbb_hardcoded_version="9.0.2" / tbb_hardcoded_version="9.5a3"
+
+commit 224ab0e448e5c3c349e6f2518aea7d1f4ccf9c08
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Nov 19 15:32:35 2019 +0000
+
+    bumped changelog version
+
 commit 95c1c09e7aa6d4f44f53b2f0d1c0c4f01a43a648
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Nov 19 15:25:07 2019 +0000
