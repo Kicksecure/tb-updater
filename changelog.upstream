@@ -1,3 +1,47 @@
+commit 335fa39c0f337bfef74b9f2c0d6fe1f7903da8b1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 6 12:27:35 2019 -0500
+
+    use more generic After=local-fs.target
+
+commit f46b7956db7671587c8e456cefb694fb36f22ab1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 6 12:25:58 2019 -0500
+
+    clean up legacy
+
+commit 86655c3e2a9282c6b8713c5069a9587844720372
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 6 12:23:35 2019 -0500
+
+    remove After=qubes-mount-dirs.service After=qubes-mount-home.service
+    
+    since already using After=local-fs.target
+
+commit 51d31f6361f10ed51167cdb49e8ed65652405fa8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 6 12:20:54 2019 -0500
+
+    clean up legacy
+
+commit 72c5a1bf873236985f52b3d05ec4fe82c9e63e4e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 6 12:19:57 2019 -0500
+
+    load tb-updater-dispvm.service more early for nodev,nosuid enforcement
+
+commit 38be1749aefaf6088b00f5c7497fa98ae8d3eeb3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 6 12:11:23 2019 -0500
+
+    Qubes DispVM: nosuid and nodev /rw/home/user/.tb and /rw/home/user/.cache/tb
+
+commit 2be8457c82d8d5b2f82ab215620a50826c5f2905
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 6 10:58:46 2019 -0500
+
+    bumped changelog version
+
 commit 42c7f4219e02c71623051f7529ff2bd06590083c
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Dec 6 10:47:58 2019 -0500
