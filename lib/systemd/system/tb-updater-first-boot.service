@@ -6,9 +6,7 @@ Description=Helper Service for /usr/bin/torbrowser to determine when it is save 
 Documentation=https://github.com/Whonix/tb-updater
 ConditionPathExists=!/run/qubes/this-is-templatevm
 
-## Wait for bind-dirs.sh being done.
-After=qubes-mount-dirs.service
-After=qubes-mount-home.service
+After=local-fs.target
 
 ## Wait until eventual (if this is a DispVM) permission fix is done.
 After=tb-updater-dispvm.service
