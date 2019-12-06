@@ -17,10 +17,6 @@ After=remount-secure.service
 After=qubes-mount-dirs.service
 After=qubes-mount-home.service
 
-## Legacy.
-## Wait for bind-directories being done.
-After=qubes-whonix-postinit.service
-
 ## Preventing race condition with user start through start menu.
 ## Not the most efficient / clean solution.
 ## https://phabricator.whonix.org/T424
