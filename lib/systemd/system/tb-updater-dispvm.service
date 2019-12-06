@@ -13,10 +13,6 @@ After=local-fs.target
 
 After=remount-secure.service
 
-## Wait for bind-dirs.sh being done.
-After=qubes-mount-dirs.service
-After=qubes-mount-home.service
-
 ## Preventing race condition with user start through start menu.
 ## Not the most efficient / clean solution.
 ## https://phabricator.whonix.org/T424
