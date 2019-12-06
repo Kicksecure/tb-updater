@@ -10,10 +10,6 @@ ConditionPathExists=!/run/qubes/this-is-templatevm
 After=qubes-mount-dirs.service
 After=qubes-mount-home.service
 
-## Legacy.
-## Wait for bind-directories being done.
-After=qubes-whonix-postinit.service
-
 ## Wait until eventual (if this is a DispVM) permission fix is done.
 After=tb-updater-dispvm.service
 
