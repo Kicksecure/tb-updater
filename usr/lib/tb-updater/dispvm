@@ -68,3 +68,27 @@ fi
 if [ -d "/var/cache/tb-binary/.cache/${tool}" ]; then
    mount --bind -o nosuid,nodev "/var/cache/tb-binary/.cache/${tool}" "/home/$user_name/.cache/${tool}"
 fi
+
+## results in:
+# mount | grep home
+# /dev/xvdb on /home type ext4 (rw,nosuid,nodev,noexec,relatime,discard)
+# /dev/xvda3 on /home/user/.tb type ext4 (rw,nosuid,nodev,noatime,discard)
+# /dev/xvda3 on /rw/home/user/.tb type ext4 (rw,noatime,discard)
+# /dev/xvda3 on /home/user/.cache/tb type ext4 (rw,nosuid,nodev,noatime,discard)
+# /dev/xvda3 on /rw/home/user/.cache/tb type ext4 (rw,noatime,discard)
+
+if [ -d "/rw/home/$user_name/.${tool}" ]; then
+   mount -o remount,nosuid,nodev "/rw/home/$user_name/.${tool}"
+fi
+
+if [ -d "/rw/home/$user_name/.cache/${tool}" ]; then
+   mount -o remount,nosuid,nodev "/rw/home/$user_name/.cache/${tool}"
+fi
+
+## results in:
+# mount | grep home
+# /dev/xvdb on /home type ext4 (rw,nosuid,nodev,noexec,relatime,discard)
+# /dev/xvda3 on /home/user/.tb type ext4 (rw,nosuid,nodev,noatime,discard)
+# /dev/xvda3 on /rw/home/user/.tb type ext4 (rw,nosuid,nodev,noatime,discard)
+# /dev/xvda3 on /home/user/.cache/tb type ext4 (rw,nosuid,nodev,noatime,discard)
+# /dev/xvda3 on /rw/home/user/.cache/tb type ext4 (rw,nosuid,nodev,noatime,discard)
