@@ -1,3 +1,15 @@
+commit b210ba57f06c22bf6d7b624deec827ba0ab98f69
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Dec 8 04:35:32 2019 -0500
+
+    After=proc-xen.mount systemd-modules-load.service qubes-db.service qubes-sysinit.service
+
+commit 897cd83d8c4048876cdea8ace0cba6ae5c0834c9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Dec 6 12:44:52 2019 -0500
+
+    bumped changelog version
+
 commit 335fa39c0f337bfef74b9f2c0d6fe1f7903da8b1
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Dec 6 12:27:35 2019 -0500
