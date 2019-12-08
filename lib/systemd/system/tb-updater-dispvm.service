@@ -11,6 +11,8 @@ Before=sysinit.target
 Requires=local-fs.target
 After=local-fs.target
 
+After=proc-xen.mount systemd-modules-load.service qubes-db.service qubes-sysinit.service
+
 After=remount-secure.service
 
 ## Preventing race condition with user start through start menu.
