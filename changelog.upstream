@@ -1,3 +1,15 @@
+commit 1da80ce4347bd382b4a1135521ab4196e771784a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Sun Mar 22 04:01:13 2020 -0400
+
+    sudo --non-interactive
+
+commit e8c64741f8d3eeac8b29a12bef8bdd783bbdb74b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Mar 16 09:33:18 2020 -0400
+
+    bumped changelog version
+
 commit a108a051e7e73b765d81316a09b6e5b8945728a2
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Mar 16 09:24:33 2020 -0400
