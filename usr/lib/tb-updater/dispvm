@@ -51,8 +51,8 @@ else
 fi
 
 ## Mount point must be existing to be able to use mount.
-sudo -u user mkdir --parents "/home/$user_name/.${tool}"
-sudo -u user mkdir --parents "/home/$user_name/.cache/${tool}"
+sudo --non-interactive -u user mkdir --parents "/home/$user_name/.${tool}"
+sudo --non-interactive -u user mkdir --parents "/home/$user_name/.cache/${tool}"
 
 chown --recursive "$user_name:$user_name" /var/cache/tb-binary
 ## Could alternatively do after mounting:
