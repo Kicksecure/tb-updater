@@ -1,0 +1,173 @@
+.\" generated with Ronn-NG/v0.8.0
+.\" http://github.com/apjanke/ronn-ng/tree/0.8.0
+.TH "UPDATE\-TORBROWSER" "1" "April 2020" "tb-updater" "tb-updater Manual"
+.SH "NAME"
+\fBupdate\-torbrowser\fR \- Tor Browser Updater by Whonix developers
+.P
+.SH "SYNOPSIS"
+\fBupdate\-torbrowser\fR [option(s)]
+.SH "DESCRIPTION"
+Lets you safely download the Tor Browser Bundle (TBB) from The Tor Project\'s (TPO) website\. It enforces TLS encryption (https) for TPO\'s website, downloads TBB from the TPO\'s website, and uses OpenPGP verification\.
+.P
+In case there is already a \fB~/tor\-browser_en\-US\fR folder, it renames it to ~/tor\-browser_en\-US_(current date and time)\. It extracts freshly downloaded TBB too to \fB~/tor\-browser_en\-US\fR\.
+.P
+Default action when no options are given is to performs an update check and ask how you want to proceed\.
+.SH "OPTIONS"
+.IP "\[ci]" 4
+\-\-onion
+.IP
+Download from Tor Project\'s onion rather than clearnet domain\.
+.IP "\[ci]" 4
+\-\-ordinary
+.IP
+Uses curl\'s ordinary progress bar\. Only affects run in terminal\. When using this option, the GUI progress bar will be stuck but downloading will still work\. Note, when using this option, it wouldn\'t notice if the download server were to run an endless data attack, for example the server claiming to provide a 500\.000 GB big file\. (It does not use \fB/usr/lib/curl\-scripts/curl\-prgrs\fRs \fBCURL_PRGRS_MAX_FILE_SIZE_BYTES\fR\.) However, it can be compensated by either manually terminating \fBupdate\-torbrowser\fR or by using the timeout utility as in the example below\.
+.IP "\[ci]" 4
+\-\-noask
+.IP
+Installs whatever https://www\.torproject\.org/projects/torbrowser/RecommendedTBBVersions claims to be the latest version without user interaction\.
+.IP "\[ci]" 4
+\-\-nokilltb
+.IP
+Advanced users only\. Do not kill all eventually still running instances of Tor Browser\. Useful in case you want to update \fB~/tor\-browser_en\-US\fR, while still using \fB~/tor\-browser_something_else\fR\.
+.IP "\[ci]" 4
+\-\-language lang
+.IP
+Specify which language specific version of Tor Browser you want to start or update\.
+.IP "\[ci]" 4
+\-\-no\-tor\-con\-check
+.IP
+Skip Tor bootstrap connectivity check\. (Only relevant in anonymity distributions\.)
+.IP "\[ci]" 4
+\-\-input input
+.IP
+What to use as input method\. When run in command line, by default, standard input (stdin) will be used\. When using \-\-input gui, questions would be asked in the graphical user environment\.
+.IP "\[ci]" 4
+\-\-resume
+.IP
+Resume previous download\.
+.IP "" 0
+.SH "AVAILABLE LANGUAGES"
+As in October 2012:
+.IP "\[ci]" 4
+ar
+.IP "\[ci]" 4
+de
+.IP "\[ci]" 4
+en\-US
+.IP "\[ci]" 4
+es\-ES
+.IP "\[ci]" 4
+fa
+.IP "\[ci]" 4
+fr
+.IP "\[ci]" 4
+it
+.IP "\[ci]" 4
+ko
+.IP "\[ci]" 4
+nl
+.IP "\[ci]" 4
+pl
+.IP "\[ci]" 4
+pt\-PT
+.IP "\[ci]" 4
+ru
+.IP "\[ci]" 4
+vi
+.IP "\[ci]" 4
+zh\-CN
+.IP "" 0
+.SH "MORE LANGUAGES"
+To check if further languages are supported visit:
+.P
+https://www\.torproject\.org/dist/torbrowser/linux/
+.SH "CONFIG FILE"
+/etc/torbrowser\.d/30_default\.conf
+.SH "ENVIRONMENT VARIABLES"
+You could use:
+.IP "" 4
+.nf
+export TB_LANG="<language code>"
+.fi
+.IP "" 0
+.P
+to set the language before running
+.IP "" 4
+.nf
+update\-torbrowser
+.fi
+.IP "" 0
+.P
+For example, for Vietnamese use:
+.IP "" 4
+.nf
+export TB_LANG="vi"
+.fi
+.IP "" 0
+.P
+Replace "vi" with "zh\-CN" for Chinese and so on\.
+.P
+To make this change permanent, create a file \fB/etc/torbrowser\.d/50_user\.conf\fR and add for example
+.IP "" 4
+.nf
+TB_LANG="ar"
+.fi
+.IP "" 0
+.SH "EXIT CODES"
+0 Success\.
+.P
+0 When using \-\-devbuildpassthrough $tb_home_folder/tor\-browser_$TB_LANG already exists\.
+.P
+1 Internal Error\.
+.P
+2 Aborted because running as root\.
+.P
+3 Cancel button pressed\.
+.P
+4 Unknown command line option\.
+.P
+5 Tor not enabled yet\. (Only when using Tor connection check\.)
+.P
+6 Tor not fully bootstrapped yet\. (Only when using Tor connection check\.)
+.P
+7 Connectivity test failed\.
+.P
+8 Downloading version file failed\.
+.P
+9 Could not find out latest Tor Browser version\.
+.P
+10 User aborted update confirmation\.
+.P
+11 Download failed\.
+.P
+12 Gpg verification error\.
+.P
+13 Hash verification error\.
+.P
+14 User aborted installation confirmation\.
+.P
+15 Extraction failed\.
+.P
+130 Signal sigint received\.
+.P
+143 Signal sigterm received\.
+.SH "EXAMPLES"
+\fBupdate\-torbrowser\fR
+.P
+\fBupdate\-torbrowser \-\-update \-\-lang="vi"\fR
+.P
+\fBtimeout 600 update\-torbrowser \-\-ordinary\fR
+.SH "BUGS"
+This script may break when the file name or RecommendedTBBVersions format changes or when upstream makes other changes to the start process or proxy settings detection method\.
+.P
+In this case, Whonix developers will try to provide a fix as fast as possible\. Please check Whonix News Blogs, Whonix Forum for a fix or workaround\.
+.P
+In meanwhile you can also try the instructions for manually update Tor Browser in Whonix: https://www\.whonix\.org/wiki/Manually_Updating_Tor_Browser
+.SH "NOTES"
+Do not run as root!
+.SH "PORTING"
+This script is currently only tested in Whonix\. It could be easily made to work in Tails or on any Linux\.
+.SH "WWW"
+https://www\.whonix\.org/wiki/Tor_Browser
+.SH "AUTHOR"
+This man page has been written by Patrick Schleizer (adrelanos@riseup\.net)\.

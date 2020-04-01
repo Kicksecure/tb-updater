@@ -1,0 +1,48 @@
+.\" generated with Ronn-NG/v0.8.0
+.\" http://github.com/apjanke/ronn-ng/tree/0.8.0
+.TH "DOWNLOAD\-SECBROWSER" "1" "April 2020" "tb-updater" "tb-updater Manual"
+.SH "NAME"
+\fBdownload\-secbrowser\fR \- SecBrowser Downloader by Whonix developers
+.P
+.SH "SYNOPSIS"
+\fBupdate\-secbrowser\fR [option(s)]
+.SH "DESCRIPTION"
+Lets you safely download the Tor Browser Bundle (TBB) from The Tor Project\'s (TPO) website, then it modifies it for use with clearnet, i\.e\. not using The Tor network\.
+.P
+It enforces TLS encryption (https) for TPO\'s website, downloads TBB from TPO\'s website, and uses OpenPGP verification\.
+.P
+In case there is already a \fB~/\.secbrowser\fR folder, it renames it to ~/\.secbrowser/secbrowser_(current date and time)\. It extracts freshly downloaded TBB too to \fB~/\.secbrowser/secbrowser\fR\.
+.P
+Default action when no options are given is to performs an update check and ask how you want to proceed\.
+.SH "OPTIONS"
+Same as \fBdownload\-secbrowser\fR\. See: man download\-secbrowser
+.SH "ENVIRONMENT VARIABLES"
+\fBCURL_PROXY\fR will be passed to \fBcurl\fR\.
+.SH "AVAILABLE LANGUAGES"
+Same as \fBdownload\-secbrowser\fR\. See: man download\-secbrowser
+.SH "MORE LANGUAGES"
+Same as \fBdownload\-secbrowser\fR\. See: man download\-secbrowser
+.SH "CONFIG FILE"
+Same as \fBdownload\-secbrowser\fR\. See: man download\-secbrowser
+.SH "EXIT CODES"
+Same as \fBdownload\-secbrowser\fR\. See: man download\-secbrowser
+.SH "EXAMPLES"
+\fBupdate\-secbrowser\fR
+.P
+\fBupdate\-secbrowser \-\-update \-\-lang="vi"\fR
+.P
+\fBtimeout 600 update\-secbrowser \-\-ordinary\fR
+.P
+Using a socks proxy (Tor) to download SecBrowser\.
+.P
+\fBCURL_PROXY="\-\-proxy socks5h://127\.0\.0\.1:9050" download\-secbrowser\fR
+.SH "BUGS"
+Same as \fBdownload\-secbrowser\fR\. See: man download\-secbrowser
+.SH "NOTES"
+Same as \fBdownload\-secbrowser\fR\. See: man download\-secbrowser
+.SH "PORTING"
+Same as \fBdownload\-secbrowser\fR\. See: man download\-secbrowser
+.SH "WWW"
+https://www\.whonix\.org/wiki/SecBrowser
+.SH "AUTHOR"
+This man page has been written by Patrick Schleizer (adrelanos@riseup\.net)\.
