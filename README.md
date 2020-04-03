@@ -20,10 +20,10 @@ rollback attacks.
 Integrates well with tb-starter, tb-default-browser and
 open-link-confirmation package as well as with Qubes.
 
-Without the curl-scripts package installed, the GUI will not move the progress
+Without the helper-scripts package installed, the GUI will not move the progress
 bar.
 
-If you have the curl-scripts package installed, it will show a nicer progress
+If you have the helper-scripts package installed, it will show a nicer progress
 bar when run in terminal and more meaningful curl exit code messages, when
 curl failed.
 
