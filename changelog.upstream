@@ -1,3 +1,21 @@
+commit 6acbd82657849c3584f98a41169e274d53b3b33c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Apr 3 09:47:35 2020 -0400
+
+    readme
+
+commit dcf02fc72340874cd162bf7240f974767889eff1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Fri Apr 3 05:40:50 2020 -0400
+
+    curl-scripts -> helper-scripts
+
+commit 5c2866fb623832d671a99ca6634ac5d7a7ff2ee9
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Apr 2 08:02:37 2020 -0400
+
+    bumped changelog version
+
 commit b8abc713e460bbd974da7f022c9235090e3dc785
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Apr 2 07:22:53 2020 -0400
