@@ -20,12 +20,12 @@ rollback attacks.
 Integrates well with tb-starter, tb-default-browser and
 open-link-confirmation package as well as with Qubes.
 
-Without the helper-scripts package installed, the GUI will not move the progress
-bar.
+Without the helper-scripts package installed, the GUI will not move the
+progress bar.
 
-If you have the helper-scripts package installed, it will show a nicer progress
-bar when run in terminal and more meaningful curl exit code messages, when
-curl failed.
+If you have the helper-scripts package installed, it will show a nicer
+progress bar when run in terminal and more meaningful curl exit code
+messages, when curl failed.
 
 When having the helper-scripts package installed (recommended for
 Anonymity Distributions), Tor Browser Downloader will check, that Tor is
