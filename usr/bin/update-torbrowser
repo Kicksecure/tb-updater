@@ -443,13 +443,13 @@ tb_anon_ws_dns_conf() {
    true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
    if [ "$tb_disable_anon_ws_dnf_conf" = "true" ]; then
       ## Check if /etc/resolv.conf is a symlink. This is only the case
-      ## when anon-ws-dns-conf is already installed.
+      ## when whonix-ws-network-conf is already installed.
       if test -h /etc/resolv.conf ; then
-         if test -x /var/lib/dpkg/info/anon-ws-dns-conf.prerm ; then
+         if test -x /var/lib/dpkg/info/whonix-ws-network-conf.prerm ; then
             [ -n "$tb_reenable_anon_ws_dnf_conf" ] || tb_reenable_anon_ws_dnf_conf=true
             tb_resolv_conf_debugging
             ## Restore original /etc/resolv.conf.
-            sudo --non-interactive /bin/bash -x /var/lib/dpkg/info/anon-ws-dns-conf.prerm remove
+            sudo --non-interactive /bin/bash -x /var/lib/dpkg/info/whonix-ws-network-conf.prerm remove
             tb_resolv_conf_debugging
          fi
       fi
@@ -1870,8 +1870,8 @@ tb_postinst_pre_exit() {
 
 tb_chroot_pre_exit() {
    if [ "$tb_reenable_anon_ws_dnf_conf" = "true" ]; then
-      ## Restore anon-ws-dns-conf /etc/resolv.conf.
-      sudo --non-interactive /bin/bash -x /var/lib/dpkg/info/anon-ws-dns-conf.postinst configure
+      ## Restore whonix-ws-network-conf /etc/resolv.conf.
+      sudo --non-interactive /bin/bash -x /var/lib/dpkg/info/whonix-ws-network-conf.postinst configure
       tb_resolv_conf_debugging
    fi
 }

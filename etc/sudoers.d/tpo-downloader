@@ -3,5 +3,5 @@
 
 ## Required during build inside chroot.
 ## Should be safe to remove after build.
-user ALL=NOPASSWD: /bin/bash -x /var/lib/dpkg/info/anon-ws-dns-conf.prerm remove
-user ALL=NOPASSWD: /bin/bash -x /var/lib/dpkg/info/anon-ws-dns-conf.postinst configure
+user ALL=NOPASSWD: /bin/bash -x /var/lib/dpkg/info/whonix-ws-network-conf.prerm remove
+user ALL=NOPASSWD: /bin/bash -x /var/lib/dpkg/info/whonix-ws-network-conf.postinst configure
