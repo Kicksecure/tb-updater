@@ -1,0 +1,17 @@
+#!/bin/bash
+
+## Copyright (C) 2019 - 2020 ENCRYPTED SUPPORT LP <adrelanos@riseup.net>
+## See the file COPYING for copying conditions.
+
+#set -x
+set -e
+
+if [ -f /usr/lib/helper-scripts/pre.bsh ]; then
+   source /usr/lib/helper-scripts/pre.bsh
+fi
+
+## https://github.com/QubesOS/build-issues/issues/1769
+export DPKG_MAINTSCRIPT_PACKAGE="whonix-ws-network-conf"
+export DPKG_MAINTSCRIPT_NAME="prerm"
+
+/bin/bash -x /var/lib/dpkg/info/whonix-ws-network-conf.prerm remove
