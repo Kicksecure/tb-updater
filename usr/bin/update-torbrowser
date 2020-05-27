@@ -435,8 +435,8 @@ tb_config_folder_parser() {
 tb_resolv_conf_debugging() {
    ls -la /etc/resolv.conf || true
    cat /etc/resolv.conf || true
-   cat /etc/resolv.anondist || true
-   cat /etc/resolv.conf.anondist-orig || true
+   cat /etc/resolv.whonix || true
+   cat /etc/resolv.conf.whonix-orig || true
 }
 
 tb_anon_ws_dns_conf() {
