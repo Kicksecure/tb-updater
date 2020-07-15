@@ -1,3 +1,15 @@
+commit df5bba06564038dce23f5c5489b8a8468294852a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 15 00:58:44 2020 -0400
+
+    curl add --retry-connrefused --retry 3 --retry-delay 3
+
+commit b2fb55a77618f43ce718a86a9b17cf3eebeff248
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jul 2 14:42:32 2020 -0400
+
+    bumped changelog version
+
 commit 374849fce22cfd5162f6358797dfd3d53385b66c
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Jul 1 07:50:39 2020 -0400
