@@ -1319,6 +1319,9 @@ $tb_notify_details"
       --fail \
       $CURL_PROXY \
       $CURL_FORCE_SSL \
+      --retry-connrefused \
+      --retry 3 \
+      --retry-delay 3 \
       --max-time "$curl_download_max_time" \
       $CURL_RESUME \
       --location \
