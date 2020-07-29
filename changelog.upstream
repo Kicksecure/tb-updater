@@ -1,3 +1,15 @@
+commit 61552ae750cdbd631409588f4abee64593c17b1e
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 29 11:00:28 2020 -0400
+
+    terminate Tor Browser if still running during update-torbrowser
+
+commit 6f4689cc152eeb7ae6384a4f46b861b4d9bf3083
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Jul 29 08:53:47 2020 -0400
+
+    bumped changelog version
+
 commit 21b3a4925f88b65e08756ff936ac592df1b3ee49
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Jul 29 08:52:50 2020 -0400
