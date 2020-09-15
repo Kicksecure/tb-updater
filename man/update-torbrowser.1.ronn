@@ -15,9 +15,9 @@ from The Tor Project's (TPO) website. It enforces TLS encryption (https) for
 TPO's website, downloads TBB from the TPO's website,
 and uses OpenPGP verification.
 
-In case there is already a `~/tor-browser_en-US` folder, it renames it
-to ~/tor-browser_en-US_(current date and time). It extracts freshly
-downloaded TBB too to `~/tor-browser_en-US`.
+In case there is already a `~/.tb/tor-browser` folder, it renames it
+to ~/.tb/tor-browser_(current date and time). It extracts freshly
+downloaded TBB too to `~/.tb/tor-browser`.
 
 Default action when no options are given is to performs an update check and ask
 how you want to proceed.
@@ -42,13 +42,13 @@ how you want to proceed.
   * --noask
 
     Installs whatever https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions
-    claims to be the latest version without user interaction.
+    claims to be the lowest version without user interaction.
 
   * --nokilltb
 
     Advanced users only. Do not kill all eventually still running  instances of
     Tor Browser. Useful in case you want to update
-    `~/tor-browser_en-US`, while still using
+    `~/.tb/tor-browser`, while still using
     `~/tor-browser_something_else`.
 
   * --language lang
