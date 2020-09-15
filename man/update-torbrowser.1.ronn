@@ -46,7 +46,7 @@ how you want to proceed.
 
   * --nokilltb
 
-    Advanced users only. Do not kill all eventually still running  instances of
+    Advanced users only. Do not kill all eventually still running instances of
     Tor Browser. Useful in case you want to update
     `~/.tb/tor-browser`, while still using
     `~/tor-browser_something_else`.
