@@ -22,15 +22,13 @@ set -o errtrace
 ## - There is no deb/rpm/whatever package with Tor Browser.
 ##   https://trac.torproject.org/projects/tor/ticket/5236
 ##   https://trac.torproject.org/projects/tor/ticket/3994
-## - There is no way to keep Tor Browser updated.
-##   (Thandy doesn't exist yet.)
 ## - There is no way to add the Documentation page well visible to Tor Browser:
 ##   https://trac.torproject.org/projects/tor/ticket/6025
 ##   https://trac.torproject.org/projects/tor/ticket/6053
 ## - Tor Browsers support for Isolating and Transparent Proxies is very limited:
 ##   https://trac.torproject.org/projects/tor/ticket/5611
-## - tbb-scripts
-##   https://github.com/adrelanos/tbb-scripts
+## - RecommendedTBBVersions format is not finalized
+##   https://trac.torproject.org/projects/tor/ticket/14383
 ## - Using torbrowser-launcher instead of tb-updater in Whonix
 ##   https://forums.whonix.org/t/using-torbrowser-launcher-instead-of-tb-updater-in-whonix/385
 
