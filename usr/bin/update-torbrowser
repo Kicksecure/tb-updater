@@ -29,6 +29,8 @@ set -o errtrace
 ##   https://trac.torproject.org/projects/tor/ticket/5611
 ## - RecommendedTBBVersions format is not finalized
 ##   https://trac.torproject.org/projects/tor/ticket/14383
+## - counter downgrade / stale mirror attacks on RecommendedTBBVersions - sign / verify tbb versions file
+##   https://trac.torproject.org/projects/tor/ticket/13065
 ## - Using torbrowser-launcher instead of tb-updater in Whonix
 ##   https://forums.whonix.org/t/using-torbrowser-launcher-instead-of-tb-updater-in-whonix/385
 
