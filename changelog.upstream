@@ -1,3 +1,41 @@
+commit 34d69e5ebea90680bdf58cd4b5e72740daad4d3a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Sep 16 04:32:39 2020 -0400
+
+    comment
+
+commit c6623560e690cb0e189f9df3f9389655c15a340a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Sep 16 03:36:04 2020 -0400
+
+    comment
+
+commit 4c0d7b305e5880964a74e91b9c0e1a2b0b0b7dd3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Sep 15 05:49:54 2020 -0400
+
+    minor
+
+commit 0b329190a82e28e2aa5f2abb48928205f2acd054
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Sep 15 05:48:04 2020 -0400
+
+    update man page
+    
+    https://forums.whonix.org/t/suggestion-update-torbrowser-shouldnt-downgrade-by-default/10279
+
+commit 8a3782679607006c0b5a201457a157c459748930
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Sep 15 05:13:10 2020 -0400
+
+    comments
+
+commit 280133d5bd1e3a2385ce32ca32e61db00682dfce
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Aug 26 10:02:53 2020 -0400
+
+    bumped changelog version
+
 commit 89bd03f4bc6e7aee6b211bf7f11afd132943f3e2
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Aug 26 10:02:39 2020 -0400
