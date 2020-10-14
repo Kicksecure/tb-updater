@@ -1,3 +1,21 @@
+commit 70bd2f520e1584f61d813813822e14f27013b0ee
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Oct 14 07:39:12 2020 -0400
+
+    readme
+
+commit 443b5dfc37cacb5ff7cfd8c9e028ae661621875c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Oct 14 07:38:51 2020 -0400
+
+    tbb_hardcoded_version="10.0.1"
+
+commit 013979cd3cf57218a450a759c0a2d5cc0064e65c
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Sep 29 06:44:03 2020 -0400
+
+    bumped changelog version
+
 commit b792218a7ecf7ed9af587c31a641567c6f0ccbb8
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Sep 29 06:43:01 2020 -0400
