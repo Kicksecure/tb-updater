@@ -1,3 +1,50 @@
+commit 1dfff8747379686029e4b139ba54852512d94a4a
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Oct 26 07:23:10 2020 -0400
+
+    output
+
+commit 5a1d4c155c7553250332df95bf180970db5253de
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Oct 26 07:21:41 2020 -0400
+
+    output
+
+commit 78a53e074e4529c7224feb0b14f82d6b476d5802
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Oct 26 07:10:57 2020 -0400
+
+    output
+
+commit 7b1b106ce020095cc1cf2cb86fd9b71972aa6c5d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Oct 26 07:08:55 2020 -0400
+
+    tbb_hardcoded_version="10.0.2"
+    tbb_hardcoded_version="10.5a2"
+
+commit fb09eaf2cde2c422e1493da65ec59140c65d22e3
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Oct 26 07:07:47 2020 -0400
+
+    update link
+    
+    https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions
+    ->
+    https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/
+
+commit 93251ff3b265ba8495b6353aea9f71fd70918aaa
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Oct 26 07:05:17 2020 -0400
+
+    output
+
+commit 8193119aabbadb116d22bd4d578928701a1ce685
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Oct 14 07:39:13 2020 -0400
+
+    bumped changelog version
+
 commit 70bd2f520e1584f61d813813822e14f27013b0ee
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Oct 14 07:39:12 2020 -0400
