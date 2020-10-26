@@ -931,7 +931,7 @@ tb_connectivity_checks_curl() {
    fi
 
    tb_notify_details="Checking connectivity... Will take a moment..."
-   echo "INFO: Running connectivity check... "
+   echo "INFO: Running connectivity check...  Downloading: $TBB_VERSIONS_FILE_LINK ..."
 
    [ -n "$timeout_connectivity_checks_curl" ] || timeout_connectivity_checks_curl=180
    ## 1 MB = 1048576 bytes
