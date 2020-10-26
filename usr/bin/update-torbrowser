@@ -984,7 +984,7 @@ tb_update_check() {
    fi
 
    tb_notify_details="Checking $tb_title version... Will take a moment..."
-   output_echo_only "INFO: Find out latest version... Downloading: $TBB_VERSIONS_FILE_LINK... "
+   output_echo_only "INFO: Find out latest version... Downloading: $TBB_VERSIONS_FILE_LINK ..."
 
    [ -n "$timeout_version_file_download" ] || timeout_version_file_download=180
    ## 1 MB = 1048576 bytes
