@@ -359,7 +359,7 @@ tb_qubes_dvm_template() {
    fi
 
    local MSG="\
-<p>Do not run $tb_title in Qubes DVM Template!<br></br>
+<p>Do not run $TITLE in Qubes DVM Template!<br></br>
 <br></br>
 More info: <a href=https://www.whonix.org/wiki/$tb_wiki#Running_in_Qubes_DVM_Template>https://www.whonix.org/wiki/$tb_wiki#Running_in_Qubes_DVM_Template</a></p>"
 
