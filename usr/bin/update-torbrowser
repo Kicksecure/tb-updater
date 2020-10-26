@@ -1367,7 +1367,7 @@ $tb_notify_details"
       tb_exit_function "$tb_download_common_exit_on_fail"
    fi
 
-   output_echo_only "INFO: Done, downloaded $curl_download_target_url."
+   output_echo_only "INFO: Done, downloaded: $curl_download_target_url"
 }
 
 tb_download_files() {
