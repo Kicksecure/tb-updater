@@ -774,11 +774,11 @@ tb_preparation() {
 
    if [ "$tb_onion" = "true" ]; then
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://rqef5a5mebgq46y5.onion"
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="http://expyuzz4wqqyqhjn.onion/projects/torbrowser/RecommendedTBBVersions"
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="http://expyuzz4wqqyqhjn.onion/projects/torbrowser/RecommendedTBBVersions/"
    else
       ## Download from the torproject.org clearnet by default.
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://dist.torproject.org"
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions"
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/"
       [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.2 --proto =https"
    fi
 
