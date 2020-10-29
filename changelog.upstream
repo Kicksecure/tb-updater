@@ -1,3 +1,25 @@
+commit 86867ad846af4583657dcfd33e2240d5be6aaab0
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Oct 29 16:16:39 2020 -0400
+
+    move from pushd to popd
+    
+    to fix sandbox-app-launcher issue
+    
+    /usr/bin/update-torbrowser: line 1533: popd: /home/user: Permission denied
+
+commit 5339f6b1fff85189fdfb04455a2121dc47154a3d
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Oct 29 16:13:49 2020 -0400
+
+    --tlsv1.3
+
+commit 949122dd8820eca6d796a96aff522d208a4e7bd1
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Mon Oct 26 17:00:53 2020 -0400
+
+    bumped changelog version
+
 commit 2a684fa3e72b0aba4ad2fd9bcebbf43f02eec25e
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Oct 26 14:18:40 2020 -0400
