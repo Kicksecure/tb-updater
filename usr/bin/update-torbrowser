@@ -1510,7 +1510,9 @@ tb_hash_verify() {
    kill_after="30"
 
    ## for relative paths
-   pushd "$tb_downloaded_files_folder" >/dev/null
+   ## pushd issue:
+   ## /usr/bin/update-torbrowser: line 1533: popd: /home/user: Permission denied
+   cd "$tb_downloaded_files_folder"
 
    ## Debugging.
    #timeout_after="0.001"
@@ -1529,8 +1531,6 @@ tb_hash_verify() {
    wait "$lastpid" || { tb_sha_exit_code="$?" ; true; };
 
    sha256sum_output="$(cat "$tb_temp_folder/sha256_output")" || true
-
-   popd >/dev/null
 
    if grep -q "$sha256sum_output" "$TBB_HASH_FULL_PATH" ; then
       output_echo_only "INFO: Hash check ok."
