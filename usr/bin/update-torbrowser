@@ -136,7 +136,7 @@ tb_run_function() {
    esac
 
    true "INFO: Running $@, because tb_skip_functions does not include it."
-   eval "$@"
+   "$@"
 }
 
 root_check() {
