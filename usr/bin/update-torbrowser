@@ -772,15 +772,21 @@ tb_preparation() {
    mkdir --parents "$tb_cache_folder"
    mkdir --parents "$tb_downloaded_files_folder"
 
+   if [ "$tbb_download_alpha_version" = "true" ]; then
+      [ -n "$TBB_RELEASE_CHANNEL" ] || TBB_RELEASE_CHANNEL="alpha"
+   else
+      [ -n "$TBB_RELEASE_CHANNEL" ] || TBB_RELEASE_CHANNEL="release"
+   fi
+
    if [ "$tb_onion" = "true" ]; then
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://rqef5a5mebgq46y5.onion"
       ## https://web.archive.org/web/20201213115438/https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
       ## Onion-Location	http://x3nelbld33llasqv.onion/torbrowser/update_3/release/downloads.json
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="http://x3nelbld33llasqv.onion/torbrowser/update_3/release/downloads.json"
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="http://x3nelbld33llasqv.onion/torbrowser/update_3/${TBB_RELEASE_CHANNEL}/downloads.json"
    else
       ## Download from the torproject.org clearnet by default.
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://dist.torproject.org"
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://aus1.torproject.org/torbrowser/update_3/release/downloads.json"
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://aus1.torproject.org/torbrowser/update_3/${TBB_RELEASE_CHANNEL}/downloads.json"
       [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https"
    fi
 
