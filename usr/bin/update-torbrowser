@@ -285,6 +285,10 @@ tb_parse_cmd_options() {
                TB_LANG="$2"
                shift 2
                ;;
+           --alpha)
+               tbb_download_alpha_version="true"
+               shift
+               ;;
            --no-tor-con-check)
                TB_NO_TOR_CON_CHECK="1"
                shift 1
@@ -1068,9 +1072,9 @@ https://www.whonix.org/wiki/Tor_Browser#Alpha"
    else
       source /usr/share/tb-updater/tbb_hardcoded_version
       echo "INFO: Downloading stable version. Alternatively, if want to \
-download the alpha version, set configuration option \
-'tbb_download_alpha_version=true', for instructions, see:
-https://www.whonix.org/wiki/Tor_Browser#Alpha"
+download the alpha version, you could add to command line: --alpha
+or set configuration option: tbb_download_alpha_version=true
+for instructions, see: https://www.whonix.org/wiki/Tor_Browser#Alpha"
    fi
 
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
