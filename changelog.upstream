@@ -1,3 +1,68 @@
+commit 8a891ee4edfc051df594ed964b24233c9c4fdcf8
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Dec 15 06:39:37 2020 -0500
+
+    comment
+
+commit 55fb98af6f3181d7908455d945b540e7d69c52dc
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Dec 15 06:38:56 2020 -0500
+
+    comment
+
+commit dd81cf6771af2416f170b1f1bf2cba5b170f6390
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Dec 15 06:36:26 2020 -0500
+
+    re-add support for downloading alpha versions
+    
+    `tbb_download_alpha_version=true`
+    
+    https://www.whonix.org/wiki/Tor_Browser#Alpha
+
+commit ef254974247cfef7bbd93e9bc54664f0500e3a88
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Dec 15 06:30:06 2020 -0500
+
+    add tip to console output on how to download alpha versions
+    
+    https://www.whonix.org/wiki/Tor_Browser#Alpha
+
+commit 11cd8841a27d74394bb41c881719ece1b36ad179
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Dec 15 06:15:53 2020 -0500
+
+    comment
+
+commit e0a5099650c23948fee8b1b3266427120431afa7
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Dec 15 06:12:05 2020 -0500
+
+    * port to new version file location and format
+    
+    since RecommendedTBBVersions file was abolished by upstream
+    
+    https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/33521
+    
+    https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/
+    https://web.archive.org/web/20201210123314/https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/
+    
+    * Show only 1 online detected version instead of multiple online detected versions.
+    
+    This is to keep the implementation simple since the new version file by
+    upstream shows only one version per release channel.
+    
+    * code simplification
+    * refactoring
+    
+    https://forums.whonix.org/t/update-torbrowser-does-not-see-version-10-0-6/10711
+
+commit 373c5dd757952ad7cb4bdf829a4aadd612610a2b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Dec 10 05:21:55 2020 -0500
+
+    bumped changelog version
+
 commit 09bc3c4fe8a680230306c129b28991d0101df4a7
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Dec 10 05:20:40 2020 -0500
