@@ -1,3 +1,16 @@
+commit aa5b5907c9e59f8602309f162e7f44c58d1e63bb
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Dec 15 09:54:32 2020 -0500
+
+    - download from `www.torproject.org` rather than `dist.torproject.org`
+    - fix download using `--onion`
+
+commit 58fec4e4d37930f1d364fb53e376f1aa161ec267
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Dec 15 09:01:37 2020 -0500
+
+    bumped changelog version
+
 commit b38263d405e8820b4666472583cd838029c1e2f3
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Dec 15 08:40:22 2020 -0500
