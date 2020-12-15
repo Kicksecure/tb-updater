@@ -1052,8 +1052,14 @@ tb_local_version_detection() {
    echo "INFO: tbb_download_alpha_version: $tbb_download_alpha_version"
    if [ "$tbb_download_alpha_version" = "true" ]; then
       source /usr/share/tb-updater/tbb_hardcoded_version_alpha
+      echo "INFO: Downloading alpha version. See:
+https://www.whonix.org/wiki/Tor_Browser#Alpha"
    else
       source /usr/share/tb-updater/tbb_hardcoded_version
+      echo "INFO: Downloading stable version. Alternatively, if want to \
+download the alpha version, set configuration option \
+'tbb_download_alpha_version=true', for instructions, see:
+https://www.whonix.org/wiki/Tor_Browser#Alpha"
    fi
 
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
