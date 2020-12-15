@@ -174,6 +174,7 @@ tb_sanity_tests() {
    command -v date >/dev/null
    command -v /usr/lib/msgcollector/msgcollector >/dev/null
    command -v /usr/lib/msgcollector/pv_wrapper >/dev/null
+   command -v /usr/lib/msgcollector/striphtml >/dev/null
    ## tbbversion function
    command -v grep >/dev/null
    ## tbbversion function
@@ -181,6 +182,7 @@ tb_sanity_tests() {
    command -v sort >/dev/null
    command -v pv >/dev/null
    command -v mkfifo >/dev/null
+   command -v jq >/dev/null
 }
 
 tb_ex_funct() {
@@ -206,7 +208,7 @@ tb_ex_funct() {
 
    #MSG="Aborted."
    #$output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-   #$output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
+   #echo "ERROR: $MSG"
 
    MSG="$SIGNAL_TYPE received. Exiting."
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
@@ -334,27 +336,27 @@ tb_stdin() {
       return 0
    fi
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      output_echo_only "INFO: TB_FORCE_INSTALL is set to '1', therefore setting TB_INPUT to 'none'."
+      echo "INFO: TB_FORCE_INSTALL is set to '1', therefore setting TB_INPUT to 'none'."
       TB_INPUT="none"
       TB_USE_MSGCOLLECTOR="false"
       return 0
    fi
    if [ -t "0" ]; then
-      output_echo_only "INFO: stdin connected to terminal, setting \
+      echo "INFO: stdin connected to terminal, setting \
 TB_INPUT to stdin, will use terminal for input, ok."
-      output_echo_only "INFO: Alternatively, if want to run from \
+      echo "INFO: Alternatively, if want to run from \
 command line, but still use the graphical user interface for input, \
 you could add to command line: --input gui"
       TB_INPUT="stdin"
       TB_USE_MSGCOLLECTOR="false"
       return 0
    fi
-   output_echo_only "INFO: stdin not connected to terminal, probably run in graphical environment, ok."
+   echo "INFO: stdin not connected to terminal, probably run in graphical environment, ok."
 }
 
 tb_qubes_dvm_template() {
    if echo "$qubes_vm_name" | grep -q --invert-match "\-dvm" ; then
-      output_echo_only "INFO: not running inside Qubes DVM Template, ok."
+      echo "INFO: not running inside Qubes DVM Template, ok."
       return 0
    fi
 
@@ -364,14 +366,12 @@ tb_qubes_dvm_template() {
 More info: <a href=https://www.whonix.org/wiki/$tb_wiki#Running_in_Qubes_DVM_Template>https://www.whonix.org/wiki/$tb_wiki#Running_in_Qubes_DVM_Template</a></p>"
 
    $output ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
-   $output ${output_opts[@]} --messagecli --titlecli "$TITLE" --typecli "error" --message "$MSG" --done
-   tb_exit_function 1
-}
 
-output_echo_only() {
-   local MSG
-   MSG="$@"
-   $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+   local MSG_CLI
+   MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+   echo "ERROR: $MSG_CLI"
+
+   tb_exit_function 1
 }
 
 output() {
@@ -740,7 +740,7 @@ tb_preparation() {
       else
          local MSG="uwt_tool: Can not find curl. Please report this bug!"
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG"
-         $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG"
+         echo "ERROR: $MSG"
          EXIT_CODE="1"
          return 0
       fi
@@ -774,11 +774,13 @@ tb_preparation() {
 
    if [ "$tb_onion" = "true" ]; then
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://rqef5a5mebgq46y5.onion"
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="http://expyuzz4wqqyqhjn.onion/projects/torbrowser/RecommendedTBBVersions/"
+      ## https://web.archive.org/web/20201213115438/https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
+      ## Onion-Location	http://x3nelbld33llasqv.onion/torbrowser/update_3/release/downloads.json
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="http://x3nelbld33llasqv.onion/torbrowser/update_3/release/downloads.json"
    else
       ## Download from the torproject.org clearnet by default.
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://dist.torproject.org"
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/"
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://aus1.torproject.org/torbrowser/update_3/release/downloads.json"
       [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https"
    fi
 
@@ -811,7 +813,7 @@ tb_preparation() {
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
    fi
 
-   output_echo_only "INFO: CURL_PROXY: $CURL_PROXY"
+   echo "INFO: CURL_PROXY: $CURL_PROXY"
 
    ## Also used by function tbbversion.
    [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
@@ -828,10 +830,8 @@ tb_preparation() {
    fi
 
    if [ ! "$tb_auto_set_user_home_msg" = "" ]; then
-      output_echo_only "INFO: $tb_auto_set_user_home_msg"
+      echo "INFO: $tb_auto_set_user_home_msg"
    fi
-
-   output_echo_only "INFO: tbb_version_previous_downloaded_version: $tbb_version_previous_downloaded_version"
 }
 
 tb_skip_if_higher_or_equal_version_already_downloaded() {
@@ -845,7 +845,7 @@ tb_skip_if_higher_or_equal_version_already_downloaded() {
       return 0
    fi
    if dpkg --compare-versions "$tbb_version_previous_downloaded_version" ge "$tbb_version" ; then
-      output_echo_only "INFO: tbb_version_previous_downloaded_version: $tbb_version_previous_downloaded_version is greater or equal $tbb_version, therefore skipping to download, ok."
+      echo "INFO: tbb_version_previous_downloaded_version: $tbb_version_previous_downloaded_version is greater or equal $tbb_version, therefore skipping to download, ok."
       tb_exit_function 0
    fi
 }
@@ -885,7 +885,11 @@ tb_connectivity_checks_tor() {
 You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCNAME</code> should be skipped.</p>"
 
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
+
+         local MSG_CLI
+         MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+         echo "ERROR: $MSG_CLI"
+
          tb_exit_function 5
       fi
       echo "Done."
@@ -914,7 +918,11 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
 <p>If whonixcheck reports no problems with internet activity and downloading $tb_title still fails, please report a bug!</p>"
 
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
+
+         local MSG_CLI
+         MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+         echo "ERROR: $MSG_CLI"
+
          tb_exit_function 6
       fi
       echo "Done."
@@ -962,7 +970,11 @@ tb_connectivity_checks_curl() {
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-      $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
+
+      local MSG_CLI
+      MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      echo "ERROR: $MSG_CLI"
+
       tb_exit_function 7
    fi
 
@@ -984,7 +996,7 @@ tb_update_check() {
    fi
 
    tb_notify_details="Checking $tb_title version... Will take a moment..."
-   output_echo_only "INFO: Find out latest version... Downloading: $TBB_VERSIONS_FILE_LINK ..."
+   echo "INFO: Find out latest version... Downloading: $TBB_VERSIONS_FILE_LINK ..."
 
    [ -n "$timeout_version_file_download" ] || timeout_version_file_download=180
    ## 1 MB = 1048576 bytes
@@ -1005,21 +1017,18 @@ tb_update_check() {
 tb_remote_version_parser() {
    if [ ! "$tbb_version" = "" ]; then
       true "INFO: tbb_version already set to '$tbb_version'. Simplified $FUNCNAME, ok."
-      [ -n "$tbb_recommended_versions_list" ] || tbb_recommended_versions_list="$tbb_version"
-      [ -n "$tbbversions_found" ] || tbbversions_found=1
       [ -n "$tbb_recommended_versions_error" ] || tbb_recommended_versions_error=""
       return 0
    fi
 
    ## needs: $RecommendedTBBVersions
-   ## sets: tbb_recommended_versions_list
-   ## sets: tbbversions_found
+   ## sets: tbb_version
    ## sets: tbb_recommended_versions_error
    tb_run_function tbbversion
 }
 
 tb_remote_version_sanity_test() {
-   if [ "$tbb_recommended_versions_list" = "UNKNOWN" ]; then
+   if [ "$tbb_version" = "UNKNOWN" ]; then
       download_fail_help_set
       local MSG="<p>$installed_or_not_text</p>
 
@@ -1029,14 +1038,18 @@ tb_remote_version_sanity_test() {
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-      $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
+
+      local MSG_CLI
+      MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      echo "ERROR: $MSG_CLI"
+
       tb_exit_function 9
    fi
 }
 
 tb_local_version_detection() {
    ## sets: tbb_hardcoded_version
-   output_echo_only "INFO: tbb_download_alpha_version: $tbb_download_alpha_version"
+   echo "INFO: tbb_download_alpha_version: $tbb_download_alpha_version"
    if [ "$tbb_download_alpha_version" = "true" ]; then
       source /usr/share/tb-updater/tbb_hardcoded_version_alpha
    else
@@ -1045,7 +1058,7 @@ tb_local_version_detection() {
 
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
       [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
-      output_echo_only "INFO: tbb_hardcoded_version: $tbb_hardcoded_version"
+      echo "INFO: tbb_hardcoded_version: $tbb_hardcoded_version"
    fi
 
    ## Used by tbbversion_installed
@@ -1088,13 +1101,18 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
 <br />
 <br />More info: <a href=https://www.whonix.org/wiki/$tb_wiki#Qubes_specific>https://www.whonix.org/wiki/$tb_wiki#Qubes_specific</a></p>"
          $output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+
+         local MSG_CLI
+         MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+         echo "INFO: $MSG_CLI"
       fi
    fi
 
-   output_echo_only "INFO: Currently installed version: $tbb_locally_installed_version"
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
-      output_echo_only "INFO: Hardcoded version $tbb_version chosen."
+      echo "INFO: tbb_version_previous_downloaded_version: $tbb_version_previous_downloaded_version"
+      echo "INFO: Currently installed version: $tbb_locally_installed_version"
+      echo "INFO: Hardcoded version $tbb_version chosen."
+      return 0
    fi
    if [ "$tb_confirm_update_skip" = "true" ]; then
       return 0
@@ -1103,7 +1121,7 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
    if [ "$tbb_locally_installed_version_detect_success" = "1" ]; then
       if [ "$installed_or_not_result" = "true" ]; then
          local tbb_compare_version
-         for tbb_compare_version in $tbb_recommended_versions_list; do
+         for tbb_compare_version in $tbb_version ; do
             local dpkg_compare_versions_equals_exit_code="0"
             dpkg --compare-versions "$tbb_compare_version" eq "$tbb_locally_installed_version" || { dpkg_compare_versions_equals_exit_code="$?" ; true; };
             if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
@@ -1127,10 +1145,7 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
    button="yesno"
    question="Download now?"
 
-   local highest_version_not_always_better_text updater_vs_downloader_msg confirmation_screen_learn_more_link
-
-   highest_version_not_always_better_text="\
-Only versions still considered secure should be listed here. Higher version numbers does not necessarily mean more secure here. Could be alpha or beta versions. In most cases you are best off choosing the lowest version number among them."
+   local updater_vs_downloader_msg confirmation_screen_learn_more_link
 
    updater_vs_downloader_msg="\
 If you would like to keep your browser profile and update rather than re-downloading $tb_title, \
@@ -1163,7 +1178,6 @@ To update $tb_title inside existing TemplateBasedVMs, please update $tb_title in
          ## installed, but local version number unknown
          MSG="\
 <p>$updater_vs_downloader_msg</p>
-<p>$highest_version_not_always_better_text</p>
 <p>$confirmation_screen_learn_more_link</p>
 <p>$qubes_running_inside_template_vm_msg</p>"
       else
@@ -1187,8 +1201,6 @@ To update $tb_title inside existing TemplateBasedVMs, please update $tb_title in
             tb_exit_function 1
          fi
          MSG="\
-<p>$highest_version_not_always_better_text</p>
-
 <p>$up_to_date_or_not_text</p>
 
 <p>$re_install_or_install_text</p>
@@ -1201,60 +1213,50 @@ To update $tb_title inside existing TemplateBasedVMs, please update $tb_title in
 <p>$updater_vs_downloader_msg</p>
 <p>$confirmation_screen_learn_more_link</p>"
       fi
+
+      local MSG_CLI
+      MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      echo "WARNING: $MSG_CLI"
    else
       ## not installed
       type="info"
       MSG="\
-<p>$highest_version_not_always_better_text</p>
 <p>$confirmation_screen_learn_more_link</p>"
+
+      local MSG_CLI
+      MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      echo "INFO: $MSG_CLI"
    fi
 
-   $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
-   output_echo_only "https://www.whonix.org/wiki/$tb_wiki/Download_Confirmation_Screen"
+   echo "https://www.whonix.org/wiki/$tb_wiki/Download_Confirmation_Screen"
 
-   if [ "$tbb_version" = "" ]; then
-      if [ "$TB_INPUT" = "none" ]; then
-         output_echo_only "INFO: Detected versions: ${tbb_recommended_versions_slash_separated}"
-         answer="$tbb_default_download_version"
+   echo "INFO: tbb_version_previous_downloaded_version: $tbb_version_previous_downloaded_version"
+   echo "INFO: Currently installed version: $tbb_locally_installed_version"
+   echo "INFO: Online detected version: $tbb_version"
+
+   if [ "$TB_INPUT" = "none" ]; then
+      true "INFO: TB_INPUT set to none, ok."
+   else
+      local answer
+      if [ "$TB_INPUT" = "stdin" ]; then
+         echo "QUESTION: $question
+y/n?"
+         read -r answer
+         if [ ! "$answer" = "y" ]; then
+            echo "INFO: Canceled. Exit."
+            tb_exit_function 10
+         fi
       else
-         local answer
-         if [ "$TB_INPUT" = "stdin" ]; then
-            output_echo_only "QUESTION: $question
-n/${tbb_recommended_versions_slash_separated}?"
-            read -r answer
-            if [ "$answer" = "n" ] || [ "$answer" = "" ]; then
-               output_echo_only "INFO: Canceled. Exit."
-               tb_exit_function 10
-            fi
-            local available_version valid_version_chosen
-            for available_version in $tbb_recommended_versions_list ; do
-               if [ "$answer" = "$available_version" ]; then
-                  valid_version_chosen=true
-                  break
-               fi
-            done
-            if [ ! "$valid_version_chosen" = "true" ]; then
-               output_echo_only "ERROR: invalid answer. Choose a version number. Type any of the following."
-               for available_version in $tbb_recommended_versions_list ; do
-                  echo "$available_version"
-               done
-               output_echo_only "INFO: Then press enter. Exit. Try again."
-               tb_exit_function 10
-            fi
-         else
-            output_echo_only "INFO: Detected versions: ${tbb_recommended_versions_slash_separated}"
-            #echo "/usr/lib/msgcollector/tb_updater_gui \"$type\" \"$TITLE\" \"$tbb_locally_installed_version\" \"$tbb_recommended_versions_comma_separated\" \"$MSG\" \"$question\" \"$button\")"
-            answer="$("/usr/lib/msgcollector/tb_updater_gui" "$type" "$TITLE" "$tbb_locally_installed_version" "$tbb_recommended_versions_comma_separated" "$MSG" "$question" "$button")"
-            if [ "$answer" = "65536" ]; then ## Button 'Yes' has not been pressed.
-               output_echo_only "Canceled. Exit."
-               tb_exit_function 10
-            fi
+         #echo "/usr/lib/msgcollector/tb_updater_gui \"$type\" \"$TITLE\" \"$tbb_locally_installed_version\" \"$tbb_recommended_versions_comma_separated\" \"$MSG\" \"$question\" \"$button\")"
+
+         ## TODO: test
+
+         answer="$("/usr/lib/msgcollector/tb_updater_gui" "$type" "$TITLE" "$tbb_locally_installed_version" "$tbb_version" "$MSG" "$question" "$button")"
+         if [ "$answer" = "65536" ]; then ## Button 'Yes' has not been pressed.
+            echo "Canceled. Exit."
+            tb_exit_function 10
          fi
       fi
-      tbb_version="$answer"
-      output_echo_only "INFO: Version $tbb_version chosen."
-   else
-      output_echo_only "INFO: Version $tbb_version was already set."
    fi
 }
 
@@ -1268,27 +1270,27 @@ tb_version_processing() {
    else
       tbb_hardened_version_chosen="false"
    fi
-   #output_echo_only "INFO: tbb_hardened_version_chosen: $tbb_hardened_version_chosen"
+   #echo "INFO: tbb_hardened_version_chosen: $tbb_hardened_version_chosen"
 
    ## Check if TB_LANG exists and is not empty.
    if [[ "$TB_LANG" && "${TB_LANG}" ]]; then
       #echo "INFO: Tor Browser language variable is set to "$TB_LANG"."
-      output_echo_only "INFO: $tb_title language variable TB_LANG is already set to '$TB_LANG'. Keeping it as is, ok."
+      echo "INFO: $tb_title language variable TB_LANG is already set to '$TB_LANG'. Keeping it as is, ok."
    elif [ "$tbb_hardened_version_chosen" = "true" ]; then
       ## Quote: https://blog.torproject.org/blog/tor-browser-55a4-hardened-released
       ## "there will only be one bundle shipped supporting all the languages found in alpha builds"
       ## These links are not containing language specific strings such as 'en-US', but 'ALL'.
-      output_echo_only "INFO: $tb_title language variable TB_LANG was not yet set and a hardened version was chosen. Therefore setting TB_LANG to 'ALL', ok."
+      echo "INFO: $tb_title language variable TB_LANG was not yet set and a hardened version was chosen. Therefore setting TB_LANG to 'ALL', ok."
       TB_LANG="ALL"
    else
-      output_echo_only "INFO: $tb_title language variable TB_LANG was not yet set. Therefore defaulting TB_LANG to 'en-US', ok."
+      echo "INFO: $tb_title language variable TB_LANG was not yet set. Therefore defaulting TB_LANG to 'en-US', ok."
       TB_LANG="en-US"
    fi
 }
 
 tb_kill_already_running_tb_maybe() {
    if [ ! "$NOKILLTB" = "1" ]; then
-      output_echo_only "INFO: Because you are not using --nokilltb, now killing eventually still running instances of $tb_title..."
+      echo "INFO: Because you are not using --nokilltb, now killing eventually still running instances of $tb_title..."
       killall firefox.real || true
    fi
 }
@@ -1311,7 +1313,7 @@ $tb_notify_details"
       fi
    fi
 
-   output_echo_only "INFO: CURL_OUT_FILE: $CURL_OUT_FILE"
+   echo "INFO: CURL_OUT_FILE: $CURL_OUT_FILE"
 
    ## Debugging: Simulating endless data attack.
    #export CURL_PRGRS_MAX_FILE_SIZE_BYTES="1048576"
@@ -1363,11 +1365,15 @@ $tb_notify_details"
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-      $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
+
+      local MSG_CLI
+      MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      echo "ERROR: $MSG_CLI"
+
       tb_exit_function "$tb_download_common_exit_on_fail"
    fi
 
-   output_echo_only "INFO: Done, downloaded: $curl_download_target_url"
+   echo "INFO: Done, downloaded: $curl_download_target_url"
 }
 
 tb_download_files() {
@@ -1380,8 +1386,8 @@ tb_download_files() {
    [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
 
    tb_notify_details="Downloading $tb_title signature... Will take a moment..."
-   output_echo_only "INFO: Downloading GPG signature... Will take a moment..."
-   output_echo_only "\
+   echo "INFO: Downloading GPG signature... Will take a moment..."
+   echo "\
 INFO: Downloading:
       $TBB_SIG_LINK ... Will take a moment..."
 
@@ -1405,8 +1411,8 @@ INFO: Downloading:
    [ -n "$TBB_HASH_FULL_PATH" ] || TBB_HASH_FULL_PATH="$tb_downloaded_files_folder/$TBB_HASH_FILENAME"
 
    tb_notify_details="Downloading $tb_title sha256sums file... Will take a moment..."
-   output_echo_only "INFO: Downloading sha256sums file... Will take a moment..."
-   output_echo_only "\
+   echo "INFO: Downloading sha256sums file... Will take a moment..."
+   echo "\
 INFO: Downloading:
       $TBB_HASH_LINK ... Will take a moment..."
 
@@ -1430,8 +1436,8 @@ INFO: Downloading:
    [ -n "$TBB_PACKAGE_FULL_PATH" ] || TBB_PACKAGE_FULL_PATH="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
 
    tb_notify_details="Downloading $tb_title... Will take a while..."
-   output_echo_only "INFO: Downloading $tb_title Bundle: $tbb_version"
-   output_echo_only "\
+   echo "INFO: Downloading $tb_title Bundle: $tbb_version"
+   echo "\
 INFO: Downloading:
       $TBB_PACKAGE_LINK ... Will take a while..."
 
@@ -1453,7 +1459,7 @@ INFO: Downloading:
 }
 
 tb_gpg_verify() {
-   output_echo_only "INFO: GPG signature verification... This will take a moment..."
+   echo "INFO: GPG signature verification... This will take a moment..."
 
    gpg_bash_lib_input_verify_timeout_after="60"
    gpg_bash_lib_input_verify_kill_after="10"
@@ -1490,15 +1496,19 @@ tb_gpg_verify() {
 
 <p>$gpg_bash_lib_output_diagnostic_message</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-      $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
+
+      local MSG_CLI
+      MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      echo "ERROR: $MSG_CLI"
+
       tb_exit_function 12
    fi
 
-   output_echo_only "INFO: GPG signature verification ok."
+   echo "INFO: GPG signature verification ok."
 }
 
 tb_hash_verify() {
-   output_echo_only "INFO: Checking hash... This will take a moment..."
+   echo "INFO: Checking hash... This will take a moment..."
 
    rm --force "$tb_temp_folder/sha256_output"
 
@@ -1533,17 +1543,21 @@ tb_hash_verify() {
    sha256sum_output="$(cat "$tb_temp_folder/sha256_output")" || true
 
    if grep -q "$sha256sum_output" "$TBB_HASH_FULL_PATH" ; then
-      output_echo_only "INFO: Hash check ok."
+      echo "INFO: Hash check ok."
       return 0
    fi
 
    download_fail_help_set
-   output_echo_only "ERROR: Hash check failed! (tb_sha_exit_code: $tb_sha_exit_code) Exiting." >&2
+   echo "ERROR: Hash check failed! (tb_sha_exit_code: $tb_sha_exit_code) Exiting." >&2
    local MSG="<p><b>Hash could NOT be verified. (tb_sha_exit_code: $tb_sha_exit_code)</b>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
    $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-   $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
+
+   local MSG_CLI
+   MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+   echo "ERROR: $MSG_CLI"
+
    tb_exit_function 13
 }
 
@@ -1643,8 +1657,11 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
 $gpg_bash_lib_output_gpg_verify_output_br_added</p>
 <p><a href=https://www.whonix.org/wiki/$tb_wiki/Installation_Confirmation_Screen>Learn more about this Installation Confirmation Screen.</a></p>"
 
-   $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
-   output_echo_only "https://www.whonix.org/wiki/$tb_wiki/Installation_Confirmation_Screen"
+   local MSG_CLI
+   MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+   echo "INFO: $MSG_CLI"
+
+   echo "https://www.whonix.org/wiki/$tb_wiki/Installation_Confirmation_Screen"
 
    button="yesno"
    question="Install now?"
@@ -1653,17 +1670,17 @@ $gpg_bash_lib_output_gpg_verify_output_br_added</p>
       true "INFO: TB_INPUT is set to $TB_INPUT, continuing without asking."
    else
       if [ "$TB_INPUT" = "stdin" ]; then
-         output_echo_only "QUESTION: $question
+         echo "QUESTION: $question
 y/n?"
          read -r answer
          if [ ! "$answer" = "y" ]; then
-            output_echo_only "INFO: Canceled. Exit."
+            echo "INFO: Canceled. Exit."
             tb_exit_function 14
          fi
       else
          answer="$(/usr/lib/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
          if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-            output_echo_only "INFO: Canceled. Exit."
+            echo "INFO: Canceled. Exit."
             tb_exit_function 14
          fi
       fi
@@ -1696,7 +1713,7 @@ Extracting $tb_title... This could take a moment..."
    kill_after="30"
    file_name="$TBB_PACKAGE_FULL_PATH"
 
-   output_echo_only "INFO: Extracting $file_name ..."
+   echo "INFO: Extracting $file_name ..."
 
    ## Folder must be already exist, otherwise `tar` would fail.
    mkdir --parents "$tb_extract_temp_folder"
@@ -1820,11 +1837,15 @@ Extracting $tb_title... This could take a moment..."
 <br></br>
 <br></br>Please report this bug!</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-      $output ${output_opts[@]} --messagecli --typecli "error" --message "$MSG" --done
+
+      local MSG_CLI
+      MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      echo "ERROR: $MSG_CLI"
+
       tb_exit_function 15
    fi
 
-   output_echo_only "INFO: Extraction of $file_name done."
+   echo "INFO: Extraction of $file_name done."
 }
 
 tb_patch_download_folder_create() {
@@ -1846,10 +1867,10 @@ tb_install() {
       return 0
    fi
 
-   output_echo_only "INFO: Deleting old folder $tb_browser_folder."
+   echo "INFO: Deleting old folder $tb_browser_folder."
    rm -rf "$tb_browser_folder"
 
-   output_echo_only "INFO: Moving temporary folder $tb_extract_temp_folder to $tb_browser_folder."
+   echo "INFO: Moving temporary folder $tb_extract_temp_folder to $tb_browser_folder."
    mv "$tb_extract_temp_folder" "$tb_browser_folder"
 }
 
@@ -1859,7 +1880,7 @@ tb_cleanup() {
       return 0
    fi
 
-   output_echo_only "INFO: Deleting no longer required file $TBB_PACKAGE_FULL_PATH to save space."
+   echo "INFO: Deleting no longer required file $TBB_PACKAGE_FULL_PATH to save space."
    rm -f "$TBB_PACKAGE_FULL_PATH"
 }
 
@@ -1883,7 +1904,7 @@ tb_chroot_pre_exit() {
 
 tb_hardcoded_version_last_downloaded_save() {
    echo "$tbb_version" > "$tbb_version_last_downloaded_save_file"
-   output_echo_only "INFO: Saved $tbb_version in $tbb_version_last_downloaded_save_file."
+   echo "INFO: Saved $tbb_version in $tbb_version_last_downloaded_save_file."
 }
 
 tb_start_ask() {
@@ -1893,8 +1914,8 @@ tb_start_ask() {
    fi
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      output_echo_only "INFO: Finished installing $tb_title. Can be found in $tb_browser_folder."
-      output_echo_only "INFO: Not starting $tb_title, because variable TB_FORCE_INSTALL is set to 1."
+      echo "INFO: Finished installing $tb_title. Can be found in $tb_browser_folder."
+      echo "INFO: Not starting $tb_title, because variable TB_FORCE_INSTALL is set to 1."
       return 0
    fi
 
@@ -1902,7 +1923,7 @@ tb_start_ask() {
    command -v $tb_bin || { command_v_torbrowser_exit_code="$?" ; true; };
 
    if [ ! "$command_v_torbrowser_exit_code" = "0" ]; then
-      output_echo_only "INFO: $tb_bin binary not found in path. tb-starter is probably not installed. \
+      echo "INFO: $tb_bin binary not found in path. tb-starter is probably not installed. \
 Skipping question to start $tb_title."
       return 0
    fi
@@ -1918,7 +1939,11 @@ Skipping question to start $tb_title."
 <p>To run $tb_title, run in a TemplateBasedVM, StandaloneVM or DispVM, run:<br />
 <code>$tb_bin</code></p>"
          $output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
-         $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+
+         local MSG_CLI
+         MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+         echo "INFO: $MSG_CLI"
+
          return 0
       fi
    fi
@@ -1937,97 +1962,28 @@ Skipping question to start $tb_title."
    fi
 
    if [ "$TB_INPUT" = "stdin" ]; then
-      output_echo_only "QUESTION: $question
+      echo "QUESTION: $question
 y/n?"
       read -r answer
       if [ ! "$answer" = "y" ]; then
-         output_echo_only "INFO: Canceled starting $tb_title, ok."
+         echo "INFO: Canceled starting $tb_title, ok."
       else
          $tb_bin
       fi
       return 0
    fi
 
-   output_echo_only "INFO: GUI is asking to start $tb_title."
+   echo "INFO: GUI is asking to start $tb_title."
    answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
    if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-      output_echo_only "INFO: Canceled starting $tb_title, ok."
+      echo "INFO: Canceled starting $tb_title, ok."
       return 0
    else
-      output_echo_only "INFO: Running $tb_title."
+      echo "INFO: Running $tb_title."
       $tb_bin
-      output_echo_only "INFO: $tb_title was terminated, ok."
+      echo "INFO: $tb_title was terminated, ok."
       return 0
    fi
-}
-
-tb_sort_remote_versions() {
-   if [ "$tbb_recommended_versions_list" = "" ]; then
-      error "tbb_recommended_versions_list was empty before sorting."
-   fi
-
-   ## Example tbb_recommended_versions_list:
-   ## 2.3.25-16 3.8 2.6 3.7 3.1 3.1 3.4 2.3.25-15 3.5
-
-   ## Add new lines. Required by `sort`.
-   ## Do not quote tbb_recommended_versions_list.
-   tbb_recommended_versions_list="$(printf "%s\n" $tbb_recommended_versions_list)"
-
-   tbb_recommended_versions_list="$(echo "$tbb_recommended_versions_list" | sort --unique --version-sort)"
-
-   if [ "$tbb_recommended_versions_list" = "" ]; then
-      error "tbb_recommended_versions_list is empty after sorting."
-   fi
-
-   ## Example tbb_recommended_versions_list:
-   ## 3.8
-   ## 3.7
-   ## 3.5
-   ## 3.4
-   ## 3.1
-   ## #2.6
-   ## 2.3.25-16
-   ## 2.3.25-15
-
-   ## Thanks to:
-   ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
-   ## for the leading/trailing whitespace removal code
-
-   local temp
-
-   temp="$tbb_recommended_versions_list"
-   temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
-   temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
-   tbb_recommended_versions_list="$temp"
-
-   temp="${tbb_recommended_versions_list//$'\n'/,}"
-   temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
-   temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
-   tbb_recommended_versions_comma_separated="$temp"
-
-   temp="${tbb_recommended_versions_list//$'\n'//}"
-   temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
-   temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
-   tbb_recommended_versions_slash_separated="$temp"
-
-   output_echo_only "INFO: tbb_download_alpha_version: $tbb_download_alpha_version"
-
-   ## Only used for TB_FORCE_INSTALL.
-   if [ "$tbb_download_alpha_version" = "true" ]; then
-      ## Choose highest version number for default file download.
-      tbb_default_download_version="${tbb_recommended_versions_list##*$'\n'}"
-      output_echo_only "INFO: Highest online version might be: $tbb_default_download_version"
-   else
-      ## Choose lowest version number for default file download.
-      read -r -t 2 tbb_default_download_version _ <<< "$tbb_recommended_versions_list"
-      output_echo_only "INFO: Lowest online version might be: $tbb_default_download_version"
-   fi
-   true "tbb_default_download_version: $tbb_default_download_version"
-
-   temp="$tbb_default_download_version"
-   temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
-   temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
-   tbb_default_download_version="$temp"
 }
 
 main_function() {
@@ -2048,11 +2004,6 @@ main_function() {
    tb_run_function tb_remote_version_parser
    tb_run_function tb_remote_version_sanity_test
 
-   ## For testing:
-   #tbb_recommended_versions_list="2.3.25-16 3.8 2.6 3.7 3.1 3.1 3.4 2.3.25-15 3.5"
-   #tbb_recommended_versions_list="2.3.25-16 2.3.25-15 $tbb_recommended_versions_list 10.0 15.0 20.0 25.0 30.0"
-
-   tb_run_function tb_sort_remote_versions
    tb_run_function tb_confirm_update
    tb_run_function tb_version_processing
    tb_run_function tb_kill_already_running_tb_maybe

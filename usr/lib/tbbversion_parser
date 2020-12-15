@@ -3,53 +3,17 @@
 ## Copyright (C) 2012 - 2020 ENCRYPTED SUPPORT LP <adrelanos@riseup.net>
 ## See the file COPYING for copying conditions.
 
-## This script gets sourced by:
-## - /usr/bin/whonixcheck
-## - /usr/bin/torbrowser
-
-## Example https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions
-##
-## [
-## "6.0.7",
-## "6.0.7-Linux",
-## "6.0.7-MacOS",
-## "6.0.7-Windows",
-## "6.5a4",
-## "6.5a4-Linux",
-## "6.5a4-MacOS",
-## "6.5a4-Windows",
-## "6.5a4-hardened",
-## "6.5a4-hardened-Linux",
-## "6.5a5",
-## "6.5a5-Linux",
-## "6.5a5-MacOS",
-## "6.5a5-Windows",
-## "6.5a5-hardened",
-## "6.5a5-hardened-Linux"
-## ]
-
 tbbversion() {
-   ## code shared between torbrowser and whonixcheck
+   command -v /usr/lib/msgcollector/striphtml >/dev/null
+   command -v jq >/dev/null
+   command -v xargs >/dev/null
+   command -v printf >/dev/null
 
    ## fallback
-   tbb_recommended_versions_list="UNKNOWN"
+   tbb_version="UNKNOWN"
    tbb_recommended_versions_error=""
 
-   ## Sanity Tests.
-   if ! command -v sed >/dev/null ; then
-      local MSG="$SCRIPTNAME tbbversion: sed not found."
-      echo "$MSG"
-      error "$MSG"
-      return 1
-   fi
-   if ! command -v grep >/dev/null ; then
-      local MSG="$SCRIPTNAME tbbversion: grep not found."
-      echo "$MSG"
-      error "$MSG"
-      return 1
-   fi
-
-   tbbversions_found="0"
+   ## Example see /usr/share/tb-updater/unit-test/RecommendedTBBVersions
 
    if [ ! -f "$RecommendedTBBVersions" ]; then
       local MSG="$SCRIPTNAME tbbversion: RecommendedTBBVersions: $RecommendedTBBVersions does not exist."
@@ -58,105 +22,59 @@ tbbversion() {
       return 1
    fi
 
-   local line_number
-   line_number="0"
-   local line
-   while read -r -t 2 -d $'\n' line; do
-      line_number="$(( $line_number + 1 ))"
-      true "line: $line"
+   if tbb_version="$(jq -r .version "$RecommendedTBBVersions")" ; then
+      true "INFO: jq exit code ok."
+   else
+      tbb_version="UNKNOWN"
+      tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(jq failed.)"
+      return 0
+   fi
 
-      ## Check if RecommendedTBBVersions versions file is excessively long.
-      if [ "$line_number" -gt "100" ]; then
-         tbb_recommended_versions_list="UNKNOWN"
-         tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
-(File is longer than 100 lines.)"
-         return 0
-      fi
-
-      if [ "$line" = "" ]; then
-         continue
-      fi
-
-      if echo "$line" | grep -q -i -s "\[" ; then
-         continue
-      fi
-      if echo "$line" | grep -q -i -s "\]" ; then
-         continue
-      fi
-
-      if echo "$line" | grep -q -i -s "MacOS" ; then
-         continue
-      fi
-      if echo "$line" | grep -q -i -s "Windows" ; then
-         continue
-      fi
-
-      line="$(echo "$line" | sed 's/"//g')"
-      line="$(echo "$line" | sed 's/,//g')"
-
-      local temp
-      temp="$line"
-
-      ## new format:
-      ## https://trac.torproject.org/projects/tor/ticket/8940#comment:28
-
-      ## {{ parsing old format
-      if echo "$line" | grep -q -i -s "Linux" ; then
-         temp="$(echo "$temp" | sed 's/-i686//g')"
-         temp="$(echo "$temp" | sed 's/-x86_64//g')"
-         temp="$(echo "$temp" | sed 's/-Linux//g')"
-      fi
-      ## }} parsing old format
-
-      ## https://trac.torproject.org/projects/tor/ticket/29936#comment:5
-      temp="$(echo "$temp" | sed 's/&#34;//g')"
-
-      tbbversions_found="$(( $tbbversions_found + 1 ))"
-
-      if [ "$tbb_recommended_versions_list" = "UNKNOWN" ]; then
-         ## No tbb versions has been found earlier. Still set to UNKNOWN.
-         ## Therefore setting tbb_recommended_versions_list to $temp.
-         tbb_recommended_versions_list="$temp"
-      else
-         ## Keep already found version and add newly found version.
-         tbb_recommended_versions_list="$temp $tbb_recommended_versions_list"
-      fi
-
-      ## Not using break, because RecommendedTBBVersions often have
-      ## multiple recommended versions. Latest on the bottom.
-      ## For example:
-      ##    "2.3.25-12-Linux",
-      ##    "2.3.25-13-Linux",
-   done < "$RecommendedTBBVersions"
+   if [ "$tbb_version" = "" ] ; then
+      tbb_version="UNKNOWN"
+      tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(jq output empty.)"
+      return 0
+   else
+      true "INFO: jq not empty, ok."
+   fi
 
    ## A single version string should not be longer than 20 characters. If
    ## it is, there is probably something wrong.
    local max_string_length
    max_string_length="20"
 
-   ## In case we found multiple valid versions, the max_string_length must
-   ## be multiplied with the number of valid versions we found.
-   max_string_length="$(( $max_string_length * $tbbversions_found ))"
-
    local actual_string_length
-   actual_string_length="${#tbb_recommended_versions_list}"
+   actual_string_length="${#tbb_version}"
    tbbversion_excess_length=""
 
-   ## Check if the string length of tbb_recommended_versions_list is excessive.
+   ## Check if the string length of tbb_version is excessive.
    if [ "$actual_string_length" -gt "$max_string_length" ]; then
       ## Store excess length for later use.
-      tbbversion_excess_length="$tbb_recommended_versions_list"
+      tbbversion_excess_length="$tbb_version"
 
-      ## Shorten excess length $tbb_recommended_versions_list to $max_string_length chars.
-      #tbb_recommended_versions_list="${tbb_recommended_versions_list:0:$max_string_length}"
+      ## Shorten excess length $tbb_version to $max_string_length chars.
+      #tbb_version="${tbb_version:0:$max_string_length}"
 
-      tbb_recommended_versions_list="UNKNOWN"
-
+      tbb_version="UNKNOWN"
       tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (Excessive version string length of $actual_string_length characters.)"
-
       return 0
    fi
+
+   ## Thanks to:
+   ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
+   ## for the leading/trailing whitespace removal code
+
+   local temp
+
+   temp="$tbb_version"
+   temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
+   temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
+   tbb_version="$temp"
+
+   tbb_version="$(/usr/lib/msgcollector/striphtml "$tbb_version")"
 }
 
 tbbversion_installed() {
