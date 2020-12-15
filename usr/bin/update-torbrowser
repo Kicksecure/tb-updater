@@ -784,6 +784,7 @@ tb_preparation() {
     ## https://forums.whonix.org/t/update-torbrowser-does-not-see-version-10-0-6/10711
    if [ "$tb_onion" = "true" ]; then
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://rqef5a5mebgq46y5.onion"
+      ## https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
       ## https://web.archive.org/web/20201213115438/https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
       ## Onion-Location	http://x3nelbld33llasqv.onion/torbrowser/update_3/release/downloads.json
       [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="http://x3nelbld33llasqv.onion/torbrowser/update_3/${TBB_RELEASE_CHANNEL}/downloads.json"
