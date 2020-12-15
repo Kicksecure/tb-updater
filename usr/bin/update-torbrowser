@@ -778,6 +778,10 @@ tb_preparation() {
       [ -n "$TBB_RELEASE_CHANNEL" ] || TBB_RELEASE_CHANNEL="release"
    fi
 
+    ## https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/ file was abolished by upstream
+    ## https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/33521
+    ## https://web.archive.org/web/20201210123314/https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/
+    ## https://forums.whonix.org/t/update-torbrowser-does-not-see-version-10-0-6/10711
    if [ "$tb_onion" = "true" ]; then
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://rqef5a5mebgq46y5.onion"
       ## https://web.archive.org/web/20201213115438/https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
