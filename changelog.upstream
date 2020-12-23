@@ -1,3 +1,19 @@
+commit c1c698ad18a031a929a6b0034fc21aee6ad22acf
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Wed Dec 23 07:05:59 2020 -0500
+
+    update signing key
+    
+    https://web.archive.org/web/20201223120236/https://support.torproject.org/tbb/how-to-verify-signature/
+    
+    https://web.archive.org/web/20201223120229/https://openpgpkey.torproject.org/.well-known/openpgpkey/torproject.org/hu/kounek7zrdx745qydx6p59t9mqjpuhdf
+
+commit e4c872d83e58f6b3682cb195dba360218549ca7b
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Dec 15 13:34:29 2020 -0500
+
+    bumped changelog version
+
 commit 94351432b393ef595f8f9651bb839679189496b6
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Dec 15 13:33:48 2020 -0500
