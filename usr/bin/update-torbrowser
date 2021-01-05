@@ -977,7 +977,7 @@ tb_connectivity_checks_curl() {
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$tb_temp_folder/tbb_remote_folder"
-   rm -f "$CURL_OUT_FILE"
+   rm --force "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_connectivity_checks_curl"
    curl_download_target_url="$tbb_download_base_url"
    tb_download_common_exit_on_fail="false"
@@ -1034,7 +1034,7 @@ tb_update_check() {
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$RecommendedTBBVersions"
-   rm -f "$CURL_OUT_FILE"
+   rm --force "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_version_file_download"
    curl_download_target_url="$TBB_VERSIONS_FILE_LINK"
    tb_download_common_exit_on_fail="8"
@@ -1431,7 +1431,7 @@ INFO: Downloading:
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$TBB_SIG_FULL_PATH"
-   rm -f "$CURL_OUT_FILE"
+   rm --force "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_signature_file_download"
    curl_download_target_url="$TBB_SIG_LINK"
    tb_download_common_exit_on_fail="8"
@@ -1456,7 +1456,7 @@ INFO: Downloading:
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$TBB_HASH_FULL_PATH"
-   rm -f "$CURL_OUT_FILE"
+   rm --force "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_hash_file_download"
    curl_download_target_url="$TBB_HASH_LINK"
    tb_download_common_exit_on_fail="16"
@@ -1482,7 +1482,7 @@ INFO: Downloading:
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$TBB_PACKAGE_FULL_PATH"
    ## Not deleting to support resume.
-   #rm -f "$CURL_OUT_FILE"
+   #rm --force "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_archive_file_download"
    curl_download_target_url="$TBB_PACKAGE_LINK"
    tb_download_common_exit_on_fail="17"
@@ -1901,7 +1901,7 @@ tb_install() {
    fi
 
    echo "INFO: Deleting old folder $tb_browser_folder."
-   rm -rf "$tb_browser_folder"
+   rm --recursive --force "$tb_browser_folder"
 
    echo "INFO: Moving temporary folder $tb_extract_temp_folder to $tb_browser_folder."
    mv "$tb_extract_temp_folder" "$tb_browser_folder"
@@ -1914,7 +1914,7 @@ tb_cleanup() {
    fi
 
    echo "INFO: Deleting no longer required file $TBB_PACKAGE_FULL_PATH to save space."
-   rm -f "$TBB_PACKAGE_FULL_PATH"
+   rm --force "$TBB_PACKAGE_FULL_PATH"
 }
 
 tb_postinst_pre_exit() {
