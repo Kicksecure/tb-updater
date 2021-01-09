@@ -545,20 +545,6 @@ tb_preparation() {
    if command -v qubesdb-read >/dev/null 2>&1 ; then
       [ -n "$is_qubes" ] || is_qubes=true
 
-      if [ "$qubes_vm_type" = "" ]; then
-         if [ -e /run/qubes/this-is-appvm ]; then
-            qubes_vm_type="AppVM"
-         fi
-         if [ -e /run/qubes/this-is-netvm ]; then
-            qubes_vm_type="NetVM"
-         fi
-         if [ -e /run/qubes/this-is-templatevm ]; then
-            qubes_vm_type="TemplateVM"
-         fi
-         if [ "$is_chroot" = "true" ]; then
-            qubes_vm_type="TemplateVM"
-         fi
-      fi
       ## qubesdb-read fails
       ## - inside chroot,
       ## - perhaps during upgrades
