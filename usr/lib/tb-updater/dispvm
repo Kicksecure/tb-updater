@@ -13,7 +13,6 @@ if ischroot --default-false ; then
 fi
 
 if command -v qubesdb-read >/dev/null 2>&1 ; then
-   qubes_vm_type="$(qubesdb-read /qubes-vm-type)"
    qubes_vm_name="$(qubesdb-read /name)"
    qubes_vm_persistence="$(qubesdb-read /qubes-vm-persistence)"
 else
@@ -27,7 +26,7 @@ if echo "$qubes_vm_name" | grep -q "\-dvm" ; then
    exit 0
 fi
 
-if [ "$qubes_vm_type" = "TemplateVM" ]; then
+if test -f /run/qubes/this-is-templatevm ; then
    exit 0
 fi
 

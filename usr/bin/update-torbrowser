@@ -546,7 +546,6 @@ tb_preparation() {
       [ -n "$is_qubes" ] || is_qubes=true
 
       if [ "$qubes_vm_type" = "" ]; then
-         ## Works since Qubes R3.2.
          if [ -e /run/qubes/this-is-appvm ]; then
             qubes_vm_type="AppVM"
          fi
@@ -567,14 +566,11 @@ tb_preparation() {
       ##   - https://github.com/QubesOS/qubes-issues/issues/2509
       ## therefore overwriting with '|| true'.
       [ -n "$qubes_vm_name" ] || qubes_vm_name="$(qubesdb-read /name)" || true
-      ## For Qubes R3.1 compatibility.
-      [ -n "$qubes_vm_type" ] || qubes_vm_type="$(qubesdb-read /qubes-vm-type)" || true
-
    else
       [ -n "$is_qubes" ] || is_qubes=false
    fi
 
-   if [ "$qubes_vm_type" = "TemplateVM" ]; then
+   if test -f /run/qubes/this-is-templatevm ; then
       if [ "$(id -u)" != "0" ]; then
          echo "ERROR: Needs to run as root in Qubes TemplateVM. Run:"
          echo "sudo $SCRIPTNAME"
@@ -588,20 +584,20 @@ tb_preparation() {
       tb_settings_chroot_common
    fi
 
-   if [ "$qubes_vm_type" = "TemplateVM" ]; then
+   if test -f /run/qubes/this-is-templatevm ; then
       tb_settings_qubes_common_templatevm
    fi
 
    if [ "$tb_postinst" = "true" ]; then
       tb_settings_postinst_common
-      if [ "$qubes_vm_type" = "TemplateVM" ]; then
+      if test -f /run/qubes/this-is-templatevm ; then
          tb_settings_qubes_postinst_templatevm
       fi
    fi
 
    if [ "$tb_manual_run" = "true" ]; then
       tb_settings_manual_run_common
-      if [ "$qubes_vm_type" = "TemplateVM" ]; then
+      if test -f /run/qubes/this-is-templatevm ; then
          tb_settings_qubes_manual_run_templatevm
       fi
    fi
@@ -817,7 +813,7 @@ tb_preparation() {
 
    if [ "$DEV_PASSTHROUGH" = "1" ]; then
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
-   elif [ "$qubes_vm_type" = "TemplateVM" ]; then
+   elif test -f /run/qubes/this-is-templatevm ; then
       ## Use Qubes updates proxy.
       if [ "$CURL_PROXY" = "" ]; then
          if systemctl -q is-active qubes-updates-proxy-forwarder.socket; then
@@ -1114,7 +1110,7 @@ for instructions, see: https://www.whonix.org/wiki/Tor_Browser#Alpha"
 }
 
 tb_confirm_update() {
-   if [ "$qubes_vm_type" = "TemplateVM" ]; then
+   if test -f /run/qubes/this-is-templatevm ; then
       local folder_name found
       for folder_name in "/home/$who_ami/$tb_install_folder_dot" "/home/$who_ami/.cache/${tb_install_folder}" ; do
          if [ -d "$folder_name" ]; then
@@ -1198,7 +1194,7 @@ YOUR OLD BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET DELETED."
    confirmation_screen_learn_more_link="\
 <a href=https://www.whonix.org/wiki/$tb_wiki/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a>"
 
-   if [ "$qubes_vm_type" = "TemplateVM" ]; then
+   if test -f /run/qubes/this-is-templatevm ; then
       qubes_running_inside_template_vm_msg="\
 <u>Qubes specific notice</u>: Currently running inside a TemplateVM.
 Due to <a href=https://www.whonix.org/wiki/Dev/Qubes#tb-updater_vs_TemplateVM>technical limitations</a>,
@@ -1964,7 +1960,7 @@ Skipping question to start $tb_title."
    if [ "$noaskstart" = "false" ]; then
       true "noaskstart is 'false'"
    else
-      if [ "$qubes_vm_type" = "TemplateVM" ]; then
+      if test -f /run/qubes/this-is-templatevm ; then
          MSG="<p>Finished installing $tb_title. Can be found in $tb_browser_folder.</p>
 
 <p>Not asking to start $tb_title, because running in a TemplateVM.</p>
