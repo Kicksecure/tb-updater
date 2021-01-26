@@ -885,12 +885,12 @@ tb_connectivity_checks_tor() {
          MSG="<p><b>Tor not enabled yet.</b></p>
 
 <p>Please check: <blockquote>Start menu -> System -> Whonix Check
-              <br></br>or in Terminal: whonixcheck
-              <br></br>or in Terminal with debugging: whonixcheck -v</blockquote></p>
+              <br></br>or in Terminal: systemcheck
+              <br></br>or in Terminal with debugging: systemcheck -v</blockquote></p>
 
-<p>Run whonixcheck on Whonix-Gateway as well.</p>
+<p>Run systemcheck on Whonix-Gateway as well.</p>
 
-<p>If whonixcheck reports no problems with internet activity and downloading $tb_title still fails, please report a bug!</p>
+<p>If systemcheck reports no problems with internet activity and downloading $tb_title still fails, please report a bug!</p>
 
 <p>Debugging information:<br />
 You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCNAME</code> should be skipped.</p>"
@@ -921,12 +921,12 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
 <br></br>- no internet connectivity</p>
 
 <p>Please check: <blockquote>Start menu -> System -> Whonix Check
-              <br></br>or in Terminal: whonixcheck
-              <br></br>or in Terminal with debugging: whonixcheck -v</blockquote></p>
+              <br></br>or in Terminal: systemcheck
+              <br></br>or in Terminal with debugging: systemcheck -v</blockquote></p>
 
-<p>Run whonixcheck on Whonix-Gateway as well.</p>
+<p>Run systemcheck on Whonix-Gateway as well.</p>
 
-<p>If whonixcheck reports no problems with internet activity and downloading $tb_title still fails, please report a bug!</p>"
+<p>If systemcheck reports no problems with internet activity and downloading $tb_title still fails, please report a bug!</p>"
 
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
@@ -974,10 +974,10 @@ tb_connectivity_checks_curl() {
 <br></br>- download location changed</p>
 
 <p>Please check: <blockquote>Start menu -> System -> Whonix Check
-              <br></br>or in Terminal: whonixcheck
-              <br></br>or in Terminal with debugging: whonixcheck -v</blockquote></p>
+              <br></br>or in Terminal: systemcheck
+              <br></br>or in Terminal with debugging: systemcheck -v</blockquote></p>
 
-<p>If whonixcheck reports no problems with internet activity and downloading $tb_title keeps failing, please report a bug!</p>
+<p>If systemcheck reports no problems with internet activity and downloading $tb_title keeps failing, please report a bug!</p>
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
