@@ -1,3 +1,15 @@
+commit 46c1cd3a2e35b2a78cf3df419222c90599c5ed2f
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 28 04:59:28 2021 -0500
+
+    rename to systemcheck
+
+commit f045247d7c907700c1f465ba92561e0f45fcddae
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 28 02:16:46 2021 -0500
+
+    bumped changelog version
+
 commit ac5f13b7e1005797da451e4e02445d5668d4f903
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jan 28 02:15:34 2021 -0500
