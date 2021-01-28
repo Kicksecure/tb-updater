@@ -884,7 +884,7 @@ tb_connectivity_checks_tor() {
       if [ "$TOR_ENABLED" = "0" ]; then
          MSG="<p><b>Tor not enabled yet.</b></p>
 
-<p>Please check: <blockquote>Start menu -> System -> Whonix Check
+<p>Please check: <blockquote>Start menu -> System -> systemcheck
               <br></br>or in Terminal: systemcheck
               <br></br>or in Terminal with debugging: systemcheck -v</blockquote></p>
 
@@ -920,7 +920,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
 <p>Possible reasons:
 <br></br>- no internet connectivity</p>
 
-<p>Please check: <blockquote>Start menu -> System -> Whonix Check
+<p>Please check: <blockquote>Start menu -> System -> systemcheck
               <br></br>or in Terminal: systemcheck
               <br></br>or in Terminal with debugging: systemcheck -v</blockquote></p>
 
@@ -973,7 +973,7 @@ tb_connectivity_checks_curl() {
 <br></br>- $TBB_REMOTE_FOLDER is down
 <br></br>- download location changed</p>
 
-<p>Please check: <blockquote>Start menu -> System -> Whonix Check
+<p>Please check: <blockquote>Start menu -> System -> systemcheck
               <br></br>or in Terminal: systemcheck
               <br></br>or in Terminal with debugging: systemcheck -v</blockquote></p>
 
