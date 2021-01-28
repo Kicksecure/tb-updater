@@ -1,3 +1,21 @@
+commit ac5f13b7e1005797da451e4e02445d5668d4f903
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 28 02:15:34 2021 -0500
+
+    alpha tbb_hardcoded_version="10.5a8"
+
+commit 188feedcc1788f2eea162b4728617bfb1b76f2bd
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Thu Jan 28 02:14:42 2021 -0500
+
+    tbb_hardcoded_version="10.0.9"
+
+commit 46a24c2249fa347cce75fbd41c330c97b0fac6c2
+Author: Patrick Schleizer <adrelanos@riseup.net>
+Date:   Tue Jan 26 09:53:14 2021 -0500
+
+    bumped changelog version
+
 commit 6d0ec1065af01dbf5bdb987930589b37f2416ece
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Jan 26 07:07:37 2021 -0500
