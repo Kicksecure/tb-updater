@@ -22,11 +22,12 @@ download() {
       chroot_maybe="--is-chroot"
    fi
 
-   if [ -f /etc/secbrowser-qubes ] || [ -f /usr/local/etc/secbrowser-qubes ] || [ -f /usr/share/kicksecure/marker ]; then
-      tool=download-secbrowser
-   else
-      tool=update-torbrowser
-   fi
+#    if [ -f /etc/secbrowser-qubes ] || [ -f /usr/local/etc/secbrowser-qubes ] || [ -f /usr/share/kicksecure/marker ]; then
+#       tool=download-secbrowser
+#    else
+#       tool=update-torbrowser
+#    fi
+   tool=update-torbrowser
 
    ## TODO:
    #tpo_downloader_debug="$tpo_downloader_debug"
