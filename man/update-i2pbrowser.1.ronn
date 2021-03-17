@@ -2,7 +2,7 @@ update-i2pbrowser(1) -- i2p Browser Updater by Whonix developers
 ================================================================
 
 <span class="comment">
-# Copyright (C) 2012 - 2020 ENCRYPTED SUPPORT LP <adrelanos@riseup.net>
+# Copyright (C) 2012 - 2021 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
 # See the file COPYING for copying conditions.
 </span>
 
@@ -66,4 +66,4 @@ man update-torbrowser
 https://www.whonix.org/wiki/Tor_Browser
 
 ## AUTHOR
-This man page has been written by Patrick Schleizer (adrelanos@riseup.net).
+This man page has been written by Patrick Schleizer (adrelanos@whonix.org).
