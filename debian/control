@@ -13,7 +13,7 @@ Standards-Version: 4.3.0
 
 Package: tb-updater
 Architecture: all
-Depends: msgcollector-gui, curl, psmisc, gpg-bash-lib, pv, bsdtar,
+Depends: msgcollector-gui, curl, psmisc, gpg-bash-lib, pv, libarchive-tools,
  sudo, lxqt-sudo, jq, ${misc:Depends}
 Recommends: tb-starter, anon-icon-pack, helper-scripts
 Suggests: tb-default-browser, open-link-confirmation
