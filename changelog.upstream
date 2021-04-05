@@ -1,3 +1,19 @@
+commit eb6ba9b1c48afc0a394b26e1c331564948a53bd1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Apr 5 09:34:59 2021 -0400
+
+    Depends: replace bsdtar with libarchive-tools
+    
+    Thanks to @JeremyRand!
+    
+    https://github.com/Whonix/whonixcheck/pull/15
+
+commit 353995f9a09e4fc51bdee0124f397f8ed81aedc1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Mar 28 06:48:42 2021 -0400
+
+    bumped changelog version
+
 commit 51c6334835d9bbeb9c7dafee988418669f9ad045
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Mar 28 05:17:11 2021 -0400
