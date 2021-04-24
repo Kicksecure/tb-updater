@@ -771,23 +771,23 @@ tb_preparation() {
    ##
    ## example:
    ##    https://www.torproject.org/dist/torbrowser/10.0.6/tor-browser-linux64-10.0.6_en-US.tar.xz
-   ## http://expyuzz4wqqyqhjn.onion/dist/torbrowser/10.0.6/tor-browser-linux64-10.0.6_en-US.tar.xz
+   ## http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/dist/torbrowser/10.0.6/tor-browser-linux64-10.0.6_en-US.tar.xz
    if [ "$tb_onion" = "true" ]; then
       ## dist.torproject.org has no corresponding onion address at time of writing.
       ## https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
-      ## https://web.archive.org/web/20201215143647/https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
+      ## https://web.archive.org/web/20210424113513/https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
       ##
       ## https://onion.torproject.org/
-      ## https://web.archive.org/web/20201215144453/https://onion.torproject.org/
+      ## https://web.archive.org/web/20210424113401/https://onion.torproject.org/
       ##
       ## https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
-      ## https://web.archive.org/web/20201215144829/https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
-      [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://expyuzz4wqqyqhjn.onion"
+      ## https://web.archive.org/web/20210424113646/https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
+      [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion"
 
       ## https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
-      ## https://web.archive.org/web/20201213115438/https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
-      ## Onion-Location	http://x3nelbld33llasqv.onion/torbrowser/update_3/release/downloads.json
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="http://x3nelbld33llasqv.onion/torbrowser/update_3/${TBB_RELEASE_CHANNEL}/downloads.json"
+      ## https://web.archive.org/web/20210424113759/https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
+      ## Onion-Location	http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion/torbrowser/update_3/release/downloads.json
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion/torbrowser/update_3/${TBB_RELEASE_CHANNEL}/downloads.json"
    else
       ## Download from the torproject.org clearnet by default.
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://www.torproject.org"
