@@ -43,12 +43,6 @@ if [ ! -d /var/cache/tb-binary ]; then
    exit 0
 fi
 
-if [ -f /etc/secbrowser-qubes ] || [ -f /usr/local/etc/secbrowser-qubes ]; then
-   tool="secbrowser"
-else
-   tool="tb"
-fi
-
 ## Mount point must be existing to be able to use mount.
 sudo --non-interactive -u user mkdir --parents "/home/$user_name/.${tool}"
 sudo --non-interactive -u user mkdir --parents "/home/$user_name/.cache/${tool}"
