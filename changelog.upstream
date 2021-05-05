@@ -1,3 +1,21 @@
+commit ab0143d84c018563d553a124ca05adac9e79419a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 28 08:49:07 2021 -0400
+
+    remove SecBrowser code since deprecated
+
+commit e4f848d8fe084d528ddec94a7cbca12cae7c5bb2
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Apr 24 07:40:36 2021 -0400
+
+    update to Tor Project onion v3 for `--onion`
+
+commit 87c7ad10d2b19d372b0414ff2449ee5a1ccaef97
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 21 08:30:24 2021 -0400
+
+    bumped changelog version
+
 commit ecf856c3fe78d3007454102c916a35d8ed1000bc
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Apr 21 07:08:06 2021 -0400
