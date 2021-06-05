@@ -1,3 +1,19 @@
+commit 8310c98af8791ab0985ba67cad6720cf8ecbac38
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jun 5 09:45:30 2021 -0400
+
+    fix DispVM mounting
+    
+    Thanks to @froalker for the bug report!
+    
+    https://github.com/Whonix/tb-updater/commit/ab0143d84c018563d553a124ca05adac9e79419a#r51740265
+
+commit f602e1fe130ef7141a7e342f318b59505f467672
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Jun 3 17:40:33 2021 -0400
+
+    bumped changelog version
+
 commit e3714fb703b5f6d4055ba5bc7f81d9bd3b8456b2
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Jun 3 17:40:15 2021 -0400
