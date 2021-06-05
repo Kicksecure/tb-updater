@@ -44,22 +44,22 @@ if [ ! -d /var/cache/tb-binary ]; then
 fi
 
 ## Mount point must be existing to be able to use mount.
-sudo --non-interactive -u user mkdir --parents "/home/$user_name/.${tool}"
-sudo --non-interactive -u user mkdir --parents "/home/$user_name/.cache/${tool}"
+sudo --non-interactive -u user mkdir --parents "/home/$user_name/.tb"
+sudo --non-interactive -u user mkdir --parents "/home/$user_name/.cache/tb"
 
 chown --recursive "$user_name:$user_name" /var/cache/tb-binary
 ## Could alternatively do after mounting:
-#chown --recursive "$user_name:$user_name" "/home/$user_name/.${tool}"
-#chown --recursive "$user_name:$user_name" "/home/$user_name/.cache/${tool}"
+#chown --recursive "$user_name:$user_name" "/home/$user_name/.tb"
+#chown --recursive "$user_name:$user_name" "/home/$user_name/.cache/tb"
 ## But that would not give any security advantage since changing permissions
 ## after bind mount will also result in the original folder changing
 ## permissions.
 
-if [ -d "/var/cache/tb-binary/.${tool}" ]; then
-   mount --bind -o nosuid,nodev "/var/cache/tb-binary/.${tool}" "/home/$user_name/.${tool}"
+if [ -d "/var/cache/tb-binary/.tb" ]; then
+   mount --bind -o nosuid,nodev "/var/cache/tb-binary/.tb" "/home/$user_name/.tb"
 fi
-if [ -d "/var/cache/tb-binary/.cache/${tool}" ]; then
-   mount --bind -o nosuid,nodev "/var/cache/tb-binary/.cache/${tool}" "/home/$user_name/.cache/${tool}"
+if [ -d "/var/cache/tb-binary/.cache/tb" ]; then
+   mount --bind -o nosuid,nodev "/var/cache/tb-binary/.cache/tb" "/home/$user_name/.cache/tb"
 fi
 
 ## results in:
@@ -70,12 +70,12 @@ fi
 # /dev/xvda3 on /home/user/.cache/tb type ext4 (rw,nosuid,nodev,noatime,discard)
 # /dev/xvda3 on /rw/home/user/.cache/tb type ext4 (rw,noatime,discard)
 
-if [ -d "/rw/home/$user_name/.${tool}" ]; then
-   mount -o remount,nosuid,nodev "/rw/home/$user_name/.${tool}"
+if [ -d "/rw/home/$user_name/.tb" ]; then
+   mount -o remount,nosuid,nodev "/rw/home/$user_name/.tb"
 fi
 
-if [ -d "/rw/home/$user_name/.cache/${tool}" ]; then
-   mount -o remount,nosuid,nodev "/rw/home/$user_name/.cache/${tool}"
+if [ -d "/rw/home/$user_name/.cache/tb" ]; then
+   mount -o remount,nosuid,nodev "/rw/home/$user_name/.cache/tb"
 fi
 
 ## results in:
