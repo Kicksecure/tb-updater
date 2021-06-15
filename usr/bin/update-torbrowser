@@ -854,7 +854,7 @@ tb_preparation() {
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
    fi
 
-   echo "INFO: CURL_PROXY: '$CURL_PROXY'"
+   echo "INFO: CURL_PROXY: $CURL_PROXY"
 
    ## Also used by function tbbversion.
    [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
