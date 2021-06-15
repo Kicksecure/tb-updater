@@ -1474,7 +1474,7 @@ tb_download_files() {
    [ -n "$TBB_PACKAGE_FULL_PATH" ] || TBB_PACKAGE_FULL_PATH="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
 
    tb_notify_details="Downloading $tb_title... Will take a while..."
-   echo "INFO: Downloading $tb_title: '$tbb_version'"
+   echo "INFO: Downloading $tb_title..."
    echo "INFO: Downloading...: $TBB_PACKAGE_LINK"
 
    [ -n "$timeout_archive_file_download" ] || timeout_archive_file_download=3600
