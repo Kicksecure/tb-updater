@@ -1295,7 +1295,7 @@ y/n?"
 
          answer="$("/usr/lib/msgcollector/tb_updater_gui" "$type" "$TITLE" "$tbb_locally_installed_version" "$tbb_version" "$MSG" "$question" "$button")"
          if [ "$answer" = "65536" ]; then ## Button 'Yes' has not been pressed.
-            echo "Canceled. Exit."
+            echo "INFO: Canceled. Exit."
             tb_exit_function 10
          fi
       fi
