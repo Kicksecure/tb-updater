@@ -1500,9 +1500,11 @@ tb_gpg_verify() {
    echo "INFO: Digital signature (GPG) verification... This will take a moment..."
 
    if [ "$ARCH_DOWNLOAD" = "linux-arm64" ]; then
-      ## https://forums.whonix.org/t/arm64-tor-browser-maintainer/11786
+      echo "INFO: Using digital signature signing key by Heikki Lindholm."
+      echo "https://forums.whonix.org/t/arm64-tor-browser-maintainer/11786"
       gpg_bash_lib_input_key_import_dir="/usr/share/torbrowser-updater-keys-arm64.d"
    else
+      echo "INFO: Using digital signature signing key by The Tor Project."
       gpg_bash_lib_input_key_import_dir="/usr/share/torbrowser-updater-keys.d"
    fi
 
