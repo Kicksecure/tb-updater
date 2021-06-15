@@ -130,12 +130,12 @@ download_fail_help_set() {
 
 tb_run_function() {
    case $tb_skip_functions in
-   *"$@"*) echo "INFO: Skipping $@, because tb_skip_functions includes it."
+   *"$@"*) echo "INFO: Skipping '$@', because tb_skip_functions includes it."
                   return 0
                   ;;
    esac
 
-   true "INFO: Running $@, because tb_skip_functions does not include it."
+   true "INFO: Running '$@', because tb_skip_functions does not include it."
    "$@"
 }
 
@@ -854,7 +854,7 @@ tb_preparation() {
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
    fi
 
-   echo "INFO: CURL_PROXY: $CURL_PROXY"
+   echo "INFO: CURL_PROXY: '$CURL_PROXY'"
 
    ## Also used by function tbbversion.
    [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
@@ -886,7 +886,7 @@ tb_skip_if_higher_or_equal_version_already_downloaded() {
       return 0
    fi
    if dpkg --compare-versions "$tbb_version_previous_downloaded_version" ge "$tbb_version" ; then
-      echo "INFO: tbb_version_previous_downloaded_version: $tbb_version_previous_downloaded_version is greater or equal $tbb_version, therefore skipping to download, ok."
+      echo "INFO: tbb_version_previous_downloaded_version: '$tbb_version_previous_downloaded_version' is greater or equal '$tbb_version', therefore skipping to download, ok."
       tb_exit_function 0
    fi
 }
@@ -980,7 +980,7 @@ tb_connectivity_checks_curl() {
    fi
 
    tb_notify_details="Checking connectivity... Will take a moment..."
-   echo "INFO: Running connectivity check...  Downloading: $tbb_download_base_url ..."
+   echo "INFO: Running connectivity check...  Downloading...: $tbb_download_base_url"
 
    [ -n "$timeout_connectivity_checks_curl" ] || timeout_connectivity_checks_curl=180
    ## 1 MB = 1048576 bytes
@@ -1031,13 +1031,13 @@ tb_update_check() {
    ## do not re-download Tor Browser if a previous build already did
    if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
       if [ -d "$tb_browser_folder" ]; then
-         echo "$SCRIPTNAME: Not downloading $tb_title again, because $tb_browser_folder already exists."
+         echo "$SCRIPTNAME: Not downloading $tb_title again, because folder $tb_browser_folder already exists."
          tb_exit_function 0
       fi
    fi
 
    tb_notify_details="Checking $tb_title version... Will take a moment..."
-   echo "INFO: Find out latest version... Downloading: $TBB_VERSIONS_FILE_LINK ..."
+   echo "INFO: Find out latest version... Downloading...: $TBB_VERSIONS_FILE_LINK"
 
    [ -n "$timeout_version_file_download" ] || timeout_version_file_download=180
    ## 1 MB = 1048576 bytes
@@ -1097,10 +1097,7 @@ tb_local_version_detection() {
 https://www.whonix.org/wiki/Tor_Browser#Alpha"
    else
       source /usr/share/tb-updater/tbb_hardcoded_version
-      echo "INFO: Downloading stable version. Alternatively, if want to \
-download the alpha version, you could add to command line: --alpha
-or set configuration option: tbb_download_alpha_version=true
-for instructions, see: https://www.whonix.org/wiki/Tor_Browser#Alpha"
+      echo "INFO: Downloading stable version. For alpha version, see: https://www.whonix.org/wiki/Tor_Browser#Alpha"
    fi
 
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
@@ -1158,7 +1155,7 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
       echo "INFO: tbb_version_previous_downloaded_version: $tbb_version_previous_downloaded_version"
       echo "INFO: Currently installed version: $tbb_locally_installed_version"
-      echo "INFO: Hardcoded version $tbb_version chosen."
+      echo "INFO: Hardcoded version chosen: $tbb_version"
       return 0
    fi
    if [ "$tb_confirm_update_skip" = "true" ]; then
@@ -1430,11 +1427,9 @@ tb_download_files() {
    [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}${TBB_DOWNLOAD_APPENDIX}"
    [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
 
-   tb_notify_details="Downloading $tb_title signature... Will take a moment..."
-   echo "INFO: Downloading GPG signature... Will take a moment..."
-   echo "\
-INFO: Downloading:
-      $TBB_SIG_LINK ... Will take a moment..."
+   tb_notify_details="Downloading $tb_title digital signature (GPG)... Will take a moment..."
+   echo "INFO: Digital signature (GPG) download... Will take a moment..."
+   echo "INFO: Downloading...: $TBB_SIG_LINK"
 
    [ -n "$timeout_signature_file_download" ] || timeout_signature_file_download=180
    ## 1 MB = 1048576 bytes
@@ -1456,10 +1451,8 @@ INFO: Downloading:
    [ -n "$TBB_HASH_FULL_PATH" ] || TBB_HASH_FULL_PATH="$tb_downloaded_files_folder/$TBB_HASH_FILENAME"
 
    tb_notify_details="Downloading $tb_title sha256sums file... Will take a moment..."
-   echo "INFO: Downloading sha256sums file... Will take a moment..."
-   echo "\
-INFO: Downloading:
-      $TBB_HASH_LINK ... Will take a moment..."
+   echo "INFO: sha256sums file download... Will take a moment..."
+   echo "INFO: Downloading...: $TBB_HASH_LINK"
 
    [ -n "$timeout_hash_file_download" ] || timeout_hash_file_download=180
    ## 1 MB = 1048576 bytes
@@ -1481,10 +1474,8 @@ INFO: Downloading:
    [ -n "$TBB_PACKAGE_FULL_PATH" ] || TBB_PACKAGE_FULL_PATH="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
 
    tb_notify_details="Downloading $tb_title... Will take a while..."
-   echo "INFO: Downloading $tb_title Bundle: $tbb_version"
-   echo "\
-INFO: Downloading:
-      $TBB_PACKAGE_LINK ... Will take a while..."
+   echo "INFO: Downloading $tb_title: '$tbb_version'"
+   echo "INFO: Downloading...: $TBB_PACKAGE_LINK"
 
    [ -n "$timeout_archive_file_download" ] || timeout_archive_file_download=3600
    ## 1 MB = 1048576 bytes
@@ -1504,7 +1495,7 @@ INFO: Downloading:
 }
 
 tb_gpg_verify() {
-   echo "INFO: GPG signature verification... This will take a moment..."
+   echo "INFO: Digital signature (GPG) verification... This will take a moment..."
 
    gpg_bash_lib_input_verify_timeout_after="60"
    gpg_bash_lib_input_verify_kill_after="10"
@@ -1531,7 +1522,7 @@ tb_gpg_verify() {
    ## would be no way to accept outdated signatures. It is not clear if it is
    ## guaranteed to have a new stable TBB release every three months.
    if [ ! "$gpg_bash_lib_output_validsig_status" = "true" ] || [ "$gpg_bash_lib_output_failure" = "true" ] ; then
-      local MSG="<p><b>GPG download signature could NOT be verified.</b>
+      local MSG="<p><b>Digital signature (GPG) could NOT be verified.</b>
 <br></br>$tb_title update failed! Try again later.</p>
 
 <p>gpg_bash_lib_output_alright_status: $gpg_bash_lib_output_alright_status
@@ -1549,7 +1540,7 @@ tb_gpg_verify() {
       tb_exit_function 12
    fi
 
-   echo "INFO: GPG signature verification ok."
+   echo "INFO: Digital signature (GPG) verification ok."
 }
 
 tb_hash_verify() {
