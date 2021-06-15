@@ -645,26 +645,32 @@ tb_preparation() {
    if [ "$ARCH" = "" ]; then
       echo "INFO: Auto detecting ARCH..."
       ARCH="$(uname --machine)"
-      echo "INFO: ARCH $ARCH detected."
+      echo "INFO: ARCH '$ARCH' detected."
    else
       echo "INFO: Skipping auto detecting ARCH because already set."
-      echo "INFO: ARCH is set to $ARCH."
+      echo "INFO: ARCH is set to '$ARCH'."
    fi
 
    if [ "$ARCH_DOWNLOAD" = "" ]; then
       echo "INFO: Auto detecting ARCH_DOWNLOAD..."
-      if [ "$ARCH" = "i386" ]; then
+      if [ "$ARCH" = "x86_64" ]; then
+         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux64"
+      elif [ "$ARCH" = "i386" ]; then
          [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux32"
       elif [ "$ARCH" = "i686" ]; then
          [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux32"
+      elif [ "$ARCH" = "arm64" ]; then
+         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="arm64"
+      elif echo "$ARCH" | grep --quiet "aarch64" ; then
+         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="arm64"
       else
-         ## NOTE: A simple else is non-ideal, should there be ever more architectures.
-         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux64"
+         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="$ARCH"
+         echo "WARNING: Guessing. Setting ARCH_DOWNLOAD to '$ARCH_DOWNLOAD'. If functional, this is probably OK."
       fi
-      echo "INFO: ARCH_DOWNLOAD $ARCH_DOWNLOAD detected."
+      echo "INFO: ARCH_DOWNLOAD '$ARCH_DOWNLOAD' detected."
    else
       echo "INFO: Skipping auto detecting ARCH_DOWNLOAD because already set."
-      echo "INFO: ARCH_DOWNLOAD is set to $ARCH_DOWNLOAD."
+      echo "INFO: ARCH_DOWNLOAD is set to '$ARCH_DOWNLOAD'."
    fi
 
    ## provides tbbversion function
@@ -764,6 +770,15 @@ tb_preparation() {
       [ -n "$TBB_RELEASE_CHANNEL" ] || TBB_RELEASE_CHANNEL="release"
    fi
 
+   ## https://dist.torproject.org/torbrowser/10.0.17/tor-browser-linux64-10.0.17_en-US.tar.xz
+   ## https://sourceforge.net/projects/tor-browser-ports/files/10.0.17/tor-browser-linux-arm64-10.0.17_en-US.tar.xz/download
+
+   if [ "$ARCH_DOWNLOAD" = "arm64" ]; then
+      [ -n "$TBB_DOWNLOAD_APPENDIX" ] || TBB_DOWNLOAD_APPENDIX="/download"
+   else
+      [ -n "$TBB_DOWNLOAD_APPENDIX" ] || TBB_DOWNLOAD_APPENDIX=""
+   fi
+
    ## https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/ file was abolished by upstream
    ## https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/33521
    ## https://web.archive.org/web/20201210123314/https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/
@@ -783,6 +798,16 @@ tb_preparation() {
       ## https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
       ## https://web.archive.org/web/20210424113646/https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion"
+      if [ "$ARCH_DOWNLOAD" = "arm64" ]; then
+         MSG="<p>onion not available for platform '$ARCH_DOWNLOAD'.</p>"
+         $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+         local MSG_CLI
+         MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+         echo "ERROR: $MSG_CLI"
+         tb_exit_function 11
+      else
+         [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/dist/torbrowser"
+      fi
 
       ## https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
       ## https://web.archive.org/web/20210424113759/https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
@@ -791,11 +816,16 @@ tb_preparation() {
    else
       ## Download from the torproject.org clearnet by default.
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://www.torproject.org"
+
+      if [ "$ARCH_DOWNLOAD" = "arm64" ]; then
+         [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://sourceforge.net/projects/tor-browser-ports/files"
+      else
+         [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://www.torproject.org/dist/torbrowser"
+      fi
+
       [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://aus1.torproject.org/torbrowser/update_3/${TBB_RELEASE_CHANNEL}/downloads.json"
       [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https"
    fi
-
-   [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="$tbb_download_base_url/dist/torbrowser"
 
    if [ "$DEV_PASSTHROUGH" = "1" ]; then
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
@@ -1397,7 +1427,7 @@ tb_download_files() {
    ### signature ###
 
    [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="sha256sums-unsigned-build.txt.asc"
-   [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}"
+   [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}${TBB_DOWNLOAD_APPENDIX}"
    [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
 
    tb_notify_details="Downloading $tb_title signature... Will take a moment..."
@@ -1422,7 +1452,7 @@ INFO: Downloading:
    ### hash file ###
 
    [ -n "$TBB_HASH_FILENAME" ] || TBB_HASH_FILENAME="sha256sums-unsigned-build.txt"
-   [ -n "$TBB_HASH_LINK" ] || TBB_HASH_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_HASH_FILENAME}"
+   [ -n "$TBB_HASH_LINK" ] || TBB_HASH_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_HASH_FILENAME}${TBB_DOWNLOAD_APPENDIX}"
    [ -n "$TBB_HASH_FULL_PATH" ] || TBB_HASH_FULL_PATH="$tb_downloaded_files_folder/$TBB_HASH_FILENAME"
 
    tb_notify_details="Downloading $tb_title sha256sums file... Will take a moment..."
@@ -1447,7 +1477,7 @@ INFO: Downloading:
    ### archive file ###
 
    [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_${TB_LANG}.tar.xz"
-   [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME"
+   [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME${TBB_DOWNLOAD_APPENDIX}"
    [ -n "$TBB_PACKAGE_FULL_PATH" ] || TBB_PACKAGE_FULL_PATH="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
 
    tb_notify_details="Downloading $tb_title... Will take a while..."
