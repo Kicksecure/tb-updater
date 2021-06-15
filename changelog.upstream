@@ -1,3 +1,121 @@
+commit 4076e1af72b5855f31bedd0d97bc2e26e7dee0f5
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 15:25:17 2021 -0400
+
+    output
+
+commit 6ca73cc69ee05b6efaf043868595faf85276af3e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 15:23:57 2021 -0400
+
+    output
+
+commit e0ad939dc0d8978198d0a85df6f2ff63947c0f6c
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 15:19:20 2021 -0400
+
+    use Heikki Lindholm gpg signing key for digital signature verification of arm64 builds
+    
+    from sourceforge.net created by Heikki Lindholm
+    
+    https://forums.whonix.org/t/arm64-tor-browser-maintainer/11786
+
+commit 129ee59b2768b902b6ad6f8ff58fc738ab3b3c02
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 15:15:42 2021 -0400
+
+    add Heikki Lindholm gpg signing key for arm64 builds
+    
+    https://forums.whonix.org/t/arm64-tor-browser-maintainer/11786
+
+commit 19a07f8dd6617dd7c21801dde4924b8488e67168
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 15:14:57 2021 -0400
+
+    new file: usr/share/torbrowser-updater-keys-arm64.d/placeholder
+
+commit 3102bdabe9436c9a3aef025433c1085557d1971a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 15:12:45 2021 -0400
+
+    refactoring
+
+commit 285fa1a3569395a722486cb80a999e3d370efdcb
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 15:10:43 2021 -0400
+
+    arm64 port
+
+commit 3b719fa3ed82d9be03c98768bd9000df8dee0d85
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 14:56:56 2021 -0400
+
+    output
+
+commit c3112dbe5c1bdaf2a71579df51d6d04939713558
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 14:56:17 2021 -0400
+
+    output
+
+commit 409a3fcd174141fd21944e964b0bc6b61c77b856
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 14:54:12 2021 -0400
+
+    output
+
+commit 6d67d654852c7b2355a0a85cc8ab1241164f08fe
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 14:52:42 2021 -0400
+
+    output
+
+commit e82f29ac7e44c6867ef18890412f181979d95c42
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 14:49:42 2021 -0400
+
+    output
+
+commit b9ce68f6e2a179c615efc33558dddec1d060a7b5
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 14:48:49 2021 -0400
+
+    output
+
+commit 3f7d0641cc027855817d2d38925edb561a471346
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 14:48:27 2021 -0400
+
+    output
+
+commit fee472afb7e51f9729d8b4b04d25ab8e05a6d2a0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 14:45:47 2021 -0400
+
+    output
+
+commit 03c4612d893e13642c50022e3e9ca2377d27e326
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 14:43:10 2021 -0400
+
+    output
+
+commit 36bbe964ddd40f3d81bfeb005db056ecf5095c78
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 14:29:04 2021 -0400
+
+    arm64 platform support
+    
+    https://forums.whonix.org/t/arm64-tor-browser/11806
+    
+    https://forums.whonix.org/t/arm64-tor-browser-maintainer/11786
+
+commit 927527245bd94960f0f5656f691ea727fde35602
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 13:10:19 2021 -0400
+
+    bumped changelog version
+
 commit 5c31abf6b689e1506624cecaaa90986080433c01
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Jun 15 13:07:32 2021 -0400
