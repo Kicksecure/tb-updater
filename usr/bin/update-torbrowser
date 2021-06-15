@@ -336,7 +336,7 @@ tb_parse_cmd_options() {
 
 tb_stdin() {
    if [ ! "$TB_INPUT" = "" ]; then
-      true "INFO: TB_INPUT is already set to $TB_INPUT, skipping auto detection, ok."
+      true "INFO: TB_INPUT is already set to '$TB_INPUT', skipping auto detection, ok."
       return 0
    fi
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
@@ -347,7 +347,7 @@ tb_stdin() {
    fi
    if [ -t "0" ]; then
       echo "INFO: stdin connected to terminal, setting \
-TB_INPUT to stdin, will use terminal for input, ok."
+TB_INPUT to 'stdin', will use terminal for input, ok."
       echo "INFO: Alternatively, if want to run from \
 command line, but still use the graphical user interface for input, \
 you could add to command line: --input gui"
@@ -1415,7 +1415,7 @@ $tb_notify_details"
       tb_exit_function "$tb_download_common_exit_on_fail"
    fi
 
-   echo "INFO: Done, downloaded: $curl_download_target_url"
+   true "INFO: Done, downloaded: $curl_download_target_url"
 }
 
 tb_download_files() {
@@ -1703,7 +1703,7 @@ $gpg_bash_lib_output_gpg_verify_output_br_added</p>
    question="Install now?"
 
    if [ "$TB_INPUT" = "none" ]; then
-      true "INFO: TB_INPUT is set to $TB_INPUT, continuing without asking."
+      true "INFO: TB_INPUT is set to '$TB_INPUT', continuing without asking."
    else
       if [ "$TB_INPUT" = "stdin" ]; then
          echo "QUESTION: $question
@@ -1993,7 +1993,7 @@ Skipping question to start $tb_title."
    local answer
 
    if [ "$TB_INPUT" = "none" ]; then
-      true "INFO: TB_INPUT is set to $TB_INPUT. Skipping question if $tb_title should be started."
+      true "INFO: TB_INPUT is set to '$TB_INPUT'. Skipping question if $tb_title should be started."
       return 0
    fi
 
