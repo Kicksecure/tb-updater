@@ -346,11 +346,11 @@ tb_stdin() {
       return 0
    fi
    if [ -t "0" ]; then
-      echo "INFO: stdin connected to terminal, setting \
-TB_INPUT to 'stdin', will use terminal for input, ok."
-      echo "INFO: Alternatively, if want to run from \
-command line, but still use the graphical user interface for input, \
-you could add to command line: --input gui"
+      #echo "INFO: stdin connected to terminal, setting \
+#TB_INPUT to 'stdin', will use terminal for input, ok."
+      #echo "INFO: Alternatively, if want to run from \
+#command line, but still use the graphical user interface for input, \
+#you could add to command line: --input gui"
       TB_INPUT="stdin"
       TB_USE_MSGCOLLECTOR="false"
       return 0
