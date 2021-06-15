@@ -660,9 +660,9 @@ tb_preparation() {
       elif [ "$ARCH" = "i686" ]; then
          [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux32"
       elif [ "$ARCH" = "arm64" ]; then
-         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="arm64"
+         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-arm64"
       elif echo "$ARCH" | grep --quiet "aarch64" ; then
-         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="arm64"
+         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-arm64"
       else
          [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="$ARCH"
          echo "WARNING: Guessing. Setting ARCH_DOWNLOAD to '$ARCH_DOWNLOAD'. If functional, this is probably OK."
@@ -773,7 +773,7 @@ tb_preparation() {
    ## https://dist.torproject.org/torbrowser/10.0.17/tor-browser-linux64-10.0.17_en-US.tar.xz
    ## https://sourceforge.net/projects/tor-browser-ports/files/10.0.17/tor-browser-linux-arm64-10.0.17_en-US.tar.xz/download
 
-   if [ "$ARCH_DOWNLOAD" = "arm64" ]; then
+   if [ "$ARCH_DOWNLOAD" = "linux-arm64" ]; then
       [ -n "$TBB_DOWNLOAD_APPENDIX" ] || TBB_DOWNLOAD_APPENDIX="/download"
    else
       [ -n "$TBB_DOWNLOAD_APPENDIX" ] || TBB_DOWNLOAD_APPENDIX=""
@@ -798,7 +798,7 @@ tb_preparation() {
       ## https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
       ## https://web.archive.org/web/20210424113646/https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion"
-      if [ "$ARCH_DOWNLOAD" = "arm64" ]; then
+      if [ "$ARCH_DOWNLOAD" = "linux-arm64" ]; then
          MSG="<p>onion not available for platform '$ARCH_DOWNLOAD'.</p>"
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
          local MSG_CLI
@@ -817,14 +817,16 @@ tb_preparation() {
       ## Download from the torproject.org clearnet by default.
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://www.torproject.org"
 
-      if [ "$ARCH_DOWNLOAD" = "arm64" ]; then
+      if [ "$ARCH_DOWNLOAD" = "linux-arm64" ]; then
          [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://sourceforge.net/projects/tor-browser-ports/files"
+         ## At time of writing sourceforge.net did not support TLSv1.3 yet.
+         [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.2 --proto =https"
       else
          [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://www.torproject.org/dist/torbrowser"
+         [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https"
       fi
 
       [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://aus1.torproject.org/torbrowser/update_3/${TBB_RELEASE_CHANNEL}/downloads.json"
-      [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https"
    fi
 
    if [ "$DEV_PASSTHROUGH" = "1" ]; then
