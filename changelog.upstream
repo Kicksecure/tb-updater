@@ -1,3 +1,17 @@
+commit 5c31abf6b689e1506624cecaaa90986080433c01
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jun 15 13:07:32 2021 -0400
+
+    update signing key
+    
+    https://forums.whonix.org/t/tor-browser-downloader-gpg-download-signature-could-not-be-verified/11794
+
+commit 750438e364d164fe7fe4e6071a0e9162458e4353
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jun 5 16:49:55 2021 -0400
+
+    bumped changelog version
+
 commit 8310c98af8791ab0985ba67cad6720cf8ecbac38
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Jun 5 09:45:30 2021 -0400
