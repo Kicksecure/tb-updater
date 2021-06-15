@@ -360,7 +360,7 @@ you could add to command line: --input gui"
 
 tb_qubes_dvm_template() {
    if echo "$qubes_vm_name" | grep -q --invert-match "\-dvm" ; then
-      echo "INFO: not running inside Qubes DVM Template, ok."
+      echo "INFO: Not running inside Qubes DVM Template, ok."
       return 0
    fi
 
