@@ -886,7 +886,7 @@ tb_skip_if_higher_or_equal_version_already_downloaded() {
       return 0
    fi
    if dpkg --compare-versions "$tbb_version_previous_downloaded_version" ge "$tbb_version" ; then
-      echo "INFO: tbb_version_previous_downloaded_version: '$tbb_version_previous_downloaded_version' is greater or equal '$tbb_version', therefore skipping to download, ok."
+      echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version' is greater or equal '$tbb_version', therefore skipping to download, ok."
       tb_exit_function 0
    fi
 }
@@ -1153,7 +1153,7 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
    fi
 
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
-      echo "INFO: tbb_version_previous_downloaded_version: $tbb_version_previous_downloaded_version"
+      echo "INFO: Previously downloaded version: $tbb_version_previous_downloaded_version"
       echo "INFO: Currently installed version: $tbb_locally_installed_version"
       echo "INFO: Hardcoded version chosen: $tbb_version"
       return 0
@@ -1274,7 +1274,7 @@ To update $tb_title inside existing TemplateBasedVMs, please update $tb_title in
 
    echo "https://www.whonix.org/wiki/$tb_wiki/Download_Confirmation_Screen"
 
-   echo "INFO: tbb_version_previous_downloaded_version: $tbb_version_previous_downloaded_version"
+   echo "INFO: Previously downloaded version: $tbb_version_previous_downloaded_version"
    echo "INFO: Currently installed version: $tbb_locally_installed_version"
    echo "INFO: Online detected version: $tbb_version"
 
