@@ -1090,7 +1090,7 @@ tb_remote_version_sanity_test() {
 
 tb_local_version_detection() {
    ## sets: tbb_hardcoded_version
-   echo "INFO: tbb_download_alpha_version: $tbb_download_alpha_version"
+   true "INFO: tbb_download_alpha_version: $tbb_download_alpha_version"
    if [ "$tbb_download_alpha_version" = "true" ]; then
       source /usr/share/tb-updater/tbb_hardcoded_version_alpha
       echo "INFO: Downloading alpha version. See:
