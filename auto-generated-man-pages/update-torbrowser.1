@@ -1,34 +1,33 @@
-.\" generated with Ronn-NG/v0.8.0
-.\" http://github.com/apjanke/ronn-ng/tree/0.8.0
-.TH "UPDATE\-TORBROWSER" "1" "April 2020" "tb-updater" "tb-updater Manual"
+.\" generated with Ronn-NG/v0.9.1
+.\" http://github.com/apjanke/ronn-ng/tree/0.9.1
+.TH "UPDATE\-TORBROWSER" "1" "January 2020" "tb-updater" "tb-updater Manual"
 .SH "NAME"
 \fBupdate\-torbrowser\fR \- Tor Browser Updater by Whonix developers
-.P
 .SH "SYNOPSIS"
 \fBupdate\-torbrowser\fR [option(s)]
 .SH "DESCRIPTION"
-Lets you safely download the Tor Browser Bundle (TBB) from The Tor Project\'s (TPO) website\. It enforces TLS encryption (https) for TPO\'s website, downloads TBB from the TPO\'s website, and uses OpenPGP verification\.
+Lets you safely download the Tor Browser Bundle (TBB) from The Tor Project's (TPO) website\. It enforces TLS encryption (https) for TPO's website, downloads TBB from the TPO's website, and uses OpenPGP verification\.
 .P
-In case there is already a \fB~/tor\-browser_en\-US\fR folder, it renames it to ~/tor\-browser_en\-US_(current date and time)\. It extracts freshly downloaded TBB too to \fB~/tor\-browser_en\-US\fR\.
+In case there is already a \fB~/\.tb/tor\-browser\fR folder, it renames it to ~/\.tb/tor\-browser_(current date and time)\. It extracts freshly downloaded TBB too to \fB~/\.tb/tor\-browser\fR\.
 .P
 Default action when no options are given is to performs an update check and ask how you want to proceed\.
 .SH "OPTIONS"
 .IP "\[ci]" 4
 \-\-onion
 .IP
-Download from Tor Project\'s onion rather than clearnet domain\.
+Download from Tor Project's onion rather than clearnet domain\.
 .IP "\[ci]" 4
 \-\-ordinary
 .IP
-Uses curl\'s ordinary progress bar\. Only affects run in terminal\. When using this option, the GUI progress bar will be stuck but downloading will still work\. Note, when using this option, it wouldn\'t notice if the download server were to run an endless data attack, for example the server claiming to provide a 500\.000 GB big file\. (It does not use \fB/usr/lib/curl\-scripts/curl\-prgrs\fRs \fBCURL_PRGRS_MAX_FILE_SIZE_BYTES\fR\.) However, it can be compensated by either manually terminating \fBupdate\-torbrowser\fR or by using the timeout utility as in the example below\.
+Uses curl's ordinary progress bar\. Only affects run in terminal\. When using this option, the GUI progress bar will be stuck but downloading will still work\. Note, when using this option, it wouldn't notice if the download server were to run an endless data attack, for example the server claiming to provide a 500\.000 GB big file\. (It does not use \fB/usr/lib/curl\-scripts/curl\-prgrs\fRs \fBCURL_PRGRS_MAX_FILE_SIZE_BYTES\fR\.) However, it can be compensated by either manually terminating \fBupdate\-torbrowser\fR or by using the timeout utility as in the example below\.
 .IP "\[ci]" 4
 \-\-noask
 .IP
-Installs whatever https://www\.torproject\.org/projects/torbrowser/RecommendedTBBVersions claims to be the latest version without user interaction\.
+Installs whatever https://www\.torproject\.org/projects/torbrowser/RecommendedTBBVersions claims to be the lowest version without user interaction\.
 .IP "\[ci]" 4
 \-\-nokilltb
 .IP
-Advanced users only\. Do not kill all eventually still running instances of Tor Browser\. Useful in case you want to update \fB~/tor\-browser_en\-US\fR, while still using \fB~/tor\-browser_something_else\fR\.
+Advanced users only\. Do not kill all eventually still running instances of Tor Browser\. Useful in case you want to update \fB~/\.tb/tor\-browser\fR, while still using \fB~/tor\-browser_something_else\fR\.
 .IP "\[ci]" 4
 \-\-language lang
 .IP
