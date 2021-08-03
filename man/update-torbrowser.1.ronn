@@ -34,7 +34,7 @@ how you want to proceed.
     work. Note, when using this option, it wouldn't notice if the download
     server were to run an endless data attack, for example the server claiming
     to provide a 500.000 GB big file. (It does not use
-    `/usr/lib/curl-scripts/curl-prgrs`s `CURL_PRGRS_MAX_FILE_SIZE_BYTES`.)
+    `/usr/libexec/helper-scripts/curl-prgrs`s `CURL_PRGRS_MAX_FILE_SIZE_BYTES`.)
     However, it can be compensated by either manually terminating
     `update-torbrowser` or by using the timeout utility as in the example
     below.
