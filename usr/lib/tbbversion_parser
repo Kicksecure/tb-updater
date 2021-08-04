@@ -4,7 +4,7 @@
 ## See the file COPYING for copying conditions.
 
 tbbversion() {
-   command -v /usr/lib/msgcollector/striphtml >/dev/null
+   command -v /usr/libexec/msgcollector/striphtml >/dev/null
    command -v jq >/dev/null
    command -v xargs >/dev/null
    command -v printf >/dev/null
@@ -74,7 +74,7 @@ tbbversion() {
    temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
    tbb_version="$temp"
 
-   tbb_version="$(/usr/lib/msgcollector/striphtml "$tbb_version")"
+   tbb_version="$(/usr/libexec/msgcollector/striphtml "$tbb_version")"
 }
 
 tbbversion_installed() {

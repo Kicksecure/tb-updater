@@ -172,9 +172,9 @@ tb_sanity_tests() {
    command -v head >/dev/null
    command -v tar >/dev/null
    command -v date >/dev/null
-   command -v /usr/lib/msgcollector/msgcollector >/dev/null
-   command -v /usr/lib/msgcollector/pv_wrapper >/dev/null
-   command -v /usr/lib/msgcollector/striphtml >/dev/null
+   command -v /usr/libexec/msgcollector/msgcollector >/dev/null
+   command -v /usr/libexec/msgcollector/pv_wrapper >/dev/null
+   command -v /usr/libexec/msgcollector/striphtml >/dev/null
    ## tbbversion function
    command -v grep >/dev/null
    ## tbbversion function
@@ -372,7 +372,7 @@ More info: <a href=https://www.whonix.org/wiki/$tb_wiki#Running_in_Qubes_DVM_Tem
    $output ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
 
    local MSG_CLI
-   MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+   MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
    echo "ERROR: $MSG_CLI"
 
    tb_exit_function 1
@@ -406,7 +406,7 @@ outputfunc() {
                ;;
          esac
       done
-      MSG="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      MSG="$(/usr/libexec/msgcollector/striphtml "$MSG")"
       if [ ! "$MSG" = "" ]; then
          echo "$MSG"
       fi
@@ -701,7 +701,7 @@ tb_preparation() {
 
    TITLE="$tb_title Downloader (by Whonix developers)"
 
-   output_tool="/usr/lib/msgcollector/msgcollector"
+   output_tool="/usr/libexec/msgcollector/msgcollector"
    output="output"
 
    $output --icon "$ICON"
@@ -802,7 +802,7 @@ tb_preparation() {
          MSG="<p>onion not available for platform '$ARCH_DOWNLOAD'.</p>"
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
          local MSG_CLI
-         MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+         MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
          echo "ERROR: $MSG_CLI"
          tb_exit_function 11
       else
@@ -930,7 +930,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
          local MSG_CLI
-         MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+         MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
          echo "ERROR: $MSG_CLI"
 
          tb_exit_function 5
@@ -963,7 +963,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
          local MSG_CLI
-         MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+         MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
          echo "ERROR: $MSG_CLI"
 
          tb_exit_function 6
@@ -1015,7 +1015,7 @@ tb_connectivity_checks_curl() {
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 7
@@ -1083,7 +1083,7 @@ tb_remote_version_sanity_test() {
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 9
@@ -1149,7 +1149,7 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
          $output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
          local MSG_CLI
-         MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+         MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
          echo "INFO: $MSG_CLI"
       fi
    fi
@@ -1261,7 +1261,7 @@ To update $tb_title inside existing TemplateBasedVMs, please update $tb_title in
       fi
 
       local MSG_CLI
-      MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
       echo "WARNING: $MSG_CLI"
    else
       ## not installed
@@ -1270,7 +1270,7 @@ To update $tb_title inside existing TemplateBasedVMs, please update $tb_title in
 <p>$confirmation_screen_learn_more_link</p>"
 
       local MSG_CLI
-      MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
       echo "INFO: $MSG_CLI"
    fi
 
@@ -1293,9 +1293,9 @@ y/n?"
             tb_exit_function 10
          fi
       else
-         #echo "/usr/lib/msgcollector/tb_updater_gui \"$type\" \"$TITLE\" \"$tbb_locally_installed_version\" \"$tbb_recommended_versions_comma_separated\" \"$MSG\" \"$question\" \"$button\")"
+         #echo "/usr/libexec/msgcollector/tb_updater_gui \"$type\" \"$TITLE\" \"$tbb_locally_installed_version\" \"$tbb_recommended_versions_comma_separated\" \"$MSG\" \"$question\" \"$button\")"
 
-         answer="$("/usr/lib/msgcollector/tb_updater_gui" "$type" "$TITLE" "$tbb_locally_installed_version" "$tbb_version" "$MSG" "$question" "$button")"
+         answer="$("/usr/libexec/msgcollector/tb_updater_gui" "$type" "$TITLE" "$tbb_locally_installed_version" "$tbb_version" "$MSG" "$question" "$button")"
          if [ "$answer" = "65536" ]; then ## Button 'Yes' has not been pressed.
             echo "INFO: Canceled. Exit."
             tb_exit_function 10
@@ -1411,7 +1411,7 @@ $tb_notify_details"
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function "$tb_download_common_exit_on_fail"
@@ -1526,7 +1526,7 @@ tb_gpg_verify() {
 
    gpg_bash_lib_function_main_verify
 
-   gpg_bash_lib_output_diagnostic_message="$(/usr/lib/msgcollector/br_add "$gpg_bash_lib_output_diagnostic_message")"
+   gpg_bash_lib_output_diagnostic_message="$(/usr/libexec/msgcollector/br_add "$gpg_bash_lib_output_diagnostic_message")"
 
    ## Not checking for gpg_bash_lib_output_alright_status, because then there
    ## would be no way to accept outdated signatures. It is not clear if it is
@@ -1544,7 +1544,7 @@ tb_gpg_verify() {
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 12
@@ -1601,7 +1601,7 @@ tb_hash_verify() {
    $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
    local MSG_CLI
-   MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+   MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
    echo "ERROR: $MSG_CLI"
 
    tb_exit_function 13
@@ -1690,7 +1690,7 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
          ;;
    esac
 
-   gpg_bash_lib_output_gpg_verify_output_br_added="$(/usr/lib/msgcollector/br_add "$gpg_bash_lib_output_gpg_verify_output")"
+   gpg_bash_lib_output_gpg_verify_output_br_added="$(/usr/libexec/msgcollector/br_add "$gpg_bash_lib_output_gpg_verify_output")"
 
    MSG="<p><b>Installation confirmation</b></p><p><table><tr>
 <td>Currently installed version:</td> <td><tt> <code>$tbb_locally_installed_version</code></tt></td></tr><tr>
@@ -1704,7 +1704,7 @@ $gpg_bash_lib_output_gpg_verify_output_br_added</p>
 <p><a href=https://www.whonix.org/wiki/$tb_wiki/Installation_Confirmation_Screen>Learn more about this Installation Confirmation Screen.</a></p>"
 
    local MSG_CLI
-   MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+   MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
    echo "INFO: $MSG_CLI"
 
    echo "https://www.whonix.org/wiki/$tb_wiki/Installation_Confirmation_Screen"
@@ -1724,7 +1724,7 @@ y/n?"
             tb_exit_function 14
          fi
       else
-         answer="$(/usr/lib/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
+         answer="$(/usr/libexec/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
          if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
             echo "INFO: Canceled. Exit."
             tb_exit_function 14
@@ -1828,7 +1828,7 @@ Extracting $tb_title... This could take a moment..."
          --kill-after="$kill_after" \
          "$timeout_after" \
             bash \
-               /usr/lib/msgcollector/pv_wrapper \
+               /usr/libexec/msgcollector/pv_wrapper \
                < "$pv_wrapper_fifo" \
                &
       pv_wrapper_pid="$!"
@@ -1885,7 +1885,7 @@ Extracting $tb_title... This could take a moment..."
       $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+      MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 15
@@ -1987,7 +1987,7 @@ Skipping question to start $tb_title."
          $output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
          local MSG_CLI
-         MSG_CLI="$(/usr/lib/msgcollector/striphtml "$MSG")"
+         MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
          echo "INFO: $MSG_CLI"
 
          return 0
@@ -2020,7 +2020,7 @@ y/n?"
    fi
 
    echo "INFO: GUI is asking to start $tb_title."
-   answer="$(/usr/lib/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
+   answer="$(/usr/libexec/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
    if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
       echo "INFO: Canceled starting $tb_title, ok."
       return 0
