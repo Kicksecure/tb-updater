@@ -1522,7 +1522,7 @@ tb_gpg_verify() {
    ## (2592000 * 3 [months])
    [ -n "$gpg_bash_lib_input_maximum_age_in_seconds" ] || gpg_bash_lib_input_maximum_age_in_seconds="2592000"
 
-   source "/usr/lib/gpg-bash-lib/source_all"
+   source "/usr/libexec/gpg-bash-lib/source_all"
 
    gpg_bash_lib_function_main_verify
 
