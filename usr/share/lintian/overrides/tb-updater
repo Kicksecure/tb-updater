@@ -5,5 +5,5 @@ tb-updater: file-in-unusual-dir var/cache/tb-updater/placeholder
 tb-updater: uses-dpkg-database-directly usr/bin/update-torbrowser
 
 ## Only during build in chroot.
-tb-updater: uses-dpkg-database-directly usr/lib/tb-updater/chroot-pre
-tb-updater: uses-dpkg-database-directly usr/lib/tb-updater/chroot-post
+tb-updater: uses-dpkg-database-directly usr/libexec/tb-updater/chroot-pre
+tb-updater: uses-dpkg-database-directly usr/libexec/tb-updater/chroot-post

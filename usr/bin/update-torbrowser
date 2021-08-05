@@ -455,7 +455,7 @@ tb_anon_ws_dns_conf() {
             [ -n "$tb_reenable_anon_ws_dnf_conf" ] || tb_reenable_anon_ws_dnf_conf=true
             tb_resolv_conf_debugging
             ## Restore original /etc/resolv.conf.
-            sudo --non-interactive /usr/lib/tb-updater/chroot-pre
+            sudo --non-interactive /usr/libexec/tb-updater/chroot-pre
             tb_resolv_conf_debugging
          fi
       fi
@@ -1936,14 +1936,14 @@ tb_postinst_pre_exit() {
    else
       ## Running as root.
       ## Requires root.
-      /usr/lib/tb-updater/tb-permission-fix
+      /usr/libexec/tb-updater/tb-permission-fix
    fi
 }
 
 tb_chroot_pre_exit() {
    if [ "$tb_reenable_anon_ws_dnf_conf" = "true" ]; then
       ## Restore whonix-ws-network-conf /etc/resolv.conf.
-      sudo --non-interactive /usr/lib/tb-updater/chroot-post
+      sudo --non-interactive /usr/libexec/tb-updater/chroot-post
       tb_resolv_conf_debugging
    fi
 }

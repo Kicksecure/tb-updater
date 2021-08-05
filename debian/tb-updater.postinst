@@ -44,7 +44,7 @@ true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
 
 download
 
-/usr/lib/tb-updater/tb-permission-fix
+/usr/libexec/tb-updater/tb-permission-fix
 
 true "
 #####################################################################

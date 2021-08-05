@@ -3,5 +3,5 @@
 
 ## Required during build inside chroot.
 ## Should be safe to remove after build.
-user ALL=NOPASSWD: /usr/lib/tb-updater/chroot-pre
-user ALL=NOPASSWD: /usr/lib/tb-updater/chroot-post
+user ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-pre
+user ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-post

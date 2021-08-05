@@ -23,7 +23,7 @@ Before=qubes-gui-agent.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/lib/tb-updater/dispvm
+ExecStart=/usr/libexec/tb-updater/dispvm
 
 [Install]
 WantedBy=multi-user.target
