@@ -16,22 +16,22 @@ TPO's website, downloads TBB from the TPO's website,
 and uses OpenPGP verification.
 
 In case there is already a `~/.tb/tor-browser` folder, it renames it
-to ~/.tb/tor-browser_(current date and time). It extracts freshly
+to `~/.tb/tor-browser_(current date and time)`. It extracts freshly
 downloaded TBB too to `~/.tb/tor-browser`.
 
 Default action when no options are given is to performs an update check and ask
 how you want to proceed.
 
 ## OPTIONS
-  * --alpha
+  * `--alpha`
 
     Download alpha version instead.
 
-  * --onion
+  * `--onion`
 
     Download from Tor Project's onion rather than clearnet domain.
 
-  * --ordinary
+  * `--ordinary`
 
     Uses curl's ordinary progress bar. Only affects run in terminal. When using
     this option, the GUI progress bar will be stuck but downloading will still
@@ -43,35 +43,35 @@ how you want to proceed.
     `update-torbrowser` or by using the timeout utility as in the example
     below.
 
-  * --noask
+  * `--noask`
 
     Installs whatever the remote version file is claiming to be the lowest
     version without user interaction.
 
-  * --nokilltb
+  * `--nokilltb`
 
     Advanced users only. Do not kill all eventually still running instances of
     Tor Browser. Useful in case you want to update
     `~/.tb/tor-browser`, while still using
     `~/tor-browser_something_else`.
 
-  * --language lang
+  * `--language lang`
 
     Specify which language specific version of Tor Browser you want to start or
     update.
 
-  * --no-tor-con-check
+  * `--no-tor-con-check`
 
     Skip Tor bootstrap connectivity check. (Only relevant in anonymity
     distributions.)
 
-  * --input stdin|gui
+  * --input
 
     What to use as input method.
 
-    --input stdin
+    `--input stdin`
     or
-    --input gui
+    `--input gui`
 
     When run in command line, by default, standard input
     (--input stdin) will be used. When using (--input gui), questions would be
@@ -114,25 +114,25 @@ https://www.torproject.org/dist/torbrowser/linux/
 ### Language
 You could use:
 
-    export TB_LANG="<language code>"
+    `export TB_LANG="<language code>"`
 
 to set the language before running
 
-    update-torbrowser
+    `update-torbrowser`
 
 For example, for Vietnamese use:
 
-    export TB_LANG="vi"
+    `export TB_LANG="vi"`
 
 Replace "vi" with "zh-CN" for Chinese and so on.
 
 To make this change permanent, create a file `/etc/torbrowser.d/50_user.conf` and add for
 example
 
-    TB_LANG="ar"
+    `TB_LANG="ar"`
 
 ### Version
-tbb_version=version.number update-torbrowser
+`tbb_version=version.number update-torbrowser`
 
 See also EXAMPLES below.
 
@@ -182,9 +182,9 @@ See also EXAMPLES below.
 
 `timeout 600 update-torbrowser --ordinary`
 
-tbb_version=10.5 update-torbrowser
+`tbb_version=10.5 update-torbrowser`
 
-tbb_version=11.1a2 update-torbrowser
+`tbb_version=11.1a2 update-torbrowser`
 
 ## BUGS
 This script may break when the file name or RecommendedTBBVersions format
@@ -197,9 +197,6 @@ Please check Whonix News Blogs, Whonix Forum for a fix or workaround.
 In meanwhile you can also try the instructions for manually update Tor Browser
 in Whonix:
 https://www.whonix.org/wiki/Manually_Updating_Tor_Browser
-
-## NOTES
-Do not run as root!
 
 ## PORTING
 This script is currently only tested in Whonix. It could be easily made to work
