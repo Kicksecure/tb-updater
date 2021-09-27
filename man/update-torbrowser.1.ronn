@@ -23,6 +23,10 @@ Default action when no options are given is to performs an update check and ask
 how you want to proceed.
 
 ## OPTIONS
+  * --alpha
+
+    Download alpha version instead.
+
   * --onion
 
     Download from Tor Project's onion rather than clearnet domain.
@@ -41,8 +45,8 @@ how you want to proceed.
 
   * --noask
 
-    Installs whatever https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions
-    claims to be the lowest version without user interaction.
+    Installs whatever the remote version file is claiming to be the lowest
+    version without user interaction.
 
   * --nokilltb
 
@@ -101,6 +105,7 @@ https://www.torproject.org/dist/torbrowser/linux/
 /etc/torbrowser.d/30_default.conf
 
 ## ENVIRONMENT VARIABLES
+### Language
 You could use:
 
     export TB_LANG="<language code>"
@@ -119,6 +124,11 @@ To make this change permanent, create a file `/etc/torbrowser.d/50_user.conf` an
 example
 
     TB_LANG="ar"
+
+### Version
+tbb_version=version.number update-torbrowser
+
+See also EXAMPLES below.
 
 ## EXIT CODES
 0 Success.
@@ -165,6 +175,10 @@ example
 `update-torbrowser --update --lang="vi"`
 
 `timeout 600 update-torbrowser --ordinary`
+
+tbb_version=10.5 update-torbrowser
+
+tbb_version=11.1a2 update-torbrowser
 
 ## BUGS
 This script may break when the file name or RecommendedTBBVersions format
