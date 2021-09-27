@@ -41,9 +41,16 @@ Specify which language specific version of Tor Browser you want to start or upda
 .IP
 Skip Tor bootstrap connectivity check\. (Only relevant in anonymity distributions\.)
 .IP "\[ci]" 4
-\-\-input input
+.TS
+allbox;
+\-\-input stdin	gui
+.TE
 .IP
-What to use as input method\. When run in command line, by default, standard input (stdin) will be used\. When using \-\-input gui, questions would be asked in the graphical user environment\.
+What to use as input method\.
+.IP
+\-\-input stdin or \-\-input gui
+.IP
+When run in command line, by default, standard input (\-\-input stdin) will be used\. When using (\-\-input gui), questions would be asked in the graphical user environment\.
 .IP "\[ci]" 4
 \-\-resume
 .IP
