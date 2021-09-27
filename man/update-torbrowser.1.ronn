@@ -65,10 +65,16 @@ how you want to proceed.
     Skip Tor bootstrap connectivity check. (Only relevant in anonymity
     distributions.)
 
-  * --input input
+  * --input stdin|gui
 
-    What to use as input method. When run in command line, by default, standard
-    input (stdin) will be used. When using --input gui, questions would be
+    What to use as input method.
+
+    --input stdin
+    or
+    --input gui
+
+    When run in command line, by default, standard input
+    (--input stdin) will be used. When using (--input gui), questions would be
     asked in the graphical user environment.
 
   * --resume
