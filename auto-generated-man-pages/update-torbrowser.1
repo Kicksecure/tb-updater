@@ -13,6 +13,10 @@ In case there is already a \fB~/\.tb/tor\-browser\fR folder, it renames it to ~/
 Default action when no options are given is to performs an update check and ask how you want to proceed\.
 .SH "OPTIONS"
 .IP "\[ci]" 4
+\-\-alpha
+.IP
+Download alpha version instead\.
+.IP "\[ci]" 4
 \-\-onion
 .IP
 Download from Tor Project's onion rather than clearnet domain\.
@@ -23,7 +27,7 @@ Uses curl's ordinary progress bar\. Only affects run in terminal\. When using th
 .IP "\[ci]" 4
 \-\-noask
 .IP
-Installs whatever https://www\.torproject\.org/projects/torbrowser/RecommendedTBBVersions claims to be the lowest version without user interaction\.
+Installs whatever the remote version file is claiming to be the lowest version without user interaction\.
 .IP "\[ci]" 4
 \-\-nokilltb
 .IP
@@ -83,7 +87,7 @@ https://www\.torproject\.org/dist/torbrowser/linux/
 .SH "CONFIG FILE"
 /etc/torbrowser\.d/30_default\.conf
 .SH "ENVIRONMENT VARIABLES"
-You could use:
+### Language You could use:
 .IP "" 4
 .nf
 export TB_LANG="<language code>"
@@ -112,6 +116,10 @@ To make this change permanent, create a file \fB/etc/torbrowser\.d/50_user\.conf
 TB_LANG="ar"
 .fi
 .IP "" 0
+.SS "Version"
+tbb_version=version\.number update\-torbrowser
+.P
+See also EXAMPLES below\.
 .SH "EXIT CODES"
 0 Success\.
 .P
@@ -156,6 +164,10 @@ TB_LANG="ar"
 \fBupdate\-torbrowser \-\-update \-\-lang="vi"\fR
 .P
 \fBtimeout 600 update\-torbrowser \-\-ordinary\fR
+.P
+tbb_version=10\.5 update\-torbrowser
+.P
+tbb_version=11\.1a2 update\-torbrowser
 .SH "BUGS"
 This script may break when the file name or RecommendedTBBVersions format changes or when upstream makes other changes to the start process or proxy settings detection method\.
 .P
