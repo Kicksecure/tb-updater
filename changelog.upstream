@@ -1,3 +1,45 @@
+commit c90edc3c2f02952666ced5c1dab82f4622b2df30
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Sep 27 12:23:27 2021 -0400
+
+    genmkfile manpages
+
+commit 74ee40bb8b221963afeec406350ff47db0167d69
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Sep 27 12:23:18 2021 -0400
+
+    man page
+
+commit ff968240a0fb83b52101e5f20478350ffd07445d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Sep 27 12:19:37 2021 -0400
+
+    genmkfile manpages
+
+commit c0c2a744557d6bb31fae1ca1d1d728cf6cd85ba4
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Sep 27 12:19:28 2021 -0400
+
+    man page
+
+commit b54b2b78333ace90ef3dd02eb26470f03377a362
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Sep 27 12:15:59 2021 -0400
+
+    genmkfile manpages
+
+commit fbbfd598eb5f3e7c3b1f81d5ab8f5f071ffb22b2
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Sep 27 12:15:46 2021 -0400
+
+    man page
+
+commit 4d16e049827955aff95d81f895262d9c37bb4421
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Sep 12 12:01:44 2021 -0400
+
+    bumped changelog version
+
 commit f04eee2d3013488c019ab54718d46d0bffac9853
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Sep 11 16:31:42 2021 -0400
