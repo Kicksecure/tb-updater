@@ -1,3 +1,43 @@
+commit 0bef9ae36d0f475f2bf199ac27b12a17dec5eb8b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Nov 12 04:22:26 2021 -0500
+
+    genmkfile manpages
+
+commit 9b7af8456c2d0dc354ab119bacd41fb1b9a53f7a
+Merge: 7894d17 1072170
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Nov 12 03:25:15 2021 -0500
+
+    Merge remote-tracking branch 'github-whonix/master'
+
+commit 10721701318cf134336d50dc5cd5a968d2d90a5f
+Merge: 7894d17 d9a5d7d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Nov 12 03:24:26 2021 -0500
+
+    Merge pull request #15 from FrankGusto/fix-man
+    
+    remove passage about removed backup functionality from man page
+
+commit d9a5d7d11d4caf198f21a2f32b9aaa733a4ad17d
+Author: Frank <94107402+FrankGusto@users.noreply.github.com>
+Date:   Fri Nov 12 04:45:30 2021 +0000
+
+    remove passage about removed backup functionality
+
+commit 7894d17b4199fe0a7d007627858e24cd13504509
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Nov 9 14:32:34 2021 -0500
+
+    readme
+
+commit 2f5b8bab67eedeed28b3d352a16281b54c37917d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Nov 9 14:11:20 2021 -0500
+
+    bumped changelog version
+
 commit 862bc8c882af3ce06435d7197787420376d8fd51
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Nov 9 14:04:47 2021 -0500
