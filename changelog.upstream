@@ -1,3 +1,19 @@
+commit 57e9817fd41d70462dbc04908db7bebbafa5140c
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Dec 4 16:02:53 2021 -0500
+
+    use `curl` with `--cert-status`
+    
+    Thanks for @yodawins for the suggestion!
+    
+    https://forums.whonix.org/t/scurl-secure-curl-wrapper/7125/8
+
+commit fff9cb730bd9dd6b7b68778b02fd95fff190e334
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Nov 17 08:10:03 2021 -0500
+
+    bumped changelog version
+
 commit 79c0779916d9707a4a75e0bdf39749395f979d74
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Nov 17 07:53:52 2021 -0500
