@@ -1,3 +1,22 @@
+commit ab1700b724bfb50002ac5d3a793765b96ebc3ca8
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 15 06:26:25 2021 -0500
+
+    add updated signing key
+    
+    as annoucned here:
+    https://blog.torproject.org/new-release-tor-browser-115a1/
+    
+    Thanks to @pgerber for the bug report!
+    
+    fixes https://github.com/Whonix/tb-updater/issues/16
+
+commit fc9d4d224c067ecf0eab1e301d4480a9efdf64de
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Dec 9 03:41:44 2021 -0500
+
+    bumped changelog version
+
 commit 57e9817fd41d70462dbc04908db7bebbafa5140c
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Dec 4 16:02:53 2021 -0500
