@@ -484,9 +484,8 @@ tb_settings_postinst_common() {
    [ -n "$tb_confirm_update_skip" ] || tb_confirm_update_skip=true
    ## Skip installation confirmation messages when running with
    ## --postinst, because we will be using hardcoded version numbers.
-   ## Downgrade / free attacks should not be possible, because file names
-   ## that include the version number will be verified from the gpg verified
-   ## sha256sum sums file.
+   ## Downgrade / freeze attacks should not be possible, because file names
+   ## that include the version number will be verified using gpg.
    [ -n "$tb_confirm_installation_skip" ] || tb_confirm_installation_skip=true
 
    [ -n "$NOKILLTB" ] || NOKILLTB="1"
@@ -1426,7 +1425,7 @@ tb_download_files() {
 
    ### signature ###
 
-   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="sha256sums-unsigned-build.txt.asc"
+   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_${TB_LANG}.tar.xz.asc"
    [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}${TBB_DOWNLOAD_APPENDIX}"
    [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
 
@@ -1445,29 +1444,6 @@ tb_download_files() {
    curl_download_max_time="$timeout_signature_file_download"
    curl_download_target_url="$TBB_SIG_LINK"
    tb_download_common_exit_on_fail="8"
-   tb_download_common
-
-   ### hash file ###
-
-   [ -n "$TBB_HASH_FILENAME" ] || TBB_HASH_FILENAME="sha256sums-unsigned-build.txt"
-   [ -n "$TBB_HASH_LINK" ] || TBB_HASH_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_HASH_FILENAME}${TBB_DOWNLOAD_APPENDIX}"
-   [ -n "$TBB_HASH_FULL_PATH" ] || TBB_HASH_FULL_PATH="$tb_downloaded_files_folder/$TBB_HASH_FILENAME"
-
-   tb_notify_details="Downloading $tb_title sha256sums file... Will take a moment..."
-   echo "INFO: sha256sums file download... Will take a moment..."
-   echo "INFO: Downloading...: $TBB_HASH_LINK"
-
-   [ -n "$timeout_hash_file_download" ] || timeout_hash_file_download=180
-   ## 1 MB = 1048576 bytes
-   ## 2 MB = 2097152 bytes
-   ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
-   export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
-   ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
-   export CURL_OUT_FILE="$TBB_HASH_FULL_PATH"
-   rm --force "$CURL_OUT_FILE"
-   curl_download_max_time="$timeout_hash_file_download"
-   curl_download_target_url="$TBB_HASH_LINK"
-   tb_download_common_exit_on_fail="16"
    tb_download_common
 
    ### archive file ###
@@ -1512,7 +1488,7 @@ tb_gpg_verify() {
    gpg_bash_lib_input_verify_timeout_after="60"
    gpg_bash_lib_input_verify_kill_after="10"
    gpg_bash_lib_input_temp_folder="$tb_gpg_tmp_dir"
-   gpg_bash_lib_input_data_file="$TBB_HASH_FULL_PATH"
+   gpg_bash_lib_input_data_file="$TBB_PACKAGE_FULL_PATH"
    gpg_bash_lib_input_sig_file="$TBB_SIG_FULL_PATH"
    gpg_bash_lib_input_file_name_enforce="false"
    gpg_bash_lib_input_cleanup="false"
@@ -1552,60 +1528,6 @@ tb_gpg_verify() {
    fi
 
    echo "INFO: Digital signature (GPG) verification ok."
-}
-
-tb_hash_verify() {
-   echo "INFO: Checking hash... This will take a moment..."
-
-   rm --force "$tb_temp_folder/sha256_output"
-
-   local first second
-   local sha256sum_output sha256sum
-
-   local timeout_after kill_after file_name
-   timeout_after="180"
-   kill_after="30"
-
-   ## for relative paths
-   ## pushd issue:
-   ## /usr/bin/update-torbrowser: line 1533: popd: /home/user: Permission denied
-   cd "$tb_downloaded_files_folder"
-
-   ## Debugging.
-   #timeout_after="0.001"
-   #kill_after="0.001"
-
-   tb_sha_exit_code="0"
-
-   timeout --kill-after="$kill_after" "$timeout_after" \
-      sha256sum \
-         "$TBB_PACKAGE_FILENAME" \
-         > "$tb_temp_folder/sha256_output" \
-         2>&1 \
-         &
-
-   lastpid="$!"
-   wait "$lastpid" || { tb_sha_exit_code="$?" ; true; };
-
-   sha256sum_output="$(cat "$tb_temp_folder/sha256_output")" || true
-
-   if grep -q "$sha256sum_output" "$TBB_HASH_FULL_PATH" ; then
-      echo "INFO: Hash check ok."
-      return 0
-   fi
-
-   download_fail_help_set
-   echo "ERROR: Hash check failed! (tb_sha_exit_code: $tb_sha_exit_code) Exiting." >&2
-   local MSG="<p><b>Hash could NOT be verified. (tb_sha_exit_code: $tb_sha_exit_code)</b>
-
-<p>$DOWNLOAD_FAIL_HELP</p>"
-   $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-
-   local MSG_CLI
-   MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
-   echo "ERROR: $MSG_CLI"
-
-   tb_exit_function 13
 }
 
 tb_confirm_install() {
@@ -2056,7 +1978,6 @@ main_function() {
    tb_run_function tb_kill_already_running_tb_maybe
    tb_run_function tb_download_files
    tb_run_function tb_gpg_verify
-   tb_run_function tb_hash_verify
    tb_run_function tb_confirm_install
    tb_run_function tb_extract
    tb_run_function tb_patch
