@@ -1,3 +1,29 @@
+commit f79cb405e16aebbb70f63032089ae7fbac6df9f1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Dec 24 07:12:50 2021 -0500
+
+    switch to "direct" digital signature verification
+    
+    - no longer download and verify sha256 hash file as this is no longer required
+    - use only `gpg` to verify digital signature of Tor Browser
+    - higher security
+    - code simplification
+    
+    This is also a workaround for upstream issue `sha256sums-unsigned-build.incrementals.txt and sha256sums-unsigned-build.txt are not signed with torbrowser key`.
+    
+    - https://forums.whonix.org/t/tor-browser-downloader-needs-to-update-its-pgp-keys/13077
+    - https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/40759
+    
+    Unfortunately this breaks arm64 downloads.
+    
+    - https://forums.whonix.org/t/arm64-tor-browser/11806
+
+commit b77d669cbaaffbf428f48d4ab83c935a760ef216
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 15 06:43:12 2021 -0500
+
+    bumped changelog version
+
 commit 279125241b1f27c167792a56d14830deb1a39836
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Dec 15 06:42:50 2021 -0500
