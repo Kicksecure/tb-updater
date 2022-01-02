@@ -1276,9 +1276,13 @@ To update $tb_title inside existing TemplateBasedVMs, please update $tb_title in
 
    echo "https://www.whonix.org/wiki/$tb_wiki/Download_Confirmation_Screen"
 
-   echo "INFO: Previously downloaded version: $tbb_version_previous_downloaded_version"
-   echo "INFO: Currently installed version: $tbb_locally_installed_version"
-   echo "INFO: Online detected version: $tbb_version"
+   tbb_version_previous_downloaded_version_stripped="$(/usr/libexec/msgcollector/striphtml "$tbb_version_previous_downloaded_version")"
+   tbb_locally_installed_version_stripped="$(/usr/libexec/msgcollector/striphtml "$tbb_locally_installed_version")"
+   tbb_version_stripped="$(/usr/libexec/msgcollector/striphtml "$tbb_version")"
+
+   echo "INFO: Previously downloaded version: $tbb_version_previous_downloaded_version_stripped"
+   echo "INFO: Currently installed version: $tbb_locally_installed_version_stripped"
+   echo "INFO: Online detected version: $tbb_version_stripped"
 
    if [ "$TB_INPUT" = "none" ]; then
       true "INFO: TB_INPUT set to none, ok."
