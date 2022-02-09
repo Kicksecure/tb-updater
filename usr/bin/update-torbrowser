@@ -1207,7 +1207,7 @@ YOUR BROWSER WILL BE KILLED.<br></br>
 YOUR OLD BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET DELETED."
 
    confirmation_screen_learn_more_link="\
-<a href=https://www.whonix.org/wiki/$tb_wiki/Download_Confirmation_Screen>Learn more about this Download Confirmation Screen.</a>"
+<a href=https://www.whonix.org/wiki/$tb_wiki/Download_Confirmation_Notification>Learn more about this Download Confirmation Notification.</a>"
 
    if test -f /run/qubes/this-is-templatevm ; then
       qubes_running_inside_template_vm_msg="\
@@ -1274,7 +1274,7 @@ To update $tb_title inside existing TemplateBasedVMs, please update $tb_title in
       echo "INFO: $MSG_CLI"
    fi
 
-   echo "https://www.whonix.org/wiki/$tb_wiki/Download_Confirmation_Screen"
+   echo "https://www.whonix.org/wiki/$tb_wiki/Download_Confirmation_Notification"
 
    tbb_version_previous_downloaded_version_stripped="$(/usr/libexec/msgcollector/striphtml "$tbb_version_previous_downloaded_version")"
    tbb_locally_installed_version_stripped="$(/usr/libexec/msgcollector/striphtml "$tbb_locally_installed_version")"
@@ -1628,13 +1628,13 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
 <p>$signature_creation_msg</p>
 <p><u>gpg reports</u>:<br></br>
 $gpg_bash_lib_output_gpg_verify_output_br_added</p>
-<p><a href=https://www.whonix.org/wiki/$tb_wiki/Installation_Confirmation_Screen>Learn more about this Installation Confirmation Screen.</a></p>"
+<p><a href=https://www.whonix.org/wiki/$tb_wiki/Installation_Confirmation_Notification>Learn more about this Installation Confirmation Notification.</a></p>"
 
    local MSG_CLI
    MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
    echo "INFO: $MSG_CLI"
 
-   echo "https://www.whonix.org/wiki/$tb_wiki/Installation_Confirmation_Screen"
+   echo "https://www.whonix.org/wiki/$tb_wiki/Installation_Confirmation_Notification"
 
    button="yesno"
    question="Install now?"
