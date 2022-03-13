@@ -116,15 +116,14 @@ trap "tb_error_handler" ERR
 download_fail_help_set() {
    DOWNLOAD_FAIL_HELP="<p>Possible reasons:</p>
 <p>
+<br></br>- Internet connectivity issue.
 <br></br>- The download server is down.
 <br></br>- File size exceeded (endless data attack triggered).
 <br></br>- $tb_title Downloader (by Whonix developers) has been broken due to upstream changes.
 </p>
 <p>Recommendations:</p>
 <p>
-<br></br>- Try again later. If the error persists it probably won't solve itself before the next update.
-<br></br>- Check News: <a href=https://www.whonix.org/wiki/Stay_Tuned>https://www.whonix.org/wiki/Stay_Tuned</a>
-<br></br>- Manually update: <a href=https://www.whonix.org/wiki/$tb_wiki/Manual_Download>https://www.whonix.org/wiki/$tb_wiki/Manual_Download</a>
+<a href=https://www.whonix.org/wiki/Tor_Browser#download_failure>https://www.whonix.org/wiki/Tor_Browser#download_failure</a>
 </p>"
 }
 
