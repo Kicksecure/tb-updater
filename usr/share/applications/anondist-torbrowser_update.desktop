@@ -8,5 +8,5 @@ Name=Tor Browser Downloader (AnonDist)
 GenericName=Download Tor Browser
 Comment=Download Tor Browser (AnonDist)
 Categories=System;
-Icon=/usr/share/icons/anon-icon-pack/tbupdate.ico
+Icon=/usr/share/icons/icon-pack-dist/tbupdate.ico
 Keywords=system;update;browser;Tor
