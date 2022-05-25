@@ -1,3 +1,21 @@
+commit 6296b57e16476e8c2fc48926861270da12fe4725
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed May 25 09:20:44 2022 -0400
+
+    alpha tbb_hardcoded_version="11.5a11"
+
+commit 968427f74183d871b6f2083459904215b5db8cce
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed May 25 09:19:19 2022 -0400
+
+    tbb_hardcoded_version="11.0.13"
+
+commit 1ca589a9fe618e613d001a779ad8c86d4e05bcfa
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed May 25 06:07:22 2022 -0400
+
+    bumped changelog version
+
 commit a6802fd3c2f38a0fb194a511f449e9594783768c
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri May 20 15:27:12 2022 -0400
