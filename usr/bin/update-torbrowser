@@ -81,7 +81,7 @@ tb_error_handler() {
 <br></br>## output_opts: ${output_opts[@]}
 <br></br>## progressbaridx: $progressbaridx
 <br></br>##
-<br></br>## Experts only:
+<br></br>## For debugging, run:
 <br></br>## bash -x $SCRIPTNAME
 <br></br>###########################################################</p>"
 
