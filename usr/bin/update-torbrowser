@@ -1461,9 +1461,9 @@ tb_download_files() {
 
    [ -n "$timeout_archive_file_download" ] || timeout_archive_file_download=3600
    ## 1 MB = 1048576 bytes
-   ## 100 MB = 104857600 bytes
+   ## 200 MB = 209715200 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
-   export CURL_PRGRS_MAX_FILE_SIZE_BYTES="104857600"
+   export CURL_PRGRS_MAX_FILE_SIZE_BYTES="209715200"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$TBB_PACKAGE_FULL_PATH"
    ## Not deleting to support resume.
