@@ -1,3 +1,46 @@
+commit e4964bd224d7d5911d6e231bc15439dd08322ef5
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jul 2 14:25:14 2022 -0400
+
+    alpha tbb_hardcoded_version="11.5a13"
+
+commit 5f281555461e739298e2bb983088cbb358a1de00
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jul 2 14:24:47 2022 -0400
+
+    tbb_hardcoded_version="11.0.15"
+
+commit d0fb67de5188033bfddfb006efca0b6bd0755fb8
+Merge: 9e3f8ed 1b78ec9
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jul 2 14:23:52 2022 -0400
+
+    Merge remote-tracking branch 'github-kicksecure/master'
+
+commit 1b78ec9ae3cf5642945148513d1261924540945b
+Merge: 9e3f8ed 17ef6a6
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jul 2 14:20:40 2022 -0400
+
+    Merge pull request #17 from pgerber/200
+    
+    Increase Tor Browser size limit to 200 MiB
+
+commit 17ef6a6919922b23ae883a41e8a863a8dcabd76d
+Author: Peter Gerber <peter@arbitrary.ch>
+Date:   Sat Jul 2 09:14:56 2022 +0000
+
+    Increase Tor Browser size limit to 200 MiB
+    
+    About to be released 11.5a13 exceeded this limit.
+    See https://dist.torproject.org/torbrowser/11.5a13/
+
+commit 9e3f8ed5014396ccf3856001a72de2f99235e243
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Jun 19 07:35:39 2022 -0400
+
+    bumped changelog version
+
 commit 380941db1d008e5675ffc9238808f583cb8c32bd
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Jun 19 06:25:32 2022 -0400
