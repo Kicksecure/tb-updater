@@ -82,7 +82,7 @@ tb_error_handler() {
 <br></br>## progressbaridx: $progressbaridx
 <br></br>##
 <br></br>## For debugging, run:
-<br></br>## bash -x $SCRIPTNAME
+<br></br>## $SCRIPTNAME --debug
 <br></br>###########################################################</p>"
 
    [ -n "$tb_user_home" ] || tb_user_home=~
@@ -244,6 +244,10 @@ tb_parse_cmd_options() {
    while :
    do
        case $1 in
+           --debug)
+               set -x
+               shift
+               ;;
            --ordinary)
                ordinary="true"
                shift
