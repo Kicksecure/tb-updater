@@ -1968,8 +1968,8 @@ main_function() {
    tb_run_function tb_config_folder_parser
    tb_run_function tb_parse_cmd_options "$@"
    tb_run_function tb_preparation
-
    tb_run_function tb_stdin
+
    tb_run_function tb_anon_ws_dns_conf
    tb_run_function tb_qubes_dvm_template
    tb_run_function tb_local_version_detection
