@@ -1855,6 +1855,10 @@ tb_cleanup() {
       true "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
       return 0
    fi
+   if [ "$TB_NO_CLEANUP" = "true" ]; then
+      echo "INFO: Skipping $FUNCNAME, because TB_NO_CLEANUP is 'true', ok."
+      return 0
+   fi
 
    echo "INFO: Deleting no longer required file $TBB_PACKAGE_FULL_PATH to save space."
    rm --force "$TBB_PACKAGE_FULL_PATH"
