@@ -316,6 +316,10 @@ tb_parse_cmd_options() {
                [ -n "$tb_onion" ] || tb_onion="true"
                shift
                ;;
+           --reset)
+               [ -n "$tb_hard_reset" ] || tb_hard_reset="true"
+               shift
+               ;;
            --)
                shift
                break
@@ -1339,6 +1343,27 @@ tb_version_processing() {
    fi
 }
 
+tb_reset() {
+   if [ ! "$tb_hard_reset" == "true" ]; then
+      return 0
+   fi
+
+   if ! test -f "$TBB_PACKAGE_FULL_PATH" ; then
+      local MSG="\
+<p><b>Tor Browser archive not yet installed.</b>
+<br/>
+<br/>See:
+<br/><a href=https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset>https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset</a></p>"
+      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+
+      local MSG_CLI
+      MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
+      echo "ERROR: $MSG_CLI"
+
+      tb_exit_function 16
+   fi
+}
+
 tb_kill_already_running_tb_maybe() {
    if [ ! "$NOKILLTB" = "1" ]; then
       echo "INFO: Because you are not using --nokilltb, now killing potentially still running instances of $tb_title..."
@@ -1974,6 +1999,18 @@ main_function() {
    tb_run_function tb_preparation
    tb_run_function tb_stdin
    tb_run_function tb_qubes_dvm_template
+
+   if [ "$tb_hard_reset" == "true" ]; then
+      tb_run_function tb_reset
+      tb_run_function tb_kill_already_running_tb_maybe
+      tb_run_function tb_gpg_verify
+      tb_run_function tb_extract
+      tb_run_function tb_patch
+      tb_run_function tb_install
+      tb_run_function tb_cleanup
+      tb_run_function tb_start_ask
+      return 0
+   fi
 
    tb_run_function tb_anon_ws_dns_conf
    tb_run_function tb_local_version_detection
