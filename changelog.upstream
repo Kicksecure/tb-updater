@@ -1,3 +1,45 @@
+commit b95799706fbd5101446d46b14d884c4a9c30e947
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jul 12 19:23:05 2022 -0400
+
+    implement `--reset` to allow a hard reset of Tor Browser
+    
+    https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset
+    
+    https://forums.whonix.org/t/tor-browser-downloader-anondist-suggestion/14151
+    
+    Thanks to @anonhelp for the suggestion!
+
+commit c645704b0b33185196840fe7527e97fb99067af1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jul 12 14:35:27 2022 -0400
+
+    implement opt-in `TB_NO_CLEANUP=true`, which if set, skips deletion of downloaded Tor Browser tarballs
+
+commit 20ed1f704eb9e7e4e6058afc1b33d58d7a78e490
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jul 12 14:32:44 2022 -0400
+
+    refactoring
+
+commit b0eea75d11718bbc8b5f798cfc0f241f34a264fc
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jul 12 14:32:12 2022 -0400
+
+    refactoring
+
+commit 7b04b9f5b38d6ba8dc4c9c967e2fbf3bdabc164f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jul 12 14:31:24 2022 -0400
+
+    refactoring
+
+commit 956c3a7d11e1da00d94754540c93a2e368c9341f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jul 9 10:39:57 2022 -0400
+
+    bumped changelog version
+
 commit 1e32a287f23e64d294f782174796172c77d13c6d
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Jul 9 10:31:38 2022 -0400
