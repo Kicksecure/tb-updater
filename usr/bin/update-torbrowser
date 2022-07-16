@@ -260,6 +260,10 @@ tb_parse_cmd_options() {
                TB_FORCE_INSTALL="1"
                shift
                ;;
+           --update-only)
+               UPDATE_ONLY="1"
+               shift
+               ;;
            --nokilltb)
                NOKILLTB="1"
                shift
@@ -1238,6 +1242,12 @@ To update $tb_title inside existing TemplateBasedVMs, please update $tb_title in
          if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
             up_to_date_or_not_text="Looks like $tb_title is already up to date."
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
+	    if [ "$UPDATE_ONLY" = "1" ]; then
+		echo "INFO: UPDATE_ONLY is set 1."
+		echo "Skip downloading: current $tb_title $tbb_locally_installed_version is already up-to-date."
+
+	        tb_exit_function 0
+	    fi
          elif [ "$dpkg_compare_versions_greater_than_exit_code" = "0" ]; then
             up_to_date_or_not_text="Looks like there is an upgrade for $tb_title."
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"

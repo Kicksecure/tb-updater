@@ -39,6 +39,10 @@ how you want to proceed.
     `update-torbrowser` or by using the timeout utility as in the example
     below.
 
+  * `--update-only`
+
+    Do not download the Tor Browser when it is already up-to-date.
+
   * `--noask`
 
     Installs whatever the remote version file is claiming to be the lowest
