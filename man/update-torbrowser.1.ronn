@@ -39,7 +39,7 @@ how you want to proceed.
     `update-torbrowser` or by using the timeout utility as in the example
     below.
 
-  * `--update-only`
+  * `--only-if-newer`
 
     Do not download the Tor Browser when it is already up-to-date.
 
