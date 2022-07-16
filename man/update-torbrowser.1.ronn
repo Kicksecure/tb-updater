@@ -69,7 +69,7 @@ how you want to proceed.
     Skip Tor bootstrap connectivity check. (Only relevant in anonymity
     distributions.)
 
-  * --input
+  * `--input`
 
     What to use as input method.
 
@@ -78,10 +78,10 @@ how you want to proceed.
     `--input gui`
 
     When run in command line, by default, standard input
-    (--input stdin) will be used. When using (--input gui), questions would be
+    (`--input stdin`) will be used. When using (`--input gui`), questions would be
     asked in the graphical user environment.
 
-  * --resume
+  * `--resume`
 
     Resume previous download.
 
