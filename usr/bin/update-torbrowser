@@ -322,6 +322,7 @@ tb_parse_cmd_options() {
                ;;
            --reset)
                [ -n "$tb_hard_reset" ] || tb_hard_reset="true"
+               [ -n "$TB_NO_CLEANUP" ] || TB_NO_CLEANUP="true"
                shift
                ;;
            --)
