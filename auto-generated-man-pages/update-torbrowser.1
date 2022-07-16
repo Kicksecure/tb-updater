@@ -23,9 +23,17 @@ Download from Tor Project's onion rather than clearnet domain\.
 .IP
 Uses curl's ordinary progress bar\. Only affects run in terminal\. When using this option, the GUI progress bar will be stuck but downloading will still work\. Note, when using this option, it wouldn't notice if the download server were to run an endless data attack, for example the server claiming to provide a 500\.000 GB big file\. (It does not use \fB/usr/libexec/helper\-scripts/curl\-prgrs\fRs \fBCURL_PRGRS_MAX_FILE_SIZE_BYTES\fR\.) However, it can be compensated by either manually terminating \fBupdate\-torbrowser\fR or by using the timeout utility as in the example below\.
 .IP "\[ci]" 4
+\fB\-\-only\-if\-newer\fR
+.IP
+Do not download the Tor Browser when it is already up\-to\-date\.
+.IP "\[ci]" 4
 \fB\-\-noask\fR
 .IP
 Installs whatever the remote version file is claiming to be the lowest version without user interaction\.
+.IP "\[ci]" 4
+\fB\-\-noaskstart\fR
+.IP
+Do not ask if Tor Browser should be started after update was completed\.
 .IP "\[ci]" 4
 \fB\-\-nokilltb\fR
 .IP
@@ -39,17 +47,21 @@ Specify which language specific version of Tor Browser you want to start or upda
 .IP
 Skip Tor bootstrap connectivity check\. (Only relevant in anonymity distributions\.)
 .IP "\[ci]" 4
-\-\-input
+\fB\-\-input\fR
 .IP
 What to use as input method\.
 .IP
 \fB\-\-input stdin\fR or \fB\-\-input gui\fR
 .IP
-When run in command line, by default, standard input (\-\-input stdin) will be used\. When using (\-\-input gui), questions would be asked in the graphical user environment\.
+When run in command line, by default, standard input (\fB\-\-input stdin\fR) will be used\. When using (\fB\-\-input gui\fR), questions would be asked in the graphical user environment\.
 .IP "\[ci]" 4
-\-\-resume
+\fB\-\-resume\fR
 .IP
 Resume previous download\.
+.IP "\[ci]" 4
+\fB\-\-reset\fR
+.IP
+Advanced users only\. Hard reset\. Do not re\-download Tor Browser but only overwrite (delete and re\-install) Tor Browser\. This feature is not designed to fix Tor Browser issues\. When running this program normally without \fB\-\-reset\fR it does download and overwrite Tor Browser\. There is no additional benefit from using \fB\-\-reset\fR\.
 .IP "" 0
 .SH "AVAILABLE LANGUAGES"
 As in October 2012:
