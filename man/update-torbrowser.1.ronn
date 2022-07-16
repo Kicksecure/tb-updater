@@ -48,6 +48,10 @@ how you want to proceed.
     Installs whatever the remote version file is claiming to be the lowest
     version without user interaction.
 
+  * `--noaskstart`
+
+    Do not ask if Tor Browser should be started after update was completed.
+
   * `--nokilltb`
 
     Advanced users only. Do not kill all eventually still running instances of
