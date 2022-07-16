@@ -1,3 +1,75 @@
+commit 597060bcc502ad9c37e306d9626f6fdc9a26147b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jul 16 07:59:39 2022 -0400
+
+    tbb_hardcoded_version="11.5"
+
+commit 483ddc2aac9af16f89e3c7d2435b748e274288c3
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jul 16 07:56:10 2022 -0400
+
+    genmkfile manpages
+
+commit 20de275989814e43402c6766b40b40c6a85dc4cb
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jul 16 07:55:52 2022 -0400
+
+    manpage
+
+commit 86611e1e31c52bfad89ebb0367ac7d3d3a4681bd
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jul 16 07:52:56 2022 -0400
+
+    manpage
+
+commit 3a3d8fba6dc1543709e168fe80f1c674d73b576b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jul 16 07:52:13 2022 -0400
+
+    manpage
+
+commit 6387c1592caef1c92065f5d75f6af5d8bf6be49b
+Merge: 4c9cc6a 521483e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jul 16 07:49:18 2022 -0400
+
+    Merge remote-tracking branch 'github-kicksecure/master'
+
+commit 521483e0bc467e1bbd0b422e3f48871d13a09c83
+Merge: 4c9cc6a 8b9408e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jul 16 07:44:32 2022 -0400
+
+    Merge pull request #18 from irykoon/master
+    
+    Support --update-only flag.
+
+commit 8b9408ea24b945e926c070a0f82f992536fa8a49
+Author: irykoon <iry@riseup.net>
+Date:   Sat Jul 16 11:43:07 2022 +0000
+
+    Rename --update-only to --only-if-newer.
+    
+    As suggested by @adrelanos in https://github.com/Kicksecure/tb-updater/pull/18#issuecomment-1186157912
+
+commit c1bcf0dccec8b19ae583d3cd061a806b82a74745
+Author: irykoon <iry@riseup.net>
+Date:   Sat Jul 16 10:43:57 2022 +0000
+
+    Support --update-only flag.
+    
+    When the Tor Browser is already up-to-date, the current tb-updater will still ask users if they want to download and reinstall it.
+    
+    With this `--update-only` flag turned on, the tb-updater will exit with a message like "Skip downloading: current Tor Browser 11.5 is already up-to-date".
+    
+    This flag is especially useful when tb-updater is run regularly to keep the Tor Browser up-to-date because it saves user from spending time and resources downloading an already up-to-date Tor Browser.
+
+commit 4c9cc6a899cd9d5befaf1d0a7f7c6d34e6ebac2f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jul 13 08:30:32 2022 -0400
+
+    bumped changelog version
+
 commit b95799706fbd5101446d46b14d884c4a9c30e947
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Jul 12 19:23:05 2022 -0400
