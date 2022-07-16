@@ -85,6 +85,14 @@ how you want to proceed.
 
     Resume previous download.
 
+  * `--reset`
+
+    Advanced users only. Hard reset. Do not re-download Tor Browser but only
+    overwrite (delete and re-install) Tor Browser.
+    This feature is not designed to fix Tor Browser issues. When running this
+    program normally without `--reset` it does download and overwrite
+    Tor Browser. There is no additional benefit from using `--reset`.
+
 ## AVAILABLE LANGUAGES
 
 As in October 2012:
