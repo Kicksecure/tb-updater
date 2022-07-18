@@ -1361,7 +1361,7 @@ tb_reset() {
 
    if ! test -f "$TBB_PACKAGE_FULL_PATH" ; then
       local MSG="\
-<p><b>Tor Browser archive not yet installed.</b>
+<p><b>Tor Browser archive file '$TBB_PACKAGE_FULL_PATH' not yet downloaded. Run without <code>--reset</code> is required.</b>
 <br/>
 <br/>See:
 <br/><a href=https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset>https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset</a></p>"
