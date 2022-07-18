@@ -1336,7 +1336,7 @@ tb_version_processing() {
       #echo "INFO: Tor Browser language variable is set to "$TB_LANG"."
       echo "INFO: $tb_title language variable TB_LANG is already set to '$TB_LANG'. Keeping it as is, ok."
    else
-      echo "INFO: $tb_title language variable TB_LANG was not yet set. Therefore defaulting TB_LANG to 'en-US', ok."
+      echo "INFO: $tb_title language variable TB_LANG was not yet set. Therefore using default TB_LANG 'en-US', ok."
       TB_LANG="en-US"
    fi
 }
