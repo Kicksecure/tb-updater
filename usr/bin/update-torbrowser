@@ -1331,23 +1331,10 @@ tb_version_processing() {
       tbb_version_folder="$tbb_version"
    fi
 
-   if echo "$tbb_version" | grep -q "hardened" ; then
-      tbb_hardened_version_chosen="true"
-   else
-      tbb_hardened_version_chosen="false"
-   fi
-   #echo "INFO: tbb_hardened_version_chosen: $tbb_hardened_version_chosen"
-
    ## Check if TB_LANG exists and is not empty.
    if [[ "$TB_LANG" && "${TB_LANG}" ]]; then
       #echo "INFO: Tor Browser language variable is set to "$TB_LANG"."
       echo "INFO: $tb_title language variable TB_LANG is already set to '$TB_LANG'. Keeping it as is, ok."
-   elif [ "$tbb_hardened_version_chosen" = "true" ]; then
-      ## Quote: https://blog.torproject.org/blog/tor-browser-55a4-hardened-released
-      ## "there will only be one bundle shipped supporting all the languages found in alpha builds"
-      ## These links are not containing language specific strings such as 'en-US', but 'ALL'.
-      echo "INFO: $tb_title language variable TB_LANG was not yet set and a hardened version was chosen. Therefore setting TB_LANG to 'ALL', ok."
-      TB_LANG="ALL"
    else
       echo "INFO: $tb_title language variable TB_LANG was not yet set. Therefore defaulting TB_LANG to 'en-US', ok."
       TB_LANG="en-US"
