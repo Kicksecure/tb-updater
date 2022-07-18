@@ -1463,14 +1463,20 @@ $tb_notify_details"
    true "INFO: Done, downloaded: $curl_download_target_url"
 }
 
-tb_download_files() {
+tb_set_download_links() {
    [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
-
-   ### signature ###
 
    [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_${TB_LANG}.tar.xz.asc"
    [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}${TBB_DOWNLOAD_APPENDIX}"
    [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
+
+   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_${TB_LANG}.tar.xz"
+   [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME${TBB_DOWNLOAD_APPENDIX}"
+   [ -n "$TBB_PACKAGE_FULL_PATH" ] || TBB_PACKAGE_FULL_PATH="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
+}
+
+tb_download_files() {
+   ### signature ###
 
    tb_notify_details="Downloading $tb_title digital signature (GPG)... Will take a moment..."
    echo "INFO: Digital signature (GPG) download... Will take a moment..."
@@ -1490,10 +1496,6 @@ tb_download_files() {
    tb_download_common
 
    ### archive file ###
-
-   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_${TB_LANG}.tar.xz"
-   [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME${TBB_DOWNLOAD_APPENDIX}"
-   [ -n "$TBB_PACKAGE_FULL_PATH" ] || TBB_PACKAGE_FULL_PATH="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
 
    tb_notify_details="Downloading $tb_title... Will take a while..."
    echo "INFO: Downloading $tb_title..."
@@ -2014,6 +2016,7 @@ main_function() {
    if [ "$tb_hard_reset" == "true" ]; then
       tb_run_function tb_reset
       tb_run_function tb_kill_already_running_tb_maybe
+      tb_run_function tb_set_download_links
       tb_run_function tb_gpg_verify
       tb_run_function tb_extract
       tb_run_function tb_patch
@@ -2035,6 +2038,7 @@ main_function() {
    tb_run_function tb_confirm_update
    tb_run_function tb_version_processing
    tb_run_function tb_kill_already_running_tb_maybe
+   tb_run_function tb_set_download_links
    tb_run_function tb_download_files
    tb_run_function tb_gpg_verify
    tb_run_function tb_confirm_install
