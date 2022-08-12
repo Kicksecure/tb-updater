@@ -1345,7 +1345,7 @@ tb_version_processing() {
       TB_LANG="en-US"
    fi
 
-   [ -n "$tbb_version_folder" ] || tbb_version_folder="${tbb_version_folder}"
+   [ -n "$tbb_version_folder" ] || tbb_version_folder="${tbb_version}"
    [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
 
    [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_${TB_LANG}.tar.xz.asc"
