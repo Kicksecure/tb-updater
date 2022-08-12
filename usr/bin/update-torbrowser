@@ -1107,11 +1107,11 @@ tb_local_version_detection() {
    true "INFO: tbb_download_alpha_version: $tbb_download_alpha_version"
    if [ "$tbb_download_alpha_version" = "true" ]; then
       source /usr/share/tb-updater/tbb_hardcoded_version_alpha
-      echo "INFO: Downloading alpha version. See:
+      echo "INFO: Using alpha version. See:
 https://www.whonix.org/wiki/Tor_Browser#Alpha"
    else
       source /usr/share/tb-updater/tbb_hardcoded_version
-      echo "INFO: Downloading stable version. For alpha version, see: https://www.whonix.org/wiki/Tor_Browser#Alpha"
+      echo "INFO: Using stable version. For alpha version, see: https://www.whonix.org/wiki/Tor_Browser#Alpha"
    fi
 
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
@@ -1327,8 +1327,13 @@ y/n?"
 }
 
 tb_version_processing() {
-   if [ "$tbb_version_folder" = "" ]; then
-      tbb_version_folder="$tbb_version"
+   if [ "$tb_hard_reset" == "true" ]; then
+      tbb_version="$tbb_version_previous_downloaded_version"
+   fi
+
+   if [ "$tbb_version" = "" ]; then
+      echo "ERROR: in function tb_version_processing: variable tbb_version not set!"
+      tb_exit_function 17
    fi
 
    ## Check if TB_LANG exists and is not empty.
@@ -1339,6 +1344,17 @@ tb_version_processing() {
       echo "INFO: $tb_title language variable TB_LANG was not yet set. Therefore using default TB_LANG 'en-US', ok."
       TB_LANG="en-US"
    fi
+
+   [ -n "$tbb_version_folder" ] || tbb_version_folder="${tbb_version_folder}"
+   [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
+
+   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_${TB_LANG}.tar.xz.asc"
+   [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}${TBB_DOWNLOAD_APPENDIX}"
+   [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
+
+   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_${TB_LANG}.tar.xz"
+   [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME${TBB_DOWNLOAD_APPENDIX}"
+   [ -n "$TBB_PACKAGE_FULL_PATH" ] || TBB_PACKAGE_FULL_PATH="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
 }
 
 tb_reset() {
@@ -1448,18 +1464,6 @@ $tb_notify_details"
    fi
 
    true "INFO: Done, downloaded: $curl_download_target_url"
-}
-
-tb_set_download_links() {
-   [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
-
-   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_${TB_LANG}.tar.xz.asc"
-   [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}${TBB_DOWNLOAD_APPENDIX}"
-   [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
-
-   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_${TB_LANG}.tar.xz"
-   [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME${TBB_DOWNLOAD_APPENDIX}"
-   [ -n "$TBB_PACKAGE_FULL_PATH" ] || TBB_PACKAGE_FULL_PATH="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
 }
 
 tb_download_files() {
@@ -1999,11 +2003,13 @@ main_function() {
    tb_run_function tb_preparation
    tb_run_function tb_stdin
    tb_run_function tb_qubes_dvm_template
+   tb_run_function tb_anon_ws_dns_conf
+   tb_run_function tb_local_version_detection
 
    if [ "$tb_hard_reset" == "true" ]; then
-      tb_run_function tb_reset
       tb_run_function tb_kill_already_running_tb_maybe
-      tb_run_function tb_set_download_links
+      tb_run_function tb_version_processing
+      tb_run_function tb_reset
       tb_run_function tb_gpg_verify
       tb_run_function tb_extract
       tb_run_function tb_patch
@@ -2013,8 +2019,6 @@ main_function() {
       return 0
    fi
 
-   tb_run_function tb_anon_ws_dns_conf
-   tb_run_function tb_local_version_detection
    tb_run_function tb_skip_if_higher_or_equal_version_already_downloaded
    tb_run_function tb_connectivity_checks_tor
    tb_run_function tb_connectivity_checks_curl
@@ -2025,7 +2029,6 @@ main_function() {
    tb_run_function tb_confirm_update
    tb_run_function tb_version_processing
    tb_run_function tb_kill_already_running_tb_maybe
-   tb_run_function tb_set_download_links
    tb_run_function tb_download_files
    tb_run_function tb_gpg_verify
    tb_run_function tb_confirm_install
