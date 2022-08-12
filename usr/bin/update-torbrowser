@@ -1119,7 +1119,7 @@ https://www.whonix.org/wiki/Tor_Browser#Alpha"
       echo "INFO: tbb_hardcoded_version: $tbb_hardcoded_version"
    fi
 
-   ## Used by tbbversion_installed
+   ## Used by function tbbversion_installed
    [ -n "$tbb_folder" ] || tbb_folder="$tb_browser_folder"
 
    ## sets: tbb_locally_installed_version
