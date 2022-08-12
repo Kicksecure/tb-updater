@@ -1362,6 +1362,8 @@ tb_reset() {
       return 0
    fi
 
+   echo "INFO: --reset. Performing hard reset rather than download. See: https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset"
+
    if ! test -f "$TBB_PACKAGE_FULL_PATH" ; then
       local MSG="\
 <p><b>Tor Browser archive file '$TBB_PACKAGE_FULL_PATH' not yet downloaded. Run without <code>--reset</code> is required.</b>
