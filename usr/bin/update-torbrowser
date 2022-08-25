@@ -451,10 +451,21 @@ tb_config_folder_parser() {
 }
 
 tb_resolv_conf_debugging() {
+   echo "INFO: tb_resolv_conf_debugging: start"
+
+   echo "ls -la /etc/resolv.conf"
    ls -la /etc/resolv.conf || true
+
+   echo "cat /etc/resolv.conf"
    cat /etc/resolv.conf || true
+
+   echo "cat /etc/resolv.whonix"
    cat /etc/resolv.whonix || true
+
+   echo "cat /etc/resolv.conf.whonix-orig"
    cat /etc/resolv.conf.whonix-orig || true
+
+   echo "INFO: tb_resolv_conf_debugging: end"
 }
 
 tb_anon_ws_dns_conf() {
