@@ -471,10 +471,13 @@ tb_resolv_conf_debugging() {
 tb_anon_ws_dns_conf() {
    true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
    if [ "$tb_disable_anon_ws_dnf_conf" = "true" ]; then
-      ## Check if /etc/resolv.conf is a symlink. This is only the case
-      ## when whonix-ws-network-conf is already installed.
+      echo "INFO: Checking if /etc/resolv.conf is a symlink..."
       if test -h /etc/resolv.conf ; then
+         ## This is only the case when whonix-ws-network-conf is already installed.
+         echo "INFO: Yes, /etc/resolv.conf is a symlink..."
+         echo "INFO: Checking if /var/lib/dpkg/info/whonix-ws-network-conf.prerm is executable..."
          if test -x /var/lib/dpkg/info/whonix-ws-network-conf.prerm ; then
+            echo "INFO: Yes, /var/lib/dpkg/info/whonix-ws-network-conf.prerm is a executable."
             [ -n "$tb_reenable_anon_ws_dnf_conf" ] || tb_reenable_anon_ws_dnf_conf=true
             tb_resolv_conf_debugging
             echo "INFO: tb_anon_ws_dns_conf: Restore original /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-pre ..."
