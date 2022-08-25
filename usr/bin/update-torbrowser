@@ -589,7 +589,10 @@ tb_preparation() {
    fi
 
    if [ "$is_chroot" = "true" ]; then
+      echo "INFO: chroot: is_chroot=true"
       tb_settings_chroot_common
+   else
+      echo "INFO: chroot: is_chroot=true is not set, ok."
    fi
 
    if test -f /run/qubes/this-is-templatevm ; then
