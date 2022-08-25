@@ -799,16 +799,6 @@ tb_preparation() {
    ##    https://www.torproject.org/dist/torbrowser/10.0.6/tor-browser-linux64-10.0.6_en-US.tar.xz
    ## http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/dist/torbrowser/10.0.6/tor-browser-linux64-10.0.6_en-US.tar.xz
    if [ "$tb_onion" = "true" ]; then
-      ## dist.torproject.org has no corresponding onion address at time of writing.
-      ## https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
-      ## https://web.archive.org/web/20210424113513/https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
-      ##
-      ## https://onion.torproject.org/
-      ## https://web.archive.org/web/20210424113401/https://onion.torproject.org/
-      ##
-      ## https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
-      ## https://web.archive.org/web/20210424113646/https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
-      [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion"
       if [ "$ARCH_DOWNLOAD" = "linux-arm64" ]; then
          MSG="<p>onion not available for platform '$ARCH_DOWNLOAD'.</p>"
          $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
@@ -817,6 +807,16 @@ tb_preparation() {
          echo "ERROR: $MSG_CLI"
          tb_exit_function 11
       else
+         ## dist.torproject.org has no corresponding onion address at time of writing.
+         ## https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
+         ## https://web.archive.org/web/20210424113513/https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
+         ##
+         ## https://onion.torproject.org/
+         ## https://web.archive.org/web/20210424113401/https://onion.torproject.org/
+         ##
+         ## https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
+         ## https://web.archive.org/web/20210424113646/https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
+         [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion"
          [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/dist/torbrowser"
       fi
 
@@ -825,15 +825,15 @@ tb_preparation() {
       ## Onion-Location	http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion/torbrowser/update_3/release/downloads.json
       [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion/torbrowser/update_3/${TBB_RELEASE_CHANNEL}/downloads.json"
    else
-      ## Download from the torproject.org clearnet by default.
-      [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://www.torproject.org"
-
       if [ "$ARCH_DOWNLOAD" = "linux-arm64" ]; then
+         [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://sourceforge.net"
          [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://sourceforge.net/projects/tor-browser-ports/files"
          ## At time of writing sourceforge.net did not support TLSv1.3 or --cert-status yet.
          ## curl: (91) No OCSP response received
          [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.2 --proto =https"
       else
+         ## Download from the torproject.org clearnet by default.
+         [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://www.torproject.org"
          [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://www.torproject.org/dist/torbrowser"
          [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https --cert-status"
       fi
