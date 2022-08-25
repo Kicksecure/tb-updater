@@ -1,3 +1,45 @@
+commit 7fe34e72baba459ca4eef79f0a065419903d27ea
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 25 06:19:38 2022 -0400
+
+    chroot
+
+commit 225dbb807d6877971d8ff0d54231b25509ef5c5b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 25 06:03:15 2022 -0400
+
+    debugging
+
+commit e96af41f4808750951c567f27111d2647d9c3faf
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 25 06:00:23 2022 -0400
+
+    debugging
+
+commit 13cbdc03cc0a5fbb1cc3a2a4284eab6f81bb865c
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 25 05:50:16 2022 -0400
+
+    debugging
+
+commit 691396fdab418d6dbcd5c08bac930f0f0ecf17b0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 25 05:47:13 2022 -0400
+
+    debugging
+
+commit 59df60257c104b1cd6b3e3a8af66f4ed3f82f71e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 25 05:29:24 2022 -0400
+
+    improve Tor Browser ARM64 connectivity check
+
+commit 4e3ce03c71fb34973ed29e95e90e81bb2c1111de
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Aug 12 07:53:11 2022 -0400
+
+    bumped changelog version
+
 commit a7e73e3dfbc0a2e07209e1aab9ed13b1633701bc
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Aug 12 07:50:29 2022 -0400
