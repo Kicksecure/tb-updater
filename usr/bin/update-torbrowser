@@ -1356,7 +1356,10 @@ tb_version_processing() {
    fi
 
    ## Check if TB_LANG exists and is not empty.
-   if [[ "$TB_LANG" && "${TB_LANG}" ]]; then
+   if dpkg --compare-versions "$tbb_version" ge "12.0a4" ; then
+      echo "INFO: Requested Tor Browser version only support an ALL locale, fetching it."
+      TB_LANG="ALL"
+   elif [[ "$TB_LANG" && "${TB_LANG}" ]]; then
       #echo "INFO: Tor Browser language variable is set to "$TB_LANG"."
       echo "INFO: $tb_title language variable TB_LANG is already set to '$TB_LANG'. Keeping it as is, ok."
    else
