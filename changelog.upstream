@@ -1,8 +1,48 @@
+commit e85e4166cc56e0af1c79b7a3e03d3a9916caff98
+Merge: 4bde4ef bfa3eb5
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Nov 3 14:17:33 2022 -0400
+
+    Merge remote-tracking branch 'github-kicksecure/master'
+
+commit bfa3eb5e3dec066a152c36ce377a7fe97c658807
+Merge: 4bde4ef a5e6876
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Nov 3 14:16:53 2022 -0400
+
+    Merge pull request #19 from pgerber/multi-lang
+    
+    Make update-torbrowser work with new multi-lang builds
+
+commit 4bde4ef450859ece8e7375af178bb902440303db
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Nov 2 13:19:02 2022 -0400
+
+    bumped changelog version
+
 commit 7a5da82d21cd46dc16aad4787b3b7bd3cc1b9c57
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Nov 2 13:09:14 2022 -0400
 
     alpha tbb_hardcoded_version="12.0a4"
+
+commit a5e6876e6ef10a461071d942beec10d716985144
+Author: Peter Gerber <peter@arbitrary.ch>
+Date:   Mon Oct 31 21:53:57 2022 +0000
+
+    Make update-torbrowser work with new multi-lang builds
+    
+    As of v12.0a4 Tor Browser is shipped as a multi-language archive
+    and language-specific archives are no longer available. This
+    patch makes this new multi-lang version install properly but does
+    not handle starting Tor Browser with the correct locale.
+    
+    I'm not entirely sure how the locale should be handled. Is it
+    good enough to just use the system language (which Tor Browser
+    now does by default) or should some other solution be used? If
+    the system language is good enough, I'd suggest just merging
+    this change as is and once v12 stable is released TB_LANG
+    support can be removed.
 
 commit 7332788e585ac65e641596db76e5e7b1a659cdf9
 Author: Patrick Schleizer <adrelanos@whonix.org>
