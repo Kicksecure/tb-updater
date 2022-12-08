@@ -1,3 +1,39 @@
+commit f6aaff346347d7b939bf3e98eb687a9a8ed2d30c
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Dec 8 10:21:47 2022 -0500
+
+    tbb_hardcoded_version="12.0"
+
+commit 1f42ab269a2bb4a87c88bd6fddc52c3d6815c574
+Merge: 5e44121 cc090f2
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Dec 8 10:21:02 2022 -0500
+
+    Merge remote-tracking branch 'github-kicksecure/master'
+
+commit cc090f22f496e91baf0f41f9aa9907dcd332301d
+Merge: 5e44121 d68336f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Dec 8 10:17:52 2022 -0500
+
+    Merge pull request #20 from andrea-varesio/patch-1
+    
+    Change min $tbb_version for TB_LANG="ALL"
+
+commit d68336f6d3e989f664eda928981338d2afc4aa76
+Author: Andrea Varesio <75442907+andrea-varesio@users.noreply.github.com>
+Date:   Thu Dec 8 08:53:22 2022 +0000
+
+    Change min $tbb_version for TB_LANG="ALL"
+    
+    This resolves curl not finding packages ending with "en-US" since new packages use "ALL" instead (and versions < 12.0a4 no longer seem to be available): https://dist.torproject.org/torbrowser/12.0/
+
+commit 5e441214d7806bcd67bf2904fa30b9f1f272f637
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Dec 3 11:59:26 2022 -0500
+
+    bumped changelog version
+
 commit 408d45198ab73fc870da795aee71624d83c0c3cc
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Dec 3 11:58:46 2022 -0500
