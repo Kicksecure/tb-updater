@@ -1,3 +1,9 @@
+tb-updater (3:25.0-1) unstable; urgency=medium
+
+  * New upstream version (local package).
+
+ -- Patrick Schleizer <adrelanos@whonix.org>  Fri, 20 Jan 2023 17:21:16 +0000
+
 tb-updater (3:24.9-1) unstable; urgency=medium
 
   * New upstream version (local package).
