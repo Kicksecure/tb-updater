@@ -1,3 +1,28 @@
+commit c4d34e77c5fbb0f6e579c0b12961ef63de0399f1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Jun 12 14:52:02 2023 +0000
+
+    update copyright year
+
+commit 6d3e3a98e6b9361f5245faafb689ccf98bff4781
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Jun 12 14:48:04 2023 +0000
+
+    abolish /rw/config parsing
+    (Does not influence Qubes specific /rw/config parsing.)
+
+commit 13d4282ba4046a43c27b667afd724eb93b9749b4
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Jun 12 14:42:23 2023 +0000
+
+    alpha tbb_hardcoded_version="12.5a7"
+
+commit cadb056149414f79b65c7bf55435d5faafbdd276
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Jun 8 21:32:03 2023 +0000
+
+    bumped changelog version
+
 commit 2378d32983d97326b0979668ece72cef5fff85f9
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Jun 8 21:26:44 2023 +0000
