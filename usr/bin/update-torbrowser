@@ -442,7 +442,6 @@ tb_config_folder_parser() {
    local i
    for i in \
       /etc/${tb_settings_folder}/*.conf \
-      /rw/config/${tb_settings_folder}/*.conf \
       /usr/local/etc/${tb_settings_folder}/*.conf \
       ; do
          bash -n "$i"
