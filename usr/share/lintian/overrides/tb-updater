@@ -1,9 +1,9 @@
 ## see var/cache/tb-updater/placeholder
-tb-updater: file-in-unusual-dir var/cache/tb-updater/placeholder
+tb-updater: file-in-unusual-dir [var/cache/tb-updater/placeholder]
 
 ## Only a test if a maintainer script is executable. No actual use.
-tb-updater: uses-dpkg-database-directly usr/bin/update-torbrowser
+tb-updater: uses-dpkg-database-directly [usr/bin/update-torbrowser]
 
 ## Only during build in chroot.
-tb-updater: uses-dpkg-database-directly usr/libexec/tb-updater/chroot-pre
-tb-updater: uses-dpkg-database-directly usr/libexec/tb-updater/chroot-post
+tb-updater: uses-dpkg-database-directly [usr/libexec/tb-updater/chroot-pre]
+tb-updater: uses-dpkg-database-directly [usr/libexec/tb-updater/chroot-post]

@@ -21,7 +21,13 @@ Download from Tor Project's onion rather than clearnet domain\.
 .IP "\[ci]" 4
 \fB\-\-ordinary\fR
 .IP
-Uses curl's ordinary progress bar\. Only affects run in terminal\. When using this option, the GUI progress bar will be stuck but downloading will still work\. Note, when using this option, it wouldn't notice if the download server were to run an endless data attack, for example the server claiming to provide a 500\.000 GB big file\. (It does not use \fB/usr/libexec/helper\-scripts/curl\-prgrs\fRs \fBCURL_PRGRS_MAX_FILE_SIZE_BYTES\fR\.) However, it can be compensated by either manually terminating \fBupdate\-torbrowser\fR or by using the timeout utility as in the example below\.
+Uses curl's ordinary progress bar\. Only affects run in terminal\.
+.IP
+When using this option, the GUI progress bar will be stuck but downloading will still work\. Note, when using this option, it wouldn't notice if the download server were to run an endless data attack, for example the server claiming to provide a 500\.000 GB big file\.
+.IP
+(It does not use \fB/usr/libexec/helper\-scripts/curl\-prgrs\fRs \fBCURL_PRGRS_MAX_FILE_SIZE_BYTES\fR\.)
+.IP
+However, it can be compensated by either manually terminating \fBupdate\-torbrowser\fR or by using the timeout utility as in the example below\.
 .IP "\[ci]" 4
 \fB\-\-only\-if\-newer\fR
 .IP
