@@ -1,3 +1,15 @@
+commit 9bb13e0ee978769ef68b1910c893f297494fca36
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jul 5 09:29:21 2023 -0400
+
+    tbb_hardcoded_version="12.5.1"
+
+commit 95555a79aa49897c4f8d5ad4e6663b9c504d4a17
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jun 23 09:58:36 2023 +0000
+
+    bumped changelog version
+
 commit 782c9eae3ef932275e0e876f1fbcd83e845cc41a
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Jun 23 09:58:19 2023 +0000
