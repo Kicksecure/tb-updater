@@ -6,9 +6,9 @@ Section: misc
 Priority: optional
 Maintainer: Patrick Schleizer <adrelanos@whonix.org>
 Build-Depends: debhelper (>= 13), debhelper-compat (= 13)
-Homepage: https://github.com/Whonix/tb-updater
-Vcs-Browser: https://github.com/Whonix/tb-updater
-Vcs-Git: https://github.com/Whonix/tb-updater.git
+Homepage: https://github.com/Kicksecure/tb-updater
+Vcs-Browser: https://github.com/Kicksecure/tb-updater
+Vcs-Git: https://github.com/Kicksecure/tb-updater.git
 Standards-Version: 4.6.2
 Rules-Requires-Root: no
 
@@ -63,5 +63,5 @@ Description: Tor Browser Downloader by Whonix developers
  This package is produced independently of, and carries no guarantee from,
  The Tor Project.
  .
- [1] https://www.whonix.org/wiki/Tor_Browser#Download_Confirmation_Screen
- [2] https://www.whonix.org/wiki/Tor_Browser#Installation_Confirmation_Screen
+ [1] https://www.kicksecure.com/wiki/Tor_Browser#Download_Confirmation_Screen
+ [2] https://www.kicksecure.com/wiki/Tor_Browser#Installation_Confirmation_Screen
