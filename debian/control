@@ -1,10 +1,10 @@
-## Copyright (C) 2012 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
+## Copyright (C) 2012 - 2023 ENCRYPTED SUPPORT LP <adrelanos@kicksecure.com>
 ## See the file COPYING for copying conditions.
 
 Source: tb-updater
 Section: misc
 Priority: optional
-Maintainer: Patrick Schleizer <adrelanos@whonix.org>
+Maintainer: Patrick Schleizer <adrelanos@kicksecure.com>
 Build-Depends: debhelper (>= 13), debhelper-compat (= 13)
 Homepage: https://github.com/Kicksecure/tb-updater
 Vcs-Browser: https://github.com/Kicksecure/tb-updater
@@ -63,5 +63,5 @@ Description: Tor Browser Downloader by Whonix developers
  This package is produced independently of, and carries no guarantee from,
  The Tor Project.
  .
- [1] https://www.kicksecure.com/wiki/Tor_Browser#Download_Confirmation_Screen
- [2] https://www.kicksecure.com/wiki/Tor_Browser#Installation_Confirmation_Screen
+ [1] https://www.whonix.org/wiki/Tor_Browser#Download_Confirmation_Screen
+ [2] https://www.whonix.org/wiki/Tor_Browser#Installation_Confirmation_Screen
