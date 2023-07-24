@@ -1,3 +1,15 @@
+commit a9375f89d96dc592c8fdde3ed8ec2e537672de86
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Jul 24 17:07:58 2023 -0400
+
+    update Tor Browser arm64 maintainer signing key
+
+commit c21a427c431f7b687346eb1b2e23d5968915725d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Jul 17 11:50:13 2023 -0400
+
+    bumped changelog version
+
 commit e28a9607973f366e1e6ef4035ca92d79b6f16c76
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Mon Jul 17 11:19:54 2023 -0400
