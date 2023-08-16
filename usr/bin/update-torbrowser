@@ -1011,6 +1011,11 @@ tb_connectivity_checks_curl() {
       return 0
    fi
 
+   if [ "$ARCH" = "arm64" ]; then
+      echo "INFO: Skipping Connectivity test because of unreported sourceforge blocking Tor issue. https://github.com/Kicksecure/tb-updater/issues/21"
+      return 0
+   fi
+
    tb_notify_details="Checking connectivity... Will take a moment..."
    echo "INFO: Running connectivity check...  Downloading...: $tbb_download_base_url"
 
