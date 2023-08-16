@@ -1,3 +1,25 @@
+commit 50b75845f07624f0ef0b112813e3f87caf1fa2ff
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Aug 16 05:51:27 2023 -0400
+
+    alpha tbb_hardcoded_version="13.0a2"
+
+commit 4fcbb437a2d1acb5f795c1f3b4b60be901c44920
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Aug 16 05:27:33 2023 -0400
+
+    skip connectivity test for arm64
+    
+    due to unreported sourceforge blocking Tor issue
+    
+    https://github.com/Kicksecure/tb-updater/issues/21
+
+commit 7a53c2fcbae3fb01d2036034fcb541c7fe58fa4f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Aug 4 14:06:01 2023 -0400
+
+    bumped changelog version
+
 commit b4592d456784c91c4cec817727cd4613993c525e
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Aug 4 13:41:25 2023 -0400
