@@ -1,3 +1,83 @@
+commit 8687c39ffe585168c9a63407ccd54c6e7b39a70f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 24 08:20:41 2023 -0400
+
+    alpha tbb_hardcoded_version="13.0a3"
+
+commit 4db31d124b9031956abf27bb025572383b9e4566
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 24 08:17:42 2023 -0400
+
+    upstream link changes for Tor Browser alpha fix part 2/2
+    
+    Thanks for @pgerber for the report and helping with this!
+    
+    https://github.com/Kicksecure/tb-updater/pull/22
+
+commit b980d00215664d14f0fbd4246a489ef56aa54f66
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 24 08:16:13 2023 -0400
+
+    refactoring
+
+commit c34b02cb3db4dccc9559b5eeee1574bb1f44de3f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 24 08:15:13 2023 -0400
+
+    refactoring
+
+commit 873a9caaaa0d7c41280efe19483ad3d63963dd8f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 24 08:14:37 2023 -0400
+
+    genmkfile manpages
+
+commit 35a1772241cdde0b492aa4d9a67c58731e329cb1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 24 08:14:00 2023 -0400
+
+    deprecate TB_LANG since no longer required
+
+commit d18084f8c755edf0a9a961bff27209c40594a5da
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 24 08:11:36 2023 -0400
+
+    remove `--language` because no longer needed
+    
+    since all Tor Browser downloads support all languages for a while now
+
+commit 24e13eae678798b43289972de10f2cb97e553469
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 24 08:08:22 2023 -0400
+
+    upstream link changes for Tor Browser alpha fix part 1/2
+    
+    Thanks for @pgerber for the report and helping with this!
+    
+    https://github.com/Kicksecure/tb-updater/pull/22
+
+commit b8c36342d953a9cfb1932c1c3e1df548913a53d1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 24 08:01:41 2023 -0400
+
+    comments to prepare for upstream link changes
+    
+    https://github.com/Kicksecure/tb-updater/pull/22
+
+commit 1151dc456f99e7a86649914bc03639ecf3bd5589
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Aug 24 08:00:35 2023 -0400
+
+    refactoring
+    
+    https://github.com/Kicksecure/tb-updater/pull/22
+
+commit 46a7d6c21488c5aa808e25862a00e9b6cba5f645
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Aug 16 05:53:20 2023 -0400
+
+    bumped changelog version
+
 commit 50b75845f07624f0ef0b112813e3f87caf1fa2ff
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Aug 16 05:51:27 2023 -0400
