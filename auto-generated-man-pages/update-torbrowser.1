@@ -107,43 +107,13 @@ https://www\.torproject\.org/dist/torbrowser/linux/
 .SH "CONFIG FILE"
 /etc/torbrowser\.d/30_default\.conf
 .SH "ENVIRONMENT VARIABLES"
-### Language You could use:
-.IP "" 4
-.nf
-`export TB_LANG="<language code>"`
-.fi
-.IP "" 0
-.P
-to set the language before running
-.IP "" 4
-.nf
-`update\-torbrowser`
-.fi
-.IP "" 0
-.P
-For example, for Vietnamese use:
-.IP "" 4
-.nf
-`export TB_LANG="vi"`
-.fi
-.IP "" 0
-.P
-Replace "vi" with "zh\-CN" for Chinese and so on\.
-.P
-To make this change permanent, create a file \fB/etc/torbrowser\.d/50_user\.conf\fR and add for example
-.IP "" 4
-.nf
-`TB_LANG="ar"`
-.fi
-.IP "" 0
-.SS "Version"
-\fBtbb_version=version\.number update\-torbrowser\fR
+### Version \fBtbb_version=version\.number update\-torbrowser\fR
 .P
 See also EXAMPLES below\.
 .SH "EXIT CODES"
 0 Success\.
 .P
-0 When using \-\-devbuildpassthrough $tb_home_folder/tor\-browser_$TB_LANG already exists\.
+0 When using \-\-devbuildpassthrough $tb_home_folder/tor\-browser already exists\.
 .P
 1 Internal Error\.
 .P
