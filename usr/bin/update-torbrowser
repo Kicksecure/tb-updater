@@ -691,8 +691,10 @@ tb_preparation() {
 
       if [ "$ARCH" = "x86_64" ]; then
          [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux64"
+         #[ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-x86_64"
       elif [ "$ARCH" = "i686" ]; then
          [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux32"
+         #[ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-i686"
       elif [ "$ARCH" = "arm64" ]; then
          [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-arm64"
       else
