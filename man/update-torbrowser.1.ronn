@@ -127,26 +127,6 @@ https://www.torproject.org/dist/torbrowser/linux/
 /etc/torbrowser.d/30_default.conf
 
 ## ENVIRONMENT VARIABLES
-### Language
-You could use:
-
-    `export TB_LANG="<language code>"`
-
-to set the language before running
-
-    `update-torbrowser`
-
-For example, for Vietnamese use:
-
-    `export TB_LANG="vi"`
-
-Replace "vi" with "zh-CN" for Chinese and so on.
-
-To make this change permanent, create a file `/etc/torbrowser.d/50_user.conf` and add for
-example
-
-    `TB_LANG="ar"`
-
 ### Version
 `tbb_version=version.number update-torbrowser`
 
@@ -155,7 +135,7 @@ See also EXAMPLES below.
 ## EXIT CODES
 0 Success.
 
-0 When using --devbuildpassthrough $tb_home_folder/tor-browser_$TB_LANG already exists.
+0 When using --devbuildpassthrough $tb_home_folder/tor-browser already exists.
 
 1 Internal Error.
 
