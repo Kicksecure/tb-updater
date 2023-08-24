@@ -682,15 +682,18 @@ tb_preparation() {
 
    if [ "$ARCH_DOWNLOAD" = "" ]; then
       echo "INFO: Auto detecting ARCH_DOWNLOAD..."
+      if [ "$ARCH" = "i386" ]; then
+         ARCH="i686"
+      fi
+      if echo "$ARCH" | grep --quiet "aarch64" ; then
+         ARCH="arm64"
+      fi
+
       if [ "$ARCH" = "x86_64" ]; then
          [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux64"
-      elif [ "$ARCH" = "i386" ]; then
-         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux32"
       elif [ "$ARCH" = "i686" ]; then
          [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux32"
       elif [ "$ARCH" = "arm64" ]; then
-         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-arm64"
-      elif echo "$ARCH" | grep --quiet "aarch64" ; then
          [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-arm64"
       else
          [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="$ARCH"
