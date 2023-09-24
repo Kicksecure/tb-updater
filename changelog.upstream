@@ -1,3 +1,23 @@
+commit 164db5a8add0e3b827376b166bda61b260c137b7
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Sep 24 11:15:59 2023 -0400
+
+    update expired Tor Browser upstream signing key
+    
+    https://forums.whonix.org/t/tb-updater-gpg-download-signature-could-not-be-verified-this-key-expired/10161/4
+    
+    https://web.archive.org/web/20230924151659/https://gitlab.torproject.org/tpo/tpa/team/-/issues/41333
+    
+    https://web.archive.org/web/20230924151649/https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/issues/40957
+    
+    https://web.archive.org/web/20230924151820/https://people.torproject.org/~boklm/tmp/_torbrowser_extended_2023.asc
+
+commit 1692737df232cb950cf46c18da67d0a812fffe3c
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Sep 15 04:20:40 2023 -0400
+
+    bumped changelog version
+
 commit b2274e4ba77047dc9ae0a4d008c97f92c59f904f
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Sep 15 04:20:10 2023 -0400
