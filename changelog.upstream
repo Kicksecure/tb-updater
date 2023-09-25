@@ -1,3 +1,15 @@
+commit 90d36dd9418aaa14ea83d50ef214fafbc59c94fc
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Sep 25 12:10:04 2023 -0400
+
+    alpha tbb_hardcoded_version="13.0a5"
+
+commit 45e90afcc67508212ae7a29e19674fb4f48112af
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Sep 24 11:21:49 2023 -0400
+
+    bumped changelog version
+
 commit 164db5a8add0e3b827376b166bda61b260c137b7
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Sep 24 11:15:59 2023 -0400
