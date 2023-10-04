@@ -498,6 +498,10 @@ tb_settings_chroot_common() {
    ## We are using --fail anyhow. No problem to duplicate it.
    [ -n "$CURL_PROXY" ] || CURL_PROXY="--fail"
 
+   ## Careful as it would like information to logs:
+   ## Connection #0 to host 10.137.0.82 left intact
+   #[ -n "$CURL_OPTS" ] || CURL_OPTS="--verbose"
+
    [ -n "$tb_disable_anon_ws_dnf_conf" ] || tb_disable_anon_ws_dnf_conf=true
 }
 
