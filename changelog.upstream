@@ -1,3 +1,23 @@
+commit ff39ef291a139c96ace956a93603dda12279ac1d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Oct 5 00:23:19 2023 -0400
+
+    debug download issue
+    
+    https://github.com/QubesOS/updates-status/issues/4083
+
+commit 6b9574be8aaaf9833917229e52d8a7503409baa1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Oct 4 05:40:42 2023 -0400
+
+    comment
+
+commit adc569ac9e134c5e2a53adacac9b7b6f19c9c8b2
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Oct 1 08:23:37 2023 -0400
+
+    bumped changelog version
+
 commit f800d53a5e62cd7f90d4e5c0a0ab6d8933982db1
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Oct 1 08:21:38 2023 -0400
