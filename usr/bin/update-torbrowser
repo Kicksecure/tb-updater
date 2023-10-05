@@ -525,6 +525,12 @@ tb_settings_postinst_common() {
 
    ## Fail open, if there was an error.
    [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=open
+
+   ## TODO: out comment this
+   ## Using curl instead of curl-prgrs to debug server issue.
+   ## --ordinary
+   [ -n "$ordinary" ] || ordinary="true"
+   [ -n "$CURL_OPTS" ] || CURL_OPTS="--verbose"
 }
 
 tb_settings_qubes_common_templatevm() {
