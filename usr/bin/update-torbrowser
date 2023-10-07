@@ -191,8 +191,12 @@ tb_ex_funct() {
    if [ "$last_pid_list" = "" ]; then
       true
    else
+      local childpids_list childpid_item
       for pid in $last_pid_list; do
-         pkill --signal sigkill -P "$pid" &>/dev/null || true
+         childpids_list=$(pgrep -P "$pid")
+         for childpid_item in $childpids_list ; do
+            pkill --signal sigkill -P "$childpid_item" &>/dev/null || true
+         done
       done
    fi
 
