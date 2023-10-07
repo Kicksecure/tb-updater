@@ -526,10 +526,12 @@ tb_settings_postinst_common() {
    ## Fail open, if there was an error.
    [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=open
 
-   ## TODO: out comment this
    ## Using curl instead of curl-prgrs to debug server issue.
    ## --ordinary
-   [ -n "$ordinary" ] || ordinary="true"
+   #[ -n "$ordinary" ] || ordinary="true"
+   ## Careful as it would like information to logs:
+   ## TODO: out comment this
+   ## Connection #0 to host 10.137.0.82 left intact
    [ -n "$CURL_OPTS" ] || CURL_OPTS="--verbose"
 }
 
