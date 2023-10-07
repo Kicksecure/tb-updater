@@ -1,3 +1,51 @@
+commit e51dc80387b2eece709fb6fe5bd636b21cf3067a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Oct 7 03:52:21 2023 -0400
+
+    fix, more robust child process killing
+
+commit f1e74245ba1688ef091864407d3b41a6bce88b13
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Oct 7 03:35:45 2023 -0400
+
+    output
+
+commit 356b61cc6560887a3392960767397655eb323d4e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Oct 7 03:31:52 2023 -0400
+
+    fix, make sure all parent processes are killed when signal sigterm is received
+
+commit aedf8d9e7bc3c01af2fcd5f0648d68631b4fb508
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Oct 7 02:00:29 2023 -0400
+
+    output
+
+commit f689dfbb0e98430a8913a5379e9252fd830d4da8
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Oct 7 01:09:27 2023 -0400
+
+    output
+
+commit 8ed831f75027ee613c672d0b3ba29df14d33cec5
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Oct 7 01:06:49 2023 -0400
+
+    re-enable use of curl-prgrs
+
+commit abc30f3e0dd2293f81ef4842bb087411750173d1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Oct 7 01:05:13 2023 -0400
+
+    output
+
+commit 5aecbb51362f2a5b3a1f9fe60e6b22552113f3cf
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Oct 5 00:24:14 2023 -0400
+
+    bumped changelog version
+
 commit ff39ef291a139c96ace956a93603dda12279ac1d
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Oct 5 00:23:19 2023 -0400
