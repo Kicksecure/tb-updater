@@ -192,7 +192,7 @@ tb_ex_funct() {
       true
    else
       for pid in $last_pid_list; do
-         pkill --signal sigkill -P "$pid" 2>/dev/null || true
+         pkill --signal sigkill -P "$pid" &>/dev/null || true
       done
    fi
 
