@@ -186,7 +186,7 @@ tb_sanity_tests() {
 
 tb_ex_funct() {
    local MSG
-   MSG="$SIGNAL_TYPE received. Cleaning up..."
+   MSG="$0: INFO: $SIGNAL_TYPE received. Cleaning up..."
 
    if [ "$last_pid_list" = "" ]; then
       true
@@ -209,7 +209,7 @@ tb_ex_funct() {
    #$output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
    #echo "ERROR: $MSG"
 
-   MSG="$SIGNAL_TYPE received. Exiting."
+   MSG="$0: INFO: $SIGNAL_TYPE received. Exiting."
    $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 }
 
