@@ -53,3 +53,11 @@ chmod --recursive g+r /var/cache/tb-binary
 find /var/cache/tb-binary -type d -print0 | xargs -0 chmod 0775
 
 chmod --recursive u+X /var/cache/tb-binary
+
+if ! id user &>/dev/null ; then
+   echo "$0: ERROR: user 'user' does not exist!"
+   exit 1
+fi
+
+## username HARDCODED!
+chown --recursive user:user /var/cache/tb-binary

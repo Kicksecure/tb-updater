@@ -5,3 +5,6 @@
 ## Should be safe to remove after build.
 user ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-pre
 user ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-post
+
+## Required in Qubes Templates.
+user ALL=NOPASSWD: /usr/libexec/tb-updater/tb-permission-fix

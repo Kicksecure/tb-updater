@@ -88,8 +88,12 @@ tb_error_handler() {
    [ -n "$tb_user_home" ] || tb_user_home=~
    [ -n "$tb_install_folder" ] || tb_install_folder="tb"
 
-   mkdir --parents "$tb_user_home/.cache/$tb_install_folder"
-   echo "$MSG" >> "$tb_user_home/.cache/$tb_install_folder/torbrowser_updater_error.log"
+   if test -w $tb_user_home/.cache/$tb_install_folder ; then
+      mkdir --parents "$tb_user_home/.cache/$tb_install_folder"
+   fi
+   if test -w "$tb_user_home/.cache/$tb_install_folder/torbrowser_updater_error.log" ; then
+      echo "$MSG" >> "$tb_user_home/.cache/$tb_install_folder/torbrowser_updater_error.log"
+   fi
 
    ## In case variable output is not set yet.
    [ -n "$output" ] || output="output"
@@ -140,16 +144,17 @@ tb_run_function() {
 
 root_check() {
    if [ -e /run/qubes/this-is-templatevm ]; then
+      true "INFO: $FUNCNAME: Allow running as root because using in Qubes Template."
       return 0
    fi
 
    if echo "$@" | grep -q "\-\-postinst" ; then
+      true "INFO: $FUNCNAME: Allow running as root because using --postinst."
       return 0
    fi
 
    if [ "$(id -u)" != "0" ]; then
-      #echo "$SCRIPTNAME running as user."
-      true
+      true "INFO: $FUNCNAME: running as user (non-root)."
    else
       echo "ERROR: Do not run $SCRIPTNAME as root!"
       tb_exit_function 2
@@ -536,13 +541,18 @@ tb_settings_postinst_common() {
    ## Careful as it would like information to logs:
    ## TODO: out comment this
    ## Connection #0 to host 10.137.0.82 left intact
-   [ -n "$CURL_OPTS" ] || CURL_OPTS="--verbose"
+   #[ -n "$CURL_OPTS" ] || CURL_OPTS="--verbose"
 }
 
 tb_settings_qubes_common_templatevm() {
    ## Skip Tor connectivity check when running inside Qubes TempalteVM,
    ## because since Qubes R4 TemplateVMs are non-networked by default.
    [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
+   [ -n "$tb_qubes_template_detected" ] || tb_qubes_template_detected=true
+}
+
+tb_settings_not_tempaltevm() {
+   [ -n "$tb_qubes_template_detected" ] || tb_qubes_template_detected=false
 }
 
 tb_settings_qubes_postinst_templatevm() {
@@ -572,11 +582,19 @@ tb_settings_manual_run_common() {
    [ -n "$tb_updater_run" ] || tb_updater_run=true
 }
 
+tb_postinst_pre_start() {
+   ## Requires root.
+   ## This has a sudoers exception.
+   sudo --non-interactive /usr/libexec/tb-updater/tb-permission-fix
+}
+
 tb_preparation() {
    [ -n "$tb_wiki" ] || tb_wiki="Tor_Browser"
    [ -n "$tb_title" ] || tb_title="Tor Browser"
 
-   if [ ! "$tb_postinst" = "true" ]; then
+   if [ "$tb_postinst" = "true" ]; then
+      [ -n "$tb_manual_run" ] || tb_manual_run=false
+   else
       [ -n "$tb_manual_run" ] || tb_manual_run=true
    fi
 
@@ -596,9 +614,10 @@ tb_preparation() {
 
    if test -f /run/qubes/this-is-templatevm ; then
       if [ "$(id -u)" != "0" ]; then
-         echo "ERROR: Needs to run as root in Qubes TemplateVM. Run:"
-         echo "sudo $SCRIPTNAME"
-         tb_exit_function 2
+         #echo "ERROR: Needs to run as root in Qubes TemplateVM. Run:"
+         #echo "sudo $SCRIPTNAME"
+         #tb_exit_function 2
+         true
       else
          true
       fi
@@ -613,6 +632,8 @@ tb_preparation() {
 
    if test -f /run/qubes/this-is-templatevm ; then
       tb_settings_qubes_common_templatevm
+   else
+      tb_settings_not_tempaltevm
    fi
 
    if [ "$tb_postinst" = "true" ]; then
@@ -622,6 +643,7 @@ tb_preparation() {
       fi
    fi
 
+   true "tb_manual_run: $tb_manual_run"
    if [ "$tb_manual_run" = "true" ]; then
       tb_settings_manual_run_common
       if test -f /run/qubes/this-is-templatevm ; then
@@ -658,24 +680,10 @@ tb_preparation() {
    [ -n "$TB_KEEP_OLD_VERSIONS_COUNT" ] || TB_KEEP_OLD_VERSIONS_COUNT="0"
 
    if [ ! "$tb_updater_run" = "true" ]; then
-      true "tb_updater_run is set to: $tb_updater_run"
-      true "therefore running: tb_exit_function 0"
+      true "tb_updater_run is set to: '$tb_updater_run'"
+      echo "INFO: --postinst but outside of Qubes TemplateVM, skipping, ok."
       tb_exit_function 0
    fi
-
-   if [ "$tb_postinst" = "true" ]; then
-      ## Being careful with deletion.
-      if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/$tb_install_folder/files" ]; then
-         echo "rm -r -f '$tb_downloaded_files_folder'"
-         rm -r -f "$tb_downloaded_files_folder"
-      fi
-   fi
-
-   ## Required for /usr/libexec/helper-scripts/tor_bootstrap_check.bsh.
-   TEMP_DIR="$tb_temp_folder"
-   export TEMP_DIR
-   rm --recursive --force "$TEMP_DIR"
-   mkdir --parents "$TEMP_DIR"
 
    ## Fortunately, on linux-image-486 kernel, while "uname --all" returns for example
    ## "Linux host 3.2.0-4-486 #1 Debian 3.2.41-2 i686 GNU/Linux",
@@ -819,10 +827,6 @@ tb_preparation() {
    ## Export CURL variable, so it can be read by $CURL_PRGRS.
    export CURL
 
-   mkdir --parents "$tb_home_folder"
-   mkdir --parents "$tb_cache_folder"
-   mkdir --parents "$tb_downloaded_files_folder"
-
    if [ "$tbb_download_alpha_version" = "true" ]; then
       [ -n "$TBB_RELEASE_CHANNEL" ] || TBB_RELEASE_CHANNEL="alpha"
    else
@@ -934,6 +938,26 @@ tb_preparation() {
 
    if [ ! "$tb_auto_set_user_home_msg" = "" ]; then
       echo "INFO: $tb_auto_set_user_home_msg"
+   fi
+}
+
+tb_create_folders() {
+   mkdir --parents "$tb_home_folder"
+   mkdir --parents "$tb_cache_folder"
+   mkdir --parents "$tb_downloaded_files_folder"
+
+   ## Required for /usr/libexec/helper-scripts/tor_bootstrap_check.bsh.
+   TEMP_DIR="$tb_temp_folder"
+   export TEMP_DIR
+   rm --recursive --force "$TEMP_DIR"
+   mkdir --parents "$TEMP_DIR"
+
+   if [ "$tb_postinst" = "true" ]; then
+      ## Being careful with deletion.
+      if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/$tb_install_folder/files" ]; then
+         echo "rm -r -f '$tb_downloaded_files_folder'"
+         rm -r -f "$tb_downloaded_files_folder"
+      fi
    fi
 }
 
@@ -1948,11 +1972,11 @@ tb_cleanup() {
 
 tb_postinst_pre_exit() {
    if [ "$(id -u)" != "0" ]; then
+      true "INFO: $FUNCNAME: Not running as root, ok."
       return 0
    else
-      ## Running as root.
       ## Requires root.
-      /usr/libexec/tb-updater/tb-permission-fix
+      sudo --non-interactive /usr/libexec/tb-updater/tb-permission-fix
    fi
 }
 
@@ -2058,6 +2082,8 @@ main_function() {
    tb_run_function tb_parse_cmd_options "$@"
    tb_run_function tb_preparation
    tb_run_function tb_stdin
+   tb_run_function tb_postinst_pre_start
+   tb_run_function tb_create_folders
    tb_run_function tb_qubes_dvm_template
    tb_run_function tb_anon_ws_dns_conf
    tb_run_function tb_local_version_detection
