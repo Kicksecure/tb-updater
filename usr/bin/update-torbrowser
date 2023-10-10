@@ -578,7 +578,7 @@ tb_settings_manual_run_common() {
    [ -n "$tb_updater_run" ] || tb_updater_run=true
 }
 
-tb_postinst_pre_start() {
+tb_fix_permissions() {
    ## Requires root.
    ## This has a sudoers exception.
    sudo --non-interactive /usr/libexec/tb-updater/tb-permission-fix
@@ -1966,12 +1966,6 @@ tb_cleanup() {
    rm --force "$TBB_PACKAGE_FULL_PATH"
 }
 
-tb_postinst_pre_exit() {
-   ## Requires root.
-   ## This has a sudoers exception.
-   sudo --non-interactive /usr/libexec/tb-updater/tb-permission-fix
-}
-
 tb_chroot_pre_exit() {
    if [ "$tb_reenable_anon_ws_dnf_conf" = "true" ]; then
       echo "INFO: tb_chroot_pre_exit: tb_reenable_anon_ws_dnf_conf=true"
@@ -2074,7 +2068,7 @@ main_function() {
    tb_run_function tb_parse_cmd_options "$@"
    tb_run_function tb_preparation
    tb_run_function tb_stdin
-   tb_run_function tb_postinst_pre_start
+   tb_run_function tb_fix_permissions
    tb_run_function tb_create_folders
    tb_run_function tb_qubes_dvm_template
    tb_run_function tb_anon_ws_dns_conf
@@ -2111,7 +2105,7 @@ main_function() {
    tb_run_function tb_install
    tb_run_function tb_cleanup
    tb_run_function tb_hardcoded_version_last_downloaded_save
-   tb_run_function tb_postinst_pre_exit
+   tb_run_function tb_fix_permissions
    tb_run_function tb_chroot_pre_exit
    tb_run_function tb_start_ask
 }
