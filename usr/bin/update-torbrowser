@@ -150,10 +150,11 @@ root_check() {
 
    if [ "$(id -u)" != "0" ]; then
       true "INFO: $FUNCNAME: running as user (non-root)."
-   else
-      echo "ERROR: Do not run $SCRIPTNAME as root (sudo)!"
-      tb_exit_function 2
+      return 0
    fi
+
+   echo "ERROR: Do not run $SCRIPTNAME as root (sudo)!"
+   tb_exit_function 2
 }
 
 tb_sanity_tests() {
