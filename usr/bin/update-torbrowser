@@ -1966,13 +1966,9 @@ tb_cleanup() {
 }
 
 tb_postinst_pre_exit() {
-   if [ "$(id -u)" != "0" ]; then
-      true "INFO: $FUNCNAME: Not running as root, ok."
-      return 0
-   else
-      ## Requires root.
-      sudo --non-interactive /usr/libexec/tb-updater/tb-permission-fix
-   fi
+   ## Requires root.
+   ## This has a sudoers exception.
+   sudo --non-interactive /usr/libexec/tb-updater/tb-permission-fix
 }
 
 tb_chroot_pre_exit() {
