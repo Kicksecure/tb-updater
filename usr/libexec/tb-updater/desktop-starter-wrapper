@@ -6,8 +6,4 @@
 set -x
 set -e
 
-if [ -e /run/qubes/this-is-templatevm ]; then
-   pkexec DISPLAY="$DISPLAY" update-torbrowser --input gui
-else
-   update-torbrowser --input gui
-fi
+update-torbrowser --input gui
