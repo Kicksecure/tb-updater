@@ -579,6 +579,13 @@ tb_settings_manual_run_common() {
 }
 
 tb_fix_permissions() {
+   ## Do this only in Qubes Template.
+   ## Because /usr/libexec/tb-updater/tb-permission-fix has the hardcoded assumption, that
+   ## user 'user' exists.
+   if [ ! "$tb_user_home" = "/var/cache/tb-binary" ]; then
+      true "INFO: Skipping $FUNCNAME because tb_user_home is not /var/cache/tb-binary, ok."
+      return 0
+   fi
    ## Requires root.
    ## This has a sudoers exception.
    sudo --non-interactive /usr/libexec/tb-updater/tb-permission-fix
