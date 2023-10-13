@@ -931,14 +931,6 @@ tb_preparation() {
 }
 
 tb_create_folders() {
-   if [ "$tb_postinst" = "true" ]; then
-      ## Being careful with deletion.
-      if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/$tb_install_folder/files" ]; then
-         echo "rm -r -f '$tb_downloaded_files_folder'"
-         rm -r -f "$tb_downloaded_files_folder"
-      fi
-   fi
-
    mkdir --parents "$tb_home_folder"
    mkdir --parents "$tb_cache_folder"
    mkdir --parents "$tb_downloaded_files_folder"
@@ -951,18 +943,27 @@ tb_create_folders() {
 }
 
 tb_skip_if_higher_or_equal_version_already_downloaded() {
+   ## Do this only when using --postinst.
    if [ ! "$tb_postinst" = "true" ]; then
+      true "INFO: Not using --postinst, therefore skipping $FUNCNAME."
       return 0
    fi
    if [ "$tbb_version_previous_downloaded_version" = "none" ]; then
+      true "INFO: Could not determine tbb_version_previous_downloaded_version (set to none), therefore skipping $FUNCNAME."
       return 0
    fi
    if [ "$tbb_version" = "" ]; then
+      true "INFO: tbb_version is empty, therefore skipping $FUNCNAME."
       return 0
    fi
    if dpkg --compare-versions "$tbb_version_previous_downloaded_version" ge "$tbb_version" ; then
       echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version' is greater or equal '$tbb_version', therefore skipping to download, ok."
       tb_exit_function 0
+   fi
+   ## Being careful with deletion.
+   if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/$tb_install_folder/files" ]; then
+      echo "rm -r -f '$tb_downloaded_files_folder'"
+      rm -r -f "$tb_downloaded_files_folder"
    fi
 }
 
