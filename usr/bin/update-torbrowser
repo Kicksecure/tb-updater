@@ -399,6 +399,7 @@ outputfunc() {
    if [ "$output_tool" = "" ]; then
       TB_USE_MSGCOLLECTOR="false"
    fi
+   ## Variable initialization required because curl-prgrs uses "set -o nounset".
    [[ -v TB_USE_MSGCOLLECTOR ]] || TB_USE_MSGCOLLECTOR=""
    [[ -v outputfunc_verbose ]] || outputfunc_verbose=""
    if [ "$TB_USE_MSGCOLLECTOR" = "false" ]; then
