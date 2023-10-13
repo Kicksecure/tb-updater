@@ -712,29 +712,15 @@ tb_preparation() {
          ARCH="arm64"
       fi
 
-      ## TODO: After Tor Browser 13.0 was released as stable, the "else" part is probably no longer required.
-      if [ "$tbb_download_alpha_version" = "true" ]; then
-         if [ "$ARCH" = "x86_64" ]; then
-            [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-x86_64"
-         elif [ "$ARCH" = "i686" ]; then
-            [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-i686"
-         elif [ "$ARCH" = "arm64" ]; then
-            [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-arm64"
-         else
-            [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-$ARCH"
-            echo "WARNING: Guessing. Setting ARCH_DOWNLOAD to '$ARCH_DOWNLOAD'. If functional, this is probably OK."
-         fi
+      if [ "$ARCH" = "x86_64" ]; then
+         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-x86_64"
+      elif [ "$ARCH" = "i686" ]; then
+         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-i686"
+      elif [ "$ARCH" = "arm64" ]; then
+         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-arm64"
       else
-         if [ "$ARCH" = "x86_64" ]; then
-            [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux64"
-         elif [ "$ARCH" = "i686" ]; then
-            [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux32"
-         elif [ "$ARCH" = "arm64" ]; then
-            [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-arm64"
-         else
-            [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="$ARCH"
-            echo "WARNING: Guessing. Setting ARCH_DOWNLOAD to '$ARCH_DOWNLOAD'. If functional, this is probably OK."
-         fi
+         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-$ARCH"
+         echo "WARNING: Guessing. Setting ARCH_DOWNLOAD to '$ARCH_DOWNLOAD'. If functional, this is probably OK."
       fi
 
       echo "INFO: ARCH_DOWNLOAD '$ARCH_DOWNLOAD' detected."
@@ -1419,14 +1405,8 @@ tb_version_processing() {
    [ -n "$tbb_version_folder" ] || tbb_version_folder="${tbb_version}"
    [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
 
-   ## TODO: After Tor Browser 13.0 was released as stable, the "else" part is probably no longer required.
-   if [ "$tbb_download_alpha_version" = "true" ]; then
-      [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}.tar.xz.asc"
-      [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}.tar.xz"
-   else
-      [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_ALL.tar.xz.asc"
-      [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}_ALL.tar.xz"
-   fi
+   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}.tar.xz.asc"
+   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}.tar.xz"
 
    [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}${TBB_DOWNLOAD_APPENDIX}"
    [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
