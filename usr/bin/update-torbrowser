@@ -277,8 +277,7 @@ tb_parse_cmd_options() {
                TB_FORCE_INSTALL="1"
                DEV_BUILD_PASSTHROUGH="1"
                DEV_PASSTHROUGH="1"
-               ## Use export so it can be read by CURL_PRGRS.
-               [ -n "$TB_USE_MSGCOLLECTOR" ] || export TB_USE_MSGCOLLECTOR="false"
+               TB_USE_MSGCOLLECTOR="false"
                shift
                ;;
            --postinst)
@@ -398,9 +397,10 @@ output() {
 outputfunc() {
    true "$FUNCNAME: args: ${1+$@}"
    if [ "$output_tool" = "" ]; then
-      local TB_USE_MSGCOLLECTOR
       TB_USE_MSGCOLLECTOR="false"
    fi
+   [[ -v TB_USE_MSGCOLLECTOR ]] || TB_USE_MSGCOLLECTOR=""
+   [[ -v outputfunc_verbose ]] || outputfunc_verbose=""
    if [ "$TB_USE_MSGCOLLECTOR" = "false" ]; then
       while true; do
          case $1 in
@@ -523,8 +523,7 @@ tb_settings_postinst_common() {
    [ -n "$NOKILLTB" ] || NOKILLTB="1"
    [ -n "$noaskstart" ] || noaskstart="true"
    [ -n "$TB_INPUT" ] || TB_INPUT="none"
-   ## Use export so it can be read by CURL_PRGRS.
-   [ -n "$TB_USE_MSGCOLLECTOR" ] || export TB_USE_MSGCOLLECTOR="false"
+   TB_USE_MSGCOLLECTOR="false"
 
    [ -n "$tbb_use_hardcoded_version" ] || tbb_use_hardcoded_version="true"
 
