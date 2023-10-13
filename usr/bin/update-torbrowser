@@ -964,6 +964,7 @@ tb_skip_if_higher_or_equal_version_already_downloaded() {
    if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/$tb_install_folder/files" ]; then
       echo "rm -r -f '$tb_downloaded_files_folder'"
       rm -r -f "$tb_downloaded_files_folder"
+      mkdir --parents "$tb_downloaded_files_folder"
    fi
 }
 
