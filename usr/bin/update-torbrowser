@@ -1862,7 +1862,7 @@ Extracting $tb_title... This could take a moment..."
          --kill-after="$kill_after" \
          "$timeout_after" \
             pv \
-               -n \
+               --numeric \
                "$file_name" \
                1> "$tar_fifo" \
                2> "$pv_wrapper_fifo" \
