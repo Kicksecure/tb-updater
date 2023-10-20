@@ -3,10 +3,11 @@
 
 ## Required during build inside chroot.
 ## Should be safe to remove after build.
-%sudo ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-pre
-user ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-pre
-%sudo ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-post
-user ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-post
+## Currently not in use.
+#%sudo ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-pre
+#user ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-pre
+#%sudo ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-post
+#user ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-post
 
 ## Required in Qubes Templates.
 %sudo ALL=NOPASSWD: /usr/libexec/tb-updater/tb-permission-fix
