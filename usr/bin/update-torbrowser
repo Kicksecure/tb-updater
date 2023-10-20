@@ -1809,6 +1809,7 @@ Extracting $tb_title... This could take a moment..."
                &
 
       lastpid="$!"
+      true "INFO: wait bsdtar lastpid"
       wait "$lastpid" || { tb_tar_exit_code="$?" ; true; };
    else
       pv_echo_command='echo "extraction percent done: "$percent" / 100" >&2'
@@ -1866,8 +1867,11 @@ Extracting $tb_title... This could take a moment..."
       pv_pid="$!"
       last_pid_list+=" $pv_pid"
 
+      true "INFO: wait pv_pid"
       wait "$pv_pid" || { pv_exit_code="$?" ; true; };
+      true "INFO: wait tar_pid"
       wait "$tar_pid" || { tar_exit_code="$?" ; true; };
+      true "INFO: wait pv_wrapper_pid"
       wait "$pv_wrapper_pid" || { pv_wrapper_exit_code="$?" ; true; };
 
       if [ ! "$pv_exit_code" = "0" ]; then
