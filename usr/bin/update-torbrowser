@@ -433,6 +433,7 @@ outputfunc() {
                ;;
          esac
       done
+      ## MSG will be unset for --progressx.
       [[ -v MSG ]] || MSG=""
       if [ ! "$MSG" = "" ]; then
          MSG="$(/usr/libexec/msgcollector/striphtml "$MSG")"
