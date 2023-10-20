@@ -153,6 +153,9 @@ tb_run_function() {
 root_check() {
    if [ "$(id -u)" = "0" ]; then
       tb_running_as_root=true
+      ## Runs as root during build process (chroot), where msgcollector is not running.
+      ## Under Wayland cannot use gui applications as root.
+      export TB_USE_MSGCOLLECTOR="false"
    else
       tb_running_as_root=false
    fi
@@ -291,7 +294,7 @@ tb_parse_cmd_options() {
                TB_FORCE_INSTALL="1"
                DEV_BUILD_PASSTHROUGH="1"
                DEV_PASSTHROUGH="1"
-               TB_USE_MSGCOLLECTOR="false"
+               export TB_USE_MSGCOLLECTOR="false"
                shift
                ;;
            --postinst)
@@ -368,7 +371,7 @@ tb_stdin() {
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       echo "INFO: TB_FORCE_INSTALL is set to '1', therefore setting TB_INPUT to 'none'."
       TB_INPUT="none"
-      TB_USE_MSGCOLLECTOR="false"
+      export TB_USE_MSGCOLLECTOR="false"
       return 0
    fi
    if [ -t "0" ]; then
@@ -378,7 +381,7 @@ tb_stdin() {
 #command line, but still use the graphical user interface for input, \
 #you could add to command line: --input gui"
       TB_INPUT="stdin"
-      TB_USE_MSGCOLLECTOR="false"
+      export TB_USE_MSGCOLLECTOR="false"
       return 0
    fi
    echo "INFO: stdin not connected to terminal, probably run in graphical environment, ok."
@@ -530,7 +533,7 @@ tb_settings_postinst_common() {
    [ -n "$NOKILLTB" ] || NOKILLTB="1"
    [ -n "$noaskstart" ] || noaskstart="true"
    [ -n "$TB_INPUT" ] || TB_INPUT="none"
-   TB_USE_MSGCOLLECTOR="false"
+   export TB_USE_MSGCOLLECTOR="false"
 
    [ -n "$tbb_use_hardcoded_version" ] || tbb_use_hardcoded_version="true"
 
