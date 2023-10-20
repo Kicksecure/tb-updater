@@ -1829,7 +1829,6 @@ Extracting $tb_title... This could take a moment..."
 
       lastpid="$!"
       true "INFO: wait bsdtar lastpid"
-      sleep 1
       wait "$lastpid" || { tb_tar_exit_code="$?" ; true; };
    else
       pv_echo_command='echo "extraction percent done: "$percent" / 100" >&2'
@@ -1864,7 +1863,6 @@ Extracting $tb_title... This could take a moment..."
                &
       tar_pid="$!"
       last_pid_list+=" $tar_pid"
-      sleep 1
 
       ## Debugging.
       export pv_wrapper_debug=true
@@ -1878,7 +1876,6 @@ Extracting $tb_title... This could take a moment..."
                &
       pv_wrapper_pid="$!"
       last_pid_list+=" $pv_wrapper_pid"
-      sleep 1
 
       timeout \
          --kill-after="$kill_after" \
@@ -1891,7 +1888,6 @@ Extracting $tb_title... This could take a moment..."
                &
       pv_pid="$!"
       last_pid_list+=" $pv_pid"
-      sleep 1
 
       true "INFO: wait pv_pid"
       wait "$pv_pid" || { pv_exit_code="$?" ; true; };
