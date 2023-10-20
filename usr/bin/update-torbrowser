@@ -433,8 +433,9 @@ outputfunc() {
                ;;
          esac
       done
-      MSG="$(/usr/libexec/msgcollector/striphtml "$MSG")"
+      [[ -v MSG ]] || MSG=""
       if [ ! "$MSG" = "" ]; then
+         MSG="$(/usr/libexec/msgcollector/striphtml "$MSG")"
          echo "$MSG"
       fi
    elif [ "$outputfunc_verbose" = "true" ]; then
