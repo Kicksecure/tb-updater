@@ -143,13 +143,19 @@ tb_run_function() {
 }
 
 root_check() {
-   if echo "$@" | grep -q "\-\-postinst" ; then
-      true "INFO: $FUNCNAME: Allow running as root because using --postinst."
+   if [ "$(id -u)" = "0" ]; then
+      tb_running_as_root=true
+   else
+      tb_running_as_root=false
+   fi
+
+   if [ "$tb_running_as_root" = "false" ]; then
+      true "INFO: $FUNCNAME: running as user (non-root)."
       return 0
    fi
 
-   if [ "$(id -u)" != "0" ]; then
-      true "INFO: $FUNCNAME: running as user (non-root)."
+   if echo "$@" | grep -q "\-\-postinst" ; then
+      true "INFO: $FUNCNAME: Allow running as root because using --postinst."
       return 0
    fi
 
