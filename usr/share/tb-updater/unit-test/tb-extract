@@ -1,0 +1,35 @@
+#!/bin/bash
+
+## Copyright (C) 2023 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
+## See the file COPYING for copying conditions.
+
+set -x
+true "$0: START"
+set -e
+set -o nounset
+set -o pipefail
+
+source /usr/bin/update-torbrowser
+
+export who_ami=$(whoami)
+TEMP_DIR=$(mktemp --directory)
+IDENTIFIER=test
+export IDENTIFIER
+tb_extract_temp_folder=/tmp/test
+TBB_PACKAGE_FULL_PATH=/tmp/test/test.tar.xz
+TB_NO_EXTRACT=""
+TB_FORCE_INSTALL=""
+tb_title=tb-updater
+TITLE=title
+TB_INPUT=""
+anon_shared_inst_tb=closed
+tb_postinst=false
+
+#echo x > /tmp/x
+head -c 1M </dev/urandom > /tmp/x
+
+tar cfJ /tmp/test/test.tar.xz /tmp/x
+
+tb_extract
+
+true "$0: END"
