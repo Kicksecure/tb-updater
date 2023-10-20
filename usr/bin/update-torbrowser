@@ -1845,6 +1845,9 @@ Extracting $tb_title... This could take a moment..."
       tar_pid="$!"
       last_pid_list+=" $tar_pid"
 
+      ## Debugging.
+      export pv_wrapper_debug=true
+
       timeout \
          --kill-after="$kill_after" \
          "$timeout_after" \
