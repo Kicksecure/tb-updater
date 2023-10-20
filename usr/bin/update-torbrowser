@@ -3,6 +3,7 @@
 ## Copyright (C) 2012 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
 ## See the file COPYING for copying conditions.
 
+: "${tpo_downloader_debug:=""}"
 if [ ! "$tpo_downloader_debug" = "" ]; then
    if [ "$tpo_downloader_debug" -ge "1" ]; then
       set -x
@@ -24,9 +25,8 @@ else
   set -o errtrace
 fi
 
-[ -n "$SCRIPTNAME" ] || SCRIPTNAME="$(basename "$BASH_SOURCE")"
-
-[ -n "$ICON" ] || ICON="/usr/share/icons/icon-pack-dist/tbupdate.ico"
+[[ -v SCRIPTNAME ]] || SCRIPTNAME="$(basename "$BASH_SOURCE")"
+[[ -v ICON ]] || ICON="/usr/share/icons/icon-pack-dist/tbupdate.ico"
 
 ## Developer comment on this script:
 ## I would be very happy if this script would not be required.
