@@ -1900,6 +1900,9 @@ Extracting $tb_title... This could take a moment..."
    fi
 
    if [ ! "$tb_tar_exit_code" = "0" ]; then
+      ## Debugging.
+      ls -la "$tb_extract_temp_folder" || true
+
       local MSG="<p><b>Could not extract $file_name!</b>
 <br></br>
 <br></br>(Debugging information:
