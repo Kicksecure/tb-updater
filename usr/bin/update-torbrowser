@@ -77,7 +77,6 @@ tb_error_handler() {
 <br></br>## BASH_COMMAND: $BASH_COMMAND
 <br></br>## exit_code: $exit_code
 <br></br>##
-<br></br>## output: $output
 <br></br>## output_opts: ${output_opts[@]}
 <br></br>## progressbaridx: $progressbaridx
 <br></br>##
@@ -95,23 +94,20 @@ tb_error_handler() {
       echo "$MSG" >> "$tb_user_home/.cache/$tb_install_folder/torbrowser_updater_error.log"
    fi
 
-   ## In case variable output is not set yet.
-   [ -n "$output" ] || output="output"
-
-   ## In case function $output does not exist yet.
-   if [ ! "$(type -t "$output")" = "function" ]; then
-      output="echo"
+   ## In case function outputfunc does not exist yet.
+   if [ ! "$(type -t "outputfunc")" = "function" ]; then
+      outputfunc="echo"
    fi
 
    if [ "$progressbaridx" = "" ]; then
       true
    else
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       progressbaridx=""
    fi
 
-   $output ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
-   $output ${output_opts[@]} --messagecli --titlecli "$TITLE" --typecli "error" --message "$MSG" --done
+   outputfunc ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
+   outputfunc ${output_opts[@]} --messagecli --titlecli "$TITLE" --typecli "error" --message "$MSG" --done
    tb_exit_function 1
 }
 
@@ -210,18 +206,18 @@ tb_ex_funct() {
    if [ "$progressbaridx" = "" ]; then
       true
    else
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       progressbaridx=""
    fi
 
-   $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+   outputfunc ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 
    #MSG="Aborted."
-   #$output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+   #outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
    #echo "ERROR: $MSG"
 
    MSG="$0: INFO: $FUNCNAME: Signal $SIGNAL_TYPE received. Exiting."
-   $output ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+   outputfunc ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 }
 
 tb_signal_sigterm() {
@@ -387,7 +383,7 @@ tb_qubes_dvm_template() {
 <br></br>
 More info: <a href=https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template>https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template</a></p>"
 
-   $output ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
+   outputfunc ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
 
    local MSG_CLI
    MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
@@ -396,15 +392,9 @@ More info: <a href=https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Runnin
    tb_exit_function 1
 }
 
-output() {
-   outputfunc "$@"
-}
-
 outputfunc() {
    true "$FUNCNAME: args: ${1+$@}"
-   if [ "$output_tool" = "" ]; then
-      TB_USE_MSGCOLLECTOR="false"
-   fi
+   output_tool="/usr/libexec/msgcollector/msgcollector"
    ## Variable initialization required because curl-prgrs uses "set -o nounset".
    [[ -v TB_USE_MSGCOLLECTOR ]] || TB_USE_MSGCOLLECTOR=""
    [[ -v outputfunc_verbose ]] || outputfunc_verbose=""
@@ -438,10 +428,6 @@ outputfunc() {
    fi
    true
 }
-
-## Make it visible to curl-prgrs.
-export -f output
-export -f outputfunc
 
 tb_config_folder_parser() {
    true "tb_settings_folder: $tb_settings_folder"
@@ -770,18 +756,13 @@ tb_preparation() {
 
    TITLE="$tb_title Downloader (by Whonix developers)"
 
-   output_tool="/usr/libexec/msgcollector/msgcollector"
-   output="output"
-
-   $output --icon "$ICON"
-   $output --parenttty "$my_tty"
-   $output --whoami "$who_ami"
-   $output --titlex "$TITLE"
-   $output --titlecli "$TITLE"
+   outputfunc --icon "$ICON"
+   outputfunc --parenttty "$my_tty"
+   outputfunc --whoami "$who_ami"
+   outputfunc --titlex "$TITLE"
+   outputfunc --titlecli "$TITLE"
 
    ## Make visible to curl-prgrs.
-   export output_tool
-   export output
    export IDENTIFIER
    export who_ami
 
@@ -800,7 +781,7 @@ tb_preparation() {
          CURL=curl
       else
          local MSG="uwt_tool: Can not find curl. Please report this bug!"
-         $output ${output_opts[@]} --messagex --typex "error" --message "$MSG"
+         outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG"
          echo "ERROR: $MSG"
          EXIT_CODE="1"
          return 0
@@ -855,7 +836,7 @@ tb_preparation() {
    if [ "$tb_onion" = "true" ]; then
       if [ "$ARCH_DOWNLOAD" = "linux-arm64" ]; then
          MSG="<p>onion not available for platform '$ARCH_DOWNLOAD'.</p>"
-         $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+         outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
          local MSG_CLI
          MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
          echo "ERROR: $MSG_CLI"
@@ -1016,7 +997,7 @@ tb_connectivity_checks_tor() {
 <p>Debugging information:<br />
 You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCNAME</code> should be skipped.</p>"
 
-         $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+         outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
          local MSG_CLI
          MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
@@ -1049,7 +1030,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
 
 <p>If systemcheck reports no problems with internet activity and downloading $tb_title still fails, please report a bug!</p>"
 
-         $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+         outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
          local MSG_CLI
          MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
@@ -1106,7 +1087,7 @@ tb_connectivity_checks_curl() {
 <p>If systemcheck reports no problems with internet activity and downloading $tb_title keeps failing, please report a bug!</p>
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
-      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
       MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
@@ -1174,7 +1155,7 @@ tb_remote_version_sanity_test() {
 <p>Either $TBB_VERSIONS_FILE_LINK is invalid or this is a $SCRIPTNAME (by Whonix developers) bug.</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
-      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
       MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
@@ -1240,7 +1221,7 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
 <br />(Or delete them using a file manager.)
 <br />
 <br />More info: <a href=https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Qubes-specific>https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Qubes-specific</a></p>"
-         $output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
+         outputfunc ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
          local MSG_CLI
          MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
@@ -1444,7 +1425,7 @@ tb_reset() {
 <br/>
 <br/>See:
 <br/><a href=https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset>https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset</a></p>"
-      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
       MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
@@ -1470,12 +1451,14 @@ tb_download_common() {
 ----------------------------------------------------------------------
 $tb_notify_details"
       if [ "$TB_INPUT" = "" ] || [ "$TB_INPUT" = "gui" ]; then
-         $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
+         outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
          ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
          ## variables. (See above.)
          ## Define what CURL_PRGRS is supposed to eval.
          ## ($percent is a local variable provided by $CURL_PRGRS.)
-         export CURL_PRGRS_EXEC="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
+         export -f outputfunc
+         CURL_PRGRS_EXEC="outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
+         export CURL_PRGRS_EXEC
       fi
    fi
 
@@ -1507,7 +1490,7 @@ $tb_notify_details"
    if [ "$progressbaridx" = "" ]; then
       true
    else
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       progressbaridx=""
    fi
 
@@ -1530,7 +1513,7 @@ $tb_notify_details"
 <p>$DOWNLOAD_FAIL_HELP</p>
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
-      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
       MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
@@ -1630,7 +1613,7 @@ tb_gpg_verify() {
 <p>gpg_bash_lib_output_diagnostic_message:</p>
 
 <p>$gpg_bash_lib_output_diagnostic_message</p>"
-      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
       MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
@@ -1785,7 +1768,7 @@ tb_extract() {
 ----------------------------------------------------------------------
 Extracting $tb_title... This could take a moment..."
       if [ "$TB_INPUT" = "" ] || [ "$TB_INPUT" = "gui" ]; then
-         $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
+         outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
       fi
    fi
 
@@ -1829,8 +1812,10 @@ Extracting $tb_title... This could take a moment..."
       wait "$lastpid" || { tb_tar_exit_code="$?" ; true; };
    else
       pv_echo_command='echo "extraction percent done: "$percent" / 100" >&2'
-      pv_wrapper_command="$output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
-      export pv_wrapper_command pv_echo_command
+      export pv_echo_command
+      export -f outputfunc
+      pv_wrapper_command="outputfunc ${output_opts[@]} --progressbaridx $progressbaridx --progressx \"\$percent\""
+      export pv_wrapper_command
 
       local tar_fifo tar_pid pv_wrapper_fifo pv_wrapper_fifo
       local pv_exit_code tar_exit_code pv_wrapper_exit_code
@@ -1903,7 +1888,7 @@ Extracting $tb_title... This could take a moment..."
    if [ "$progressbaridx" = "" ]; then
       true
    else
-      $output ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       progressbaridx=""
    fi
 
@@ -1917,7 +1902,7 @@ Extracting $tb_title... This could take a moment..."
 <br></br>pv_wrapper_exit_code: $pv_wrapper_exit_code)
 <br></br>
 <br></br>Please report this bug!</p>"
-      $output ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
       MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
@@ -2016,7 +2001,7 @@ Skipping question to start $tb_title."
 
 <p>To run $tb_title, run in a TemplateBasedVM, StandaloneVM or DispVM, run:<br />
 <code>$tb_bin</code></p>"
-         $output ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
+         outputfunc ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
          local MSG_CLI
          MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
