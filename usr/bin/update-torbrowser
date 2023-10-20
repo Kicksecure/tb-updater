@@ -1903,7 +1903,7 @@ Extracting $tb_title... This could take a moment..."
       local MSG="<p><b>Could not extract $file_name!</b>
 <br></br>
 <br></br>(Debugging information:
-<br></br>tar exit code: $tb_tar_exit_code
+<br></br>tb_tar_exit_code: $tb_tar_exit_code
 <br></br>pv_exit_code: $pv_exit_code
 <br></br>tar_exit_code: $tar_exit_code
 <br></br>pv_wrapper_exit_code: $pv_wrapper_exit_code)
