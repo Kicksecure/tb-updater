@@ -1,3 +1,33 @@
+commit fe145204707fd5801a7edd949f68094bda6d9fdb
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 20 06:49:31 2023 -0400
+
+    sudo
+
+commit bb7fd58705a491c0828ffc8c543f6d6bade7f615
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 20 06:48:03 2023 -0400
+
+    sudo
+
+commit e0c9261787496bb5f8a1c93ad3ad7fbdbc5f9ec1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 20 06:45:58 2023 -0400
+
+    fix chroot build issue
+
+commit bc41ea93f475ddebfa85d371270771d73315c9e0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 20 06:43:56 2023 -0400
+
+    fix
+
+commit 44f55dbf315be2bb372be5300cff5c63af2dee93
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 13 12:58:50 2023 -0400
+
+    bumped changelog version
+
 commit 73bb567a26e915c9ee81aaf9402d30a4b8540ed7
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Oct 13 12:58:32 2023 -0400
