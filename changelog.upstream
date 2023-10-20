@@ -1,3 +1,51 @@
+commit 39bdf9f74a47a5d7edddb8c9474a448a64404290
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 20 10:54:11 2023 -0400
+
+    debugging
+
+commit 143b01a1c4dfe8826f92101d3f622e0bacfa2aab
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 20 10:52:47 2023 -0400
+
+    debugging
+
+commit e113861bc4be66910bafd63ce09074481536d36c
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 20 10:37:40 2023 -0400
+
+    allow `source`ing with nounset
+
+commit cb9bce1ff7bb51d9ee01df6751e228d74ed061c0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 20 10:28:09 2023 -0400
+
+    allow `source`ing update-torbrowser
+
+commit bf78d240817204acf8ef22d95745bb6debd40758
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 20 10:24:20 2023 -0400
+
+    debugging
+
+commit 1fa8a1e565c21b9e2e97bc65f58197320ab44d98
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 20 10:22:05 2023 -0400
+
+    refactoring
+
+commit 8fd0f4fa04763da6c6ad42a81d4123b52f3ba8e7
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 20 10:19:16 2023 -0400
+
+    output
+
+commit a6f146cd0efdb1f27cdf030cb6c4a684c85cdab7
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 20 10:14:41 2023 -0400
+
+    bumped changelog version
+
 commit e86aac1265eb557de81b2f309827068f2dd6b607
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Oct 20 10:10:56 2023 -0400
