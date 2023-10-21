@@ -520,6 +520,8 @@ tb_settings_chroot_common() {
    #[ -n "$CURL_OPTS" ] || CURL_OPTS="--verbose"
 
    [ -n "$tb_disable_anon_ws_dnf_conf" ] || tb_disable_anon_ws_dnf_conf=true
+   ## Debugging.
+   [ -n "$pv_wrapper_debug" ] || pv_wrapper_debug=true
 }
 
 tb_settings_postinst_common() {
