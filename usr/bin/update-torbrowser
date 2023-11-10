@@ -1504,11 +1504,7 @@ $tb_notify_details"
       $CURL_OPTS \
       --output "$CURL_OUT_FILE" \
       "$curl_download_target_url" \
-      &
-
-   last_pid_list="$!"
-   wait "$last_pid_list" || { curl_exit_code="$?" ; true; };
-   last_pid_list=""
+      || { curl_exit_code="$?" ; true; };
 
    if [ "$progressbaridx" = "" ]; then
       true
