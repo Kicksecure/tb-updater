@@ -6,4 +6,6 @@
 set -x
 set -e
 
-update-torbrowser --input gui
+#update-torbrowser --input gui
+
+/usr/libexec/helper-scripts/terminal-wrapper update-torbrowser
