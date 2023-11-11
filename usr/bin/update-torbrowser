@@ -809,8 +809,6 @@ tb_preparation() {
       fi
    fi
 
-   [ -n "$ordinary" ] || ordinary="true"
-
    if [ "$CURL_PRGRS" = "" ]; then
       if [ "$ordinary" = "true" ]; then
          CURL_PRGRS="$CURL"
