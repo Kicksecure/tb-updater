@@ -1,3 +1,61 @@
+commit fc5473cdf0992220dc3bd78f4f548dd20146dbc3
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Nov 11 13:41:28 2023 -0500
+
+    change license to AGPL-3+
+    
+    https://forums.whonix.org/t/license-change-to-agplv3/17455
+
+commit a930ca161e11c8a870fd87c7804beeb1f82da661
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Nov 11 10:01:18 2023 -0500
+
+    Revert "stop using fancy curl progress bar"
+    
+    This reverts commit fa063d02ca2e02fdb5dc0350ffb00f32e7617595.
+
+commit a436a9d3402f68a0a78319396e7efde85430ede7
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Nov 11 10:01:02 2023 -0500
+
+    Revert "fix sigterm handling"
+    
+    This reverts commit f7db2b4929ae6a8c9d7b06b416b0ff4b7b95acde.
+
+commit d4b0bc0a9e74ff565dc30296ef2b05d3f56aa6f1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Nov 11 10:00:44 2023 -0500
+
+    Revert "deprecate GUI"
+    
+    This reverts commit 0eee7a0be719a2f19d48ba4d738d7266fb235287.
+
+commit 0eee7a0be719a2f19d48ba4d738d7266fb235287
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Nov 10 06:38:40 2023 -0500
+
+    deprecate GUI
+    
+    run CLI version inside terminal-emulator when using desktop shortcut
+
+commit f7db2b4929ae6a8c9d7b06b416b0ff4b7b95acde
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Nov 10 06:38:03 2023 -0500
+
+    fix sigterm handling
+
+commit fa063d02ca2e02fdb5dc0350ffb00f32e7617595
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Nov 9 19:38:08 2023 -0500
+
+    stop using fancy curl progress bar
+
+commit b3a1439cf95259afcb016364a3c46d0c77612dbd
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Nov 5 21:16:35 2023 -0500
+
+    bumped changelog version
+
 commit ce025d74e7c8f2e29f13b7f1aeb6238b38226717
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Nov 5 21:16:14 2023 -0500
