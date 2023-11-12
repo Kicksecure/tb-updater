@@ -126,17 +126,18 @@ tb_error_handler() {
 trap "tb_error_handler" ERR
 
 download_fail_help_set() {
-   DOWNLOAD_FAIL_HELP="<p>Possible reasons:</p>
-<p>
-<br></br>- Internet connectivity issue.
-<br></br>- The download server is down.
-<br></br>- File size exceeded (endless data attack triggered).
-<br></br>- $tb_title Downloader (by Whonix developers) has been broken due to upstream changes.
-</p>
+DOWNLOAD_FAIL_HELP="<p>Possible reasons for download failure:</p>
+<ul>
+  <li>Internet connectivity issue.</li>
+  <li>The download server is down.</li>
+  <li>File size exceeded (endless data attack triggered).</li>
+  <li>$tb_title Downloader (by Whonix developers) has been broken due to upstream changes.</li>
+</ul>
 <p>Recommendations:</p>
-<p>
-<a href=https://www.whonix.org/wiki/Tor_Browser#Troubleshooting>https://www.whonix.org/wiki/Tor_Browser#Troubleshooting</a>
-</p>"
+<ul>
+  <li>* Re-run $SCRIPTNAME with or without --resume in terminal. For example: <code>$SCRIPTNAME --resume</code></li>
+  <li>* For more information, see the <a href='https://www.whonix.org/wiki/Tor_Browser#Troubleshooting'>https://www.whonix.org/wiki/Tor_Browser#Troubleshooting</a>.</li>
+</ul>"
 }
 
 tb_run_function() {
