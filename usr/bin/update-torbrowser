@@ -326,11 +326,7 @@ tb_parse_cmd_options() {
                shift
                ;;
            --resume)
-               CURL_RESUME="-C -"
-               ## XXX: Looks like curl-prgrs does not support '-C -'.
-               ##      Therefore also implying '--ordinary' progress bar when
-               ##      using --resume.
-               [ -n "$ordinary" ] || ordinary="true"
+               CURL_RESUME="--continue-at -"
                shift
                ;;
            --onion)
@@ -1490,6 +1486,7 @@ $tb_notify_details"
 
    curl_exit_code="0"
    $CURL_PRGRS \
+      $CURL_RESUME \
       --fail \
       $CURL_PROXY \
       $CURL_FORCE_SSL \
@@ -1497,7 +1494,6 @@ $tb_notify_details"
       --retry 3 \
       --retry-delay 3 \
       --max-time "$curl_download_max_time" \
-      $CURL_RESUME \
       --location \
       $CURL_OPTS \
       --output "$CURL_OUT_FILE" \
