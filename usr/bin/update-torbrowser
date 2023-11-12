@@ -135,8 +135,8 @@ DOWNLOAD_FAIL_HELP="<p>Possible reasons for download failure:</p>
 </ul>
 <p>Recommendations:</p>
 <ul>
-  <li>* Re-run $SCRIPTNAME with or without --resume in terminal. For example: <code>$SCRIPTNAME --resume</code></li>
-  <li>* For more information, see the <a href='https://www.whonix.org/wiki/Tor_Browser#Troubleshooting'>https://www.whonix.org/wiki/Tor_Browser#Troubleshooting</a>.</li>
+  <li>Re-run $SCRIPTNAME with or without --resume in terminal. For example: <code>$SCRIPTNAME --resume</code></li>
+  <li>For more information, see the <a href='https://www.whonix.org/wiki/Tor_Browser#Troubleshooting'>https://www.whonix.org/wiki/Tor_Browser#Troubleshooting</a>.</li>
 </ul>"
 }
 
