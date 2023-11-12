@@ -1478,7 +1478,7 @@ $tb_notify_details"
          ## Define what CURL_PRGRS is supposed to eval.
          ## ($percent is a local variable provided by $CURL_PRGRS.)
          export -f outputfunc
-         CURL_PRGRS_EXEC="outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx \"\$percent\""
+         CURL_PRGRS_EXEC="outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx"
          export CURL_PRGRS_EXEC
       fi
    fi
