@@ -16,7 +16,7 @@ if [ "${BASH_SOURCE}" = "${0}" ]; then
   ## Script was executed.
   tb_updater_was_sourced="false"
 elif [ "${BASH_SOURCE}" = "$(command -v "${0}")" ]; then
-  ## Script was executed.
+  ## Script was executed probably with 'bash -x'.
   tb_updater_was_sourced="false"
 else
   ## Script was sourced.
