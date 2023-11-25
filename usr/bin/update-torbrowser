@@ -12,14 +12,20 @@ fi
 
 : "${BASH_SOURCE:=""}"
 
-if [ "${BASH_SOURCE}" != "${0}" ]; then
+if [ "${BASH_SOURCE}" = "${0}" ]; then
+  ## Script was executed.
+  tb_updater_was_sourced="false"
+elif [ "${BASH_SOURCE}" = "$(command -v "${0}")" ]; then
+  ## Script was executed.
+  tb_updater_was_sourced="false"
+else
   ## Script was sourced.
   ## This is useful for other programs / scripts to be able to `source` the
   ## functions of this script for code re-use. dist-installer-gui will do this.
   tb_updater_was_sourced="true"
-else
-  ## Script was executed.
-  tb_updater_was_sourced="false"
+fi
+
+if [ "$tb_updater_was_sourced" = "false" ]; then
   # shellcheck disable=SC2317
   set -o pipefail
   set -o errtrace
