@@ -1,3 +1,23 @@
+commit d4e1b6894e39f962aae2bd3d6e2940be351a2b63
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Nov 25 00:47:41 2023 -0500
+
+    comment
+
+commit aeb8a8e84777cef54ebfcf702c82b9d91bcb115a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Nov 25 00:46:43 2023 -0500
+
+    fix detection of script being executed versus being sourced
+    
+    in case the script was run with bash -x
+
+commit 24e643a95c38740bed14c95a778fb5e28af8128b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Nov 24 05:33:25 2023 +0000
+
+    bumped changelog version
+
 commit e72e0be8b1d7812bcc00b5c105edbe3da91c2f8a
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Nov 24 00:32:18 2023 -0500
