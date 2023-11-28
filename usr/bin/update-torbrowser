@@ -897,6 +897,10 @@ tb_preparation() {
          [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https --cert-status"
       fi
 
+      if [ -z "$TBB_VERSIONS_FILE_LINK" ] && [ "$tb_browser_name" = "mullvad-browser" ]; then
+         TBB_VERSIONS_FILE_LINK="https://cdn.mullvad.net/browser/update_responses/update_1/${TBB_RELEASE_CHANNEL}/downloads.json"
+      fi
+
       [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://aus1.torproject.org/torbrowser/update_3/${TBB_RELEASE_CHANNEL}/downloads.json"
    fi
 
@@ -1424,10 +1428,11 @@ tb_version_processing() {
    fi
 
    [ -n "$tbb_version_folder" ] || tbb_version_folder="${tbb_version}"
+   [ -n "$tb_browser_download_name" ] || tb_browser_download_name="tor-browser"
    [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
 
-   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}.tar.xz.asc"
-   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}.tar.xz"
+   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="${tb_browser_download_name}-${ARCH_DOWNLOAD}-${tbb_version}.tar.xz.asc"
+   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="${tb_browser_download_name}-${ARCH_DOWNLOAD}-${tbb_version}.tar.xz"
 
    [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}${TBB_DOWNLOAD_APPENDIX}"
    [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"

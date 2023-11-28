@@ -1,0 +1,21 @@
+#!/bin/bash
+
+## Copyright (C) 2012 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
+## See the file COPYING for copying conditions.
+
+export SCRIPTNAME="$(basename "$BASH_SOURCE")"
+
+export ICON="/usr/share/icons/icon-pack-dist/tbupdate.ico"
+
+export IDENTIFIER="mullvadbrowser-downloader"
+export tb_install_folder="mb"
+export tb_install_folder_dot=".mb"
+export tb_title="Mullvad Browser"
+export tb_wiki="Mullvad_Browser"
+export tb_browser_name="mullvad-browser"
+export tb_browser_download_name="mullvad-browser"
+export tb_settings_folder="mullvadbrowser.d"
+export tb_bin="mullvadbrowser"
+export TBB_REMOTE_FOLDER="https://dist.torproject.org/mullvadbrowser"
+
+update-torbrowser "$@"
