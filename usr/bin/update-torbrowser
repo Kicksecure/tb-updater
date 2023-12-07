@@ -849,6 +849,8 @@ tb_preparation() {
       [ -n "$TBB_DOWNLOAD_APPENDIX" ] || TBB_DOWNLOAD_APPENDIX=""
    fi
 
+   [ -n "$tbb_versions_base_folder" ] || tbb_versions_base_folder="torbrowser/update_3"
+
    ## https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/ file was abolished by upstream
    ## https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/33521
    ## https://web.archive.org/web/20201210123314/https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/
@@ -882,7 +884,8 @@ tb_preparation() {
       ## https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
       ## https://web.archive.org/web/20210424113759/https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
       ## Onion-Location	http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion/torbrowser/update_3/release/downloads.json
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion/torbrowser/update_3/${TBB_RELEASE_CHANNEL}/downloads.json"
+      [ -n "$tbb_versions_base_url" ] || tbb_versions_base_url="http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion"
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/downloads.json"
    else
       if [ "$ARCH_DOWNLOAD" = "linux-arm64" ]; then
          [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://sourceforge.net"
@@ -897,11 +900,8 @@ tb_preparation() {
          [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https --cert-status"
       fi
 
-      if [ -z "$TBB_VERSIONS_FILE_LINK" ] && [ "$tb_browser_name" = "mullvad-browser" ]; then
-         TBB_VERSIONS_FILE_LINK="https://cdn.mullvad.net/browser/update_responses/update_1/${TBB_RELEASE_CHANNEL}/downloads.json"
-      fi
-
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://aus1.torproject.org/torbrowser/update_3/${TBB_RELEASE_CHANNEL}/downloads.json"
+      [ -n "$tbb_versions_base_url" ] || tbb_versions_base_url="https://aus1.torproject.org"
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/downloads.json"
    fi
 
    if [ "$DEV_PASSTHROUGH" = "1" ]; then
