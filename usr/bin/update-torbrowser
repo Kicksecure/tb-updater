@@ -1466,8 +1466,10 @@ tb_reset() {
 
 tb_kill_already_running_tb_maybe() {
    if [ ! "$NOKILLTB" = "1" ]; then
+      [ -n "$tb_process_name" ] || tb_process_name="firefox.real"
+
       echo "INFO: Because you are not using --nokilltb, now killing potentially still running instances of $tb_title..."
-      killall firefox.real || true
+      killall "$tb_process_name" || true
    fi
 }
 
