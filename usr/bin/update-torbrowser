@@ -700,7 +700,8 @@ tb_preparation() {
    [ -n "$tb_gpg_tmp_dir" ] || tb_gpg_tmp_dir="$tb_cache_folder/gpgtmpdir"
    [ -n "$tb_extract_temp_folder" ] || tb_extract_temp_folder="$tb_cache_folder/$tb_browser_name"
 
-   [ -n "$tb_local_version_file" ] || tb_local_version_file="$tb_browser_folder/Browser/tbb_version.json"
+   [ -n "$tb_local_version_filename" ] || tb_local_version_filename="tbb_version.json"
+   [ -n "$tb_local_version_file" ] || tb_local_version_file="$tb_browser_folder/Browser/$tb_local_version_filename"
    [ -n "$tbb_download_alpha_version" ] || tbb_download_alpha_version="false"
 
    [ -n "$TB_KEEP_OLD_VERSIONS_COUNT" ] || TB_KEEP_OLD_VERSIONS_COUNT="0"

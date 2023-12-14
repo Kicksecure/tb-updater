@@ -20,5 +20,6 @@ export TBB_REMOTE_FOLDER="https://dist.torproject.org/mullvadbrowser"
 export tbb_versions_base_folder="browser/update_responses/update_1"
 export tbb_versions_base_url="https://cdn.mullvad.net"
 export tb_process_name="mullvadbrowser.real"
+export tb_local_version_filename="version.json"
 
 update-torbrowser "$@"
