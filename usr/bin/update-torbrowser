@@ -700,7 +700,8 @@ tb_preparation() {
    [ -n "$tb_gpg_tmp_dir" ] || tb_gpg_tmp_dir="$tb_cache_folder/gpgtmpdir"
    [ -n "$tb_extract_temp_folder" ] || tb_extract_temp_folder="$tb_cache_folder/$tb_browser_name"
 
-   [ -n "$tb_local_version_file" ] || tb_local_version_file="$tb_browser_folder/Browser/tbb_version.json"
+   [ -n "$tb_local_version_filename" ] || tb_local_version_filename="tbb_version.json"
+   [ -n "$tb_local_version_file" ] || tb_local_version_file="$tb_browser_folder/Browser/$tb_local_version_filename"
    [ -n "$tbb_download_alpha_version" ] || tbb_download_alpha_version="false"
 
    [ -n "$TB_KEEP_OLD_VERSIONS_COUNT" ] || TB_KEEP_OLD_VERSIONS_COUNT="0"
@@ -849,6 +850,8 @@ tb_preparation() {
       [ -n "$TBB_DOWNLOAD_APPENDIX" ] || TBB_DOWNLOAD_APPENDIX=""
    fi
 
+   [ -n "$tbb_versions_base_folder" ] || tbb_versions_base_folder="torbrowser/update_3"
+
    ## https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/ file was abolished by upstream
    ## https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/33521
    ## https://web.archive.org/web/20201210123314/https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/
@@ -882,7 +885,8 @@ tb_preparation() {
       ## https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
       ## https://web.archive.org/web/20210424113759/https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
       ## Onion-Location	http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion/torbrowser/update_3/release/downloads.json
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion/torbrowser/update_3/${TBB_RELEASE_CHANNEL}/downloads.json"
+      [ -n "$tbb_versions_base_url" ] || tbb_versions_base_url="http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion"
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/downloads.json"
    else
       if [ "$ARCH_DOWNLOAD" = "linux-arm64" ]; then
          [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://sourceforge.net"
@@ -897,7 +901,8 @@ tb_preparation() {
          [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https --cert-status"
       fi
 
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="https://aus1.torproject.org/torbrowser/update_3/${TBB_RELEASE_CHANNEL}/downloads.json"
+      [ -n "$tbb_versions_base_url" ] || tbb_versions_base_url="https://aus1.torproject.org"
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/downloads.json"
    fi
 
    if [ "$DEV_PASSTHROUGH" = "1" ]; then
@@ -1424,10 +1429,11 @@ tb_version_processing() {
    fi
 
    [ -n "$tbb_version_folder" ] || tbb_version_folder="${tbb_version}"
+   [ -n "$tb_browser_download_name" ] || tb_browser_download_name="tor-browser"
    [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
 
-   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}.tar.xz.asc"
-   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="tor-browser-${ARCH_DOWNLOAD}-${tbb_version}.tar.xz"
+   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="${tb_browser_download_name}-${ARCH_DOWNLOAD}-${tbb_version}.tar.xz.asc"
+   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="${tb_browser_download_name}-${ARCH_DOWNLOAD}-${tbb_version}.tar.xz"
 
    [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}${TBB_DOWNLOAD_APPENDIX}"
    [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
@@ -1461,8 +1467,10 @@ tb_reset() {
 
 tb_kill_already_running_tb_maybe() {
    if [ ! "$NOKILLTB" = "1" ]; then
+      [ -n "$tb_process_name" ] || tb_process_name="firefox.real"
+
       echo "INFO: Because you are not using --nokilltb, now killing potentially still running instances of $tb_title..."
-      killall firefox.real || true
+      killall "$tb_process_name" || true
    fi
 }
 
