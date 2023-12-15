@@ -1,3 +1,49 @@
+commit ad7de14c61cfae6097956bee0b3a9b18f9d50064
+Merge: 8964860 62f0b61
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Dec 15 07:32:07 2023 -0500
+
+    Merge remote-tracking branch 'github-kicksecure/master'
+
+commit 62f0b61654903d73a20e9251f65c63fdc30751fd
+Merge: 8964860 269a6b4
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Dec 15 07:30:19 2023 -0500
+
+    Merge pull request #26 from fyqwbdzsfjh/master
+    
+    Add support for Mullvad Browser
+
+commit 269a6b4123090c2f2846a9ad94da43e5d10466ba
+Author: fyqwbdzsfjh <fyqwbdzsfjh@example.invalid>
+Date:   Thu Dec 14 15:09:00 2023 +0000
+
+    make version json file's name a variable
+
+commit bcf1671549f59458501c7776f5d6b2801dd3ec8c
+Author: fyqwbdzsfjh <fyqwbdzsfjh@example.invalid>
+Date:   Sun Dec 10 14:23:16 2023 +0000
+
+    kill running browser based on a variable instead of hardcoded process name
+
+commit 0419c20c2d71b0eb94ca9ab3159d8d12af3fa198
+Author: fyqwbdzsfjh <fyqwbdzsfjh@example.invalid>
+Date:   Thu Dec 7 16:33:34 2023 +0000
+
+    construct versions file link from two new overridable variables; change mullvad-browser's install folder to mullvadbrowser instead of mb
+
+commit 84e3e8cba5d288a1096093422a4026773b41546f
+Author: fyqwbdzsfjh <fyqwbdzsfjh@example.invalid>
+Date:   Tue Nov 28 20:30:37 2023 +0000
+
+    add support for mullvad browser
+
+commit 8964860a1fe720c71c27fc6cda61dcdffc7da4d7
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Dec 8 10:51:58 2023 +0000
+
+    bumped changelog version
+
 commit 02f8631212eb3913994b7067960607e831894a8e
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Dec 8 05:51:44 2023 -0500
