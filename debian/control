@@ -15,7 +15,7 @@ Rules-Requires-Root: no
 Package: tb-updater
 Architecture: all
 Depends: msgcollector-gui, curl, psmisc, gpg-bash-lib, pv, libarchive-tools,
- sudo, lxqt-sudo, jq, ${misc:Depends}
+ sudo, jq, ${misc:Depends}
 Recommends: tb-starter, icon-pack-dist, helper-scripts
 Suggests: tb-default-browser, open-link-confirmation
 Description: Tor Browser Downloader by Whonix developers
