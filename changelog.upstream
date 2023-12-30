@@ -1,3 +1,15 @@
+commit 4ffe2bf8ace7b08fcbc0182be86b8491bcd995a0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Dec 29 19:38:41 2023 -0500
+
+    remove no longer required dependency on lxqt-sudo
+
+commit 528e497e64afdc86b1fd01654a34ce106bc29a6e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Dec 22 18:40:29 2023 +0000
+
+    bumped changelog version
+
 commit 30341906d4a3712fb92b9fc3270d9b8b3d1fb620
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Dec 22 13:40:09 2023 -0500
