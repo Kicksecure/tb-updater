@@ -67,14 +67,14 @@ tb_exit_function() {
       if [ "$tb_postinst" = "true" ]; then
          echo "\
 INFO: Failing open. More info:
-https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Update:_Technical_Details"
+$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Update:_Technical_Details"
       fi
       exit 0
    else
       if [ "$tb_postinst" = "true" ]; then
          echo "\
 INFO: Failing closed. More info:
-https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Update:_Technical_Details"
+$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Update:_Technical_Details"
       fi
       exit "$exit_code"
    fi
@@ -89,7 +89,7 @@ tb_error_handler() {
 <br></br>## has been hit. Try again later. There is likely a
 <br></br>## solution for this problem. Please see the Whonix News,
 <br></br>## Whonix User Help Forum and Whonix Documentation.
-<br></br>## <a href=https://www.whonix.org/wiki/$tb_wiki>https://www.whonix.org/wiki/$tb_wiki</a>
+<br></br>## <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki>$tb_documentation_base_url_clearnet/wiki/$tb_wiki</a>
 <br></br>## Please report this bug!
 <br></br>##
 <br></br>## BASH_COMMAND: $BASH_COMMAND
@@ -142,7 +142,7 @@ DOWNLOAD_FAIL_HELP="<p>Possible reasons for download failure:</p>
 <p>Recommendations:</p>
 <ul>
   <li>Re-run $SCRIPTNAME with or without --resume in terminal. For example: <code>$SCRIPTNAME --resume</code></li>
-  <li>For more information, see the <a href='https://www.whonix.org/wiki/Tor_Browser#Troubleshooting'>https://www.whonix.org/wiki/Tor_Browser#Troubleshooting</a>.</li>
+  <li>For more information, see the <a href='$tb_documentation_base_url_clearnet/wiki/Tor_Browser#Troubleshooting'>$tb_documentation_base_url_clearnet/wiki/Tor_Browser#Troubleshooting</a>.</li>
 </ul>"
 }
 
@@ -399,7 +399,7 @@ tb_qubes_dvm_template() {
    local MSG="\
 <p>Do not run $TITLE in Qubes Disposable Template!<br></br>
 <br></br>
-More info: <a href=https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template>https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template</a></p>"
+More info: <a href=$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template>$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template</a></p>"
 
    outputfunc ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
 
@@ -576,7 +576,7 @@ tb_settings_qubes_postinst_templatevm() {
       tb_user_home="/var/cache/tb-binary"
       tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM and from postinst. \
 This is useful so you get up to date versions of $tb_title in newly created AppVMs inherited from updated TemplateVMs.
-More info: https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Qubes-specific"
+More info: $tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Qubes-specific"
    fi
 }
 
@@ -586,7 +586,7 @@ tb_settings_qubes_manual_run_templatevm() {
       tb_user_home="/var/cache/tb-binary"
       tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM but not run from postinst. \
 This is useful so you get up to date versions of $tb_title in newly created AppVMs inherited from updated TemplateVMs.
-More info: https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Qubes-specific"
+More info: $tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Qubes-specific"
    fi
 }
 
@@ -692,6 +692,7 @@ tb_preparation() {
    [ -n "$tb_browser_name" ] || tb_browser_name="tor-browser"
    [ -n "$tb_bin" ] || tb_bin="torbrowser"
    [ -n "$tb_downloader_developers" ] || tb_downloader_developers="Whonix"
+   [ -n "$tb_documentation_base_url_clearnet" ] || tb_documentation_base_url_clearnet="https://www.whonix.org"
 
    [ -n "$tb_home_folder" ] || tb_home_folder="$tb_user_home/$tb_install_folder_dot"
    [ -n "$tb_browser_folder" ] || tb_browser_folder="$tb_home_folder/$tb_browser_name"
@@ -1201,10 +1202,10 @@ tb_local_version_detection() {
    if [ "$tbb_download_alpha_version" = "true" ]; then
       source /usr/share/tb-updater/tbb_hardcoded_version_alpha
       echo "INFO: Using alpha version. See:
-https://www.whonix.org/wiki/Tor_Browser#Alpha"
+$tb_documentation_base_url_clearnet/wiki/Tor_Browser#Alpha"
    else
       source /usr/share/tb-updater/tbb_hardcoded_version
-      echo "INFO: Using stable version. For alpha version, see: https://www.whonix.org/wiki/Tor_Browser#Alpha"
+      echo "INFO: Using stable version. For alpha version, see: $tb_documentation_base_url_clearnet/wiki/Tor_Browser#Alpha"
    fi
 
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
@@ -1250,7 +1251,7 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
 <br />
 <br />(Or delete them using a file manager.)
 <br />
-<br />More info: <a href=https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Qubes-specific>https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Qubes-specific</a></p>"
+<br />More info: <a href=$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Qubes-specific>$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Qubes-specific</a></p>"
          outputfunc ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
          local MSG_CLI
@@ -1301,23 +1302,23 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
    updater_vs_downloader_msg="\
 If you would like to keep your browser profile and update rather than re-downloading $tb_title, \
 you must use \
-<a href=https://www.whonix.org/wiki/$tb_wiki#Tor_Browser_Internal_Updater>$tb_title's internal updater</a>. \
+<a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Tor_Browser_Internal_Updater>$tb_title's internal updater</a>. \
 In that case, say no now.<br></br>
 <br></br>
 This program \
-(<a href=https://www.whonix.org/wiki/$tb_wiki#Tor_Browser_Downloader_by_Whonix>$tb_title Downloader (by $tb_downloader_developers developers)</a>) \
+(<a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Tor_Browser_Downloader_by_Whonix>$tb_title Downloader (by $tb_downloader_developers developers)</a>) \
 is incapable of keeping user data.<br></br>
 <br></br>
 YOUR BROWSER WILL BE KILLED.<br></br>
 YOUR OLD BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET DELETED."
 
    confirmation_screen_learn_more_link="\
-<a href=https://www.whonix.org/wiki/$tb_wiki#Download_Confirmation_Notification>Learn more about this Download Confirmation Notification.</a>"
+<a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Download_Confirmation_Notification>Learn more about this Download Confirmation Notification.</a>"
 
    if test -f /run/qubes/this-is-templatevm ; then
       qubes_running_inside_template_vm_msg="\
 <u>Qubes specific notice</u>: Currently running inside a TemplateVM.
-Due to <a href=https://www.whonix.org/wiki/Dev/Qubes#tb-updater_vs_TemplateVM>technical limitations</a>,
+Due to <a href=$tb_documentation_base_url_clearnet/wiki/Dev/Qubes#tb-updater_vs_TemplateVM>technical limitations</a>,
 running this program in this TemplateVM will not update $tb_title in TemplateBasedVMs, which are based on this TemplateVM.
 Only newly created TemplateBasedVMs, which are based on this TemplateVM will benefit from this.
 To update $tb_title inside existing TemplateBasedVMs, please update $tb_title inside TemplateBasedVMs."
@@ -1385,7 +1386,7 @@ To update $tb_title inside existing TemplateBasedVMs, please update $tb_title in
       echo "INFO: $MSG_CLI"
    fi
 
-   echo "https://www.whonix.org/wiki/$tb_wiki#Download_Confirmation_Notification"
+   echo "$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Download_Confirmation_Notification"
 
    tbb_version_previous_downloaded_version_stripped="$(/usr/libexec/msgcollector/striphtml "$tbb_version_previous_downloaded_version")"
    tbb_locally_installed_version_stripped="$(/usr/libexec/msgcollector/striphtml "$tbb_locally_installed_version")"
@@ -1448,14 +1449,14 @@ tb_reset() {
       return 0
    fi
 
-   echo "INFO: --reset. Performing hard reset rather than download. See: https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset"
+   echo "INFO: --reset. Performing hard reset rather than download. See: $tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset"
 
    if ! test -f "$TBB_PACKAGE_FULL_PATH" ; then
       local MSG="\
 <p><b>Tor Browser archive file '$TBB_PACKAGE_FULL_PATH' not yet downloaded. Run without <code>--reset</code> is required.</b>
 <br/>
 <br/>See:
-<br/><a href=https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset>https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset</a></p>"
+<br/><a href=$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset>$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset</a></p>"
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
@@ -1752,13 +1753,13 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
 <p>$signature_creation_msg</p>
 <p><u>gpg reports</u>:<br></br>
 $gpg_bash_lib_output_gpg_verify_output_br_added</p>
-<p><a href=https://www.whonix.org/wiki/$tb_wiki#Installation_Confirmation_Notification>Learn more about this Installation Confirmation Notification.</a></p>"
+<p><a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Installation_Confirmation_Notification>Learn more about this Installation Confirmation Notification.</a></p>"
 
    local MSG_CLI
    MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
    echo "INFO: $MSG_CLI"
 
-   echo "https://www.whonix.org/wiki/$tb_wiki#Installation_Confirmation_Notification"
+   echo "$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Installation_Confirmation_Notification"
 
    button="yesno"
    question="Install now?"
@@ -2057,7 +2058,7 @@ Skipping question to start $tb_title."
    MSG="<p>Finished installing $tb_title. Can be found in $tb_browser_folder.</p>
 
 <p>Please donate!
-<br></br><a href=https://www.whonix.org/wiki/Donate>https://www.whonix.org/wiki/Donate</a></p>"
+<br></br><a href=$tb_documentation_base_url_clearnet/wiki/Donate>$tb_documentation_base_url_clearnet/wiki/Donate</a></p>"
    local question="Start $tb_title?"
    local button="yesno"
    local answer
