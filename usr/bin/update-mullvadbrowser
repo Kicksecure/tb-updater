@@ -23,5 +23,6 @@ export tb_process_name="mullvadbrowser.real"
 export tb_local_version_filename="version.json"
 export tb_downloader_developers="Kicksecure"
 export tb_documentation_base_url_clearnet="https://www.kicksecure.com"
+export tb_wiki="Mullvad_Browser"
 
 update-torbrowser "$@"

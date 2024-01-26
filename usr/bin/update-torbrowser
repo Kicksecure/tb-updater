@@ -67,14 +67,14 @@ tb_exit_function() {
       if [ "$tb_postinst" = "true" ]; then
          echo "\
 INFO: Failing open. More info:
-$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Update:_Technical_Details"
+$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Update:_Technical_Details"
       fi
       exit 0
    else
       if [ "$tb_postinst" = "true" ]; then
          echo "\
 INFO: Failing closed. More info:
-$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Update:_Technical_Details"
+$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Update:_Technical_Details"
       fi
       exit "$exit_code"
    fi
@@ -142,7 +142,7 @@ DOWNLOAD_FAIL_HELP="<p>Possible reasons for download failure:</p>
 <p>Recommendations:</p>
 <ul>
   <li>Re-run $SCRIPTNAME with or without --resume in terminal. For example: <code>$SCRIPTNAME --resume</code></li>
-  <li>For more information, see the <a href='$tb_documentation_base_url_clearnet/wiki/Tor_Browser#Troubleshooting'>$tb_documentation_base_url_clearnet/wiki/Tor_Browser#Troubleshooting</a>.</li>
+  <li>For more information, see the <a href='$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Troubleshooting'>$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Troubleshooting</a>.</li>
 </ul>"
 }
 
@@ -399,7 +399,7 @@ tb_qubes_dvm_template() {
    local MSG="\
 <p>Do not run $TITLE in Qubes Disposable Template!<br></br>
 <br></br>
-More info: <a href=$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template>$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template</a></p>"
+More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template</a></p>"
 
    outputfunc ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
 
@@ -576,7 +576,7 @@ tb_settings_qubes_postinst_templatevm() {
       tb_user_home="/var/cache/tb-binary"
       tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM and from postinst. \
 This is useful so you get up to date versions of $tb_title in newly created AppVMs inherited from updated TemplateVMs.
-More info: $tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Qubes-specific"
+More info: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific"
    fi
 }
 
@@ -586,7 +586,7 @@ tb_settings_qubes_manual_run_templatevm() {
       tb_user_home="/var/cache/tb-binary"
       tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM but not run from postinst. \
 This is useful so you get up to date versions of $tb_title in newly created AppVMs inherited from updated TemplateVMs.
-More info: $tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Qubes-specific"
+More info: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific"
    fi
 }
 
@@ -1202,10 +1202,10 @@ tb_local_version_detection() {
    if [ "$tbb_download_alpha_version" = "true" ]; then
       source /usr/share/tb-updater/tbb_hardcoded_version_alpha
       echo "INFO: Using alpha version. See:
-$tb_documentation_base_url_clearnet/wiki/Tor_Browser#Alpha"
+$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    else
       source /usr/share/tb-updater/tbb_hardcoded_version
-      echo "INFO: Using stable version. For alpha version, see: $tb_documentation_base_url_clearnet/wiki/Tor_Browser#Alpha"
+      echo "INFO: Using stable version. For alpha version, see: $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    fi
 
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
@@ -1251,7 +1251,7 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
 <br />
 <br />(Or delete them using a file manager.)
 <br />
-<br />More info: <a href=$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Qubes-specific>$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Qubes-specific</a></p>"
+<br />More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific</a></p>"
          outputfunc ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
          local MSG_CLI
@@ -1449,14 +1449,14 @@ tb_reset() {
       return 0
    fi
 
-   echo "INFO: --reset. Performing hard reset rather than download. See: $tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset"
+   echo "INFO: --reset. Performing hard reset rather than download. See: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset"
 
    if ! test -f "$TBB_PACKAGE_FULL_PATH" ; then
       local MSG="\
 <p><b>Tor Browser archive file '$TBB_PACKAGE_FULL_PATH' not yet downloaded. Run without <code>--reset</code> is required.</b>
 <br/>
 <br/>See:
-<br/><a href=$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset>$tb_documentation_base_url_clearnet/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset</a></p>"
+<br/><a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset</a></p>"
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
