@@ -87,8 +87,8 @@ tb_error_handler() {
 <br></br>## $SCRIPTNAME script bug.
 <br></br>## No panic. Nothing is broken. Just some rare condition
 <br></br>## has been hit. Try again later. There is likely a
-<br></br>## solution for this problem. Please see the Whonix News,
-<br></br>## Whonix User Help Forum and Whonix Documentation.
+<br></br>## solution for this problem. Please see the News,
+<br></br>## User Help Forum and Documentation.
 <br></br>## <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki>$tb_documentation_base_url_clearnet/wiki/$tb_wiki</a>
 <br></br>## Please report this bug!
 <br></br>##
@@ -1302,11 +1302,11 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
    updater_vs_downloader_msg="\
 If you would like to keep your browser profile and update rather than re-downloading $tb_title, \
 you must use \
-<a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Tor_Browser_Internal_Updater>$tb_title's internal updater</a>. \
+<a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Internal_Updater>$tb_title's internal updater</a>. \
 In that case, say no now.<br></br>
 <br></br>
 This program \
-(<a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Tor_Browser_Downloader_by_Whonix>$tb_title Downloader (by $tb_downloader_developers developers)</a>) \
+(<a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Downloader>$tb_title Downloader (by $tb_downloader_developers developers)</a>) \
 is incapable of keeping user data.<br></br>
 <br></br>
 YOUR BROWSER WILL BE KILLED.<br></br>
