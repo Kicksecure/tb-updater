@@ -137,7 +137,7 @@ DOWNLOAD_FAIL_HELP="<p>Possible reasons for download failure:</p>
   <li>Internet connectivity issue.</li>
   <li>The download server is down.</li>
   <li>File size exceeded (endless data attack triggered).</li>
-  <li>$tb_title Downloader (by Whonix developers) has been broken due to upstream changes.</li>
+  <li>$tb_title Downloader (by $tb_downloader_developers developers) has been broken due to upstream changes.</li>
 </ul>
 <p>Recommendations:</p>
 <ul>
@@ -691,6 +691,7 @@ tb_preparation() {
    [ -n "$tb_install_folder_dot" ] || tb_install_folder_dot=".tb"
    [ -n "$tb_browser_name" ] || tb_browser_name="tor-browser"
    [ -n "$tb_bin" ] || tb_bin="torbrowser"
+   [ -n "$tb_downloader_developers" ] || tb_downloader_developers="Whonix"
 
    [ -n "$tb_home_folder" ] || tb_home_folder="$tb_user_home/$tb_install_folder_dot"
    [ -n "$tb_browser_folder" ] || tb_browser_folder="$tb_home_folder/$tb_browser_name"
@@ -779,7 +780,7 @@ tb_preparation() {
 
    who_ami="$(whoami)"
 
-   TITLE="$tb_title Downloader (by Whonix developers)"
+   TITLE="$tb_title Downloader (by $tb_downloader_developers developers)"
 
    outputfunc --icon "$ICON"
    outputfunc --parenttty "$my_tty"
@@ -1181,7 +1182,7 @@ tb_remote_version_sanity_test() {
 
 <p>Could not find out latest $tb_title version! $tbb_recommended_versions_error</p>
 
-<p>Either $TBB_VERSIONS_FILE_LINK is invalid or this is a $SCRIPTNAME (by Whonix developers) bug.</p>
+<p>Either $TBB_VERSIONS_FILE_LINK is invalid or this is a $SCRIPTNAME (by $tb_downloader_developers developers) bug.</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
@@ -1304,7 +1305,7 @@ you must use \
 In that case, say no now.<br></br>
 <br></br>
 This program \
-(<a href=https://www.whonix.org/wiki/$tb_wiki#Tor_Browser_Downloader_by_Whonix>$tb_title Downloader (by Whonix developers)</a>) \
+(<a href=https://www.whonix.org/wiki/$tb_wiki#Tor_Browser_Downloader_by_Whonix>$tb_title Downloader (by $tb_downloader_developers developers)</a>) \
 is incapable of keeping user data.<br></br>
 <br></br>
 YOUR BROWSER WILL BE KILLED.<br></br>
