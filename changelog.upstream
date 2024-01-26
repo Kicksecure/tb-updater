@@ -1,3 +1,33 @@
+commit 994f1186c35b3b1d94c77fd47e2bd3f3958bb4e7
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 26 06:12:16 2024 -0500
+
+    output
+
+commit 2141d114ef8947b6ae5fd345fa2b3d85ebc93b7a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 26 06:06:57 2024 -0500
+
+    url
+
+commit 47e7ba4d67a502ac515d794354fc1994fe09ff62
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 26 05:59:52 2024 -0500
+
+    url
+
+commit 9da3c01c2926a6f080648964627c8c69d4369e4a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 26 05:53:39 2024 -0500
+
+    clarify output Kicksecure or Whonix developers
+
+commit cb3ac283175a00b2a018cf15bb4efda7518cea37
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jan 24 11:38:17 2024 +0000
+
+    bumped changelog version
+
 commit 9d8eb49ab2e7355ccb5128e3e4e291324b4ea127
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Jan 24 06:37:19 2024 -0500
