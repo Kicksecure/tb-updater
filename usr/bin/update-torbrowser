@@ -510,8 +510,8 @@ tb_settings_chroot_common() {
    if [ ! "$tb_install_in_chroot" = "false" ]; then
       [ -n "$tb_updater_run" ] || tb_updater_run=true
    fi
-   ## Fail closed, if there was an error.
-   [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=closed
+   ## Fail open, if there was an error.
+   [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=open
    ## Skip Tor connectivity check when running inside chroot.
    [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
    ## Hack to disable using proxy settings when running inside chroot.
