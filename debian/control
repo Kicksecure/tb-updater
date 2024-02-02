@@ -5,7 +5,7 @@ Source: tb-updater
 Section: misc
 Priority: optional
 Maintainer: Patrick Schleizer <adrelanos@kicksecure.com>
-Build-Depends: debhelper (>= 13), debhelper-compat (= 13)
+Build-Depends: debhelper (>= 13.11.6), debhelper-compat (= 13)
 Homepage: https://github.com/Kicksecure/tb-updater
 Vcs-Browser: https://github.com/Kicksecure/tb-updater
 Vcs-Git: https://github.com/Kicksecure/tb-updater.git
