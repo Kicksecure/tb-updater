@@ -1,3 +1,21 @@
+commit cf9a5084aea72dfa23029d4b6a452e0d1261e7be
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Feb 2 07:32:46 2024 -0500
+
+    usrmerge debhelper systemd Debian package maintainer scripts fix
+
+commit b5f033752f42cbb6efc8130a07172f4401bf1d08
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jan 27 08:05:23 2024 -0500
+
+    fail open by default inside chroot when Tor Browser cannot be installed
+
+commit cb918328a410b837e0306964507e199db9a5a834
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 26 11:59:58 2024 +0000
+
+    bumped changelog version
+
 commit 994f1186c35b3b1d94c77fd47e2bd3f3958bb4e7
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Jan 26 06:12:16 2024 -0500
