@@ -1,3 +1,25 @@
+commit 8e80230391033133563e284534082e598e8e739f
+Merge: 6cbb0ae 1dc08d7
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 3 13:32:30 2024 -0500
+
+    Merge remote-tracking branch 'github-kicksecure/master'
+
+commit 1dc08d7bcf9cb8e8c8567a2186cd52cb3de25496
+Merge: 6cbb0ae 5750b3b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 3 13:31:59 2024 -0500
+
+    Merge pull request #28 from GavinPacini/feat/improved-arm64-support
+    
+    Improved arm64 support
+
+commit 6cbb0ae84987b047343a8ed35199b874a4e8fc04
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 3 18:28:51 2024 +0000
+
+    bumped changelog version
+
 commit 38a50b3cbe65496d0568bb0f8c2a725436473ce3
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Feb 3 13:27:50 2024 -0500
@@ -13,6 +35,12 @@ Date:   Sat Feb 3 12:18:22 2024 -0500
 commit 8bacc21cf509ca68746dfd5fed9d80a8b08ec47f
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Feb 3 12:17:01 2024 -0500
+
+    syntax fix
+
+commit 5750b3b0ba752d39194d16d66775c17322e01e70
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 3 05:06:37 2024 -0500
 
     syntax fix
 
