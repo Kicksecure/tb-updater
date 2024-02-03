@@ -1172,6 +1172,14 @@ tb_remote_version_parser() {
    ## sets: tbb_version
    ## sets: tbb_recommended_versions_error
    tb_run_function tbbversion
+
+   ## here we overwrite tbb_version if we're building arm64
+   ## as we don't currently have a way to get it automatically
+   ## sets: tbb_version
+   if [ "$ARCH" = "arm64" ]; then
+      source /usr/share/tb-updater/tbb_hardcoded_version
+      tbb_version="$tbb_hardcoded_version_arm64"
+   fi
 }
 
 tb_remote_version_sanity_test() {
@@ -1207,7 +1215,13 @@ https://www.whonix.org/wiki/Tor_Browser#Alpha"
    fi
 
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
-      [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
+      if [-n "$tbb_version"]; then
+         if [ "$ARCH" = "arm64" ]; then
+            tbb_version="$tbb_hardcoded_version_arm64"
+         else
+            tbb_version="$tbb_hardcoded_version"
+         fi
+      fi
       echo "INFO: tbb_hardcoded_version: $tbb_hardcoded_version"
    fi
 
