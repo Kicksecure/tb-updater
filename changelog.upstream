@@ -1,3 +1,40 @@
+commit 38a50b3cbe65496d0568bb0f8c2a725436473ce3
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 3 13:27:50 2024 -0500
+
+    signed commit
+
+commit d7e7d4cd5d22571cd165374fec6fd7520b020053
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 3 12:18:22 2024 -0500
+
+    alpha tbb_hardcoded_version="13.5a4"
+
+commit 8bacc21cf509ca68746dfd5fed9d80a8b08ec47f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 3 12:17:01 2024 -0500
+
+    syntax fix
+
+commit c3e89712652342c44498f86ca359911ea69aac53
+Merge: 30856ac b10afa2
+Author: GavinPacini <gavin.pacini@gmail.com>
+Date:   Sat Feb 3 02:50:50 2024 +0000
+
+    Merge branch 'master' into feat/improved-arm64-support
+
+commit 30856ac8be4b764d7bde05e829d66c91cc0de1be
+Author: GavinPacini <gavin.pacini@gmail.com>
+Date:   Sat Feb 3 02:49:02 2024 +0000
+
+    improve arm64 support
+
+commit b10afa2fc4fa9d36b5b47f6fbe4159b1eb90cc53
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Feb 2 12:38:25 2024 +0000
+
+    bumped changelog version
+
 commit cf9a5084aea72dfa23029d4b6a452e0d1261e7be
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Feb 2 07:32:46 2024 -0500
