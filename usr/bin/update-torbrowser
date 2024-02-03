@@ -1217,7 +1217,7 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    fi
 
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
-      if [-n "$tbb_version"]; then
+      if [ -n "$tbb_version" ]; then
          if [ "$ARCH" = "arm64" ]; then
             tbb_version="$tbb_hardcoded_version_arm64"
          else
