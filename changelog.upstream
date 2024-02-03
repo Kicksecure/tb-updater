@@ -1,3 +1,75 @@
+commit cf9a5084aea72dfa23029d4b6a452e0d1261e7be
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Feb 2 07:32:46 2024 -0500
+
+    usrmerge debhelper systemd Debian package maintainer scripts fix
+
+commit b5f033752f42cbb6efc8130a07172f4401bf1d08
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jan 27 08:05:23 2024 -0500
+
+    fail open by default inside chroot when Tor Browser cannot be installed
+
+commit cb918328a410b837e0306964507e199db9a5a834
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 26 11:59:58 2024 +0000
+
+    bumped changelog version
+
+commit 994f1186c35b3b1d94c77fd47e2bd3f3958bb4e7
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 26 06:12:16 2024 -0500
+
+    output
+
+commit 2141d114ef8947b6ae5fd345fa2b3d85ebc93b7a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 26 06:06:57 2024 -0500
+
+    url
+
+commit 47e7ba4d67a502ac515d794354fc1994fe09ff62
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 26 05:59:52 2024 -0500
+
+    url
+
+commit 9da3c01c2926a6f080648964627c8c69d4369e4a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 26 05:53:39 2024 -0500
+
+    clarify output Kicksecure or Whonix developers
+
+commit cb3ac283175a00b2a018cf15bb4efda7518cea37
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jan 24 11:38:17 2024 +0000
+
+    bumped changelog version
+
+commit 9d8eb49ab2e7355ccb5128e3e4e291324b4ea127
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jan 24 06:37:19 2024 -0500
+
+    tbb_hardcoded_version="13.0.9"
+
+commit 54fef4bd162cb177fe85d9e6e60a2815e780bb21
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Jan 22 12:46:46 2024 +0000
+
+    bumped changelog version
+
+commit abad44050b5cdf48b0d1b4d7ce7b8a922e1cf500
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Jan 22 07:16:13 2024 -0500
+
+    usrmerge
+
+commit 6bff5bb9ee9be0efe2fa420087a3ab7f122a9a74
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Dec 30 00:42:02 2023 +0000
+
+    bumped changelog version
+
 commit 4ffe2bf8ace7b08fcbc0182be86b8491bcd995a0
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Dec 29 19:38:41 2023 -0500

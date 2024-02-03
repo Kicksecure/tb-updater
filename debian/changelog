@@ -1,3 +1,27 @@
+tb-updater (3:31.2-1) unstable; urgency=medium
+
+  * New upstream version (local package).
+
+ -- Patrick Schleizer <adrelanos@whonix.org>  Fri, 02 Feb 2024 12:38:24 +0000
+
+tb-updater (3:31.1-1) unstable; urgency=medium
+
+  * New upstream version (local package).
+
+ -- Patrick Schleizer <adrelanos@whonix.org>  Fri, 26 Jan 2024 11:59:58 +0000
+
+tb-updater (3:31.0-1) unstable; urgency=medium
+
+  * New upstream version (local package).
+
+ -- Patrick Schleizer <adrelanos@whonix.org>  Wed, 24 Jan 2024 11:38:17 +0000
+
+tb-updater (3:30.9-1) unstable; urgency=medium
+
+  * New upstream version (local package).
+
+ -- Patrick Schleizer <adrelanos@whonix.org>  Mon, 22 Jan 2024 12:46:46 +0000
+
 tb-updater (3:30.8-1) unstable; urgency=medium
 
   * New upstream version (local package).
