@@ -609,7 +609,8 @@ tb_fix_permissions() {
       /usr/libexec/tb-updater/tb-permission-fix
       return 0
    fi
-   ## Requires root.
+   ## Running as user, not as root.
+   ## Requires root, therefore running this with sudo.
    ## This has a sudoers exception.
    sudo --non-interactive /usr/libexec/tb-updater/tb-permission-fix
 }
