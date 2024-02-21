@@ -1,3 +1,29 @@
+commit 98d10d7a3690c2c651326284b197c50b49913525
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Feb 21 06:53:50 2024 -0500
+
+    ```
+    gpg --auto-key-locate nodefault,wkd --locate-keys torbrowser@torproject.org
+    ```
+    
+    ```
+    gpg: key 0x4E2C6E8793298290: "Tor Browser Developers (signing key) <torbrowser@torproject.org>" 1 new signature
+    gpg: Total number processed: 1
+    gpg:         new signatures: 1
+    pub   rsa4096/0x4E2C6E8793298290 2014-12-15 [C] [expires: 2025-07-21]
+          EF6E286DDA85EA2A4BA7DE684E2C6E8793298290
+    uid                   [  undef ] Tor Browser Developers (signing key) <torbrowser@torproject.org>
+    sub   rsa4096/0xE53D989A9E2D47BF 2021-09-17 [S] [expires: 2024-08-23]
+    ```
+    
+    https://forums.whonix.org/t/tb-updater-gpg-download-signature-could-not-be-verified-this-key-expired/10161/13
+
+commit 64b0f793a4a125d651b7a3b17a1c95c216d5b0ea
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Feb 20 14:48:47 2024 +0000
+
+    bumped changelog version
+
 commit afaff380837c591019523e762b6c5a836ed7cdde
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Feb 20 09:48:23 2024 -0500
