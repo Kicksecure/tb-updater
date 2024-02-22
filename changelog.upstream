@@ -1,3 +1,43 @@
+commit 10baa9a93cbc39ba237eeb4144b05763eda33ee0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Feb 22 13:09:29 2024 -0500
+
+    comment
+
+commit 65c6e48b59ef35f67e253bcc9f5a8d65cf533565
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Feb 22 13:03:57 2024 -0500
+
+    comment
+
+commit 7a9318dd451a28d1e048e97740e434f73682895d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Feb 22 13:02:27 2024 -0500
+
+    comments
+
+commit 5447468d290065601925dc39909567be630fdfd2
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Feb 22 13:01:24 2024 -0500
+
+    run /usr/libexec/tb-updater/tb-permission-fix in Qubes Template and App Qube
+    
+    to fix potential race condition
+
+commit 8ef96b866cf482f930374f133218aba8af81a740
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Feb 22 12:59:46 2024 -0500
+
+    Tor Browser permission fix: downgrade to warning if user `user` does not exist
+    
+    https://forums.whonix.org/t/tor-browser-permission-issue/17222/3
+
+commit 68424750fd12b7c06902406636cf15398cf31a4b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Feb 21 11:57:16 2024 +0000
+
+    bumped changelog version
+
 commit 98d10d7a3690c2c651326284b197c50b49913525
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Feb 21 06:53:50 2024 -0500
