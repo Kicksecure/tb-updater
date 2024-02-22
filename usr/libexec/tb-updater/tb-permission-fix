@@ -11,6 +11,7 @@ if [ -f /usr/libexec/helper-scripts/pre.bsh ]; then
 fi
 
 ## Not needed?
+## https://forums.whonix.org/t/tor-browser-permission-issue/17222/3
 #rm --recursive --force /var/cache/tb-binary/.cache/tb/gpgtmpdir
 
 # W: tb-updater: maintainer-script-should-not-use-recursive-chown-or-chmod postinst:112
@@ -55,8 +56,8 @@ find /var/cache/tb-binary -type d -print0 | xargs -0 chmod 0775
 chmod --recursive u+X /var/cache/tb-binary
 
 if ! id user &>/dev/null ; then
-   echo "$0: ERROR: user 'user' does not exist!"
-   exit 1
+   echo "$0: WARNING: user 'user' does not exist!"
+   exit 0
 fi
 
 ## username HARDCODED!
