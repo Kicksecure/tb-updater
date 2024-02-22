@@ -1278,6 +1278,7 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
       return 0
    fi
    if [ "$tb_confirm_update_skip" = "true" ]; then
+      true "INFO: tb_confirm_update_skip=true, skipping update confirmation."
       return 0
    fi
 
