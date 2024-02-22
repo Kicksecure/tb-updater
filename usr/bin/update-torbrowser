@@ -595,6 +595,7 @@ tb_settings_manual_run_common() {
 }
 
 tb_fix_permissions() {
+   ## This function is duplicated in tb-updater, tb-starter.
    ## /usr/libexec/tb-updater/tb-permission-fix fixes permissions in folder /var/cache/tb-binary
    ## Save to do in Qubes Template as well as in App Qube.
    if [ "$tb_running_as_root" = "true" ]; then
