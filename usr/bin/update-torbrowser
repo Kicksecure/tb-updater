@@ -1221,7 +1221,7 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
             tbb_version="$tbb_hardcoded_version"
          fi
       fi
-      echo "INFO: tbb_hardcoded_version: $tbb_hardcoded_version"
+      echo "INFO: tbb_hardcoded_version: '$tbb_hardcoded_version'"
    fi
 
    ## Used by function tbbversion_installed
@@ -1272,9 +1272,9 @@ Otherwise updating $tb_title in this TemplateVM will not result in newly created
    fi
 
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
-      echo "INFO: Previously downloaded version: $tbb_version_previous_downloaded_version"
-      echo "INFO: Currently installed version: $tbb_locally_installed_version"
-      echo "INFO: Hardcoded version chosen: $tbb_version"
+      echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version'"
+      echo "INFO: Currently installed version: '$tbb_locally_installed_version'"
+      echo "INFO: Hardcoded version chosen: '$tbb_version'"
       return 0
    fi
    if [ "$tb_confirm_update_skip" = "true" ]; then
