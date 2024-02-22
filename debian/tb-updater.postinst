@@ -45,6 +45,7 @@ true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
 download
 
 ## Makes assumption on user 'user' existing.
+## Not needed since done by 'update-torbrowser' and 'torbrowser'.
 #/usr/libexec/tb-updater/tb-permission-fix
 
 true "
