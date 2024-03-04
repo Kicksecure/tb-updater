@@ -1,3 +1,63 @@
+commit 162f7cb768c9b8ecb23d8d210ce1831ec8f4e1ce
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Mar 4 08:47:55 2024 -0500
+
+    tbb_hardcoded_version="13.0.10"
+
+commit 5af6fa62757ad81f4168fb20bba983700bd930e8
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Mar 4 08:46:00 2024 -0500
+
+    output
+
+commit be431ac5bb52debd141a2d5bebe19f9574b50e57
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Mar 4 08:39:28 2024 -0500
+
+    output
+
+commit f0b103420948637ddb9c266b16790bf32dd95b06
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Mar 4 08:36:31 2024 -0500
+
+    fix
+
+commit deb3507c19cf9aa3e5168d0547621bafa60a7f79
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Mar 4 08:26:18 2024 -0500
+
+    output
+
+commit 627839df8565eb6d8d351dd85d5ee412a1d273a4
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Mar 4 08:25:28 2024 -0500
+
+    fix
+
+commit ca8282bb6f0d7742c6ec06e12bf574a818b0dba2
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Mar 4 08:19:16 2024 -0500
+
+    output
+
+commit 9658e583887ce2e95a24c859d93e233d378dc73a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Mar 4 08:17:04 2024 -0500
+
+    output
+
+commit 3fc85655b520419b040edd8967bbe2bfd4b88b1d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Mar 4 08:08:46 2024 -0500
+
+    output
+
+commit 4db445eb8f0940450f6d650fa0f355b5f674866f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Mar 4 11:48:53 2024 +0000
+
+    bumped changelog version
+
 commit 30d665d2ae90da5d88ffb35fba4512d0490420ef
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Mon Mar 4 06:47:24 2024 -0500
