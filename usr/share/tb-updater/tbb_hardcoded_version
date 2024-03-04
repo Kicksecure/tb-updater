@@ -1,2 +1,2 @@
-tbb_hardcoded_version="13.1.0"
+tbb_hardcoded_version="13.0.10"
 tbb_hardcoded_version_arm64="13.0.6"
