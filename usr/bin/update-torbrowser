@@ -574,7 +574,7 @@ tb_settings_qubes_postinst_templatevm() {
    fi
    if [ "$tb_user_home" = "" ]; then
       tb_user_home="/var/cache/tb-binary"
-      tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM and from postinst. \
+      tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because running inside Qubes TemplateVM and from postinst. \
 This is useful so you get up to date versions of $tb_title in newly created AppVMs inherited from updated TemplateVMs.
 More info: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific"
    fi
@@ -584,8 +584,8 @@ tb_settings_qubes_manual_run_templatevm() {
    [ -n "$tb_updater_run" ] || tb_updater_run=true
    if [ "$tb_user_home" = "" ]; then
       tb_user_home="/var/cache/tb-binary"
-      tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running inside Qubes TemplateVM but not run from postinst. \
-This is useful so you get up to date versions of $tb_title in newly created AppVMs inherited from updated TemplateVMs.
+      tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because running inside Qubes TemplateVM but not run from postinst. \
+This is useful so you get up to date versions of '$tb_title' in newly created AppVMs inherited from updated TemplateVMs.
 More info: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific"
    fi
 }
@@ -686,7 +686,7 @@ tb_preparation() {
       ## In case of running as root from postinst.
       if [ "$tb_user_home" = "/root" ] || [ "$(whoami)" = "root" ]; then
          tb_user_home="/var/cache/tb-binary"
-         tb_auto_set_user_home_msg="Automatically setting download folder to $tb_user_home, because running as root."
+         tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because running as root."
       fi
    fi
 
