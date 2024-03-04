@@ -973,12 +973,13 @@ tb_skip_if_higher_or_equal_version_already_downloaded() {
       true "INFO: Could not determine tbb_version_previous_downloaded_version (set to 'none'), therefore skipping $FUNCNAME."
       return 0
    fi
-   if [ "$tbb_version" = "" ]; then
-      true "INFO: tbb_version is empty, therefore skipping $FUNCNAME."
+   if [ "$tbb_hardcoded_version" = "" ]; then
+      true "INFO: tbb_hardcoded_version is empty, therefore skipping $FUNCNAME."
       return 0
    fi
-   if dpkg --compare-versions "$tbb_version_previous_downloaded_version" ge "$tbb_version" ; then
-      echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version' is greater or equal '$tbb_version', therefore skipping to download, ok."
+   if dpkg --compare-versions "$tbb_version_previous_downloaded_version" ge "$tbb_hardcoded_version" ; then
+      echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version'"
+      echo "INFO: Previously downloaded version is greater or equal tbb_hardcoded_version, therefore skipping to download, ok."
       tb_exit_function 0
    fi
    ## Being careful with deletion.
@@ -1171,11 +1172,12 @@ tb_remote_version_parser() {
    ## sets: tbb_recommended_versions_error
    tb_run_function tbbversion
 
-   ## here we overwrite tbb_version if we're building arm64
-   ## as we don't currently have a way to get it automatically
-   ## sets: tbb_version
    if [ "$ARCH" = "arm64" ]; then
+      ## sets: tbb_hardcoded_version
+      ## sets: tbb_hardcoded_version_arm64
       source /usr/share/tb-updater/tbb_hardcoded_version
+      ## here we overwrite tbb_version if we're building arm64
+      ## as we don't currently have a way to get it automatically
       tbb_version="$tbb_hardcoded_version_arm64"
    fi
 }
@@ -1204,10 +1206,14 @@ tb_local_version_detection() {
    ## sets: tbb_hardcoded_version
    true "INFO: tbb_download_alpha_version: $tbb_download_alpha_version"
    if [ "$tbb_download_alpha_version" = "true" ]; then
+      ## sets: tbb_hardcoded_version
+      ## sets: tbb_hardcoded_version_arm64
       source /usr/share/tb-updater/tbb_hardcoded_version_alpha
       echo "INFO: Using alpha version. See:
 $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    else
+      ## sets: tbb_hardcoded_version
+      ## sets: tbb_hardcoded_version_arm64
       source /usr/share/tb-updater/tbb_hardcoded_version
       echo "INFO: Using stable version. For alpha version, see: $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    fi
