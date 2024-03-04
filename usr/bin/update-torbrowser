@@ -971,7 +971,7 @@ tb_skip_if_higher_or_equal_version_already_downloaded() {
       return 0
    fi
    if [ "$tbb_version_previous_downloaded_version" = "none" ]; then
-      true "INFO: Could not determine tbb_version_previous_downloaded_version (set to none), therefore skipping $FUNCNAME."
+      true "INFO: Could not determine tbb_version_previous_downloaded_version (set to 'none'), therefore skipping $FUNCNAME."
       return 0
    fi
    if [ "$tbb_version" = "" ]; then
