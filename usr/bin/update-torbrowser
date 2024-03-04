@@ -92,14 +92,14 @@ tb_error_handler() {
 <br></br>## <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki>$tb_documentation_base_url_clearnet/wiki/$tb_wiki</a>
 <br></br>## Please report this bug!
 <br></br>##
-<br></br>## BASH_COMMAND: $BASH_COMMAND
-<br></br>## exit_code: $exit_code
+<br></br>## BASH_COMMAND: <code>$BASH_COMMAND</code>
+<br></br>## exit_code: <code>$exit_code</code>
 <br></br>##
-<br></br>## output_opts: ${output_opts[@]}
-<br></br>## progressbaridx: $progressbaridx
+<br></br>## output_opts: <code>${output_opts[@]}</code>
+<br></br>## progressbaridx: <code>$progressbaridx</code>
 <br></br>##
 <br></br>## For debugging, run:
-<br></br>## $SCRIPTNAME --debug
+<br></br>## <code>$SCRIPTNAME</code> --debug
 <br></br>###########################################################</p>"
 
    [ -n "$tb_user_home" ] || tb_user_home=~
@@ -137,11 +137,11 @@ DOWNLOAD_FAIL_HELP="<p>Possible reasons for download failure:</p>
   <li>Internet connectivity issue.</li>
   <li>The download server is down.</li>
   <li>File size exceeded (endless data attack triggered).</li>
-  <li>$tb_title Downloader (by $tb_downloader_developers developers) has been broken due to upstream changes.</li>
+  <li><code>$tb_title</code> Downloader (by <code>$tb_downloader_developers</code> developers) has been broken due to upstream changes.</li>
 </ul>
 <p>Recommendations:</p>
 <ul>
-  <li>Re-run $SCRIPTNAME with or without --resume in terminal. For example: <code>$SCRIPTNAME --resume</code></li>
+  <li>Re-run <code>$SCRIPTNAME</code> with or without <code>--resume<c/ode> in terminal. For example: <code>$SCRIPTNAME --resume</code></li>
   <li>For more information, see the <a href='$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Troubleshooting'>$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Troubleshooting</a>.</li>
 </ul>"
 }
@@ -397,7 +397,7 @@ tb_qubes_dvm_template() {
    fi
 
    local MSG="\
-<p>Do not run $TITLE in Qubes Disposable Template!<br></br>
+<p>Do not run <code>$TITLE</code> in Qubes Disposable Template!<br></br>
 <br></br>
 More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template</a></p>"
 
@@ -1186,9 +1186,9 @@ tb_remote_version_sanity_test() {
       download_fail_help_set
       local MSG="<p>$installed_or_not_text</p>
 
-<p>Could not find out latest $tb_title version! $tbb_recommended_versions_error</p>
+<p>Could not find out latest <code>$tb_title</code> version! <code>$tbb_recommended_versions_error</code></p>
 
-<p>Either $TBB_VERSIONS_FILE_LINK is invalid or this is a $SCRIPTNAME (by $tb_downloader_developers developers) bug.</p>
+<p>Either <code>$TBB_VERSIONS_FILE_LINK</code> is invalid or this is a <code>$SCRIPTNAME</code> (by <code>$tb_downloader_developers</code> developers) bug.</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
@@ -1253,7 +1253,7 @@ tb_confirm_update() {
       if [ "$found" = "true" ]; then
          local MSG="\
 <p>Obsolete folders exist. It is recommended to delete them. \
-Otherwise updating $tb_title in this TemplateVM will not result in newly created TemplateBasedVMs to inherit the updated version of $tb_title.
+Otherwise updating <code>$tb_title</code> in this TemplateVM will not result in newly created TemplateBasedVMs to inherit the updated version of <code>$tb_title</code>.
 <br />
 <br />To delete these obsolete folders, please run:
 <br />
@@ -1465,7 +1465,7 @@ tb_reset() {
 
    if ! test -f "$TBB_PACKAGE_FULL_PATH" ; then
       local MSG="\
-<p><b>Tor Browser archive file '$TBB_PACKAGE_FULL_PATH' not yet downloaded. Run without <code>--reset</code> is required.</b>
+<p><b>Tor Browser archive file <code>$TBB_PACKAGE_FULL_PATH</code> not yet downloaded. Run without <code>--reset</code> is required.</b>
 <br/>
 <br/>See:
 <br/><a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset</a></p>"
@@ -1653,8 +1653,8 @@ tb_gpg_verify() {
       local MSG="<p><b>Digital signature (GPG) could NOT be verified.</b>
 <br></br>$tb_title update failed! Try again later.</p>
 
-<p>gpg_bash_lib_output_alright_status: $gpg_bash_lib_output_alright_status
-<br></br>gpg_bash_lib_output_failure: $gpg_bash_lib_output_failure</p>
+<p>gpg_bash_lib_output_alright_status: <code>$gpg_bash_lib_output_alright_status</code>
+<br></br>gpg_bash_lib_output_failure: <code>$gpg_bash_lib_output_failure</code></p>
 
 <p>gpg_bash_lib_output_diagnostic_message:</p>
 
@@ -1949,13 +1949,13 @@ Extracting $tb_title... This could take a moment..."
       ## Debugging.
       ls -la "$tb_extract_temp_folder" || true
 
-      local MSG="<p><b>Could not extract $file_name!</b>
+      local MSG="<p><b>Could not extract <code>$file_name</code>!</b>
 <br></br>
 <br></br>(Debugging information:
-<br></br>tb_tar_exit_code: $tb_tar_exit_code
-<br></br>pv_exit_code: $pv_exit_code
-<br></br>tar_exit_code: $tar_exit_code
-<br></br>pv_wrapper_exit_code: $pv_wrapper_exit_code)
+<br></br>tb_tar_exit_code: <code>$tb_tar_exit_code</code>
+<br></br>pv_exit_code: <code>$pv_exit_code</code>
+<br></br>tar_exit_code: <code>$tar_exit_code</code>
+<br></br>pv_wrapper_exit_code: <code>$pv_wrapper_exit_code</code>)
 <br></br>
 <br></br>Please report this bug!</p>"
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
