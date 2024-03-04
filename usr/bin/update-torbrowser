@@ -177,7 +177,7 @@ root_check() {
       return 0
    fi
 
-   echo "ERROR: Do not run $SCRIPTNAME as root (sudo)!"
+   echo "ERROR: Do not run '$SCRIPTNAME' as root (sudo)!"
    tb_exit_function 2
 }
 
@@ -211,7 +211,7 @@ tb_sanity_tests() {
 
 tb_ex_funct() {
    local MSG
-   MSG="$0: INFO: $FUNCNAME: Signal $SIGNAL_TYPE received. Cleaning up..."
+   MSG="$0: INFO: $FUNCNAME: Signal '$SIGNAL_TYPE' received. Cleaning up..."
 
    if [ "$last_pid_list" = "" ]; then
       true
@@ -350,7 +350,7 @@ tb_parse_cmd_options() {
                break
                ;;
            -*)
-               echo "$SCRIPTNAME unknown option: $1"
+               echo "$SCRIPTNAME: unknown option: '$1'"
                echo "See:"
                echo "    man $SCRIPTNAME"
                tb_exit_function 4
@@ -931,7 +931,7 @@ tb_preparation() {
       [ -n "$CURL_PROXY" ] || CURL_PROXY=""
    fi
 
-   echo "INFO: CURL_PROXY: $CURL_PROXY"
+   echo "INFO: CURL_PROXY: '$CURL_PROXY'"
 
    ## Also used by function tbbversion.
    [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
@@ -1085,7 +1085,7 @@ tb_connectivity_checks_curl() {
    fi
 
    tb_notify_details="Checking connectivity... Will take a moment..."
-   echo "INFO: Running connectivity check...  Downloading...: $tbb_download_base_url"
+   echo "INFO: Running connectivity check...  Downloading...: '$tbb_download_base_url'"
 
    [ -n "$timeout_connectivity_checks_curl" ] || timeout_connectivity_checks_curl=180
    ## 1 MB = 1048576 bytes
@@ -1136,13 +1136,13 @@ tb_update_check() {
    ## do not re-download Tor Browser if a previous build already did
    if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
       if [ -d "$tb_browser_folder" ]; then
-         echo "$SCRIPTNAME: Not downloading $tb_title again, because folder $tb_browser_folder already exists."
+         echo "$SCRIPTNAME: Not downloading '$tb_title' again, because folder '$tb_browser_folder' already exists."
          tb_exit_function 0
       fi
    fi
 
    tb_notify_details="Checking $tb_title version... Will take a moment..."
-   echo "INFO: Find out latest version... Downloading...: $TBB_VERSIONS_FILE_LINK"
+   echo "INFO: Find out latest version... Downloading...: '$TBB_VERSIONS_FILE_LINK'"
 
    [ -n "$timeout_version_file_download" ] || timeout_version_file_download=180
    ## 1 MB = 1048576 bytes
@@ -1351,7 +1351,7 @@ To update $tb_title inside existing TemplateBasedVMs, please update $tb_title in
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
 	    if [ "$UPDATE_ONLY_IF_NEWER" = "1" ]; then
 		echo "INFO: UPDATE_ONLY_IF_NEWER is set 1."
-		echo "Skip downloading: current $tb_title $tbb_locally_installed_version is already up-to-date."
+		echo "Skip downloading: current '$tb_title' '$tbb_locally_installed_version' is already up-to-date."
 
 	        tb_exit_function 0
 	    fi
@@ -1404,9 +1404,9 @@ To update $tb_title inside existing TemplateBasedVMs, please update $tb_title in
    tbb_locally_installed_version_stripped="$(/usr/libexec/msgcollector/striphtml "$tbb_locally_installed_version")"
    tbb_version_stripped="$(/usr/libexec/msgcollector/striphtml "$tbb_version")"
 
-   echo "INFO: Previously downloaded version: $tbb_version_previous_downloaded_version_stripped"
-   echo "INFO: Currently installed version: $tbb_locally_installed_version_stripped"
-   echo "INFO: Online detected version: $tbb_version_stripped"
+   echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version_stripped'"
+   echo "INFO: Currently installed version: '$tbb_locally_installed_version_stripped'"
+   echo "INFO: Online detected version: '$tbb_version_stripped'"
 
    if [ "$TB_INPUT" = "none" ]; then
       true "INFO: TB_INPUT set to none, ok."
@@ -1483,7 +1483,7 @@ tb_kill_already_running_tb_maybe() {
    if [ ! "$NOKILLTB" = "1" ]; then
       [ -n "$tb_process_name" ] || tb_process_name="firefox.real"
 
-      echo "INFO: Because you are not using --nokilltb, now killing potentially still running instances of $tb_title..."
+      echo "INFO: Because you are not using --nokilltb, now killing potentially still running instances of '$tb_title'..."
       killall "$tb_process_name" || true
    fi
 }
@@ -1508,7 +1508,7 @@ $tb_notify_details"
       fi
    fi
 
-   echo "INFO: CURL_OUT_FILE: $CURL_OUT_FILE"
+   echo "INFO: CURL_OUT_FILE: '$CURL_OUT_FILE'"
 
    ## Debugging: Simulating endless data attack.
    #export CURL_PRGRS_MAX_FILE_SIZE_BYTES="1048576"
@@ -1576,7 +1576,7 @@ tb_download_files() {
 
    tb_notify_details="Downloading $tb_title digital signature (GPG)... Will take a moment..."
    echo "INFO: Digital signature (GPG) download... Will take a moment..."
-   echo "INFO: Downloading...: $TBB_SIG_LINK"
+   echo "INFO: Downloading...: '$TBB_SIG_LINK'"
 
    [ -n "$timeout_signature_file_download" ] || timeout_signature_file_download=180
    ## 1 MB = 1048576 bytes
@@ -1594,8 +1594,8 @@ tb_download_files() {
    ### archive file ###
 
    tb_notify_details="Downloading $tb_title... Will take a while..."
-   echo "INFO: Downloading $tb_title..."
-   echo "INFO: Downloading...: $TBB_PACKAGE_LINK"
+   echo "INFO: Downloading '$tb_title'..."
+   echo "INFO: Downloading...: '$TBB_PACKAGE_LINK'"
 
    [ -n "$timeout_archive_file_download" ] || timeout_archive_file_download=3600
    ## 1 MB = 1048576 bytes
@@ -1823,7 +1823,7 @@ Extracting $tb_title... This could take a moment..."
    kill_after="30"
    file_name="$TBB_PACKAGE_FULL_PATH"
 
-   echo "INFO: Extracting $file_name ..."
+   echo "INFO: Extracting '$file_name'..."
 
    ## Folder must be already exist, otherwise `tar` would fail.
    mkdir --parents "$tb_extract_temp_folder"
@@ -1967,7 +1967,7 @@ Extracting $tb_title... This could take a moment..."
       tb_exit_function 15
    fi
 
-   echo "INFO: Extraction of $file_name done."
+   echo "INFO: Extraction of '$file_name' has been completed."
 }
 
 tb_patch_download_folder_create() {
@@ -1989,10 +1989,10 @@ tb_install() {
       return 0
    fi
 
-   echo "INFO: Deleting old folder $tb_browser_folder."
+   echo "INFO: Deleting old folder '$tb_browser_folder'."
    rm --recursive --force "$tb_browser_folder"
 
-   echo "INFO: Moving temporary folder $tb_extract_temp_folder to $tb_browser_folder."
+   echo "INFO: Moving temporary folder '$tb_extract_temp_folder' to '$tb_browser_folder'."
    mv "$tb_extract_temp_folder" "$tb_browser_folder"
 }
 
@@ -2006,7 +2006,7 @@ tb_cleanup() {
       return 0
    fi
 
-   echo "INFO: Deleting no longer required file $TBB_PACKAGE_FULL_PATH to save space."
+   echo "INFO: Deleting no longer required file '$TBB_PACKAGE_FULL_PATH' to save space."
    rm --force "$TBB_PACKAGE_FULL_PATH"
 }
 
@@ -2023,18 +2023,18 @@ tb_chroot_pre_exit() {
 
 tb_hardcoded_version_last_downloaded_save() {
    echo "$tbb_version" > "$tbb_version_last_downloaded_save_file"
-   echo "INFO: Saved $tbb_version in $tbb_version_last_downloaded_save_file."
+   echo "INFO: Saved '$tbb_version' in '$tbb_version_last_downloaded_save_file'."
 }
 
 tb_start_ask() {
    if [ "$noaskstart" = "true" ]; then
-      true "INFO: noaskstart is set to true. Skipping question if $tb_title should be started."
+      true "INFO: noaskstart is set to 'true'. Skipping question if '$tb_title' should be started."
       return 0
    fi
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      echo "INFO: Finished installing $tb_title. Can be found in $tb_browser_folder."
-      echo "INFO: Not starting $tb_title, because variable TB_FORCE_INSTALL is set to 1."
+      echo "INFO: Finished installing '$tb_title'. Can be found in folder '$tb_browser_folder'."
+      echo "INFO: Not starting '$tb_title', because variable TB_FORCE_INSTALL is set to '1'."
       return 0
    fi
 
@@ -2042,8 +2042,8 @@ tb_start_ask() {
    command -v $tb_bin || { command_v_torbrowser_exit_code="$?" ; true; };
 
    if [ ! "$command_v_torbrowser_exit_code" = "0" ]; then
-      echo "INFO: $tb_bin binary not found in path. tb-starter is probably not installed. \
-Skipping question to start $tb_title."
+      echo "INFO: '$tb_bin' binary not found in path. tb-starter is probably not installed. \
+Skipping question to start '$tb_title'."
       return 0
    fi
 
@@ -2051,11 +2051,11 @@ Skipping question to start $tb_title."
       true "noaskstart is 'false'"
    else
       if test -f /run/qubes/this-is-templatevm ; then
-         MSG="<p>Finished installing $tb_title. Can be found in $tb_browser_folder.</p>
+         MSG="<p>Finished installing '$tb_title'. Can be found in '$tb_browser_folder'.</p>
 
 <p>Not asking to start $tb_title, because running in a TemplateVM.</p>
 
-<p>To run $tb_title, run in a TemplateBasedVM, StandaloneVM or DispVM, run:<br />
+<p>To run '$tb_title', run in a TemplateBasedVM, StandaloneVM or DispVM, run:<br />
 <code>$tb_bin</code></p>"
          outputfunc ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
@@ -2085,7 +2085,7 @@ Skipping question to start $tb_title."
 y/n?"
       read -r answer
       if [ ! "$answer" = "y" ]; then
-         echo "INFO: Canceled starting $tb_title, ok."
+         echo "INFO: Canceled starting '$tb_title', ok."
       else
          $tb_bin
       fi
@@ -2095,12 +2095,12 @@ y/n?"
    echo "INFO: GUI is asking to start $tb_title."
    answer="$(/usr/libexec/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
    if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-      echo "INFO: Canceled starting $tb_title, ok."
+      echo "INFO: Canceled starting '$tb_title', ok."
       return 0
    else
-      echo "INFO: Running $tb_title."
+      echo "INFO: Running '$tb_title'."
       $tb_bin
-      echo "INFO: $tb_title was terminated, ok."
+      echo "INFO: '$tb_title' was terminated, ok."
       return 0
    fi
 }
