@@ -1212,14 +1212,14 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
       echo "INFO: Using stable version. For alpha version, see: $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    fi
 
+   true "INFO: tbb_use_hardcoded_version '$tbb_use_hardcoded_version'"
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
-      if [ -n "$tbb_version" ]; then
+         true "INFO: tbb_version: '$tbb_version'"
          if [ "$ARCH" = "arm64" ]; then
-            tbb_version="$tbb_hardcoded_version_arm64"
+            [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version_arm64"
          else
-            tbb_version="$tbb_hardcoded_version"
+            [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
          fi
-      fi
       echo "INFO: tbb_hardcoded_version: '$tbb_hardcoded_version'"
    fi
 
