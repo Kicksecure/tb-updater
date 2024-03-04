@@ -614,6 +614,13 @@ tb_fix_permissions() {
 tb_preparation() {
    [ -n "$tb_wiki" ] || tb_wiki="Tor_Browser"
    [ -n "$tb_title" ] || tb_title="Tor Browser"
+   [ -n "$IDENTIFIER" ] || IDENTIFIER="torbrowser-downloader"
+   [ -n "$tb_install_folder" ] || tb_install_folder="tb"
+   [ -n "$tb_install_folder_dot" ] || tb_install_folder_dot=".tb"
+   [ -n "$tb_browser_name" ] || tb_browser_name="tor-browser"
+   [ -n "$tb_bin" ] || tb_bin="torbrowser"
+   [ -n "$tb_downloader_developers" ] || tb_downloader_developers="Whonix"
+   [ -n "$tb_documentation_base_url_clearnet" ] || tb_documentation_base_url_clearnet="https://www.whonix.org"
 
    if [ "$tb_postinst" = "true" ]; then
       [ -n "$tb_manual_run" ] || tb_manual_run=false
@@ -683,14 +690,6 @@ tb_preparation() {
       fi
    fi
 
-   [ -n "$IDENTIFIER" ] || IDENTIFIER="torbrowser-downloader"
-   [ -n "$tb_install_folder" ] || tb_install_folder="tb"
-   [ -n "$tb_install_folder_dot" ] || tb_install_folder_dot=".tb"
-   [ -n "$tb_browser_name" ] || tb_browser_name="tor-browser"
-   [ -n "$tb_bin" ] || tb_bin="torbrowser"
-   [ -n "$tb_downloader_developers" ] || tb_downloader_developers="Whonix"
-   [ -n "$tb_documentation_base_url_clearnet" ] || tb_documentation_base_url_clearnet="https://www.whonix.org"
-
    [ -n "$tb_home_folder" ] || tb_home_folder="$tb_user_home/$tb_install_folder_dot"
    [ -n "$tb_browser_folder" ] || tb_browser_folder="$tb_home_folder/$tb_browser_name"
    [ -n "$tb_cache_folder" ] || tb_cache_folder="$tb_user_home/.cache/$tb_install_folder"
@@ -707,7 +706,7 @@ tb_preparation() {
 
    if [ ! "$tb_updater_run" = "true" ]; then
       true "tb_updater_run is set to: '$tb_updater_run'"
-      echo "INFO: --postinst but outside of Qubes TemplateVM, skipping, ok."
+      echo "INFO: Using '--postinst' option but outside of Qubes TemplateVM, skipping, ok."
       tb_exit_function 0
    fi
 
