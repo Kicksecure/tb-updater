@@ -238,7 +238,7 @@ tb_ex_funct() {
    #outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
    #echo "ERROR: $MSG"
 
-   MSG="$0: INFO: $FUNCNAME: Signal $SIGNAL_TYPE received. Exiting."
+   MSG="$0: INFO: $FUNCNAME: Signal '$SIGNAL_TYPE' received. Exiting."
    outputfunc ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 }
 
