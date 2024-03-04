@@ -558,7 +558,7 @@ tb_settings_postinst_common() {
 
 tb_settings_qubes_common_templatevm() {
    ## Skip Tor connectivity check when running inside Qubes TempalteVM,
-   ## because since Qubes R4 TemplateVMs are non-networked by default.
+   ## because since Qubes R4 Templates are non-networked by default.
    [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
    [ -n "$tb_qubes_template_detected" ] || tb_qubes_template_detected=true
 }
@@ -574,8 +574,8 @@ tb_settings_qubes_postinst_templatevm() {
    fi
    if [ "$tb_user_home" = "" ]; then
       tb_user_home="/var/cache/tb-binary"
-      tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because running inside Qubes TemplateVM and from postinst. \
-This is useful so you get up to date versions of $tb_title in newly created AppVMs inherited from updated TemplateVMs.
+      tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because running inside Qubes Template and from postinst. \
+This is useful so you get up to date versions of $tb_title in newly created App Qubes inherited from updated Templates.
 More info: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific"
    fi
 }
@@ -584,8 +584,8 @@ tb_settings_qubes_manual_run_templatevm() {
    [ -n "$tb_updater_run" ] || tb_updater_run=true
    if [ "$tb_user_home" = "" ]; then
       tb_user_home="/var/cache/tb-binary"
-      tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because running inside Qubes TemplateVM but not run from postinst. \
-This is useful so you get up to date versions of '$tb_title' in newly created AppVMs inherited from updated TemplateVMs.
+      tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because running inside Qubes Template but not run from postinst. \
+This is useful so you get up to date versions of '$tb_title' in newly created App Qubes inherited from updated Templates.
 More info: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific"
    fi
 }
@@ -644,7 +644,7 @@ tb_preparation() {
 
    if test -f /run/qubes/this-is-templatevm ; then
       if [ "$(id -u)" != "0" ]; then
-         #echo "ERROR: Needs to run as root in Qubes TemplateVM. Run:"
+         #echo "ERROR: Needs to run as root in Qubes Template. Run:"
          #echo "sudo $SCRIPTNAME"
          #tb_exit_function 2
          true
@@ -706,7 +706,7 @@ tb_preparation() {
 
    if [ ! "$tb_updater_run" = "true" ]; then
       true "tb_updater_run is set to: '$tb_updater_run'"
-      echo "INFO: Using '--postinst' option but outside of Qubes TemplateVM, skipping, ok."
+      echo "INFO: Using '--postinst' option but outside of Qubes Template, skipping, ok."
       tb_exit_function 0
    fi
 
@@ -1252,7 +1252,7 @@ tb_confirm_update() {
       if [ "$found" = "true" ]; then
          local MSG="\
 <p>Obsolete folders exist. It is recommended to delete them. \
-Otherwise updating <code>$tb_title</code> in this TemplateVM will not result in newly created TemplateBasedVMs to inherit the updated version of <code>$tb_title</code>.
+Otherwise updating <code>$tb_title</code> in this Template will not result in newly created TemplateBasedVMs to inherit the updated version of <code>$tb_title</code>.
 <br />
 <br />To delete these obsolete folders, please run:
 <br />
@@ -1328,10 +1328,10 @@ YOUR OLD BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET DELETED."
 
    if test -f /run/qubes/this-is-templatevm ; then
       qubes_running_inside_template_vm_msg="\
-<u>Qubes specific notice</u>: Currently running inside a TemplateVM.
-Due to <a href=$tb_documentation_base_url_clearnet/wiki/Dev/Qubes#tb-updater_vs_TemplateVM>technical limitations</a>,
-running this program in this TemplateVM will not update $tb_title in TemplateBasedVMs, which are based on this TemplateVM.
-Only newly created TemplateBasedVMs, which are based on this TemplateVM will benefit from this.
+<u>Qubes specific notice</u>: Currently running inside a Template.
+Due to <a href=$tb_documentation_base_url_clearnet/wiki/Dev/Qubes#tb-updater_vs_Template>technical limitations</a>,
+running this program in this Template will not update $tb_title in TemplateBasedVMs, which are based on this Template.
+Only newly created TemplateBasedVMs, which are based on this Template will benefit from this.
 To update $tb_title inside existing TemplateBasedVMs, please update $tb_title inside TemplateBasedVMs."
    fi
 
@@ -2052,7 +2052,7 @@ Skipping question to start '$tb_title'."
       if test -f /run/qubes/this-is-templatevm ; then
          MSG="<p>Finished installing '$tb_title'. Can be found in '$tb_browser_folder'.</p>
 
-<p>Not asking to start $tb_title, because running in a TemplateVM.</p>
+<p>Not asking to start $tb_title, because running in a Template.</p>
 
 <p>To run '$tb_title', run in a TemplateBasedVM, StandaloneVM or DispVM, run:<br />
 <code>$tb_bin</code></p>"
