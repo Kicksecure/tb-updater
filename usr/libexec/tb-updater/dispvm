@@ -75,10 +75,10 @@ fi
 # /dev/xvda3 on /home/user/.cache/tb type ext4 (rw,nosuid,nodev,noatime,discard)
 # /dev/xvda3 on /rw/home/user/.cache/tb type ext4 (rw,noatime,discard)
 
+## Remount with nosuid,nodev.
 if [ -d "/rw/home/$user_name/.tb" ]; then
    mount -o remount,nosuid,nodev "/rw/home/$user_name/.tb"
 fi
-
 if [ -d "/rw/home/$user_name/.cache/tb" ]; then
    mount -o remount,nosuid,nodev "/rw/home/$user_name/.cache/tb"
 fi
