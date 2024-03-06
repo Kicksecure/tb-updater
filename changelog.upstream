@@ -1,3 +1,81 @@
+commit d234ee8a59c53ab61e9b4e6d5ed3ef24dd3c7b7d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Mar 6 08:17:58 2024 -0500
+
+    tbb_hardcoded_version="13.0.11"
+
+commit 33956082866e66f3040c3d131254e504ae7c9ec3
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Mar 6 04:35:07 2024 -0500
+
+    comment
+
+commit 82153aba220375f123dd8b2037ab6c8d8732dc80
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Mar 6 04:22:46 2024 -0500
+
+    comment
+
+commit 1c6e545213c208003ca5ba968ab5c99ce0527528
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Mar 6 04:18:04 2024 -0500
+
+    comment
+
+commit 59e5a259793cad784ca3ba672bd6cb1477493926
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Mar 6 04:16:14 2024 -0500
+
+    comments
+
+commit 00e8b10ba2b0845e82a126030baa3082e3040ede
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Mar 6 04:12:59 2024 -0500
+
+    comment
+
+commit 26105c28905409db53ba31627edadc51c1fc573d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Mar 6 04:09:40 2024 -0500
+
+    fix: no longer hardcode user "user" in Qubes
+
+commit dcff19e11057d9b6acef3d7a762993cf6155333b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Mar 6 04:08:56 2024 -0500
+
+    use `qubesdb-read /default-user` to get Qubes default user name
+
+commit af32a17338ef9a23b7e735ef42571934b534f38b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Mar 6 04:06:41 2024 -0500
+
+    refactoring
+
+commit 8b219fa075c0f16bf864dd962dee01c04e0e535e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Mar 6 04:04:34 2024 -0500
+
+    refactoring
+
+commit 31b86d2c1a9fd5cd276088d2db09937241c53d88
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Mar 6 04:02:15 2024 -0500
+
+    comments
+
+commit 7c5209ce7ca72232e6fd4c6f874060653f65d0ff
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Mar 6 04:01:00 2024 -0500
+
+    use `qubesdb-read /default-user` to get Qubes default user name
+
+commit 931c7f73935f87cd60c505d3fc31ecb4d540659a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Mar 4 13:58:52 2024 +0000
+
+    bumped changelog version
+
 commit 7493e7796a2d26cb1ded4ee26cd0da03345ccf3f
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Mon Mar 4 08:58:28 2024 -0500
