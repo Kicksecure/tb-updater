@@ -55,10 +55,18 @@ find /var/cache/tb-binary -type d -print0 | xargs -0 chmod 0775
 
 chmod --recursive u+X /var/cache/tb-binary
 
-if ! id user &>/dev/null ; then
-   echo "$0: WARNING: user 'user' does not exist!"
+user_name=user
+
+if command -v qubesdb-read >/dev/null 2>&1 ; then
+   if ! user_name=$(qubesdb-read /default-user) ; then
+      echo "$0: WARNING: failed to run 'qubesdb-read /default-user', falling back to user_name=user"
+      user_name=user
+   fi
+fi
+
+if ! id "$user_name" &>/dev/null ; then
+   echo "$0: WARNING: user '$user_name' does not exist!"
    exit 0
 fi
 
-## username HARDCODED!
-chown --recursive user:user /var/cache/tb-binary
+chown --recursive "$user_name":"$user_name" /var/cache/tb-binary
