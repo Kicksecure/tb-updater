@@ -75,4 +75,5 @@ if ! id "$user_name" &>/dev/null ; then
    exit 0
 fi
 
+## Allow Qubes Template to run 'update-torbrowser' as non-root, for example as user "user".
 chown --recursive "$user_name":"$user_name" /var/cache/tb-binary
