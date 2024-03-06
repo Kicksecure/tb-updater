@@ -3,6 +3,10 @@
 ## Copyright (C) 2019 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
 ## See the file COPYING for copying conditions.
 
+## This script is run by both:
+## - torbrowser
+## - update-torbrowser
+
 #set -x
 set -e
 
@@ -45,8 +49,8 @@ fi
 # N:
 # N:    Check: scripts, Type: binary
 
-## Allow user in regular VM (i.e. non-DispVM) to copy this to root.
-## In DispVM 'mount' is being used rather than 'cp'.
+## Allow user in regular VM (i.e. not in a Qubes Disposable) to copy this to root.
+## In Qubes Disposable 'mount' is being used rather than 'cp'.
 chmod --recursive o+r /var/cache/tb-binary
 ## Somehow needed too.
 chmod --recursive g+r /var/cache/tb-binary
