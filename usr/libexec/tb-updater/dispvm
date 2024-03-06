@@ -6,6 +6,7 @@
 set -x
 set -e
 
+## For Non-Qubes.
 user_name="user"
 
 if ischroot --default-false ; then
@@ -15,6 +16,10 @@ fi
 if command -v qubesdb-read &>/dev/null ; then
    qubes_vm_name="$(qubesdb-read /name)"
    qubes_vm_persistence="$(qubesdb-read /qubes-vm-persistence)"
+   if ! user_name=$(qubesdb-read /default-user) ; then
+      echo "$0: WARNING: failed to run 'qubesdb-read /default-user', falling back to user_name=user"
+      user_name=user
+   fi
 else
    ## Do not do any of this outside of Qubes.
    exit 0
