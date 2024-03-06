@@ -59,7 +59,7 @@ chmod --recursive u+X /var/cache/tb-binary
 user_name=user
 
 ## Only in Qubes.
-if command -v qubesdb-read >/dev/null 2>&1 ; then
+if command -v qubesdb-read &>/dev/null ; then
    if ! user_name=$(qubesdb-read /default-user) ; then
       echo "$0: WARNING: failed to run 'qubesdb-read /default-user', falling back to user_name=user"
       user_name=user
