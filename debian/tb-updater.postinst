@@ -27,6 +27,10 @@ download() {
    ## TODO:
    #tpo_downloader_debug="$tpo_downloader_debug"
 
+   ## TODO: Use a dedicated Linux user account.
+   ## Ideally this would be run as user "user", but the existence of that user
+   ## is not guaranteed by the time this script is running.
+
    $tool \
       $chroot_maybe \
       --postinst
