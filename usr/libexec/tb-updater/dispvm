@@ -12,7 +12,7 @@ if ischroot --default-false ; then
    exit 0
 fi
 
-if command -v qubesdb-read >/dev/null 2>&1 ; then
+if command -v qubesdb-read &>/dev/null ; then
    qubes_vm_name="$(qubesdb-read /name)"
    qubes_vm_persistence="$(qubesdb-read /qubes-vm-persistence)"
 else
