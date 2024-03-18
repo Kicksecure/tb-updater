@@ -557,7 +557,7 @@ tb_settings_postinst_common() {
 }
 
 tb_settings_qubes_common_templatevm() {
-   ## Skip Tor connectivity check when running inside Qubes TempalteVM,
+   ## Skip Tor connectivity check when running inside Qubes Template,
    ## because since Qubes R4 Templates are non-networked by default.
    [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
    [ -n "$tb_qubes_template_detected" ] || tb_qubes_template_detected=true
@@ -568,7 +568,7 @@ tb_settings_not_tempaltevm() {
 }
 
 tb_settings_qubes_postinst_templatevm() {
-   ## Do not run during Qubes TempalteVM postinst if tb_install_follow=false.
+   ## Do not run during Qubes Template postinst if tb_install_follow=false.
    if [ ! "$tb_install_follow" = "false" ]; then
       [ -n "$tb_updater_run" ] || tb_updater_run=true
    fi
@@ -1258,7 +1258,7 @@ tb_confirm_update() {
       if [ "$found" = "true" ]; then
          local MSG="\
 <p>Obsolete folders exist. It is recommended to delete them. \
-Otherwise updating <code>$tb_title</code> in this Template will not result in newly created TemplateBasedVMs to inherit the updated version of <code>$tb_title</code>.
+Otherwise updating <code>$tb_title</code> in this Template will not result in newly created App Qubes to inherit the updated version of <code>$tb_title</code>.
 <br />
 <br />To delete these obsolete folders, please run:
 <br />
@@ -1336,9 +1336,9 @@ YOUR OLD BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET DELETED."
       qubes_running_inside_template_vm_msg="\
 <u>Qubes specific notice</u>: Currently running inside a Template.
 Due to <a href=$tb_documentation_base_url_clearnet/wiki/Dev/Qubes#tb-updater_vs_Template>technical limitations</a>,
-running this program in this Template will not update $tb_title in TemplateBasedVMs, which are based on this Template.
-Only newly created TemplateBasedVMs, which are based on this Template will benefit from this.
-To update $tb_title inside existing TemplateBasedVMs, please update $tb_title inside TemplateBasedVMs."
+running this program in this Template will not update $tb_title in App Qubes, which are based on this Template.
+Only newly created App Qubes, which are based on this Template will benefit from this.
+To update $tb_title inside existing App Qubes, please update $tb_title inside App Qubes."
    fi
 
    if [ "$installed_or_not_result" = "true" ]; then
@@ -2060,7 +2060,7 @@ Skipping question to start '$tb_title'."
 
 <p>Not asking to start $tb_title, because running in a Template.</p>
 
-<p>To run '$tb_title', run in a TemplateBasedVM, StandaloneVM or DispVM, run:<br />
+<p>To run '$tb_title', start an App Qube, Standalone or Disposable, then run:<br />
 <code>$tb_bin</code></p>"
          outputfunc ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
