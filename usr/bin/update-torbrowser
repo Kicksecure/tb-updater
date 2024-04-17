@@ -105,7 +105,7 @@ tb_error_handler() {
    [ -n "$tb_user_home" ] || tb_user_home=~
    [ -n "$tb_install_folder" ] || tb_install_folder="tb"
 
-   if test -w $tb_user_home/.cache/$tb_install_folder ; then
+   if test -w "$tb_user_home/.cache/$tb_install_folder" ; then
       mkdir --parents "$tb_user_home/.cache/$tb_install_folder"
    fi
    if test -w "$tb_user_home/.cache/$tb_install_folder/torbrowser_updater_error.log" ; then
