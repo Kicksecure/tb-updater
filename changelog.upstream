@@ -1,3 +1,29 @@
+commit 3a58d8e067056d075d03ab812aaa4274efdc5a15
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Apr 18 09:01:55 2024 -0400
+
+    tbb_hardcoded_version="13.0.14"
+
+commit 0b13e64f0912bf8ef52973c4cc9882f03ad46c70
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Apr 18 09:00:35 2024 -0400
+
+    towards support for automatically updating Mullvad Browser in Qubes Template
+    
+    so newly created App Qubes or Disposables start with up-to-date Mullvad Browser
+
+commit 00753faa5c2a6239ed1f0f83c96d37d624d4a720
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 17 12:36:53 2024 -0400
+
+    quotes
+
+commit 5e6a2b9e155c638dd881e74dad604a9af306dc7f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Apr 1 06:33:48 2024 +0000
+
+    bumped changelog version
+
 commit 7e8babc7a405d7845ceba56ed2357e3bcc3aff1f
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Mon Apr 1 02:30:17 2024 -0400
