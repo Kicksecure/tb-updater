@@ -485,6 +485,12 @@ tb_resolv_conf_debugging() {
 
 tb_anon_ws_dns_conf() {
    true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
+
+   if [ "$is_chroot" = "true" ]; then
+      ## Debugging.
+      tb_resolv_conf_debugging
+   fi
+
    if [ "$tb_disable_anon_ws_dnf_conf" = "true" ]; then
       echo "INFO: tb_anon_ws_dns_conf: tb_disable_anon_ws_dnf_conf=true"
       echo "INFO: Checking if /etc/resolv.conf is a symlink..."
