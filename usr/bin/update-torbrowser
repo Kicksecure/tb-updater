@@ -1151,7 +1151,7 @@ tb_update_check() {
    tb_notify_details="Checking $tb_title version... Will take a moment..."
    echo "INFO: Find out latest version... Downloading...: '$TBB_VERSIONS_FILE_LINK'"
 
-   [ -n "$timeout_version_file_download" ] || timeout_version_file_download=180
+   [ -n "$timeout_version_file_download" ] || timeout_version_file_download=300
    ## 1 MB = 1048576 bytes
    ## 2 MB = 2097152 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
@@ -1532,8 +1532,8 @@ $tb_notify_details"
       $CURL_PROXY \
       $CURL_FORCE_SSL \
       --retry-connrefused \
-      --retry 3 \
-      --retry-delay 3 \
+      --retry 10 \
+      --retry-delay 60 \
       --max-time "$curl_download_max_time" \
       --location \
       $CURL_OPTS \
@@ -1590,7 +1590,7 @@ tb_download_files() {
    echo "INFO: Digital signature (GPG) download... Will take a moment..."
    echo "INFO: Downloading...: '$TBB_SIG_LINK'"
 
-   [ -n "$timeout_signature_file_download" ] || timeout_signature_file_download=180
+   [ -n "$timeout_signature_file_download" ] || timeout_signature_file_download=300
    ## 1 MB = 1048576 bytes
    ## 2 MB = 2097152 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
