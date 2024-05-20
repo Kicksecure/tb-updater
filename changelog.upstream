@@ -1,3 +1,15 @@
+commit df6002125615ce3bd19e89a2132d8ab3d2b13ba9
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon May 20 10:31:56 2024 -0400
+
+    increase timeouts for higher reliability over flaky networks
+
+commit 00899dc1e266739b9d7f94c6058c8fe738130611
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri May 17 20:24:00 2024 +0000
+
+    bumped changelog version
+
 commit 24070ac6c6f4f8ac67a7d3df17c5819b2bc32804
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri May 17 16:22:42 2024 -0400
