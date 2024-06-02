@@ -915,11 +915,7 @@ tb_preparation() {
    elif test -f /run/qubes/this-is-templatevm ; then
       ## Use Qubes updates proxy.
       if [ "$CURL_PROXY" = "" ]; then
-         if systemctl -q is-active qubes-updates-proxy-forwarder.socket; then
-            PROXY_SERVER='http://127.0.0.1:8082/'
-         else
-            PROXY_SERVER='http://10.137.255.254:8082/'
-         fi
+         PROXY_SERVER='http://127.0.0.1:8082/'
          CURL_PROXY="--proxy $PROXY_SERVER"
       fi
    elif [ -f /usr/share/whonix/marker ]; then
