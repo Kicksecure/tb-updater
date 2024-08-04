@@ -1,3 +1,29 @@
+commit 999341178afb06dd796e82a07fc8e7786c160435
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Aug 4 13:59:19 2024 -0400
+
+    update signing key
+    
+    gpg --auto-key-locate nodefault,wkd --locate-keys torbrowser@torproject.org
+    gpg: key 0x4E2C6E8793298290: "Tor Browser Developers (signing key) <torbrowser@torproject.org>" 3 new signatures
+    gpg: key 0x4E2C6E8793298290: "Tor Browser Developers (signing key) <torbrowser@torproject.org>" 1 new subkey
+    gpg: Total number processed: 1
+    gpg:            new subkeys: 1
+    gpg:         new signatures: 3
+    pub   rsa4096/0x4E2C6E8793298290 2014-12-15 [C] [expires: 2027-07-15]
+          EF6E286DDA85EA2A4BA7DE684E2C6E8793298290
+    uid                   [  undef ] Tor Browser Developers (signing key) <torbrowser@torproject.org>
+    sub   rsa4096/0xE53D989A9E2D47BF 2021-09-17 [S] [expires: 2024-09-13]
+    sub   rsa4096/0x157432CF78A65729 2024-07-15 [S] [expires: 2026-10-26]
+    
+    fixes https://github.com/Kicksecure/tb-updater/issues/29
+
+commit 8ca07d9ace74e388c48bd489b80a21ddaf2e58db
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Jul 18 15:32:42 2024 +0000
+
+    bumped changelog version
+
 commit 4e8821dee49d8caa60223204693f9b74a45e712b
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Jul 18 11:32:18 2024 -0400
