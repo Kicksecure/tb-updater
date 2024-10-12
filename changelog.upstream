@@ -1,3 +1,35 @@
+commit 9d790396a7439ceb6b8c494c790be6f80a304430
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Oct 12 01:12:35 2024 -0400
+
+    alpha tbb_hardcoded_version="14.0a9"
+
+commit f1f48f57021502b7c0d17b7ce50929860e72244f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Oct 12 01:11:53 2024 -0400
+
+    tbb_hardcoded_version="13.5.7"
+
+commit 80b4e059235f763b0abe7d7c9c837cf8c5ecc0fd
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Oct 12 01:10:15 2024 -0400
+
+    add dependency on `libdbus-glib-1-2`
+    
+    to fix error:
+    
+    > XPCOMGlueLoad error for file /home/user/.tb/tor-browser/Browser/libxul.so:
+    > libdbus-glib-1.so.2: cannot open shared object file: No such file or directory
+    > Couldn't load XPCOM.
+    
+    https://forums.whonix.org/t/tor-browser-integration/11912/116
+
+commit fa4d1876a11f681f35505d9a777e521570eaea8b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Oct 3 07:30:23 2024 +0000
+
+    bumped changelog version
+
 commit 681975cd85f39ed0f5b1a13de126bbe3a78a64af
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Oct 3 03:30:05 2024 -0400
