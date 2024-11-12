@@ -1,14 +1,6 @@
 ## Copyright (C) 2019 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
 ## See the file COPYING for copying conditions.
 
-## Required during build inside chroot.
-## Should be safe to remove after build.
-## Currently not in use.
-#%sudo ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-pre
-#user ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-pre
-#%sudo ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-post
-#user ALL=NOPASSWD: /usr/libexec/tb-updater/chroot-post
-
 ## Required in Qubes Templates.
 %sudo ALL=NOPASSWD: /usr/libexec/tb-updater/tb-permission-fix
 user ALL=NOPASSWD: /usr/libexec/tb-updater/tb-permission-fix
