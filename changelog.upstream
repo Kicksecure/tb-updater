@@ -1,3 +1,21 @@
+commit aa18deff209632a7986043ed9aec3cbf1d7e6d6d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Nov 12 03:27:34 2024 -0500
+
+    cleanup
+
+commit db3645d46ddff06f59c1ab42142958386e3b606e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Nov 12 03:26:17 2024 -0500
+
+    Tor Browser ARM64 download: sourcecode now supports OSCP, therefore added `--cert-status` option to curl
+
+commit fe947f7a6142aac0a1163c40f316c8478901c0fa
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Nov 6 16:55:30 2024 +0000
+
+    bumped changelog version
+
 commit ecf99662956dba897c499d0cb775ff8bbb387056
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Nov 6 11:52:28 2024 -0500
