@@ -896,15 +896,12 @@ tb_preparation() {
       if [ "$ARCH_DOWNLOAD" = "linux-arm64" ]; then
          [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://sourceforge.net"
          [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://sourceforge.net/projects/tor-browser-ports/files"
-         ## At time of writing sourceforge.net did not support TLSv1.3 or --cert-status yet.
-         ## curl: (91) No OCSP response received
-         [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.2 --proto =https"
       else
          ## Download from the torproject.org clearnet by default.
          [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://www.torproject.org"
          [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://www.torproject.org/dist/torbrowser"
-         [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https --cert-status"
       fi
+      [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https --cert-status"
 
       [ -n "$tbb_versions_base_url" ] || tbb_versions_base_url="https://aus1.torproject.org"
       [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/downloads.json"
