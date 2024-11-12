@@ -443,10 +443,10 @@ outputfunc() {
          echo "$MSG"
       fi
    elif [ "$outputfunc_verbose" = "true" ]; then
-      echo "Running: bash -x $output_tool --identifier $IDENTIFIER --whoami $who_ami ${1+$@}"
-      bash -x $output_tool --identifier "$IDENTIFIER" --whoami "$who_ami" "$@"
+      echo "Running: bash -x $output_tool --identifier $IDENTIFIER ${1+$@}"
+      bash -x $output_tool --identifier "$IDENTIFIER" "$@"
    else
-      $output_tool --identifier "$IDENTIFIER" --whoami "$who_ami" "$@"
+      $output_tool --identifier "$IDENTIFIER" "$@"
    fi
    true "$FUNCNAME: END END"
 }
@@ -788,7 +788,6 @@ tb_preparation() {
 
    outputfunc --icon "$ICON"
    outputfunc --parenttty "$my_tty"
-   outputfunc --whoami "$who_ami"
    outputfunc --titlex "$TITLE"
    outputfunc --titlecli "$TITLE"
 
