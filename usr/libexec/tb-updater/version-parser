@@ -47,16 +47,9 @@ tbbversion() {
 
    local actual_string_length
    actual_string_length="${#tbb_version}"
-   tbbversion_excess_length=""
 
    ## Check if the string length of tbb_version is excessive.
    if [ "$actual_string_length" -gt "$max_string_length" ]; then
-      ## Store excess length for later use.
-      tbbversion_excess_length="$tbb_version"
-
-      ## Shorten excess length $tbb_version to $max_string_length chars.
-      #tbb_version="${tbb_version:0:$max_string_length}"
-
       tbb_version="UNKNOWN"
       tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (Excessive version string length of $actual_string_length characters.)"
