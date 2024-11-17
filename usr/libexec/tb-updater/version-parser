@@ -83,6 +83,10 @@ def tbbversion_arm64():
             exit(3)
 
         if version_checker.match(input_item):
+            if len(input_item) > 10:
+                # Don't print rejection error, maybe we just found the wrong
+                # item and need to keep searching
+                continue
             try:
                 with output_path.open(mode = 'w') as f:
                     f.writelines([input_item])

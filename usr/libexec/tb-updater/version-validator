@@ -51,7 +51,7 @@ tbbversion() {
             return 0
          fi
 
-         ## Check for non-ASCII weidness to mitigate potential attacks against
+         ## Check for non-ASCII weirdness to mitigate potential attacks against
          ## bash or our scripts
          if LC_ALL=C grep --quiet -P -n "[\x80-\xFF]" "${tbb_version_output_file}"; then
             tbb_version='UNKNOWN'
