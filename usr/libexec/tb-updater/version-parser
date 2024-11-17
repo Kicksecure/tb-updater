@@ -6,8 +6,6 @@
 tbbversion() {
    command -v /usr/libexec/msgcollector/striphtml >/dev/null
    command -v jq >/dev/null
-   command -v xargs >/dev/null
-   command -v printf >/dev/null
 
    ## fallback
    tbb_version="UNKNOWN"
@@ -72,6 +70,9 @@ tbbversion() {
 
 tbbversion_installed() {
    ## Getting currently installed version number
+
+   command -v xargs >/dev/null
+   command -v printf >/dev/null
 
    ## Fallbacks.
    tbb_locally_installed_version="UNKNOWN. Please report this tb-updater Bug!"
