@@ -81,7 +81,7 @@ tbbversion_installed() {
    ## Getting currently installed version number
 
    ## Fallbacks.
-   tbb_locally_installed_version="UNKNOWN. Please report this Whonix Bug!"
+   tbb_locally_installed_version="UNKNOWN. Please report this tb-updater Bug!"
    tbb_locally_installed_version_detect_success="0"
 
    if [ ! -d "$tbb_folder" ]; then
@@ -90,19 +90,19 @@ tbbversion_installed() {
    fi
 
    if [ ! -f "$tb_local_version_file" ]; then
-      tbb_locally_installed_version="Version file not found. (File <code>$tb_local_version_file</code> does not exist.) Please report this Whonix Bug!"
+      tbb_locally_installed_version="Version file not found. (File <code>$tb_local_version_file</code> does not exist.) Please report this tb-updater Bug!"
       return 0
    fi
 
    local tb_local_version_contents temp
    tb_local_version_contents="$(cat "$tb_local_version_file")" || \
-      { tbb_locally_installed_version="Reading version file <code>$tb_local_version_file</code> failed. Please report this Whonix Bug!" ; return 0; };
+      { tbb_locally_installed_version="Reading version file <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
    temp="$(echo "$tb_local_version_contents" | jq ".version")" || \
-      { tbb_locally_installed_version="Parsing version file (part 1) <code>$tb_local_version_file</code> failed. Please report this Whonix Bug!" ; return 0; };
+      { tbb_locally_installed_version="Parsing version file (part 1) <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
    temp="$(echo "$temp" | xargs printf)" || \
-      { tbb_locally_installed_version="Parsing version file (part 2) <code>$tb_local_version_file</code> failed. Please report this Whonix Bug!" ; return 0; };
+      { tbb_locally_installed_version="Parsing version file (part 2) <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
    tbb_locally_installed_version="$temp"
    tbb_locally_installed_version_detect_success="1"
