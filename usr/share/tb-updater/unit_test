@@ -4,6 +4,7 @@
 ## See the file COPYING for copying conditions.
 
 set -e
+set -x
 
 mydir="$( cd "$( dirname "$0" )" && pwd )"
 cd "$mydir"
@@ -11,7 +12,7 @@ cd ..
 cd ..
 cd ..
 
-source ./usr/libexec/tb-updater/version-parser
+source ./usr/libexec/tb-updater/version-validator
 
 ####
 

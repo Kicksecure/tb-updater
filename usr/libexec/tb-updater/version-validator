@@ -1,0 +1,170 @@
+#!/bin/bash
+
+## Copyright (C) 2012 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
+## See the file COPYING for copying conditions.
+
+tbbversion() {
+   local tbb_version_remote_file tbb_version_output_file \
+      tbb_parser_exit_code tbb_version_max_length tbb_version_length temp
+
+   command -v /usr/libexec/msgcollector/striphtml >/dev/null
+   command -v /usr/libexec/tb-updater/version-parser >/dev/null
+
+   ## fallback
+   tbb_version="UNKNOWN"
+   tbb_recommended_versions_error=""
+
+   ## Example see /usr/share/tb-updater/unit-test/RecommendedTBBVersions
+   if [ ! -f "$RecommendedTBBVersions" ]; then
+      local MSG="$SCRIPTNAME tbbversion: RecommendedTBBVersions: $RecommendedTBBVersions does not exist."
+      echo "$MSG"
+      error "$MSG"
+      return 1
+   fi
+
+   ## AppArmor policy requires that both input and output files be under /tmp.
+   tbb_version_remote_file="$(mktemp)"
+   tbb_version_output_file="$(mktemp)"
+   tbb_parser_exit_code='0'
+   tbb_version_max_length='10'
+   cp "${RecommendedTBBVersions}" "${tbb_version_remote_file}"
+
+   ## Global variable, expected to be set by the caller
+   if [ "${tbb_version_parse_as_arm64}" = 'y' ]; then
+      2>/dev/null >/dev/null /usr/libexec/tb-updater/version-parser --quiet --arm64 "${tbb_version_remote_file}" "${tbb_version_output_file}" || tbb_parser_exit_code="$?"
+   else
+      2>/dev/null >/dev/null /usr/libexec/tb-updater/version-parser --quiet "${tbb_version_remote_file}" "${tbb_version_output_file}" || tbb_parser_exit_code="$?"
+   fi
+
+   case "${tbb_parser_exit_code}" in
+      0)
+         true "INFO: version-parser exit code ok."
+
+         ## Check file size to mitigate a potential DoS attack
+         tbb_version_length="$(du -b "${tbb_version_output_file}" | cut -f1)"
+         if [ "${tbb_version_length}" -gt "${tbb_version_max_length}" ]; then
+            tbb_version='UNKNOWN'
+            tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(Excessive version string length of ${tbb_version_length} bytes.)"
+            safe-rm "${tbb_version_remote_file}"
+            safe-rm "${tbb_version_output_file}"
+            return 0
+         fi
+
+         ## Check for non-ASCII weidness to mitigate potential attacks against
+         ## bash or our scripts
+         if LC_ALL=C grep --quiet -P -n "[\x80-\xFF]" "${tbb_version_output_file}"; then
+            tbb_version='UNKNOWN'
+            tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(Non-ASCII characters found in version.)"
+            safe-rm "${tbb_version_remote_file}"
+            safe-rm "${tbb_version_output_file}"
+            return 0
+         fi
+
+         ## At this point we trust the version string enough to load it - if
+         ## it's not ridiculously long, and it's entirely 7-bit ASCII, the
+         ## worst it could be is an invalid version number.
+         tbb_version="$(cat "${tbb_version_output_file}")"
+         ## Thanks to:
+         ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
+         ## for the leading/trailing whitespace removal code
+         temp="$tbb_version"
+         temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
+         temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
+         tbb_version="$temp"
+
+         if [ -z "${tbb_version}" ]; then
+            tbb_version="UNKNOWN"
+            tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(version-parser output empty.)"
+            safe-rm "${tbb_version_remote_file}"
+            safe-rm "${tbb_version_output_file}"
+            return 0
+         else
+            true "INFO: version-parser output not empty, ok."
+         fi
+
+         ## Regex-validate version to be absolutely sure it's valid.
+         ## Should match versions like 14.0.2, 14.0a9, and 13.0.9-arm64, but
+         ## reject malformed versions like 14.5:8 or 1.2..3.
+         if ! [[ "${tbb_version}" =~ ^([0-9a-z]+\.)+[0-9a-z]+(-arm64|-armhf)?$ ]]; then
+            tbb_version="UNKNOWN"
+            tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(version-parser output does not look like a valid version number.)"
+            safe-rm "${tbb_version_remote_file}"
+            safe-rm "${tbb_version_output_file}"
+            return 0
+         fi
+
+         ## If we get here, tbb_version is set to the sanitized version
+         ## number, and trusted code can now use it freely.
+         ;;
+      1)
+         tbb_version='UNKNOWN'
+         tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(version-parser failed - missing arguments)"
+         safe-rm "${tbb_version_remote_file}"
+         safe-rm "${tbb_version_output_file}"
+         return 0
+         ;;
+      2)
+         tbb_version='UNKNOWN'
+         tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(version-parser failed - file missing or inaccessible)"
+         safe-rm "${tbb_version_remote_file}"
+         safe-rm "${tbb_version_output_file}"
+         return 0
+         ;;
+      3)
+         tbb_version='UNKNOWN'
+         tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(version-parser failed - file invalid or malicious)"
+         safe-rm "${tbb_version_remote_file}"
+         safe-rm "${tbb_version_output_file}"
+         return 0
+         ;;
+      *)
+         tbb_version='UNKNOWN'
+         tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(version-parser failed - unknown error)"
+         safe-rm "${tbb_version_remote_file}"
+         safe-rm "${tbb_version_output_file}"
+         return 0
+         ;;
+   esac
+}
+
+tbbversion_installed() {
+   ## Getting currently installed version number
+
+   command -v xargs >/dev/null
+   command -v printf >/dev/null
+
+   ## Fallbacks.
+   tbb_locally_installed_version="UNKNOWN. Please report this tb-updater Bug!"
+   tbb_locally_installed_version_detect_success="0"
+
+   if [ ! -d "$tbb_folder" ]; then
+      tbb_locally_installed_version="None installed. (Folder <code>$tbb_folder</code> does not exist.)"
+      return 0
+   fi
+
+   if [ ! -f "$tb_local_version_file" ]; then
+      tbb_locally_installed_version="Version file not found. (File <code>$tb_local_version_file</code> does not exist.) Please report this tb-updater Bug!"
+      return 0
+   fi
+
+   local tb_local_version_contents temp
+   tb_local_version_contents="$(cat "$tb_local_version_file")" || \
+      { tbb_locally_installed_version="Reading version file <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
+
+   temp="$(echo "$tb_local_version_contents" | jq ".version")" || \
+      { tbb_locally_installed_version="Parsing version file (part 1) <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
+
+   temp="$(echo "$temp" | xargs printf)" || \
+      { tbb_locally_installed_version="Parsing version file (part 2) <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
+
+   tbb_locally_installed_version="$temp"
+   tbb_locally_installed_version_detect_success="1"
+}

@@ -759,7 +759,7 @@ tb_preparation() {
    fi
 
    ## provides tbbversion function
-   source /usr/libexec/tb-updater/version-parser
+   source /usr/libexec/tb-updater/version-validator
 
    if [ "$display" = "" ]; then
       if [ "$DISPLAY" = "" ]; then

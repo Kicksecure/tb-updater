@@ -1,0 +1,15 @@
+# Last Modified: Sun Nov 17 13:17:00 2024
+include <tunables/global>
+
+## Copyright (C) 2024 - 2024 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
+## See the file COPYING for copying conditions.
+
+/usr/libexec/tb-updater/version-parser {
+   ## Python interpreter needs to be able to read the script
+   /usr/libexec/tb-updater/version-parser r,
+   ## Python interpreter needs to be able to load libraries
+   /{,usr/}lib{,32,64}/** mr,
+   ## We'll only ever need to use temp files for I/O
+   /tmp/** rw,
+}
+
