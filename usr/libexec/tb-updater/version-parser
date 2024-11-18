@@ -1,103 +1,150 @@
-#!/bin/bash
+#!/usr/bin/python3 -u
 
-## Copyright (C) 2012 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
+## Copyright (C) 2024 - 2024 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
 ## See the file COPYING for copying conditions.
 
-tbbversion() {
-   command -v /usr/libexec/msgcollector/striphtml >/dev/null
-   command -v jq >/dev/null
+## A very simple JSON parser that extracts the "version" string from Tor
+## Browser update information JSON. Assumes the input JSON could be malicious,
+## and is thus hardened against unexpected data.
 
-   ## fallback
-   tbb_version="UNKNOWN"
-   tbb_recommended_versions_error=""
+from pathlib import Path
+import argparse
+import json
+import re
+import sys
 
-   ## Example see /usr/share/tb-updater/unit-test/RecommendedTBBVersions
+# Prints a message to stdout unless running in quiet mode.
+def print_noisy(msg):
+    if args.quiet:
+        return
+    print(msg, file=sys.stderr)
 
-   if [ ! -f "$RecommendedTBBVersions" ]; then
-      local MSG="$SCRIPTNAME tbbversion: RecommendedTBBVersions: $RecommendedTBBVersions does not exist."
-      echo "$MSG"
-      error "$MSG"
-      return 1
-   fi
+def tbbversion_x64():
+    try:
+        input_text = input_path.read_text()
+    except:
+        print_noisy("ERROR: Cannot read input file!")
+        exit(2)
 
-   if tbb_version="$(jq -r .version "$RecommendedTBBVersions")" ; then
-      true "INFO: jq exit code ok."
-   else
-      tbb_version="UNKNOWN"
-      tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
-(jq failed.)"
-      return 0
-   fi
+    try:
+        input_json = json.loads(input_text)
+    except:
+        print_noisy("ERROR: JSON parsing failed!")
+        exit(3)
 
-   if [ "$tbb_version" = "" ] ; then
-      tbb_version="UNKNOWN"
-      tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
-(jq output empty.)"
-      return 0
-   else
-      true "INFO: jq not empty, ok."
-   fi
+    if type(input_json) is not dict:
+        print_noisy("ERROR: Rejecting input JSON, did not deserialize to a Python dict!")
+        exit(3)
 
-   ## A single version string should not be longer than 20 characters. If
-   ## it is, there is probably something wrong.
-   local max_string_length
-   max_string_length="20"
+    version_string = input_json.get("version")
+    if type(version_string) is not str:
+        print_noisy("ERROR: Rejecting input JSON, version object did not deserialize to a Python string!")
+        exit(3)
 
-   local actual_string_length
-   actual_string_length="${#tbb_version}"
+    ## In the event the parser is compromised, this check can't be relied on,
+    ## but it harms nothing to include it. Anything that reads from the output
+    ## file MUST redo this check.
+    if len(version_string) > 10:
+        print_noisy("ERROR: Rejecting input JSON, version string is abnormally long!")
+        exit(3)
 
-   ## Check if the string length of tbb_version is excessive.
-   if [ "$actual_string_length" -gt "$max_string_length" ]; then
-      tbb_version="UNKNOWN"
-      tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
-(Excessive version string length of $actual_string_length characters.)"
-      return 0
-   fi
+    try:
+        with output_path.open(mode = 'w') as f:
+            f.writelines([version_string])
+    except:
+        print_noisy("ERROR: Could not write version string to output file!")
+        exit(2)
 
-   ## Thanks to:
-   ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
-   ## for the leading/trailing whitespace removal code
+    exit(0)
 
-   local temp
+def tbbversion_arm64():
+    try:
+        input_text = input_path.read_text()
+    except:
+        print_noisy("ERROR: Cannot read input file!")
+        exit(3)
 
-   temp="$tbb_version"
-   temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
-   temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
-   tbb_version="$temp"
+    try:
+        input_json = json.loads(input_text)
+    except:
+        print_noisy("ERROR: JSON parsing failed!")
+        exit(3)
 
-   tbb_version="$(/usr/libexec/msgcollector/striphtml "$tbb_version")"
-}
+    if type(input_json) is not dict:
+        print_noisy("ERROR: Rejecting input JSON, did not deserialize to a Python dict!")
+        exit(3)
 
-tbbversion_installed() {
-   ## Getting currently installed version number
+    version_checker = re.compile("^([0-9a-z]+\.)+[0-9a-z]+(-arm64|-armhf)?$")
 
-   command -v xargs >/dev/null
-   command -v printf >/dev/null
+    found_valid_version = False
+    for input_item in list(input_json):
+        if type(input_item) is not str:
+            print_noisy("ERROR: Rejecting input JSON, a non-string key value was found in the dictionary!")
+            exit(3)
 
-   ## Fallbacks.
-   tbb_locally_installed_version="UNKNOWN. Please report this tb-updater Bug!"
-   tbb_locally_installed_version_detect_success="0"
+        if version_checker.match(input_item):
+            if len(input_item) > 10:
+                # Don't print rejection error, maybe we just found the wrong
+                # item and need to keep searching
+                continue
+            try:
+                with output_path.open(mode = 'w') as f:
+                    f.writelines([input_item])
+                found_valid_version = True
+                break
+            except:
+                print_noisy("ERROR: Could not write version string to output file!")
+                exit(3)
 
-   if [ ! -d "$tbb_folder" ]; then
-      tbb_locally_installed_version="None installed. (Folder <code>$tbb_folder</code> does not exist.)"
-      return 0
-   fi
+    if not found_valid_version:
+        print_noisy("ERROR: No valid version strings found!")
+        exit(3)
 
-   if [ ! -f "$tb_local_version_file" ]; then
-      tbb_locally_installed_version="Version file not found. (File <code>$tb_local_version_file</code> does not exist.) Please report this tb-updater Bug!"
-      return 0
-   fi
+    exit(0)
 
-   local tb_local_version_contents temp
-   tb_local_version_contents="$(cat "$tb_local_version_file")" || \
-      { tbb_locally_installed_version="Reading version file <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
+argument_parser = argparse.ArgumentParser(prog = "version-parser",
+                                          description = "Parses JSON files to find the latest version of Tor Browser.")
+argument_parser.add_argument("input_file",
+                             action = "store",
+                             help = "The JSON file to use as input.")
+argument_parser.add_argument("output_file",
+                             action = "store",
+                             help = "The file to save the latest version of the Tor Browser in, if found.")
+argument_parser.add_argument("--arm64",
+                             action = "store_true",
+                             help = "Treat input JSON as being for Tor Browser ARM64.")
+argument_parser.add_argument("-q",
+                             "--quiet",
+                             action = "store_true",
+                             help = "Gets rid of verbose status output.")
+args = argument_parser.parse_args()
 
-   temp="$(echo "$tb_local_version_contents" | jq ".version")" || \
-      { tbb_locally_installed_version="Parsing version file (part 1) <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
+if args.input_file is None:
+    print_noisy("ERROR: No input file provided.")
+    exit(1)
+elif args.output_file is None:
+    print_noisy("ERROR: No output file provided.")
+    exit(1)
 
-   temp="$(echo "$temp" | xargs printf)" || \
-      { tbb_locally_installed_version="Parsing version file (part 2) <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
+input_path = Path(args.input_file)
+output_path = Path(args.output_file)
 
-   tbb_locally_installed_version="$temp"
-   tbb_locally_installed_version_detect_success="1"
-}
+if not input_path.absolute().as_posix().startswith("/tmp"):
+    print_noisy("WARNING: The input file is not under /tmp. This may not work.")
+if not output_path.absolute().as_posix().startswith("/tmp"):
+    print_noisy("WARNING: The output file is not under /tmp. This may not work.")
+
+if not input_path.exists():
+    print_noisy("ERROR: Input file does not exist.")
+    exit(2)
+else:
+    try:
+        output_path.touch(mode=0o644, exist_ok=True)
+    except:
+        print_noisy("ERROR: Cannot access output file.")
+        exit(2)
+
+if not args.arm64:
+    tbbversion_x64()
+else:
+    tbbversion_arm64()
