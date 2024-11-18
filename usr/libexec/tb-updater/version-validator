@@ -31,6 +31,7 @@ tbbversion() {
 
    ## Global variable, expected to be set by the caller
    ## stdout and stderr redirected to /dev/null in case the version-parser gets exploited to prevent it from echoing malicious advice.
+   ## $RecommendedTBBVersions file should have a maximum size of 2 MB. This is enforced at update-torbrowser level.
    if [ "${tbb_version_parse_as_arm64}" = 'y' ]; then
       2>/dev/null >/dev/null /usr/libexec/tb-updater/version-parser --quiet --arm64 "${tbb_version_remote_file}" "${tbb_version_output_file}" || tbb_parser_exit_code="$?"
    else
@@ -82,9 +83,9 @@ tbbversion() {
             safe-rm "${tbb_version_remote_file}"
             safe-rm "${tbb_version_output_file}"
             return 0
-         else
-            true "INFO: version-parser output not empty, ok."
          fi
+
+         true "INFO: version-parser output not empty, ok."
 
          ## Regex-validate version to be absolutely sure it's valid.
          ## Should match versions like 14.0.2, 14.0a9, and 13.0.9-arm64, but
@@ -97,6 +98,8 @@ tbbversion() {
             safe-rm "${tbb_version_output_file}"
             return 0
          fi
+
+         true "INFO: version-parser output is ok."
 
          ## If we get here, tbb_version is set to the sanitized version
          ## number, and trusted code can now use it freely.
