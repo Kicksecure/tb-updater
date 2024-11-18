@@ -30,6 +30,7 @@ tbbversion() {
    cp "${RecommendedTBBVersions}" "${tbb_version_remote_file}"
 
    ## Global variable, expected to be set by the caller
+   ## stdout and stderr redirected to /dev/null in case the version-parser gets exploited to prevent it from echoing malicious advice.
    if [ "${tbb_version_parse_as_arm64}" = 'y' ]; then
       2>/dev/null >/dev/null /usr/libexec/tb-updater/version-parser --quiet --arm64 "${tbb_version_remote_file}" "${tbb_version_output_file}" || tbb_parser_exit_code="$?"
    else
