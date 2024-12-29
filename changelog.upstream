@@ -1,3 +1,17 @@
+commit eb3fae9812f3b464ac9f079d1f6f914eb374e462
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Dec 29 07:57:01 2024 -0500
+
+    No longer supporting Heikki Lindholm sourceforge Tor Browser ARM64 version.
+    
+    https://forums.whonix.org/t/arm64-tor-browser/11806/21
+
+commit 1a060101036b51dc903263edb1d7b8911e8691af
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Nov 28 19:05:22 2024 +0000
+
+    bumped changelog version
+
 commit e962baeb6ef7afd1eff6ef543b98787c0e2a924c
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Nov 28 14:05:10 2024 -0500
