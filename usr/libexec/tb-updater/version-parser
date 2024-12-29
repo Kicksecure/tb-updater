@@ -57,51 +57,6 @@ def tbbversion_x64():
 
     exit(0)
 
-def tbbversion_arm64():
-    try:
-        input_text = input_path.read_text()
-    except:
-        print_noisy("ERROR: Cannot read input file!")
-        exit(3)
-
-    try:
-        input_json = json.loads(input_text)
-    except:
-        print_noisy("ERROR: JSON parsing failed!")
-        exit(3)
-
-    if type(input_json) is not dict:
-        print_noisy("ERROR: Rejecting input JSON, did not deserialize to a Python dict!")
-        exit(3)
-
-    version_checker = re.compile("^([0-9a-z]+\.)+[0-9a-z]+(-arm64|-armhf)?$")
-
-    found_valid_version = False
-    for input_item in list(input_json):
-        if type(input_item) is not str:
-            print_noisy("ERROR: Rejecting input JSON, a non-string key value was found in the dictionary!")
-            exit(3)
-
-        if version_checker.match(input_item):
-            if len(input_item) > 10:
-                # Don't print rejection error, maybe we just found the wrong
-                # item and need to keep searching
-                continue
-            try:
-                with output_path.open(mode = 'w') as f:
-                    f.writelines([input_item])
-                found_valid_version = True
-                break
-            except:
-                print_noisy("ERROR: Could not write version string to output file!")
-                exit(3)
-
-    if not found_valid_version:
-        print_noisy("ERROR: No valid version strings found!")
-        exit(3)
-
-    exit(0)
-
 argument_parser = argparse.ArgumentParser(prog = "version-parser",
                                           description = "Parses JSON files to find the latest version of Tor Browser.")
 argument_parser.add_argument("input_file",
@@ -110,9 +65,6 @@ argument_parser.add_argument("input_file",
 argument_parser.add_argument("output_file",
                              action = "store",
                              help = "The file to save the latest version of the Tor Browser in, if found.")
-argument_parser.add_argument("--arm64",
-                             action = "store_true",
-                             help = "Treat input JSON as being for Tor Browser ARM64.")
 argument_parser.add_argument("-q",
                              "--quiet",
                              action = "store_true",
@@ -144,7 +96,4 @@ else:
         print_noisy("ERROR: Cannot access output file.")
         exit(2)
 
-if not args.arm64:
-    tbbversion_x64()
-else:
-    tbbversion_arm64()
+tbbversion_x64()

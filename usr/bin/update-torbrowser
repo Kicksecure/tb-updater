@@ -846,14 +846,7 @@ tb_preparation() {
    fi
 
    ## https://dist.torproject.org/torbrowser/10.0.17/tor-browser-linux64-10.0.17_en-US.tar.xz
-   ## https://sourceforge.net/projects/tor-browser-ports/files/10.0.17/tor-browser-linux-arm64-10.0.17_en-US.tar.xz/download
-
-   if [ "$ARCH_DOWNLOAD" = "linux-arm64" ]; then
-      [ -n "$TBB_DOWNLOAD_APPENDIX" ] || TBB_DOWNLOAD_APPENDIX="/download"
-   else
-      [ -n "$TBB_DOWNLOAD_APPENDIX" ] || TBB_DOWNLOAD_APPENDIX=""
-   fi
-
+   [ -n "$TBB_DOWNLOAD_APPENDIX" ] || TBB_DOWNLOAD_APPENDIX=""
    [ -n "$tbb_versions_base_folder" ] || tbb_versions_base_folder="torbrowser/update_3"
 
    ## https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/ file was abolished by upstream
@@ -865,26 +858,17 @@ tb_preparation() {
    ##    https://www.torproject.org/dist/torbrowser/10.0.6/tor-browser-linux64-10.0.6_en-US.tar.xz
    ## http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/dist/torbrowser/10.0.6/tor-browser-linux64-10.0.6_en-US.tar.xz
    if [ "$tb_onion" = "true" ]; then
-      if [ "$ARCH_DOWNLOAD" = "linux-arm64" ]; then
-         MSG="<p>onion not available for platform '$ARCH_DOWNLOAD'.</p>"
-         outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-         local MSG_CLI
-         MSG_CLI="$(/usr/libexec/msgcollector/striphtml "$MSG")"
-         echo "ERROR: $MSG_CLI"
-         tb_exit_function 11
-      else
-         ## dist.torproject.org has no corresponding onion address at time of writing.
-         ## https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
-         ## https://web.archive.org/web/20210424113513/https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
-         ##
-         ## https://onion.torproject.org/
-         ## https://web.archive.org/web/20210424113401/https://onion.torproject.org/
-         ##
-         ## https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
-         ## https://web.archive.org/web/20210424113646/https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
-         [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion"
-         [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/dist/torbrowser"
-      fi
+      ## dist.torproject.org has no corresponding onion address at time of writing.
+      ## https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
+      ## https://web.archive.org/web/20210424113513/https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
+      ##
+      ## https://onion.torproject.org/
+      ## https://web.archive.org/web/20210424113401/https://onion.torproject.org/
+      ##
+      ## https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
+      ## https://web.archive.org/web/20210424113646/https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
+      [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion"
+      [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/dist/torbrowser"
 
       ## https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
       ## https://web.archive.org/web/20210424113759/https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
@@ -892,14 +876,9 @@ tb_preparation() {
       [ -n "$tbb_versions_base_url" ] || tbb_versions_base_url="http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion"
       [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/downloads.json"
    else
-      if [ "$ARCH_DOWNLOAD" = "linux-arm64" ]; then
-         [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://sourceforge.net"
-         [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://sourceforge.net/projects/tor-browser-ports/files"
-      else
-         ## Download from the torproject.org clearnet by default.
-         [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://www.torproject.org"
-         [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://www.torproject.org/dist/torbrowser"
-      fi
+      ## Download from the torproject.org clearnet by default.
+      [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://www.torproject.org"
+      [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://www.torproject.org/dist/torbrowser"
       [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https --cert-status"
 
       [ -n "$tbb_versions_base_url" ] || tbb_versions_base_url="https://aus1.torproject.org"
@@ -1078,11 +1057,6 @@ tb_connectivity_checks_curl() {
       return 0
    fi
 
-   if [ "$ARCH" = "arm64" ]; then
-      echo "INFO: Skipping Connectivity test because of unreported sourceforge blocking Tor issue. https://github.com/Kicksecure/tb-updater/issues/21"
-      return 0
-   fi
-
    tb_notify_details="Checking connectivity... Will take a moment..."
    echo "INFO: Running connectivity check...  Downloading...: '$tbb_download_base_url'"
 
@@ -1170,15 +1144,6 @@ tb_remote_version_parser() {
    ## sets: tbb_version
    ## sets: tbb_recommended_versions_error
    tb_run_function tbbversion
-
-   if [ "$ARCH" = "arm64" ]; then
-      ## sets: tbb_hardcoded_version
-      ## sets: tbb_hardcoded_version_arm64
-      source /usr/share/tb-updater/tbb_hardcoded_version
-      ## here we overwrite tbb_version if we're building arm64
-      ## as we don't currently have a way to get it automatically
-      tbb_version="$tbb_hardcoded_version_arm64"
-   fi
 }
 
 tb_remote_version_sanity_test() {
@@ -1206,25 +1171,19 @@ tb_local_version_detection() {
    true "INFO: tbb_download_alpha_version: $tbb_download_alpha_version"
    if [ "$tbb_download_alpha_version" = "true" ]; then
       ## sets: tbb_hardcoded_version
-      ## sets: tbb_hardcoded_version_arm64
       source /usr/share/tb-updater/tbb_hardcoded_version_alpha
       echo "INFO: Using alpha version. See:
 $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    else
       ## sets: tbb_hardcoded_version
-      ## sets: tbb_hardcoded_version_arm64
       source /usr/share/tb-updater/tbb_hardcoded_version
       echo "INFO: Using stable version. For alpha version, see: $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    fi
 
    true "INFO: tbb_use_hardcoded_version '$tbb_use_hardcoded_version'"
    if [ "$tbb_use_hardcoded_version" = "true" ]; then
-         true "INFO: tbb_version: '$tbb_version'"
-         if [ "$ARCH" = "arm64" ]; then
-            [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version_arm64"
-         else
-            [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
-         fi
+      true "INFO: tbb_version: '$tbb_version'"
+      [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
       echo "INFO: tbb_hardcoded_version: '$tbb_hardcoded_version'"
    fi
 
@@ -1621,14 +1580,8 @@ tb_download_files() {
 tb_gpg_verify() {
    echo "INFO: Digital signature (GPG) verification... This will take a moment..."
 
-   if [ "$ARCH_DOWNLOAD" = "linux-arm64" ]; then
-      echo "INFO: Using digital signature signing key by Heikki Lindholm."
-      echo "https://forums.whonix.org/t/arm64-tor-browser-maintainer/11786"
-      gpg_bash_lib_input_key_import_dir="/usr/share/torbrowser-updater-keys-arm64.d"
-   else
-      echo "INFO: Using digital signature signing key by The Tor Project."
-      gpg_bash_lib_input_key_import_dir="/usr/share/torbrowser-updater-keys.d"
-   fi
+   echo "INFO: Using digital signature signing key by The Tor Project."
+   gpg_bash_lib_input_key_import_dir="/usr/share/torbrowser-updater-keys.d"
 
    gpg_bash_lib_input_verify_timeout_after="60"
    gpg_bash_lib_input_verify_kill_after="10"
