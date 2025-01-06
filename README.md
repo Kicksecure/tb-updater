@@ -47,7 +47,6 @@ The Tor Project.
 [1] https://www.whonix.org/wiki/Tor_Browser#Download_Confirmation_Screen
 [2] https://www.whonix.org/wiki/Tor_Browser#Installation_Confirmation_Screen
 
-
 ## How to install `tb-updater` using apt-get ##
 
 1\. Download the APT Signing Key.
