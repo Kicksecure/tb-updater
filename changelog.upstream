@@ -1,3 +1,28 @@
+commit 3d52aab811ae17862c1d145edb30d841daac88df
+Merge: 948353c 05eee2c
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Feb 6 11:00:18 2025 -0500
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/privleap'
+
+commit 05eee2c46f31112786741c6faea3412defc7afa8
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Mon Feb 3 21:02:27 2025 -0600
+
+    Add privleap as a dependency
+
+commit 442319448a346a55d699df8d0ad708b5512ce388
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Sun Feb 2 22:59:42 2025 -0600
+
+    Port to privleap
+
+commit 948353c47f32ba85ae4e9e022bff987881c0065d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Jan 23 16:31:50 2025 +0000
+
+    bumped changelog version
+
 commit 5ca2f8d8d829d00fa50b94561f7b0f1fc94b9aef
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Jan 23 11:12:48 2025 -0500
