@@ -1,3 +1,23 @@
+commit c6486abe35a812012ea8ee7c547028988fe8fa6b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Feb 9 16:11:23 2025 -0500
+
+    Revert "remove privleap from depends as long as privleap is only in the testers repository"
+    
+    This reverts commit a64f7bdc0cafa78538d87d6bc99453bc6982298d.
+
+commit a64f7bdc0cafa78538d87d6bc99453bc6982298d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Feb 9 16:08:00 2025 -0500
+
+    remove privleap from depends as long as privleap is only in the testers repository
+
+commit 1f820f26ffc0c94d01edc0e9a1da6a3ed1420da0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Feb 9 11:16:00 2025 +0000
+
+    bumped changelog version
+
 commit 9f337a88eabb7e859f4d01fcc0630b827ad7a2bb
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Feb 9 06:15:41 2025 -0500
