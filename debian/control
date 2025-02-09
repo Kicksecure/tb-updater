@@ -14,9 +14,8 @@ Rules-Requires-Root: no
 
 Package: tb-updater
 Architecture: all
-## TODO: re-add 'privleap'
 Depends: msgcollector-gui, curl, psmisc, gpg-bash-lib, pv, libarchive-tools,
- sudo, jq, libdbus-glib-1-2, python3, ${misc:Depends}
+ sudo, jq, libdbus-glib-1-2, privleap, python3, ${misc:Depends}
 Recommends: tb-starter, icon-pack-dist, helper-scripts
 Suggests: tb-default-browser, open-link-confirmation
 Description: Tor Browser Downloader by Whonix developers
