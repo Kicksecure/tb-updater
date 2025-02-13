@@ -1,3 +1,38 @@
+commit a4143ca924f8cf8b1c6b60c70b041f0828bef457
+Merge: e4cdd58 be44862
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Feb 13 17:37:06 2025 -0500
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/sudoless-fix'
+
+commit be44862e3c7882bbe56eb7fe91c058275c82771a
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Mon Feb 10 18:38:36 2025 -0600
+
+    Don't require privleap in dispvm prep service
+
+commit a85f2a727012c5113189617e6fae536bff8dcaf1
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Mon Feb 10 18:32:49 2025 -0600
+
+    Reapply "Port to privleap"
+    
+    This reverts commit 814438e9f8a68da3ae3545f028e3850cac91e474.
+
+commit 9d8a80dd4fd3c50aedc8ab5b63d02d62dea3c56f
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Mon Feb 10 18:32:37 2025 -0600
+
+    Revert "Revert "Revert "remove privleap from depends as long as privleap is only in the testers repository"""
+    
+    This reverts commit cf995c1d666fe3142f368afb243bd8be5be30734.
+
+commit e4cdd582ed7209d321c4e5497f0fac170ba864f8
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Feb 10 11:23:08 2025 +0000
+
+    bumped changelog version
+
 commit 814438e9f8a68da3ae3545f028e3850cac91e474
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Mon Feb 10 06:21:53 2025 -0500
