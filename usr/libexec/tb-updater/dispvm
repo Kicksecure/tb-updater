@@ -49,8 +49,10 @@ if [ ! -d /var/cache/tb-binary ]; then
 fi
 
 ## Mount point must be existing to be able to use mount.
-sudo --non-interactive -u "$user_name" mkdir --parents "/home/$user_name/.tb"
-sudo --non-interactive -u "$user_name" mkdir --parents "/home/$user_name/.cache/tb"
+mkdir --parents -- "/home/$user_name/.tb"
+chown "$user_name:$user_name" "/home/$user_name/.tb"
+mkdir --parents -- "/home/$user_name/.cache/tb"
+chown "$user_name:$user_name" "/home/$user_name/.cache/tb"
 
 chown --recursive "$user_name:$user_name" /var/cache/tb-binary
 ## Could alternatively do after mounting:
