@@ -53,6 +53,9 @@ mkdir --parents -- "/home/$user_name/.tb"
 chown "$user_name:$user_name" "/home/$user_name/.tb"
 mkdir --parents -- "/home/$user_name/.cache/tb"
 chown "$user_name:$user_name" "/home/$user_name/.cache/tb"
+## .cache will end up owned by root if it doesn't already exist.
+## https://forums.whonix.org/t/home-user-cache-permission-issue-in-recent-updates/21427
+chown "$user_name:$user_name" "/home/$user_name/.cache"
 
 chown --recursive "$user_name:$user_name" /var/cache/tb-binary
 ## Could alternatively do after mounting:
