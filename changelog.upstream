@@ -1,3 +1,22 @@
+commit 0a2428b2fc9c3affa111b48dcbf5961ae712439b
+Merge: fb8a68b 7ca4558
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Mar 10 02:38:27 2025 -0400
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/cache-fix'
+
+commit 7ca4558d93790c4342b4ee27e6c18aa34fff3a9e
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Sun Mar 9 09:36:15 2025 -0500
+
+    Ensure the user's .cache folder isn't owned by root
+
+commit fb8a68b635ec1799e6c74d2be46fa13812d973ec
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Mar 5 11:14:35 2025 +0000
+
+    bumped changelog version
+
 commit 37418fd3121970c7e2ab7ef4c61056ad1687dff4
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Mar 5 06:12:25 2025 -0500
