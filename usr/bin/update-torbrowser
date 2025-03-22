@@ -878,7 +878,7 @@ tb_preparation() {
       ## Download from the torproject.org clearnet by default.
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://www.torproject.org"
       [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://www.torproject.org/dist/torbrowser"
-      [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https --cert-status"
+      [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https"
 
       [ -n "$tbb_versions_base_url" ] || tbb_versions_base_url="https://aus1.torproject.org"
       [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/downloads.json"
