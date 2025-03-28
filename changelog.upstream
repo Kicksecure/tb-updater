@@ -1,3 +1,17 @@
+commit 2829d3c22d12a79d4f0bb14f8496a44342d07c59
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Mar 28 12:14:00 2025 -0400
+
+    Revert "tbb_hardcoded_version update"
+    
+    This reverts commit b2f1942cb7a57eabcb640171efbb0a96e10750d7.
+
+commit 4b9b38d1f9a5eab00249113a143dd38a4eee2730
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Mar 28 15:02:06 2025 +0000
+
+    bumped changelog version
+
 commit b2f1942cb7a57eabcb640171efbb0a96e10750d7
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Mar 28 11:01:19 2025 -0400
