@@ -39,11 +39,11 @@ download() {
       #tpo_downloader_debug="$tpo_downloader_debug"
 
       ## TODO: Use a dedicated Linux user account.
-      ## Ideally this would be run as user "user", but the existence of that user
+      ## Ideally this would be run as account "user", but the existence of that account
       ## is not guaranteed by the time this script is running.
       ## Using a dedicated user account is difficult versus Wayland because there
       ## is also tb-updater GUI and no way to run a GUI application under a
-      ## different user could be found for Wayland. tb-updater CLI versus
+      ## different account. could be found for Wayland. tb-updater CLI versus
       ## tb-updater GUI would need to be cleanly separated.
 
       $tool_item \
