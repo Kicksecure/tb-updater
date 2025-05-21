@@ -172,7 +172,7 @@ root_check() {
       return 0
    fi
 
-   if echo "$@" | grep -q "\-\-postinst" ; then
+   if printf '%s\n' "$@" | grep -- "--postinst" >/dev/null 2>/dev/null ; then
       true "INFO: $FUNCNAME: Allow running as root because using --postinst."
       return 0
    fi
@@ -218,9 +218,9 @@ tb_ex_funct() {
    else
       local childpids_list childpid_item
       for pid in $last_pid_list; do
-         childpids_list=$(pgrep -P "$pid")
+         childpids_list=$(pgrep --parent "$pid")
          for childpid_item in $childpids_list ; do
-            pkill --signal sigkill -P "$childpid_item" &>/dev/null || true
+            pkill --signal sigkill --parent "$childpid_item" &>/dev/null || true
          done
       done
    fi
@@ -391,7 +391,7 @@ tb_stdin() {
 }
 
 tb_qubes_dvm_template() {
-   if echo "$qubes_vm_name" | grep -q --invert-match "\-dvm" ; then
+   if printf '%s\n' "$qubes_vm_name" | grep --invert-match -- "-dvm" >/dev/null 2>/dev/null ; then
       echo "INFO: Not running inside Qubes Disposable Template, ok."
       return 0
    fi
@@ -736,7 +736,7 @@ tb_preparation() {
       if [ "$ARCH" = "i386" ]; then
          ARCH="i686"
       fi
-      if echo "$ARCH" | grep --quiet "aarch64" ; then
+      if printf '%s\n' "$ARCH" | grep -- "aarch64" >/dev/null 2>/dev/null ; then
          ARCH="arm64"
       fi
 

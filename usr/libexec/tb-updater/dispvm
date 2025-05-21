@@ -17,7 +17,7 @@ if command -v qubesdb-read &>/dev/null ; then
    qubes_vm_name="$(qubesdb-read /name)"
    qubes_vm_persistence="$(qubesdb-read /qubes-vm-persistence)"
    if ! user_name=$(qubesdb-read /default-user) ; then
-      echo "$0: WARNING: failed to run 'qubesdb-read /default-user', falling back to user_name=user"
+      printf '%s\n' "$0: WARNING: failed to run 'qubesdb-read /default-user', falling back to user_name=user"
       user_name=user
    fi
 else
@@ -27,7 +27,7 @@ fi
 
 ## Avoid running in Qubes DVM Template.
 ## https://phabricator.whonix.org/T726
-if echo "$qubes_vm_name" | grep -q "\-dvm" ; then
+if printf '%s\n' "$qubes_vm_name" | grep -- "-dvm" >/dev/null 2>/dev/null ; then
    exit 0
 fi
 
@@ -73,7 +73,7 @@ if [ -d "/var/cache/tb-binary/.cache/tb" ]; then
 fi
 
 ## results in:
-# mount | grep home
+# mount | grep -- home
 # /dev/xvdb on /home type ext4 (rw,nosuid,nodev,noexec,relatime,discard)
 # /dev/xvda3 on /home/user/.tb type ext4 (rw,nosuid,nodev,noatime,discard)
 # /dev/xvda3 on /rw/home/user/.tb type ext4 (rw,noatime,discard)
@@ -89,7 +89,7 @@ if [ -d "/rw/home/$user_name/.cache/tb" ]; then
 fi
 
 ## results in:
-# mount | grep home
+# mount | grep -- home
 # /dev/xvdb on /home type ext4 (rw,nosuid,nodev,noexec,relatime,discard)
 # /dev/xvda3 on /home/user/.tb type ext4 (rw,nosuid,nodev,noatime,discard)
 # /dev/xvda3 on /rw/home/user/.tb type ext4 (rw,nosuid,nodev,noatime,discard)
