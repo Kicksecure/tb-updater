@@ -106,7 +106,7 @@ tb_error_handler() {
    [ -n "$tb_install_folder" ] || tb_install_folder="tb"
 
    if test -w "$tb_user_home/.cache/$tb_install_folder" ; then
-      mkdir --parents "$tb_user_home/.cache/$tb_install_folder"
+      mkdir --parents -- "$tb_user_home/.cache/$tb_install_folder"
    fi
    if test -w "$tb_user_home/.cache/$tb_install_folder/torbrowser_updater_error.log" ; then
       echo "$MSG" >> "$tb_user_home/.cache/$tb_install_folder/torbrowser_updater_error.log"
@@ -192,7 +192,7 @@ tb_sanity_tests() {
    command -v cp >/dev/null
    command -v mv >/dev/null
    command -v killall >/dev/null
-   command -v rm >/dev/null
+   command -v safe-rm >/dev/null
    command -v head >/dev/null
    command -v tar >/dev/null
    command -v date >/dev/null
@@ -469,16 +469,16 @@ tb_resolv_conf_debugging() {
    echo "INFO: tb_resolv_conf_debugging: start"
 
    echo "ls -la /etc/resolv.conf"
-   ls -la /etc/resolv.conf || true
+   ls -la -- /etc/resolv.conf || true
 
-   echo "cat /etc/resolv.conf"
-   cat /etc/resolv.conf || true
+   echo "cat -- /etc/resolv.conf"
+   cat -- /etc/resolv.conf || true
 
-   echo "cat /etc/resolv.whonix"
-   cat /etc/resolv.whonix || true
+   echo "cat -- /etc/resolv.whonix"
+   cat -- /etc/resolv.whonix || true
 
-   echo "cat /etc/resolv.conf.whonix-orig"
-   cat /etc/resolv.conf.whonix-orig || true
+   echo "cat -- /etc/resolv.conf.whonix-orig"
+   cat -- /etc/resolv.conf.whonix-orig || true
 
    echo "INFO: tb_resolv_conf_debugging: end"
 }
@@ -898,7 +898,7 @@ tb_preparation() {
       [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
       if [ "$socks_user_name" = "" ]; then
          local uuid_temp
-         uuid_temp="$(cat "/proc/sys/kernel/random/uuid")"
+         uuid_temp="$(cat -- "/proc/sys/kernel/random/uuid")"
          socks_user_name="tb-updater"
          socks_user_name="${socks_user_name}_${uuid_temp}"
       fi
@@ -915,7 +915,7 @@ tb_preparation() {
    [ -n "$tbb_version_last_downloaded_save_file" ] || tbb_version_last_downloaded_save_file="$tb_cache_folder/tbb_version_last_downloaded_save_file"
 
    if [ -f "$tbb_version_last_downloaded_save_file" ]; then
-      [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="$(cat "$tbb_version_last_downloaded_save_file")"
+      [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="$(cat -- "$tbb_version_last_downloaded_save_file")"
    fi
    [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="none"
 
@@ -929,15 +929,15 @@ tb_preparation() {
 }
 
 tb_create_folders() {
-   mkdir --parents "$tb_home_folder"
-   mkdir --parents "$tb_cache_folder"
-   mkdir --parents "$tb_downloaded_files_folder"
+   mkdir --parents -- "$tb_home_folder"
+   mkdir --parents -- "$tb_cache_folder"
+   mkdir --parents -- "$tb_downloaded_files_folder"
 
    ## Required for /usr/libexec/helper-scripts/tor_bootstrap_check.bsh.
    TEMP_DIR="$tb_temp_folder"
    export TEMP_DIR
-   rm --recursive --force "$TEMP_DIR"
-   mkdir --parents "$TEMP_DIR"
+   safe-rm --recursive --force -- "$TEMP_DIR"
+   mkdir --parents -- "$TEMP_DIR"
 }
 
 tb_skip_if_higher_or_equal_version_already_downloaded() {
@@ -962,9 +962,9 @@ tb_skip_if_higher_or_equal_version_already_downloaded() {
    ## Being careful with deletion.
    if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/$tb_install_folder/files" ]; then
       true "INFO: No need to keep older versions in Qubes root image. Saving disk space. Therefore deleting..."
-      echo "rm -r -f '$tb_downloaded_files_folder'"
-      rm -r -f "$tb_downloaded_files_folder"
-      mkdir --parents "$tb_downloaded_files_folder"
+      echo "safe-rm -r -f -- '$tb_downloaded_files_folder'"
+      safe-rm -r -f -- "$tb_downloaded_files_folder"
+      mkdir --parents -- "$tb_downloaded_files_folder"
    fi
 }
 
@@ -1066,7 +1066,7 @@ tb_connectivity_checks_curl() {
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$tb_temp_folder/tbb_remote_folder"
-   rm --force "$CURL_OUT_FILE"
+   safe-rm --force -- "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_connectivity_checks_curl"
    curl_download_target_url="$tbb_download_base_url"
    tb_download_common_exit_on_fail="false"
@@ -1123,7 +1123,7 @@ tb_update_check() {
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$RecommendedTBBVersions"
-   rm --force "$CURL_OUT_FILE"
+   safe-rm --force -- "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_version_file_download"
    curl_download_target_url="$TBB_VERSIONS_FILE_LINK"
    tb_download_common_exit_on_fail="8"
@@ -1219,8 +1219,8 @@ Otherwise updating <code>$tb_title</code> in this Template will not result in ne
 <br />
 <br />To delete these obsolete folders, please run:
 <br />
-<br /><code>rm -r -f '/home/$who_ami/$tb_install_folder_dot'</code>
-<br /><code>rm -r -f '/home/$who_ami/.cache/${tb_install_folder}'</code>
+<br /><code>safe-rm -r -f -- '/home/$who_ami/$tb_install_folder_dot'</code>
+<br /><code>safe-rm -r -f -- '/home/$who_ami/.cache/${tb_install_folder}'</code>
 <br />
 <br />(Or delete them using a file manager.)
 <br />
@@ -1454,7 +1454,7 @@ tb_download_common() {
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       true
    else
-      progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
+      progressbaridx="$(cat -- "/proc/sys/kernel/random/uuid")"
       tb_notify_msg="Download
 ----------------------------------------------------------------------
 $tb_notify_details"
@@ -1547,7 +1547,7 @@ tb_download_files() {
    export CURL_PRGRS_MAX_FILE_SIZE_BYTES="2097152"
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$TBB_SIG_FULL_PATH"
-   rm --force "$CURL_OUT_FILE"
+   safe-rm --force -- "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_signature_file_download"
    curl_download_target_url="$TBB_SIG_LINK"
    tb_download_common_exit_on_fail="8"
@@ -1567,7 +1567,7 @@ tb_download_files() {
    ## Export CURL_OUT_FILE, so $CURL_PRGRS can read it.
    export CURL_OUT_FILE="$TBB_PACKAGE_FULL_PATH"
    ## Not deleting to support resume.
-   #rm --force "$CURL_OUT_FILE"
+   #safe-rm --force -- "$CURL_OUT_FILE"
    curl_download_max_time="$timeout_archive_file_download"
    curl_download_target_url="$TBB_PACKAGE_LINK"
    tb_download_common_exit_on_fail="17"
@@ -1644,7 +1644,7 @@ tb_confirm_install() {
       last_used_gpg_bash_lib_output_signed_on_date="Unknown. Probably never downloaded a signature before."
    fi
    if [ -f "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime" ]; then
-      last_used_gpg_bash_lib_output_signed_on_unixtime="$(cat "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime")" || true
+      last_used_gpg_bash_lib_output_signed_on_unixtime="$(cat -- "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime")" || true
    fi
    if [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" = "" ]; then
       last_used_gpg_bash_lib_output_signed_on_unixtime="unknown"
@@ -1765,7 +1765,7 @@ tb_extract() {
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
       true
    else
-      progressbaridx="$(cat "/proc/sys/kernel/random/uuid")"
+      progressbaridx="$(cat -- "/proc/sys/kernel/random/uuid")"
       tb_notify_msg="Extraction
 ----------------------------------------------------------------------
 Extracting $tb_title... This could take a moment..."
@@ -1782,7 +1782,7 @@ Extracting $tb_title... This could take a moment..."
    echo "INFO: Extracting '$file_name'..."
 
    ## Folder must be already exist, otherwise `tar` would fail.
-   mkdir --parents "$tb_extract_temp_folder"
+   mkdir --parents -- "$tb_extract_temp_folder"
 
    ## Debugging.
    #timeout_after="0.001"
@@ -1828,10 +1828,10 @@ Extracting $tb_title... This could take a moment..."
       tar_exit_code="0"
       pv_wrapper_exit_code="0"
 
-      rm --force "$tar_fifo"
-      rm --force "$pv_wrapper_fifo"
-      mkfifo "$tar_fifo"
-      mkfifo "$pv_wrapper_fifo"
+      safe-rm --force -- "$tar_fifo"
+      safe-rm --force -- "$pv_wrapper_fifo"
+      mkfifo -- "$tar_fifo"
+      mkfifo -- "$pv_wrapper_fifo"
 
       timeout \
          --kill-after="$kill_after" \
@@ -1927,7 +1927,7 @@ Extracting $tb_title... This could take a moment..."
 }
 
 tb_patch_download_folder_create() {
-   mkdir --parents "$tb_extract_temp_folder/Browser/Downloads"
+   mkdir --parents -- "$tb_extract_temp_folder/Browser/Downloads"
 }
 
 tb_patch() {
@@ -1946,10 +1946,10 @@ tb_install() {
    fi
 
    echo "INFO: Deleting old folder '$tb_browser_folder'."
-   rm --recursive --force "$tb_browser_folder"
+   safe-rm --recursive --force -- "$tb_browser_folder"
 
    echo "INFO: Moving temporary folder '$tb_extract_temp_folder' to '$tb_browser_folder'."
-   mv "$tb_extract_temp_folder" "$tb_browser_folder"
+   mv -- "$tb_extract_temp_folder" "$tb_browser_folder"
 }
 
 tb_cleanup() {
@@ -1963,7 +1963,7 @@ tb_cleanup() {
    fi
 
    echo "INFO: Deleting no longer required file '$TBB_PACKAGE_FULL_PATH' to save space."
-   rm --force "$TBB_PACKAGE_FULL_PATH"
+   safe-rm --force -- "$TBB_PACKAGE_FULL_PATH"
 }
 
 tb_chroot_pre_exit() {
