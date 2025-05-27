@@ -1,3 +1,15 @@
+commit fab2412cde6f8b389fccac23d4874d52562fa980
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue May 27 15:59:41 2025 -0400
+
+    refactoring
+
+commit e4d6dd3e340bdd4b82d94bfcf3641ba13b3ab014
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue May 27 19:47:30 2025 +0000
+
+    bumped changelog version
+
 commit 6bc5ba56b2b2c170f39c968159cfae597a87170b
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue May 27 15:44:00 2025 -0400
