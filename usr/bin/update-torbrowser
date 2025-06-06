@@ -856,6 +856,10 @@ tb_preparation() {
    ## example:
    ##    https://www.torproject.org/dist/torbrowser/10.0.6/tor-browser-linux64-10.0.6_en-US.tar.xz
    ## http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/dist/torbrowser/10.0.6/tor-browser-linux64-10.0.6_en-US.tar.xz
+
+   ## TODO:
+   ## https://aus1.torproject.org/torbrowser/update_3/release/download-linux-x86_64.json
+
    if [ "$tb_onion" = "true" ]; then
       ## dist.torproject.org has no corresponding onion address at time of writing.
       ## https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
