@@ -7,7 +7,7 @@ tbbversion() {
    local tbb_version_remote_file tbb_version_output_file \
       tbb_parser_exit_code tbb_version_max_length tbb_version_length temp
 
-   command -v /usr/libexec/helper-scripts/strip-html >/dev/null
+   command -v /usr/bin/sanitize-string >/dev/null
    command -v /usr/libexec/tb-updater/version-parser >/dev/null
 
    ## fallback
