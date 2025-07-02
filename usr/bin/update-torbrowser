@@ -857,9 +857,6 @@ tb_preparation() {
    ##    https://www.torproject.org/dist/torbrowser/10.0.6/tor-browser-linux64-10.0.6_en-US.tar.xz
    ## http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/dist/torbrowser/10.0.6/tor-browser-linux64-10.0.6_en-US.tar.xz
 
-   ## TODO:
-   ## https://aus1.torproject.org/torbrowser/update_3/release/download-linux-x86_64.json
-
    if [ "$tb_onion" = "true" ]; then
       ## dist.torproject.org has no corresponding onion address at time of writing.
       ## https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
@@ -877,7 +874,7 @@ tb_preparation() {
       ## https://web.archive.org/web/20210424113759/https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
       ## Onion-Location	http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion/torbrowser/update_3/release/downloads.json
       [ -n "$tbb_versions_base_url" ] || tbb_versions_base_url="http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion"
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/downloads.json"
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/download-${ARCH_DOWNLOAD}.json"
    else
       ## Download from the torproject.org clearnet by default.
       [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://www.torproject.org"
@@ -885,7 +882,7 @@ tb_preparation() {
       [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https"
 
       [ -n "$tbb_versions_base_url" ] || tbb_versions_base_url="https://aus1.torproject.org"
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/downloads.json"
+      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/download-${ARCH_DOWNLOAD}.json"
    fi
 
    if [ "$DEV_PASSTHROUGH" = "1" ]; then
