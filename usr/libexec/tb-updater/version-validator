@@ -39,31 +39,31 @@ tbbversion() {
          true "INFO: version-parser exit code ok."
 
          ## Check file size to mitigate a potential DoS attack
-         tbb_version_length="$(du -b "${tbb_version_output_file}" | cut -f1)"
+         tbb_version_length="$(du -b -- "${tbb_version_output_file}" | cut -f1)"
          if [ "${tbb_version_length}" -gt "${tbb_version_max_length}" ]; then
             tbb_version='UNKNOWN'
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (Excessive version string length of ${tbb_version_length} bytes.)"
-            safe-rm "${tbb_version_remote_file}"
-            safe-rm "${tbb_version_output_file}"
+            safe-rm -- "${tbb_version_remote_file}"
+            safe-rm -- "${tbb_version_output_file}"
             return 0
          fi
 
          ## Check for non-ASCII weirdness to mitigate potential attacks against
          ## bash or our scripts
-         if LC_ALL=C grep --quiet -P -n "[\x80-\xFF]" "${tbb_version_output_file}"; then
+         if LC_ALL=C grep --quiet -P -n "[\x80-\xFF]" -- "${tbb_version_output_file}"; then
             tbb_version='UNKNOWN'
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (Non-ASCII characters found in version.)"
-            safe-rm "${tbb_version_remote_file}"
-            safe-rm "${tbb_version_output_file}"
+            safe-rm -- "${tbb_version_remote_file}"
+            safe-rm -- "${tbb_version_output_file}"
             return 0
          fi
 
          ## At this point we trust the version string enough to load it - if
          ## it's not ridiculously long, and it's entirely 7-bit ASCII, the
          ## worst it could be is an invalid version number.
-         tbb_version="$(cat "${tbb_version_output_file}")"
+         tbb_version="$(cat -- "${tbb_version_output_file}")"
          ## Thanks to:
          ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
          ## for the leading/trailing whitespace removal code
@@ -76,8 +76,8 @@ tbbversion() {
             tbb_version="UNKNOWN"
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser output empty.)"
-            safe-rm "${tbb_version_remote_file}"
-            safe-rm "${tbb_version_output_file}"
+            safe-rm -- "${tbb_version_remote_file}"
+            safe-rm -- "${tbb_version_output_file}"
             return 0
          fi
 
@@ -90,8 +90,8 @@ tbbversion() {
             tbb_version="UNKNOWN"
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser output does not look like a valid version number.)"
-            safe-rm "${tbb_version_remote_file}"
-            safe-rm "${tbb_version_output_file}"
+            safe-rm -- "${tbb_version_remote_file}"
+            safe-rm -- "${tbb_version_output_file}"
             return 0
          fi
 
@@ -104,32 +104,32 @@ tbbversion() {
          tbb_version='UNKNOWN'
          tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser failed - missing arguments)"
-         safe-rm "${tbb_version_remote_file}"
-         safe-rm "${tbb_version_output_file}"
+         safe-rm -- "${tbb_version_remote_file}"
+         safe-rm -- "${tbb_version_output_file}"
          return 0
          ;;
       2)
          tbb_version='UNKNOWN'
          tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser failed - file missing or inaccessible)"
-         safe-rm "${tbb_version_remote_file}"
-         safe-rm "${tbb_version_output_file}"
+         safe-rm -- "${tbb_version_remote_file}"
+         safe-rm -- "${tbb_version_output_file}"
          return 0
          ;;
       3)
          tbb_version='UNKNOWN'
          tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser failed - file invalid or malicious)"
-         safe-rm "${tbb_version_remote_file}"
-         safe-rm "${tbb_version_output_file}"
+         safe-rm -- "${tbb_version_remote_file}"
+         safe-rm -- "${tbb_version_output_file}"
          return 0
          ;;
       *)
          tbb_version='UNKNOWN'
          tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser failed - unknown error)"
-         safe-rm "${tbb_version_remote_file}"
-         safe-rm "${tbb_version_output_file}"
+         safe-rm -- "${tbb_version_remote_file}"
+         safe-rm -- "${tbb_version_output_file}"
          return 0
          ;;
    esac
