@@ -27,7 +27,7 @@ tbbversion() {
    tbb_version_output_file="$(mktemp)"
    tbb_parser_exit_code='0'
    tbb_version_max_length='10'
-   cp "${RecommendedTBBVersions}" "${tbb_version_remote_file}"
+   cp -- "${RecommendedTBBVersions}" "${tbb_version_remote_file}"
 
    ## Global variable, expected to be set by the caller
    ## stdout and stderr redirected to /dev/null in case the version-parser gets exploited to prevent it from echoing malicious advice.
