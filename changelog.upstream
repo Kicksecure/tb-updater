@@ -1,3 +1,52 @@
+commit 3680aa253bbda4d4a2ec5135d2067b378ee49352
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jul 2 16:00:29 2025 -0400
+
+    update to new version file web link
+
+commit 1527d57f0b04f368ec49aaa94ccde88a4d730887
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jul 2 15:42:24 2025 -0400
+
+    sanitize-string
+
+commit b722edc1a4050f344a202a91a46b0da8526d9cb0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jul 2 15:41:10 2025 -0400
+
+    end-of-options
+
+commit b23ec1d73d391c59465b7d9e1a695bd25a1f4c4a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jul 2 15:40:43 2025 -0400
+
+    stecho
+
+commit cb7bd3703c72f30865d8601fdc44c8b28e9617c4
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jul 2 15:07:42 2025 -0400
+
+    end-of-options
+
+commit 6f72275a27182d5986c7824369c4a399b35a8811
+Merge: 9b9f90c 1e8e7fd
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jul 2 14:58:59 2025 -0400
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/sanitize-string'
+
+commit 1e8e7fde1d9be60d5f105f1b7a198ce8dc25dc7d
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Sun Jun 29 18:28:53 2025 -0500
+
+    Port strip-html calls to sanitize-string
+
+commit 9b9f90c15b78852436e9f70983f4e08a2cf8564c
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Jun 29 17:44:47 2025 +0000
+
+    bumped changelog version
+
 commit bb55dbf3f37556d8894c1dd278d6054ac48332ea
 Merge: 6336e61 566c3a9
 Author: Patrick Schleizer <adrelanos@whonix.org>
