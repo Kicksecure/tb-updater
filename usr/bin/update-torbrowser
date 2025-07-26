@@ -977,6 +977,38 @@ tb_skip_if_higher_or_equal_version_already_downloaded() {
    fi
 }
 
+tb_connectivity_checks_interfaces() {
+   ## TODO: legacy. Remove in Debian trixie and above.
+   if ! test -x /usr/libexec/helper-scripts/check-network-access; then
+      return 0
+   fi
+
+   if /usr/libexec/helper-scripts/check-network-access; then
+      return 0
+   fi
+
+   MSG="<p><b>No network access.</b></p>
+
+<p>Please check: <blockquote>Start menu -> System -> systemcheck
+         <br></br>or in Terminal: systemcheck
+         <br></br>or in Terminal with debugging: systemcheck -v</blockquote></p>
+
+<p>Run systemcheck on Whonix-Gateway as well.</p>
+
+<p>If systemcheck reports no problems with internet activity and downloading $tb_title still fails, please report a bug!</p>
+
+<p>Debugging information:<br/>
+/usr/libexec/helper-scripts/check-network-access non-zero exit code.</p>"
+
+   outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+
+   local MSG_CLI
+   MSG_CLI="$("$sanitize_cmd" "$MSG")"
+   echo "ERROR: $MSG_CLI"
+
+   tb_exit_function 18
+}
+
 tb_connectivity_checks_tor() {
    if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
       return 0
@@ -2097,6 +2129,7 @@ main_function() {
    fi
 
    tb_run_function tb_skip_if_higher_or_equal_version_already_downloaded
+   tb_run_function tb_connectivity_checks_interfaces
    tb_run_function tb_connectivity_checks_tor
    tb_run_function tb_connectivity_checks_curl
    tb_run_function tb_update_check
