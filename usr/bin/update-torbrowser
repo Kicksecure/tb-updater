@@ -983,7 +983,9 @@ tb_connectivity_checks_interfaces() {
       return 0
    fi
 
+   echo -n "INFO: Running network interface available check... "
    if /usr/libexec/helper-scripts/check-network-access; then
+      echo "Done."
       return 0
    fi
 
