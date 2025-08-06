@@ -272,7 +272,7 @@ trap_sigusr2() {
    tb_exit_function 3
 }
 
-trap "trap_sigusr2" SIGUSR2 ## msgcollector, zenity cancel button
+trap "trap_sigusr2" SIGUSR2 ## msgcollector, yad cancel button
 
 tb_parse_cmd_options() {
    ## Thanks to:
