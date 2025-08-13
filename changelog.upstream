@@ -1,3 +1,21 @@
+commit 31d7e9ca7e179929276e833d63dc416dcd619abe
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Aug 13 01:26:36 2025 -0400
+
+    fix: skip network interface available test by default in Qubes Templates, because Qubes Templates are non-networked as per Qubes default. (Thanks to baxter for the bug report!) (https://forums.whonix.org/t/tor-browser-downloader-fails-in-whonix-workstation-17-template/22060)
+
+commit 80113b06cc747dd6bedd219d4e8102e3f0615fe9
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Aug 13 01:09:35 2025 -0400
+
+    cleanup
+
+commit c388a8272f1e39e754523b7d1b7de045db9c4a86
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Aug 4 09:29:58 2025 +0000
+
+    bumped changelog version
+
 commit 291dcd42bf194ac4aa183af70a964eadd09cbf4a
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Mon Aug 4 05:29:44 2025 -0400
