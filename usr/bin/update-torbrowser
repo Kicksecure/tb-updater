@@ -978,6 +978,11 @@ tb_skip_if_higher_or_equal_version_already_downloaded() {
 }
 
 tb_connectivity_checks_interfaces() {
+   if test -f /run/qubes/this-is-templatevm ; then
+      ## Qubes Templates are non-networked as per Qubes default.
+      return 0
+   fi
+
    echo -n "INFO: Running network interface available check... "
    if /usr/libexec/helper-scripts/check-network-access; then
       echo "Done."
