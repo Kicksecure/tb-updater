@@ -978,11 +978,6 @@ tb_skip_if_higher_or_equal_version_already_downloaded() {
 }
 
 tb_connectivity_checks_interfaces() {
-   ## TODO: legacy. Remove in Debian trixie and above.
-   if ! test -x /usr/libexec/helper-scripts/check-network-access; then
-      return 0
-   fi
-
    echo -n "INFO: Running network interface available check... "
    if /usr/libexec/helper-scripts/check-network-access; then
       echo "Done."
