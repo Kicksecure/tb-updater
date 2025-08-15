@@ -978,8 +978,8 @@ tb_skip_if_higher_or_equal_version_already_downloaded() {
 }
 
 tb_connectivity_checks_interfaces() {
-   ## TODO: legacy. Remove in Debian trixie and above.
-   if ! test -x /usr/libexec/helper-scripts/check-network-access; then
+   if test -f /run/qubes/this-is-templatevm ; then
+      ## Qubes Templates are non-networked as per Qubes default.
       return 0
    fi
 
