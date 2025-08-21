@@ -17,8 +17,8 @@ lets users choose which version to download. [1] Has a installation
 confirmation screen [2] that enables users to detect indefinite freeze and
 rollback attacks.
 
-Integrates well with tb-starter, tb-default-browser and
-open-link-confirmation package as well as with Qubes.
+Integrates well with tb-starter, and open-link-confirmation package as well as
+with Qubes.
 
 Without the helper-scripts package installed, the GUI will not move the
 progress bar.
