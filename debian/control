@@ -17,7 +17,7 @@ Architecture: all
 Depends: msgcollector-gui, curl, psmisc, gpg-bash-lib, pv, libarchive-tools,
  sudo, jq, libdbus-glib-1-2, privleap, python3, ${misc:Depends}
 Recommends: tb-starter, icon-pack-dist, helper-scripts
-Suggests: tb-default-browser, open-link-confirmation
+Suggests: open-link-confirmation
 Description: Tor Browser Downloader by Whonix developers
  Automates download and verification of Tor Browser from The Tor Project's
  website. Useful for initial installation of Tor Browser, clean
@@ -36,8 +36,8 @@ Description: Tor Browser Downloader by Whonix developers
  confirmation screen [2] that enables users to detect indefinite freeze and
  rollback attacks.
  .
- Integrates well with tb-starter, tb-default-browser and
- open-link-confirmation package as well as with Qubes.
+ Integrates well with tb-starter and open-link-confirmation package as well as
+ with Qubes.
  .
  Without the helper-scripts package installed, the GUI will not move the
  progress bar.

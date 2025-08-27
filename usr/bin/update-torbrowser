@@ -768,14 +768,6 @@ tb_preparation() {
    ## provides tbbversion function
    source /usr/libexec/tb-updater/version-validator
 
-   if [ "$display" = "" ]; then
-      if [ "$DISPLAY" = "" ]; then
-         display=":0"
-      else
-         display="$DISPLAY"
-      fi
-   fi
-
    if [ "$my_tty" = "" ]; then
       local my_tty_exit_code
       my_tty_exit_code="0"
