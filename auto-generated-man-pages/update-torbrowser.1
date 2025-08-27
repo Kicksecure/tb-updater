@@ -1,5 +1,5 @@
-.\" generated with Ronn-NG/v0.9.1
-.\" http://github.com/apjanke/ronn-ng/tree/0.9.1
+.\" generated with Ronn-NG/v0.10.1
+.\" http://github.com/apjanke/ronn-ng/tree/0.10.1
 .TH "UPDATE\-TORBROWSER" "1" "January 2020" "tb-updater" "tb-updater Manual"
 .SH "NAME"
 \fBupdate\-torbrowser\fR \- Tor Browser Updater by Whonix developers
@@ -10,15 +10,15 @@ Lets you safely download the Tor Browser Bundle (TBB) from The Tor Project's (TP
 .P
 Default action when no options are given is to performs an update check and ask how you want to proceed\.
 .SH "OPTIONS"
-.IP "\[ci]" 4
+.IP "\(bu" 4
 \fB\-\-alpha\fR
 .IP
 Download alpha version instead\.
-.IP "\[ci]" 4
+.IP "\(bu" 4
 \fB\-\-onion\fR
 .IP
 Download from Tor Project's onion rather than clearnet domain\.
-.IP "\[ci]" 4
+.IP "\(bu" 4
 \fB\-\-ordinary\fR
 .IP
 Uses curl's ordinary progress bar\. Only affects run in terminal\.
@@ -28,31 +28,31 @@ When using this option, the GUI progress bar will be stuck but downloading will 
 (It does not use \fB/usr/libexec/helper\-scripts/curl\-prgrs\fRs \fBCURL_PRGRS_MAX_FILE_SIZE_BYTES\fR\.)
 .IP
 However, it can be compensated by either manually terminating \fBupdate\-torbrowser\fR or by using the timeout utility as in the example below\.
-.IP "\[ci]" 4
+.IP "\(bu" 4
 \fB\-\-only\-if\-newer\fR
 .IP
 Do not download the Tor Browser when it is already up\-to\-date\.
-.IP "\[ci]" 4
+.IP "\(bu" 4
 \fB\-\-noask\fR
 .IP
 Installs whatever the remote version file is claiming to be the lowest version without user interaction\.
-.IP "\[ci]" 4
+.IP "\(bu" 4
 \fB\-\-noaskstart\fR
 .IP
 Do not ask if Tor Browser should be started after update was completed\.
-.IP "\[ci]" 4
+.IP "\(bu" 4
 \fB\-\-nokilltb\fR
 .IP
 Advanced users only\. Do not kill all eventually still running instances of Tor Browser\. Useful in case you want to update \fB~/\.tb/tor\-browser\fR, while still using \fB~/tor\-browser_something_else\fR\.
-.IP "\[ci]" 4
+.IP "\(bu" 4
 \fB\-\-language lang\fR
 .IP
 Specify which language specific version of Tor Browser you want to start or update\.
-.IP "\[ci]" 4
+.IP "\(bu" 4
 \fB\-\-no\-tor\-con\-check\fR
 .IP
 Skip Tor bootstrap connectivity check\. (Only relevant in anonymity distributions\.)
-.IP "\[ci]" 4
+.IP "\(bu" 4
 \fB\-\-input\fR
 .IP
 What to use as input method\.
@@ -60,44 +60,44 @@ What to use as input method\.
 \fB\-\-input stdin\fR or \fB\-\-input gui\fR
 .IP
 When run in command line, by default, standard input (\fB\-\-input stdin\fR) will be used\. When using (\fB\-\-input gui\fR), questions would be asked in the graphical user environment\.
-.IP "\[ci]" 4
+.IP "\(bu" 4
 \fB\-\-resume\fR
 .IP
 Resume previous download\.
-.IP "\[ci]" 4
+.IP "\(bu" 4
 \fB\-\-reset\fR
 .IP
 Advanced users only\. Hard reset\. Do not re\-download Tor Browser but only overwrite (delete and re\-install) Tor Browser\. This feature is not designed to fix Tor Browser issues\. When running this program normally without \fB\-\-reset\fR it does download and overwrite Tor Browser\. There is no additional benefit from using \fB\-\-reset\fR\.
 .IP "" 0
 .SH "AVAILABLE LANGUAGES"
 As in October 2012:
-.IP "\[ci]" 4
+.IP "\(bu" 4
 ar
-.IP "\[ci]" 4
+.IP "\(bu" 4
 de
-.IP "\[ci]" 4
+.IP "\(bu" 4
 en\-US
-.IP "\[ci]" 4
+.IP "\(bu" 4
 es\-ES
-.IP "\[ci]" 4
+.IP "\(bu" 4
 fa
-.IP "\[ci]" 4
+.IP "\(bu" 4
 fr
-.IP "\[ci]" 4
+.IP "\(bu" 4
 it
-.IP "\[ci]" 4
+.IP "\(bu" 4
 ko
-.IP "\[ci]" 4
+.IP "\(bu" 4
 nl
-.IP "\[ci]" 4
+.IP "\(bu" 4
 pl
-.IP "\[ci]" 4
+.IP "\(bu" 4
 pt\-PT
-.IP "\[ci]" 4
+.IP "\(bu" 4
 ru
-.IP "\[ci]" 4
+.IP "\(bu" 4
 vi
-.IP "\[ci]" 4
+.IP "\(bu" 4
 zh\-CN
 .IP "" 0
 .SH "MORE LANGUAGES"
@@ -107,7 +107,8 @@ https://www\.torproject\.org/dist/torbrowser/linux/
 .SH "CONFIG FILE"
 /etc/torbrowser\.d/30_default\.conf
 .SH "ENVIRONMENT VARIABLES"
-### Version \fBtbb_version=version\.number update\-torbrowser\fR
+.SS "Version"
+\fBtbb_version=version\.number update\-torbrowser\fR
 .P
 See also EXAMPLES below\.
 .SH "EXIT CODES"
