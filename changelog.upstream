@@ -1,8 +1,47 @@
+commit 3bc05ef529a0c6305942560840685c34a79baa1b
+Merge: 4e23e07 9ec239f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Aug 27 13:00:39 2025 -0400
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit 9ec239fdef697b0dbb62abae87a8504f69ad7550
+Merge: 42700a0 4e23e07
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Tue Aug 26 19:21:04 2025 -0500
+
+    Merge branch 'master' into arraybolt3/trixie
+
+commit 4e23e07c108655e2a020edaf1de864c0c65b83fb
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Aug 26 09:19:54 2025 +0000
+
+    bumped changelog version
+
 commit 075ec1791e892db477e39e30f29e6c7d996649a0
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Aug 26 05:19:53 2025 -0400
 
     re-generate man pages (generated using "genmkfile manpages")
+
+commit 42700a04e1047ad389903bf094258bd7192a3abb
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Thu Aug 21 21:31:05 2025 -0500
+
+    Bump TBB version
+
+commit 455191f4ae542ff9959f007be302394db5fbe760
+Merge: 5b17abc dffa2d6
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Thu Aug 21 20:17:05 2025 -0500
+
+    Merge branch 'master' into arraybolt3/trixie
+
+commit 5b17abc7a8688bd59491f813df2eaa643b656294
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Thu Aug 21 18:51:19 2025 -0500
+
+    Adjust for LXQt/Wayland, remove obsolete dependency on tb-default-browser
 
 commit dffa2d68de96d57430f0c4ea8a13e5a34b859204
 Merge: 33c721c 593b218
