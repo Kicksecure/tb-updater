@@ -11,7 +11,5 @@ if [ -f /usr/libexec/helper-scripts/pre.bsh ]; then
 fi
 
 ## https://github.com/QubesOS/build-issues/issues/1769
-export DPKG_MAINTSCRIPT_PACKAGE="whonix-ws-network-conf"
-export DPKG_MAINTSCRIPT_NAME="prerm"
-
-/bin/bash -x /var/lib/dpkg/info/whonix-ws-network-conf.prerm remove
+mv /etc/resolv.conf /etc/resolv.conf.whonix-orig
+mv /etc/resolv.conf.tb-updater-bak /etc/resolv.conf
