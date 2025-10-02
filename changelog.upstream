@@ -1,3 +1,22 @@
+commit e717fc351f214a13397368f44064937ddfb809ee
+Merge: 4016e78 54cccde
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Oct 1 21:25:21 2025 -0400
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit 54cccde00f1666002e1a7d9337283e2dae301c6b
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Wed Oct 1 16:35:23 2025 -0500
+
+    Re-enable chroot handling and make it safer
+
+commit 4016e78f3a4c7517618e4373cfd47bac379f7ad3
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Sep 19 18:11:14 2025 +0000
+
+    bumped changelog version
+
 commit d5677fae145a6cdecd7c005787914b064bc2ae6d
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Sep 19 14:01:27 2025 -0400
