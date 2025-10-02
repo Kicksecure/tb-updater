@@ -1,3 +1,21 @@
+commit b32325c87335821ba5909840048b32a83e7b645f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Oct 1 21:28:22 2025 -0400
+
+    tbb_hardcoded_version update
+
+commit 235b75d38de343990d0ec4faa7a89ddc6640d553
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Oct 1 21:27:42 2025 -0400
+
+    lintian
+
+commit cd244b4280282f8de77cdd23712f6d942e004667
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Oct 2 01:26:30 2025 +0000
+
+    bumped changelog version
+
 commit e717fc351f214a13397368f44064937ddfb809ee
 Merge: 4016e78 54cccde
 Author: Patrick Schleizer <adrelanos@whonix.org>
