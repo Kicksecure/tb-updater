@@ -509,12 +509,12 @@ tb_anon_ws_dns_conf() {
          echo "INFO: Checking if /var/lib/dpkg/info/whonix-ws-network-conf.prerm is executable..."
          if test -x /var/lib/dpkg/info/whonix-ws-network-conf.prerm ; then
             echo "INFO: Yes, /var/lib/dpkg/info/whonix-ws-network-conf.prerm is a executable."
-            [ -n "$tb_reenable_anon_ws_dnf_conf" ] || tb_reenable_anon_ws_dnf_conf=true
+            [ -n "$tb_reenable_anon_ws_dns_conf" ] || tb_reenable_anon_ws_dns_conf=true
             tb_resolv_conf_debugging
 
-            #echo "INFO: tb_anon_ws_dns_conf: Restore original /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-pre ..."
-            #sudo --non-interactive /usr/libexec/tb-updater/chroot-pre
-            #tb_resolv_conf_debugging
+            echo "INFO: tb_anon_ws_dns_conf: Restore original /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-pre ..."
+            sudo --non-interactive /usr/libexec/tb-updater/chroot-pre
+            tb_resolv_conf_debugging
          fi
       fi
    fi
@@ -2002,11 +2002,11 @@ tb_cleanup() {
 }
 
 tb_chroot_pre_exit() {
-   if [ "$tb_reenable_anon_ws_dnf_conf" = "true" ]; then
-      echo "INFO: tb_chroot_pre_exit: tb_reenable_anon_ws_dnf_conf=true"
+   if [ "$tb_reenable_anon_ws_dns_conf" = "true" ]; then
+      echo "INFO: tb_chroot_pre_exit: tb_reenable_anon_ws_dns_conf=true"
 
-      #echo "INFO: tb_chroot_pre_exit: Restore whonix-ws-network-conf /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-post ..."
-      #sudo --non-interactive /usr/libexec/tb-updater/chroot-post
+      echo "INFO: tb_chroot_pre_exit: Restore whonix-ws-network-conf /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-post ..."
+      sudo --non-interactive /usr/libexec/tb-updater/chroot-post
 
       tb_resolv_conf_debugging
    fi
