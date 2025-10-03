@@ -11,5 +11,5 @@ if [ -f /usr/libexec/helper-scripts/pre.bsh ]; then
 fi
 
 ## https://github.com/QubesOS/build-issues/issues/1769
-mv /etc/resolv.conf /etc/resolv.conf.tb-updater-bak
-mv /etc/resolv.conf.whonix-orig /etc/resolv.conf
+mv /etc/resolv.conf /etc/resolv.conf.whonix-orig
+mv /etc/resolv.conf.tb-updater-bak /etc/resolv.conf
