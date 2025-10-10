@@ -1,3 +1,15 @@
+commit 03c3014e5f81c9f223274c8dbbd7275e1406d0d6
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 10 06:55:10 2025 -0400
+
+    tbb_hardcoded_version update
+
+commit aae9a2d5ad7c40d4a8acb9d9ed17ffe6c913083f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 3 19:29:55 2025 +0000
+
+    bumped changelog version
+
 commit d4229b6132cf880ec88d8ee35171539433216ef3
 Merge: 0536e6f 131ff2a
 Author: Patrick Schleizer <adrelanos@whonix.org>
