@@ -1,3 +1,15 @@
+commit 6ce3fe64accc9cbb0e67b079d593c641050cbdcd
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Oct 19 06:42:17 2025 -0400
+
+    use curl --proxy-user for stream isolation
+
+commit 7edb88e94be4bcd92ec3aed2c218ea75596439a4
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 10 12:09:25 2025 +0000
+
+    bumped changelog version
+
 commit 03c3014e5f81c9f223274c8dbbd7275e1406d0d6
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Oct 10 06:55:10 2025 -0400
