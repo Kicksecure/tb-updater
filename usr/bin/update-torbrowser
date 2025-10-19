@@ -31,6 +31,8 @@ if [ "$tb_updater_was_sourced" = "false" ]; then
   set -o errtrace
 fi
 
+source /usr/libexec/helper-scripts/strings.bsh
+
 [[ -v SCRIPTNAME ]] || SCRIPTNAME="$(basename "$BASH_SOURCE")"
 [[ -v ICON ]] || ICON="/usr/share/icons/icon-pack-dist/tbupdate.ico"
 
@@ -886,26 +888,26 @@ tb_preparation() {
    fi
 
    if [ "$DEV_PASSTHROUGH" = "1" ]; then
-      [ -n "$CURL_PROXY" ] || CURL_PROXY=""
+      [ -n "$CURL_PROXY" ] || CURL_PROXY=()
    elif test -f /run/qubes/this-is-templatevm ; then
       ## Use Qubes updates proxy.
       if [ "$CURL_PROXY" = "" ]; then
          PROXY_SERVER='http://127.0.0.1:8082/'
-         CURL_PROXY="--proxy $PROXY_SERVER"
+         CURL_PROXY=( "--proxy" "$PROXY_SERVER" )
       fi
    elif [ -f /usr/share/whonix/marker ]; then
       ## sets: GATEWAY_IP
       eval $(/usr/libexec/helper-scripts/settings_echo)
       [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
-      if [ "$socks_user_name" = "" ]; then
-         local uuid_temp
-         uuid_temp="$(cat -- "/proc/sys/kernel/random/uuid")"
-         socks_user_name="tb-updater"
-         socks_user_name="${socks_user_name}_${uuid_temp}"
-      fi
-      [ -n "$CURL_PROXY" ] || CURL_PROXY="--proxy socks5h://$socks_user_name:password@$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD"
+      local random_socks_user_name
+      random_socks_user_name="$(random_alpha_numeric 43)"
+      ## TODO: https://spec.torproject.org/proposals/351-socks-auth-extensions.html
+      [ -n "$CURL_PROXY" ] || CURL_PROXY=(
+         '--proxy' "socks5h://$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD"
+         '--proxy-user' "tb_updater_${random_socks_user_name}:password"
+      )
    else
-      [ -n "$CURL_PROXY" ] || CURL_PROXY=""
+      [ -n "$CURL_PROXY" ] || CURL_PROXY=()
    fi
 
    echo "INFO: CURL_PROXY: '$CURL_PROXY'"
@@ -1514,7 +1516,7 @@ $tb_notify_details"
    $CURL_PRGRS \
       $CURL_RESUME \
       --fail \
-      $CURL_PROXY \
+      "${CURL_PROXY[@]}" \
       $CURL_FORCE_SSL \
       --retry-connrefused \
       --retry 10 \
