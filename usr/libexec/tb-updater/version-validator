@@ -9,7 +9,7 @@ tbbversion() {
 
    command -v /usr/libexec/tb-updater/version-parser >/dev/null
 
-   ## TODO: use sanitize-string only
+   ## TODO: use 'sanitize-string' only
    if command -v /usr/bin/sanitize-string >/dev/null ; then
       sanitize_cmd=/usr/bin/sanitize-string
    elif command -v /usr/libexec/msgcollector/striphtml >/dev/null ; then
@@ -24,7 +24,7 @@ tbbversion() {
 
    ## Example see /usr/share/tb-updater/unit-test/RecommendedTBBVersions
    if [ ! -f "$RecommendedTBBVersions" ]; then
-      local MSG="$SCRIPTNAME tbbversion: RecommendedTBBVersions: $RecommendedTBBVersions does not exist."
+      local MSG="$SCRIPTNAME tbbversion: RecommendedTBBVersions: '$RecommendedTBBVersions' does not exist."
       stecho "$MSG"
       error "$MSG"
       return 1
@@ -51,7 +51,7 @@ tbbversion() {
          if [ "${tbb_version_length}" -gt "${tbb_version_max_length}" ]; then
             tbb_version='UNKNOWN'
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
-(Excessive version string length of ${tbb_version_length} bytes.)"
+(Excessive version string length of '${tbb_version_length}' bytes.)"
             safe-rm -- "${tbb_version_remote_file}"
             safe-rm -- "${tbb_version_output_file}"
             return 0
