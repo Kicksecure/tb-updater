@@ -515,7 +515,14 @@ tb_anon_ws_dns_conf() {
             tb_resolv_conf_debugging
 
             echo "INFO: tb_anon_ws_dns_conf: Restore original /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-pre ..."
-            sudo --non-interactive /usr/libexec/tb-updater/chroot-pre
+
+            true "tb_running_as_root: $tb_running_as_root"
+            if [ "$tb_running_as_root" = "false" ]; then
+               ## TODO: port to privleap - but privleap may not be running inside chroot
+               sudo --non-interactive /usr/libexec/tb-updater/chroot-pre
+            else
+               /usr/libexec/tb-updater/chroot-pre
+            fi
             tb_resolv_conf_debugging
          fi
       fi
@@ -2008,7 +2015,14 @@ tb_chroot_pre_exit() {
       echo "INFO: tb_chroot_pre_exit: tb_reenable_anon_ws_dns_conf=true"
 
       echo "INFO: tb_chroot_pre_exit: Restore whonix-ws-network-conf /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-post ..."
-      sudo --non-interactive /usr/libexec/tb-updater/chroot-post
+
+      true "tb_running_as_root: $tb_running_as_root"
+      if [ "$tb_running_as_root" = "false" ]; then
+         ## TODO: port to privleap - but privleap may not be running inside chroot
+         sudo --non-interactive /usr/libexec/tb-updater/chroot-post
+      else
+         /usr/libexec/tb-updater/chroot-post
+      fi
 
       tb_resolv_conf_debugging
    fi
