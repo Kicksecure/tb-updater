@@ -1419,9 +1419,11 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
       MSG="\
 <p>$confirmation_screen_learn_more_link</p>"
 
-      local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
-      echo "INFO: $MSG_CLI"
+      if ! [ "$tb_postinst" = "true" ]; then
+         local MSG_CLI
+         MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
+         echo "INFO: $MSG_CLI"
+      fi
    fi
 
    echo "$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Download_Confirmation_Notification"
