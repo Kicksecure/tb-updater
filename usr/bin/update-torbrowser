@@ -421,10 +421,11 @@ More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Us
 }
 
 outputfunc() {
+   local MSG output_tool
    true "$FUNCNAME: START"
    true "$FUNCNAME: args: ${1+$@}"
    output_tool="/usr/libexec/msgcollector/msgcollector"
-   ## Variable initialization required because curl-prgrs uses "set -o nounset".
+   ## Variable initialization required because 'curl-prgrs' uses "set -o nounset".
    [[ -v TB_USE_MSGCOLLECTOR ]] || TB_USE_MSGCOLLECTOR=""
    [[ -v outputfunc_verbose ]] || outputfunc_verbose=""
    if [ "$TB_USE_MSGCOLLECTOR" = "false" ]; then
@@ -436,7 +437,6 @@ outputfunc() {
                return 0
                ;;
             --message)
-               local MSG
                MSG="$2"
                shift 2
                break
@@ -446,14 +446,14 @@ outputfunc() {
                ;;
          esac
       done
-      ## MSG will be unset for --progressx.
+      ## MSG will be unset for '--progressx'.
       [[ -v MSG ]] || MSG=""
       if [ ! "$MSG" = "" ]; then
          MSG="$("$sanitize_cmd" -- nolimit "$MSG")"
-         echo "$MSG"
+         printf '%s\n' "$MSG"
       fi
    elif [ "$outputfunc_verbose" = "true" ]; then
-      echo "Running: bash -x $output_tool --identifier $IDENTIFIER ${1+$@}"
+      printf '%s\n' "Running: bash -x $output_tool --identifier $IDENTIFIER ${1+$@}"
       bash -x $output_tool --identifier "$IDENTIFIER" "$@"
    else
       $output_tool --identifier "$IDENTIFIER" "$@"
