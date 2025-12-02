@@ -115,20 +115,20 @@ tb_error_handler() {
       echo "$MSG" >> "$tb_user_home/.cache/$tb_install_folder/torbrowser_updater_error.log"
    fi
 
-   ## In case function outputfunc does not exist yet.
-   if [ ! "$(type -t "outputfunc")" = "function" ]; then
-      outputfunc="echo"
+   ## In case function output_gui does not exist yet.
+   if [ ! "$(type -t "output_gui")" = "function" ]; then
+      output_gui="echo"
    fi
 
    if [ "$progressbaridx" = "" ]; then
       true
    else
-      outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       progressbaridx=""
    fi
 
-   outputfunc ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
-   outputfunc ${output_opts[@]} --messagecli --titlecli "$TITLE" --typecli "error" --message "$MSG" --done
+   output_gui ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
+   output_gui ${output_opts[@]} --messagecli --titlecli "$TITLE" --typecli "error" --message "$MSG" --done
    tb_exit_function 1
 }
 
@@ -237,18 +237,18 @@ tb_ex_funct() {
    if [ "$progressbaridx" = "" ]; then
       true
    else
-      outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       progressbaridx=""
    fi
 
-   outputfunc ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+   output_gui ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 
    #MSG="Aborted."
-   #outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+   #output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
    #echo "ERROR: $MSG"
 
    MSG="$0: INFO: $FUNCNAME: Signal '$SIGNAL_TYPE' received. Exiting."
-   outputfunc ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+   output_gui ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 }
 
 tb_signal_sigterm() {
@@ -411,7 +411,7 @@ tb_qubes_dvm_template() {
 <br></br>
 More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template</a></p>"
 
-   outputfunc ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
+   output_gui ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
 
    local MSG_CLI
    MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
@@ -420,7 +420,7 @@ More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Us
    tb_exit_function 1
 }
 
-outputfunc() {
+output_gui() {
    local MSG output_tool
    true "$FUNCNAME: START"
    true "$FUNCNAME: args: ${1+$@}"
@@ -785,10 +785,10 @@ tb_preparation() {
 
    TITLE="$tb_title Downloader (by $tb_downloader_developers developers)"
 
-   outputfunc --icon "$ICON"
-   outputfunc --parenttty "$my_tty"
-   outputfunc --titlex "$TITLE"
-   outputfunc --titlecli "$TITLE"
+   output_gui --icon "$ICON"
+   output_gui --parenttty "$my_tty"
+   output_gui --titlex "$TITLE"
+   output_gui --titlecli "$TITLE"
 
    ## Make visible to curl-prgrs.
    export IDENTIFIER
@@ -809,7 +809,7 @@ tb_preparation() {
          CURL=curl
       else
          local MSG="uwt_tool: Can not find curl. Please report this bug!"
-         outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG"
+         output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG"
          echo "ERROR: $MSG"
          EXIT_CODE="1"
          return 0
@@ -996,7 +996,7 @@ tb_connectivity_checks_interfaces() {
 <p>Debugging information:<br/>
 /usr/libexec/helper-scripts/check-network-access non-zero exit code.</p>"
 
-   outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+   output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
    local MSG_CLI
    MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
@@ -1039,7 +1039,7 @@ tb_connectivity_checks_tor() {
 <p>Debugging information:<br />
 You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCNAME</code> should be skipped.</p>"
 
-         outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+         output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
          local MSG_CLI
          MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
@@ -1072,7 +1072,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
 
 <p>If systemcheck reports no problems with internet activity and downloading $tb_title still fails, please report a bug!</p>"
 
-         outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+         output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
          local MSG_CLI
          MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
@@ -1124,7 +1124,7 @@ tb_connectivity_checks_curl() {
 <p>If systemcheck reports no problems with internet activity and downloading $tb_title keeps failing, please report a bug!</p>
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
-      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
       MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
@@ -1193,7 +1193,7 @@ tb_remote_version_sanity_test() {
 <p>Either <code>$TBB_VERSIONS_FILE_LINK</code> is invalid or this is a <code>$SCRIPTNAME</code> (by <code>$tb_downloader_developers</code> developers) bug.</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
-      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
       MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
@@ -1211,7 +1211,7 @@ tb_remote_version_sanity_test() {
 <p>Either <code>$TBB_VERSIONS_FILE_LINK</code> is invalid or this is a <code>$SCRIPTNAME</code> (by <code>$tb_downloader_developers</code> developers) bug.</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
-      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
       MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
@@ -1233,7 +1233,7 @@ dpkg --compare-versions failed!</p>
 <p>Either <code>$TBB_VERSIONS_FILE_LINK</code> is invalid or this is a <code>$SCRIPTNAME</code> (by <code>$tb_downloader_developers</code> developers) bug.</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
-      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
       MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
@@ -1297,7 +1297,7 @@ Otherwise updating <code>$tb_title</code> in this Template will not result in ne
 <br />(Or delete them using a file manager.)
 <br />
 <br />More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific</a></p>"
-         outputfunc ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
+         output_gui ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
          local MSG_CLI
          MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
@@ -1489,7 +1489,7 @@ tb_reset() {
 <br/>
 <br/>See:
 <br/><a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset</a></p>"
-      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
       MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
@@ -1517,13 +1517,13 @@ tb_download_common() {
 ----------------------------------------------------------------------
 $tb_notify_details"
       if [ "$TB_INPUT" = "" ] || [ "$TB_INPUT" = "gui" ]; then
-         outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
+         output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
          ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
          ## variables. (See above.)
          ## Define what CURL_PRGRS is supposed to eval.
          ## ($percent is a local variable provided by $CURL_PRGRS.)
-         export -f outputfunc
-         CURL_PRGRS_EXEC="outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx"
+         export -f output_gui
+         CURL_PRGRS_EXEC="output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx"
          export CURL_PRGRS_EXEC
       fi
    fi
@@ -1556,7 +1556,7 @@ $tb_notify_details"
    if [ "$progressbaridx" = "" ]; then
       true
    else
-      outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       progressbaridx=""
    fi
 
@@ -1579,7 +1579,7 @@ $tb_notify_details"
 <p>$DOWNLOAD_FAIL_HELP</p>
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
-      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
       MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
@@ -1671,7 +1671,7 @@ tb_gpg_verify() {
 <p>gpg_bash_lib_output_diagnostic_message:</p>
 
 <p>$gpg_bash_lib_output_diagnostic_message</p>"
-      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
       MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
@@ -1826,7 +1826,7 @@ tb_extract() {
 ----------------------------------------------------------------------
 Extracting $tb_title... This could take a moment..."
       if [ "$TB_INPUT" = "" ] || [ "$TB_INPUT" = "gui" ]; then
-         outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
+         output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
       fi
    fi
 
@@ -1872,8 +1872,8 @@ Extracting $tb_title... This could take a moment..."
    else
       pv_echo_command='echo "extraction percent done: "$percent" / 100" >&2'
       export pv_echo_command
-      export -f outputfunc
-      pv_wrapper_command="outputfunc ${output_opts[@]} --progressbaridx $progressbaridx --progressx \"\$percent\""
+      export -f output_gui
+      pv_wrapper_command="output_gui ${output_opts[@]} --progressbaridx $progressbaridx --progressx \"\$percent\""
       export pv_wrapper_command
 
       local tar_fifo tar_pid pv_wrapper_fifo pv_wrapper_fifo
@@ -1953,7 +1953,7 @@ Extracting $tb_title... This could take a moment..."
    if [ "$progressbaridx" = "" ]; then
       true
    else
-      outputfunc ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
       progressbaridx=""
    fi
 
@@ -1970,7 +1970,7 @@ Extracting $tb_title... This could take a moment..."
 <br></br>pv_wrapper_exit_code: <code>$pv_wrapper_exit_code</code>)
 <br></br>
 <br></br>Please report this bug!</p>"
-      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
       MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
@@ -2076,7 +2076,7 @@ Skipping question to start '$tb_title'."
 
 <p>To run '$tb_title', start an App Qube, Standalone or Disposable, then run:<br />
 <code>$tb_bin</code></p>"
-         outputfunc ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
+         output_gui ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
          local MSG_CLI
          MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
