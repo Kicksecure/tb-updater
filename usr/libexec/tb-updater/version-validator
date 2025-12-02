@@ -9,11 +9,8 @@ tbbversion() {
 
    command -v /usr/libexec/tb-updater/version-parser >/dev/null
 
-   ## TODO: use 'sanitize-string' only
    if command -v /usr/bin/sanitize-string >/dev/null ; then
       sanitize_cmd=/usr/bin/sanitize-string
-   elif command -v /usr/libexec/msgcollector/striphtml >/dev/null ; then
-      sanitize_cmd=/usr/libexec/msgcollector/striphtml
    else
       error "missing sanitize_cmd"
    fi
@@ -75,7 +72,7 @@ tbbversion() {
          ## Thanks to:
          ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
          ## for the leading/trailing whitespace removal code
-         temp="$("$sanitize_cmd" "$tbb_version")"
+         temp="$("$sanitize_cmd" -- nolimit "$tbb_version")"
          temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
          temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
          tbb_version="$temp"

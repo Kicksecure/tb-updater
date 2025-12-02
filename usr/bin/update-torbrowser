@@ -210,11 +210,8 @@ tb_sanity_tests() {
    command -v mkfifo >/dev/null
    command -v jq >/dev/null
 
-   ## TODO: use sanitize-string only
    if command -v /usr/bin/sanitize-string >/dev/null ; then
       sanitize_cmd=/usr/bin/sanitize-string
-   elif command -v /usr/libexec/msgcollector/striphtml >/dev/null ; then
-      sanitize_cmd=/usr/libexec/msgcollector/striphtml
    else
       error "missing sanitize_cmd"
    fi
@@ -415,7 +412,7 @@ More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Us
    outputfunc ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
 
    local MSG_CLI
-   MSG_CLI="$("$sanitize_cmd" "$MSG")"
+   MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
    echo "ERROR: $MSG_CLI"
 
    tb_exit_function 1
@@ -450,7 +447,7 @@ outputfunc() {
       ## MSG will be unset for --progressx.
       [[ -v MSG ]] || MSG=""
       if [ ! "$MSG" = "" ]; then
-         MSG="$("$sanitize_cmd" "$MSG")"
+         MSG="$("$sanitize_cmd" -- nolimit "$MSG")"
          echo "$MSG"
       fi
    elif [ "$outputfunc_verbose" = "true" ]; then
@@ -996,7 +993,7 @@ tb_connectivity_checks_interfaces() {
    outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
    local MSG_CLI
-   MSG_CLI="$("$sanitize_cmd" "$MSG")"
+   MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
    echo "ERROR: $MSG_CLI"
 
    tb_exit_function 18
@@ -1039,7 +1036,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
          outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
          local MSG_CLI
-         MSG_CLI="$("$sanitize_cmd" "$MSG")"
+         MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
          echo "ERROR: $MSG_CLI"
 
          tb_exit_function 5
@@ -1072,7 +1069,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
          outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
          local MSG_CLI
-         MSG_CLI="$("$sanitize_cmd" "$MSG")"
+         MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
          echo "ERROR: $MSG_CLI"
 
          tb_exit_function 6
@@ -1124,7 +1121,7 @@ tb_connectivity_checks_curl() {
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 7
@@ -1192,7 +1189,7 @@ tb_remote_version_sanity_test() {
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 9
@@ -1209,7 +1206,7 @@ tb_remote_version_sanity_test() {
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 9
@@ -1272,7 +1269,7 @@ Otherwise updating <code>$tb_title</code> in this Template will not result in ne
          outputfunc ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
          local MSG_CLI
-         MSG_CLI="$("$sanitize_cmd" "$MSG")"
+         MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
          echo "INFO: $MSG_CLI"
       fi
    fi
@@ -1385,7 +1382,7 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
       fi
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "WARNING: $MSG_CLI"
    else
       ## not installed
@@ -1394,15 +1391,15 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
 <p>$confirmation_screen_learn_more_link</p>"
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "INFO: $MSG_CLI"
    fi
 
    echo "$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Download_Confirmation_Notification"
 
-   tbb_version_previous_downloaded_version_stripped="$("$sanitize_cmd" "$tbb_version_previous_downloaded_version")"
-   tbb_locally_installed_version_stripped="$("$sanitize_cmd" "$tbb_locally_installed_version")"
-   tbb_version_stripped="$("$sanitize_cmd" "$tbb_version")"
+   tbb_version_previous_downloaded_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_version_previous_downloaded_version")"
+   tbb_locally_installed_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_locally_installed_version")"
+   tbb_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_version")"
 
    echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version_stripped'"
    echo "INFO: Currently installed version: '$tbb_locally_installed_version_stripped'"
@@ -1472,7 +1469,7 @@ tb_reset() {
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 16
@@ -1562,7 +1559,7 @@ $tb_notify_details"
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function "$tb_download_common_exit_on_fail"
@@ -1656,7 +1653,7 @@ tb_gpg_verify() {
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 12
@@ -1762,7 +1759,7 @@ $gpg_bash_lib_output_gpg_verify_output_br_added</p>
 <p><a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Installation_Confirmation_Notification>Learn more about this Installation Confirmation Notification.</a></p>"
 
    local MSG_CLI
-   MSG_CLI="$("$sanitize_cmd" "$MSG")"
+   MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
    echo "INFO: $MSG_CLI"
 
    echo "$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Installation_Confirmation_Notification"
@@ -1955,7 +1952,7 @@ Extracting $tb_title... This could take a moment..."
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 15
@@ -2061,7 +2058,7 @@ Skipping question to start '$tb_title'."
          outputfunc ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
          local MSG_CLI
-         MSG_CLI="$("$sanitize_cmd" "$MSG")"
+         MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
          echo "INFO: $MSG_CLI"
 
          return 0
