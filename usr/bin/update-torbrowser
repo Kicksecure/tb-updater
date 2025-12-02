@@ -139,6 +139,7 @@ DOWNLOAD_FAIL_HELP="<p>Possible reasons for download failure:</p>
   <li>Internet connectivity issue.</li>
   <li>The download server is down.</li>
   <li>File size exceeded (endless data attack triggered).</li>
+  <li>Other software update attack (rollback, indefinite freeze).</li>
   <li><code>$tb_title</code> Downloader (by <code>$tb_downloader_developers</code> developers) has been broken due to upstream changes.</li>
 </ul>
 <p>Recommendations:</p>
@@ -209,11 +210,8 @@ tb_sanity_tests() {
    command -v mkfifo >/dev/null
    command -v jq >/dev/null
 
-   ## TODO: use sanitize-string only
    if command -v /usr/bin/sanitize-string >/dev/null ; then
       sanitize_cmd=/usr/bin/sanitize-string
-   elif command -v /usr/libexec/msgcollector/striphtml >/dev/null ; then
-      sanitize_cmd=/usr/libexec/msgcollector/striphtml
    else
       error "missing sanitize_cmd"
    fi
@@ -414,7 +412,7 @@ More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Us
    outputfunc ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
 
    local MSG_CLI
-   MSG_CLI="$("$sanitize_cmd" "$MSG")"
+   MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
    echo "ERROR: $MSG_CLI"
 
    tb_exit_function 1
@@ -449,7 +447,7 @@ outputfunc() {
       ## MSG will be unset for --progressx.
       [[ -v MSG ]] || MSG=""
       if [ ! "$MSG" = "" ]; then
-         MSG="$("$sanitize_cmd" "$MSG")"
+         MSG="$("$sanitize_cmd" -- nolimit "$MSG")"
          echo "$MSG"
       fi
    elif [ "$outputfunc_verbose" = "true" ]; then
@@ -553,10 +551,12 @@ tb_settings_chroot_common() {
 
 tb_settings_postinst_common() {
    ## Skip update [version] confirmation messages when running with
-   ## --postinst, because we will be using hardcoded version numbers.
+   ## --postinst, because we will be using hardcoded version numbers to verify
+   ## upstream's version info.
    [ -n "$tb_confirm_update_skip" ] || tb_confirm_update_skip=true
    ## Skip installation confirmation messages when running with
-   ## --postinst, because we will be using hardcoded version numbers.
+   ## --postinst, because we will be using hardcoded version numbers to verify
+   ## upstream's version info.
    ## Downgrade / freeze attacks should not be possible, because file names
    ## that include the version number will be verified using gpg.
    [ -n "$tb_confirm_installation_skip" ] || tb_confirm_installation_skip=true
@@ -565,8 +565,6 @@ tb_settings_postinst_common() {
    [ -n "$noaskstart" ] || noaskstart="true"
    [ -n "$TB_INPUT" ] || TB_INPUT="none"
    export TB_USE_MSGCOLLECTOR="false"
-
-   [ -n "$tbb_use_hardcoded_version" ] || tbb_use_hardcoded_version="true"
 
    ## Fail open, if there was an error.
    [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=open
@@ -663,17 +661,6 @@ tb_preparation() {
       [ -n "$qubes_vm_name" ] || qubes_vm_name="$(qubesdb-read /name)" || true
    else
       [ -n "$is_qubes" ] || is_qubes=false
-   fi
-
-   if test -f /run/qubes/this-is-templatevm ; then
-      if [ "$(id -u)" != "0" ]; then
-         #echo "ERROR: Needs to run as root in Qubes Template. Run:"
-         #echo "sudo $SCRIPTNAME"
-         #tb_exit_function 2
-         true
-      else
-         true
-      fi
    fi
 
    if [ "$is_chroot" = "true" ]; then
@@ -1006,7 +993,7 @@ tb_connectivity_checks_interfaces() {
    outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
    local MSG_CLI
-   MSG_CLI="$("$sanitize_cmd" "$MSG")"
+   MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
    echo "ERROR: $MSG_CLI"
 
    tb_exit_function 18
@@ -1049,7 +1036,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
          outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
          local MSG_CLI
-         MSG_CLI="$("$sanitize_cmd" "$MSG")"
+         MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
          echo "ERROR: $MSG_CLI"
 
          tb_exit_function 5
@@ -1082,7 +1069,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
          outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
          local MSG_CLI
-         MSG_CLI="$("$sanitize_cmd" "$MSG")"
+         MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
          echo "ERROR: $MSG_CLI"
 
          tb_exit_function 6
@@ -1134,7 +1121,7 @@ tb_connectivity_checks_curl() {
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 7
@@ -1202,7 +1189,24 @@ tb_remote_version_sanity_test() {
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
+      echo "ERROR: $MSG_CLI"
+
+      tb_exit_function 9
+   fi
+   if dpkg --compare-versions "$tbb_version" lt "$tbb_hardcoded_version" ; then
+      download_fail_help_set
+      local MSG="<p>$installed_or_not_text</p>
+
+<p>Detected latest <code>$tb_title</code> version <code>$tbb_version</code> is older than hardcoded known-good version <code>$tbb_hardcoded_version</code>!</p>
+
+<p>Either <code>$TBB_VERSIONS_FILE_LINK</code> is invalid or this is a <code>$SCRIPTNAME</code> (by <code>$tb_downloader_developers</code> developers) bug.</p>
+
+<p>$DOWNLOAD_FAIL_HELP</p>"
+      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+
+      local MSG_CLI
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 9
@@ -1221,13 +1225,6 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
       ## sets: tbb_hardcoded_version
       source /usr/share/tb-updater/tbb_hardcoded_version
       echo "INFO: Using stable version. For alpha version, see: $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
-   fi
-
-   true "INFO: tbb_use_hardcoded_version '$tbb_use_hardcoded_version'"
-   if [ "$tbb_use_hardcoded_version" = "true" ]; then
-      true "INFO: tbb_version: '$tbb_version'"
-      [ -n "$tbb_version" ] || tbb_version="$tbb_hardcoded_version"
-      echo "INFO: tbb_hardcoded_version: '$tbb_hardcoded_version'"
    fi
 
    ## Used by function tbbversion_installed
@@ -1272,17 +1269,11 @@ Otherwise updating <code>$tb_title</code> in this Template will not result in ne
          outputfunc ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
          local MSG_CLI
-         MSG_CLI="$("$sanitize_cmd" "$MSG")"
+         MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
          echo "INFO: $MSG_CLI"
       fi
    fi
 
-   if [ "$tbb_use_hardcoded_version" = "true" ]; then
-      echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version'"
-      echo "INFO: Currently installed version: '$tbb_locally_installed_version'"
-      echo "INFO: Hardcoded version chosen: '$tbb_version'"
-      return 0
-   fi
    if [ "$tb_confirm_update_skip" = "true" ]; then
       true "INFO: tb_confirm_update_skip=true, skipping update confirmation."
       return 0
@@ -1391,7 +1382,7 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
       fi
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "WARNING: $MSG_CLI"
    else
       ## not installed
@@ -1400,15 +1391,15 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
 <p>$confirmation_screen_learn_more_link</p>"
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "INFO: $MSG_CLI"
    fi
 
    echo "$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Download_Confirmation_Notification"
 
-   tbb_version_previous_downloaded_version_stripped="$("$sanitize_cmd" "$tbb_version_previous_downloaded_version")"
-   tbb_locally_installed_version_stripped="$("$sanitize_cmd" "$tbb_locally_installed_version")"
-   tbb_version_stripped="$("$sanitize_cmd" "$tbb_version")"
+   tbb_version_previous_downloaded_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_version_previous_downloaded_version")"
+   tbb_locally_installed_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_locally_installed_version")"
+   tbb_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_version")"
 
    echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version_stripped'"
    echo "INFO: Currently installed version: '$tbb_locally_installed_version_stripped'"
@@ -1478,7 +1469,7 @@ tb_reset() {
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 16
@@ -1568,7 +1559,7 @@ $tb_notify_details"
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function "$tb_download_common_exit_on_fail"
@@ -1662,7 +1653,7 @@ tb_gpg_verify() {
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 12
@@ -1768,7 +1759,7 @@ $gpg_bash_lib_output_gpg_verify_output_br_added</p>
 <p><a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Installation_Confirmation_Notification>Learn more about this Installation Confirmation Notification.</a></p>"
 
    local MSG_CLI
-   MSG_CLI="$("$sanitize_cmd" "$MSG")"
+   MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
    echo "INFO: $MSG_CLI"
 
    echo "$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Installation_Confirmation_Notification"
@@ -1961,7 +1952,7 @@ Extracting $tb_title... This could take a moment..."
       outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
       local MSG_CLI
-      MSG_CLI="$("$sanitize_cmd" "$MSG")"
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
       echo "ERROR: $MSG_CLI"
 
       tb_exit_function 15
@@ -2067,7 +2058,7 @@ Skipping question to start '$tb_title'."
          outputfunc ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
          local MSG_CLI
-         MSG_CLI="$("$sanitize_cmd" "$MSG")"
+         MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
          echo "INFO: $MSG_CLI"
 
          return 0
