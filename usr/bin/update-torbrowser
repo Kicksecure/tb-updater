@@ -669,6 +669,12 @@ tb_preparation() {
    fi
 
    if test -f /run/qubes/this-is-templatevm ; then
+      [ -n "$running_inside_qubes_template_vm" ] || running_inside_qubes_template_vm=true
+   else
+      [ -n "$running_inside_qubes_template_vm" ] || running_inside_qubes_template_vm=false
+   fi
+
+   if [ "$running_inside_qubes_template_vm" = "true" ] ; then
       tb_settings_qubes_common_templatevm
    else
       tb_settings_not_tempaltevm
@@ -676,7 +682,7 @@ tb_preparation() {
 
    if [ "$tb_postinst" = "true" ]; then
       tb_settings_postinst_common
-      if test -f /run/qubes/this-is-templatevm ; then
+      if [ "$running_inside_qubes_template_vm" = "true" ] ; then
          tb_settings_qubes_postinst_templatevm
       fi
    fi
@@ -684,7 +690,7 @@ tb_preparation() {
    true "tb_manual_run: $tb_manual_run"
    if [ "$tb_manual_run" = "true" ]; then
       tb_settings_manual_run_common
-      if test -f /run/qubes/this-is-templatevm ; then
+      if [ "$running_inside_qubes_template_vm" = "true" ] ; then
          tb_settings_qubes_manual_run_templatevm
       fi
    fi
@@ -881,7 +887,7 @@ tb_preparation() {
 
    if [ "$DEV_PASSTHROUGH" = "1" ]; then
       [ -n "$CURL_PROXY" ] || CURL_PROXY=()
-   elif test -f /run/qubes/this-is-templatevm ; then
+   elif [ "$running_inside_qubes_template_vm" = "true" ] ; then
       ## Use Qubes updates proxy.
       if [ "$CURL_PROXY" = "" ]; then
          PROXY_SERVER='http://127.0.0.1:8082/'
@@ -964,7 +970,7 @@ tb_skip_if_higher_or_equal_version_already_downloaded() {
 }
 
 tb_connectivity_checks_interfaces() {
-   if test -f /run/qubes/this-is-templatevm ; then
+   if [ "$running_inside_qubes_template_vm" = "true" ] ; then
       ## Qubes Templates are non-networked as per Qubes default.
       return 0
    fi
@@ -1268,7 +1274,7 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
 }
 
 tb_confirm_update() {
-   if test -f /run/qubes/this-is-templatevm ; then
+   if [ "$running_inside_qubes_template_vm" = "true" ] ; then
       local folder_name found
       for folder_name in "/home/$who_ami/$tb_install_folder_dot" "/home/$who_ami/.cache/${tb_install_folder}" ; do
          if [ -d "$folder_name" ]; then
@@ -1342,7 +1348,7 @@ YOUR OLD BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET DELETED."
    confirmation_screen_learn_more_link="\
 <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Download_Confirmation_Notification>Learn more about this Download Confirmation Notification.</a>"
 
-   if test -f /run/qubes/this-is-templatevm ; then
+   if [ "$running_inside_qubes_template_vm" = "true" ] ; then
       qubes_running_inside_template_vm_msg="\
 <u>Qubes specific notice</u>: Currently running inside a Template.
 Due to <a href=$tb_documentation_base_url_clearnet/wiki/Dev/Qubes#tb-updater_vs_Template>technical limitations</a>,
@@ -2059,7 +2065,7 @@ Skipping question to start '$tb_title'."
    if [ "$noaskstart" = "false" ]; then
       true "noaskstart is 'false'"
    else
-      if test -f /run/qubes/this-is-templatevm ; then
+      if [ "$running_inside_qubes_template_vm" = "true" ] ; then
          MSG="<p>Finished installing '$tb_title'. Can be found in '$tb_browser_folder'.</p>
 
 <p>Not asking to start $tb_title, because running in a Template.</p>
