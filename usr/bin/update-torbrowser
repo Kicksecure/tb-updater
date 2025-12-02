@@ -32,6 +32,7 @@ if [ "$tb_updater_was_sourced" = "false" ]; then
 fi
 
 source /usr/libexec/helper-scripts/strings.bsh
+source /usr/libexec/gpg-bash-lib/source_all
 
 [[ -v SCRIPTNAME ]] || SCRIPTNAME="$(basename "$BASH_SOURCE")"
 [[ -v ICON ]] || ICON="/usr/share/icons/icon-pack-dist/tbupdate.ico"
@@ -314,6 +315,7 @@ tb_parse_cmd_options() {
                ;;
            --postinst)
                tb_postinst="true"
+               UPDATE_ONLY_IF_NEWER="1"
                shift
                ;;
            --is-chroot)
@@ -550,10 +552,6 @@ tb_settings_chroot_common() {
 }
 
 tb_settings_postinst_common() {
-   ## Skip update [version] confirmation messages when running with
-   ## --postinst, because we will be using hardcoded version numbers to verify
-   ## upstream's version info.
-   [ -n "$tb_confirm_update_skip" ] || tb_confirm_update_skip=true
    ## Skip installation confirmation messages when running with
    ## --postinst, because we will be using hardcoded version numbers to verify
    ## upstream's version info.
@@ -912,9 +910,10 @@ tb_preparation() {
    [ -n "$tbb_version_last_downloaded_save_file" ] || tbb_version_last_downloaded_save_file="$tb_cache_folder/tbb_version_last_downloaded_save_file"
 
    if [ -f "$tbb_version_last_downloaded_save_file" ]; then
-      [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="$(cat -- "$tbb_version_last_downloaded_save_file")"
+      [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="$(stcat "$tbb_version_last_downloaded_save_file")"
    fi
    [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="none"
+   tbb_version_previous_downloaded_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_version_previous_downloaded_version")"
 
    if ! test -f /usr/share/whonix/marker ; then
       [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
@@ -943,18 +942,17 @@ tb_skip_if_higher_or_equal_version_already_downloaded() {
       true "INFO: Not using --postinst, therefore skipping $FUNCNAME."
       return 0
    fi
-   if [ "$tbb_version_previous_downloaded_version" = "none" ]; then
-      true "INFO: Could not determine tbb_version_previous_downloaded_version (set to 'none'), therefore skipping $FUNCNAME."
+   if [ "$tbb_version_previous_downloaded_version_stripped" = "none" ]; then
+      true "INFO: Could not determine tbb_version_previous_downloaded_version_stripped (set to 'none'), therefore skipping $FUNCNAME."
       return 0
    fi
    if [ "$tbb_hardcoded_version" = "" ]; then
       true "INFO: tbb_hardcoded_version is empty, therefore skipping $FUNCNAME."
       return 0
    fi
-   if dpkg --compare-versions "$tbb_version_previous_downloaded_version" ge "$tbb_hardcoded_version" ; then
-      echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version'"
-      echo "INFO: Previously downloaded version is greater or equal tbb_hardcoded_version, therefore skipping to download, ok."
-      tb_exit_function 0
+   if dpkg --compare-versions -- "$tbb_version_previous_downloaded_version_stripped" ge "$tbb_hardcoded_version" ; then
+      echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version_stripped'"
+      echo "INFO: Previously downloaded version is greater or equal tbb_hardcoded_version, good, ok."
    fi
    ## Being careful with deletion.
    if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/$tb_install_folder/files" ]; then
@@ -1131,8 +1129,8 @@ tb_connectivity_checks_curl() {
 }
 
 tb_update_check() {
-   if [ ! "$tbb_version" = "" ]; then
-      true "INFO: tbb_version already set to '$tbb_version'. Skipping $FUNCNAME, ok."
+   if [ ! "$tbb_version_stripped" = "" ]; then
+      true "INFO: tbb_version already set to '$tbb_version_stripped'. Skipping $FUNCNAME, ok."
       return 0
    fi
 
@@ -1164,8 +1162,8 @@ tb_update_check() {
 }
 
 tb_remote_version_parser() {
-   if [ ! "$tbb_version" = "" ]; then
-      true "INFO: tbb_version already set to '$tbb_version'. Simplified $FUNCNAME, ok."
+   if [ ! "$tbb_version_stripped" = "" ]; then
+      true "INFO: tbb_version_stripped already set to '$tbb_version_stripped'. Simplified $FUNCNAME, ok."
       [ -n "$tbb_recommended_versions_error" ] || tbb_recommended_versions_error=""
       return 0
    fi
@@ -1174,10 +1172,11 @@ tb_remote_version_parser() {
    ## sets: tbb_version
    ## sets: tbb_recommended_versions_error
    tb_run_function tbbversion
+   tbb_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_version")"
 }
 
 tb_remote_version_sanity_test() {
-   if [ "$tbb_version" = "UNKNOWN" ]; then
+   if [ "$tbb_version_stripped" = "UNKNOWN" ]; then
       download_fail_help_set
       local MSG="<p>$installed_or_not_text</p>
 
@@ -1194,11 +1193,34 @@ tb_remote_version_sanity_test() {
 
       tb_exit_function 9
    fi
-   if dpkg --compare-versions "$tbb_version" lt "$tbb_hardcoded_version" ; then
+
+   if dpkg --compare-versions -- "$tbb_version_stripped" lt "$tbb_hardcoded_version" ; then
       download_fail_help_set
       local MSG="<p>$installed_or_not_text</p>
 
-<p>Detected latest <code>$tb_title</code> version <code>$tbb_version</code> is older than hardcoded known-good version <code>$tbb_hardcoded_version</code>!</p>
+<p>Detected latest <code>$tb_title</code> version <code>$tbb_version_stripped</code> is older than hardcoded known-good version <code>$tbb_hardcoded_version</code>!</p>
+
+<p>Either <code>$TBB_VERSIONS_FILE_LINK</code> is invalid or this is a <code>$SCRIPTNAME</code> (by <code>$tb_downloader_developers</code> developers) bug.</p>
+
+<p>$DOWNLOAD_FAIL_HELP</p>"
+      outputfunc ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+
+      local MSG_CLI
+      MSG_CLI="$("$sanitize_cmd" -- nolimit "$MSG")"
+      echo "ERROR: $MSG_CLI"
+
+      tb_exit_function 9
+   elif dpkg --compare-versions -- "$tbb_version_stripped" gt "$tbb_hardcoded_version" ; then
+       true "OK"
+   elif dpkg --compare-versions -- "$tbb_version_stripped" eq "$tbb_hardcoded_version" ; then
+       true "OK"
+   else
+      download_fail_help_set
+      local MSG="<p>$installed_or_not_text</p>
+
+<p>Detected latest <code>$tb_title</code> version: <code>$tbb_version_stripped</code>
+hardcoded known-good version: <code>$tbb_hardcoded_version</code>
+dpkg --compare-versions failed!</p>
 
 <p>Either <code>$TBB_VERSIONS_FILE_LINK</code> is invalid or this is a <code>$SCRIPTNAME</code> (by <code>$tb_downloader_developers</code> developers) bug.</p>
 
@@ -1233,6 +1255,7 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    ## sets: tbb_locally_installed_version
    ## sets: tbb_locally_installed_version_detect_success
    tb_run_function tbbversion_installed
+   tbb_locally_installed_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_locally_installed_version")"
 
    if [ -d "$tb_browser_folder" ]; then
       installed_or_not_result="true"
@@ -1274,27 +1297,22 @@ Otherwise updating <code>$tb_title</code> in this Template will not result in ne
       fi
    fi
 
-   if [ "$tb_confirm_update_skip" = "true" ]; then
-      true "INFO: tb_confirm_update_skip=true, skipping update confirmation."
-      return 0
-   fi
-
    if [ "$tbb_locally_installed_version_detect_success" = "1" ]; then
       if [ "$installed_or_not_result" = "true" ]; then
          local tbb_compare_version
-         for tbb_compare_version in $tbb_version ; do
+         for tbb_compare_version in $tbb_version_stripped ; do
             local dpkg_compare_versions_equals_exit_code="0"
-            dpkg --compare-versions "$tbb_compare_version" eq "$tbb_locally_installed_version" || { dpkg_compare_versions_equals_exit_code="$?" ; true; };
+            dpkg --compare-versions -- "$tbb_compare_version" eq "$tbb_locally_installed_version" || { dpkg_compare_versions_equals_exit_code="$?" ; true; };
             if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
                break
             fi
             local dpkg_compare_versions_greater_than_exit_code="0"
-            dpkg --compare-versions "$tbb_compare_version" gt "$tbb_locally_installed_version" || { dpkg_compare_versions_greater_than_exit_code="$?" ; true; };
+            dpkg --compare-versions -- "$tbb_compare_version" gt "$tbb_locally_installed_version" || { dpkg_compare_versions_greater_than_exit_code="$?" ; true; };
             if [ "$dpkg_compare_versions_greater_than_exit_code" = "0" ]; then
                break
             fi
             local dpkg_compare_versions_lower_than_exit_code="0"
-            dpkg --compare-versions "$tbb_compare_version" lt "$tbb_locally_installed_version" || { dpkg_compare_versions_lower_than_exit_code="$?" ; true; };
+            dpkg --compare-versions -- "$tbb_compare_version" lt "$tbb_locally_installed_version" || { dpkg_compare_versions_lower_than_exit_code="$?" ; true; };
             #if [ "$dpkg_compare_versions_lower_than_exit_code" = "0" ]; then
                #break
             #fi
@@ -1346,12 +1364,11 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
          if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
             up_to_date_or_not_text="Looks like $tb_title is already up to date."
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
-	    if [ "$UPDATE_ONLY_IF_NEWER" = "1" ]; then
-		echo "INFO: UPDATE_ONLY_IF_NEWER is set 1."
-		echo "Skip downloading: current '$tb_title' '$tbb_locally_installed_version' is already up-to-date."
-
-	        tb_exit_function 0
-	    fi
+	          if [ "$UPDATE_ONLY_IF_NEWER" = "1" ]; then
+               true "INFO: UPDATE_ONLY_IF_NEWER is set 1."
+               echo "INFO: Skip downloading: current '$tb_title' '$tbb_locally_installed_version' is already up-to-date."
+               tb_exit_function 0
+	          fi
          elif [ "$dpkg_compare_versions_greater_than_exit_code" = "0" ]; then
             up_to_date_or_not_text="Looks like there is an upgrade for $tb_title."
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
@@ -1397,10 +1414,6 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
 
    echo "$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Download_Confirmation_Notification"
 
-   tbb_version_previous_downloaded_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_version_previous_downloaded_version")"
-   tbb_locally_installed_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_locally_installed_version")"
-   tbb_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_version")"
-
    echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version_stripped'"
    echo "INFO: Currently installed version: '$tbb_locally_installed_version_stripped'"
    echo "INFO: Online detected version: '$tbb_version_stripped'"
@@ -1418,9 +1431,9 @@ y/n?"
             tb_exit_function 10
          fi
       else
-         #echo "/usr/libexec/msgcollector/tb_updater_gui \"$type\" \"$TITLE\" \"$tbb_locally_installed_version\" \"$tbb_recommended_versions_comma_separated\" \"$MSG\" \"$question\" \"$button\")"
+         #echo "/usr/libexec/msgcollector/tb_updater_gui \"$type\" \"$TITLE\" \"$tbb_locally_installed_version_stripped\" \"$tbb_recommended_versions_comma_separated\" \"$MSG\" \"$question\" \"$button\")"
 
-         answer="$("/usr/libexec/msgcollector/tb_updater_gui" "$type" "$TITLE" "$tbb_locally_installed_version" "$tbb_version" "$MSG" "$question" "$button")"
+         answer="$("/usr/libexec/msgcollector/tb_updater_gui" "$type" "$TITLE" "$tbb_locally_installed_version_stripped" "$tbb_version_stripped" "$MSG" "$question" "$button")"
          if [ "$answer" = "65536" ]; then ## Button 'Yes' has not been pressed.
             echo "INFO: Canceled. Exit."
             tb_exit_function 10
@@ -1431,20 +1444,20 @@ y/n?"
 
 tb_version_processing() {
    if [ "$tb_hard_reset" == "true" ]; then
-      tbb_version="$tbb_version_previous_downloaded_version"
+      tbb_version_stripped="$tbb_version_previous_downloaded_version_stripped"
    fi
 
-   if [ "$tbb_version" = "" ]; then
-      echo "ERROR: in function tb_version_processing: variable tbb_version not set!"
+   if [ "$tbb_version_stripped" = "" ]; then
+      echo "ERROR: in function tb_version_processing: variable $tbb_version_stripped not set!"
       tb_exit_function 17
    fi
 
-   [ -n "$tbb_version_folder" ] || tbb_version_folder="${tbb_version}"
+   [ -n "$tbb_version_folder" ] || tbb_version_folder="$tbb_version_stripped"
    [ -n "$tb_browser_download_name" ] || tb_browser_download_name="tor-browser"
    [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
 
-   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="${tb_browser_download_name}-${ARCH_DOWNLOAD}-${tbb_version}.tar.xz.asc"
-   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="${tb_browser_download_name}-${ARCH_DOWNLOAD}-${tbb_version}.tar.xz"
+   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="${tb_browser_download_name}-${ARCH_DOWNLOAD}-${tbb_version_stripped}.tar.xz.asc"
+   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="${tb_browser_download_name}-${ARCH_DOWNLOAD}-${tbb_version_stripped}.tar.xz"
 
    [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}${TBB_DOWNLOAD_APPENDIX}"
    [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
@@ -1631,8 +1644,6 @@ tb_gpg_verify() {
    ## (2592000 * 3 [months])
    [ -n "$gpg_bash_lib_input_maximum_age_in_seconds" ] || gpg_bash_lib_input_maximum_age_in_seconds="2592000"
 
-   source "/usr/libexec/gpg-bash-lib/source_all"
-
    gpg_bash_lib_function_main_verify
 
    gpg_bash_lib_output_diagnostic_message="$(/usr/libexec/msgcollector/br_add "$gpg_bash_lib_output_diagnostic_message")"
@@ -1748,8 +1759,8 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
    gpg_bash_lib_output_gpg_verify_output_br_added="$(/usr/libexec/msgcollector/br_add "$gpg_bash_lib_output_gpg_verify_output")"
 
    MSG="<p><b>Installation confirmation</b></p><p><table><tr>
-<td>Currently installed version:</td> <td><tt> <code>$tbb_locally_installed_version</code></tt></td></tr><tr>
-<td>Downloaded version         :</td> <td><tt> <code>$tbb_version</code></tt></td></tr></table></p>
+<td>Currently installed version:</td> <td><tt> <code>$tbb_locally_installed_version_stripped</code></tt></td></tr><tr>
+<td>Downloaded version         :</td> <td><tt> <code>$tbb_version_stripped</code></tt></td></tr></table></p>
 <p>$signature_freshness_msg</p><p><table><tr>
 <td>Previous Signature Creation Date:</td> <td><tt> <code>$last_used_gpg_bash_lib_output_signed_on_date</code></tt></td></tr><tr>
 <td>Last Signature Creation Date    :</td> <td><tt> <code>$gpg_bash_lib_output_signed_on_date</code></tt></td></tr></table></p>
@@ -2020,8 +2031,8 @@ tb_chroot_pre_exit() {
 }
 
 tb_hardcoded_version_last_downloaded_save() {
-   echo "$tbb_version" > "$tbb_version_last_downloaded_save_file"
-   echo "INFO: Saved '$tbb_version' in '$tbb_version_last_downloaded_save_file'."
+   echo "$tbb_version_stripped" > "$tbb_version_last_downloaded_save_file"
+   echo "INFO: Saved '$tbb_version_stripped' in '$tbb_version_last_downloaded_save_file'."
 }
 
 tb_start_ask() {
