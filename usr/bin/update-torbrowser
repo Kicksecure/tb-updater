@@ -908,7 +908,7 @@ tb_preparation() {
       [ -n "$CURL_PROXY" ] || CURL_PROXY=()
    fi
 
-   echo "INFO: CURL_PROXY: '$CURL_PROXY'"
+   echo "INFO: CURL_PROXY: '${CURL_PROXY[@]}'"
 
    ## Also used by function tbbversion.
    [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
@@ -960,13 +960,15 @@ tb_skip_if_higher_or_equal_version_already_downloaded() {
       echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version_stripped'"
       echo "INFO: Previously downloaded version is greater or equal tbb_hardcoded_version, good, ok."
    fi
+
+   ## TODO: Does not belong here?
    ## Being careful with deletion.
-   if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/$tb_install_folder/files" ]; then
-      true "INFO: No need to keep older versions in Qubes root image. Saving disk space. Therefore deleting..."
-      echo "safe-rm -r -f -- '$tb_downloaded_files_folder'"
-      safe-rm -r -f -- "$tb_downloaded_files_folder"
-      mkdir --parents -- "$tb_downloaded_files_folder"
-   fi
+#    if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/$tb_install_folder/files" ]; then
+#       echo "INFO: No need to keep older versions in Qubes root image. Saving disk space. Therefore deleting..."
+#       echo "safe-rm -r -f -- '$tb_downloaded_files_folder'"
+#       safe-rm -r -f -- "$tb_downloaded_files_folder"
+#       mkdir --parents -- "$tb_downloaded_files_folder"
+#    fi
 }
 
 tb_connectivity_checks_interfaces() {
@@ -1303,6 +1305,10 @@ Otherwise updating <code>$tb_title</code> in this Template will not result in ne
       fi
    fi
 
+   echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version_stripped'"
+   echo "INFO: Currently installed version  : '$tbb_locally_installed_version_stripped'"
+   echo "INFO: Online detected version      : '$tbb_version_stripped'"
+
    if [ "$tbb_locally_installed_version_detect_success" = "1" ]; then
       if [ "$installed_or_not_result" = "true" ]; then
          local tbb_compare_version
@@ -1419,10 +1425,6 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
    fi
 
    echo "$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Download_Confirmation_Notification"
-
-   echo "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version_stripped'"
-   echo "INFO: Currently installed version: '$tbb_locally_installed_version_stripped'"
-   echo "INFO: Online detected version: '$tbb_version_stripped'"
 
    if [ "$TB_INPUT" = "none" ]; then
       true "INFO: TB_INPUT set to none, ok."
