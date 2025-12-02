@@ -24,8 +24,8 @@ tbbversion
 if [ "$tbb_version" = "10.0.6" ]; then
    true "$0: INFO: OK"
 else
-   echo "$0: tbb_version: $tbb_version"
-   echo "$0: ERROR 1!"
+   stecho "$0: tbb_version: $tbb_version"
+   stecho "$0: ERROR 1!"
    exit 1
 fi
 
@@ -39,8 +39,8 @@ tbbversion
 if [ "$tbb_version" = "UNKNOWN" ]; then
    true "$0: INFO: OK"
 else
-   echo "$0: tbb_version: $tbb_version"
-   echo "$0: ERROR 2!"
+   stecho "$0: tbb_version: $tbb_version"
+   stecho "$0: ERROR 2!"
    exit 1
 fi
 

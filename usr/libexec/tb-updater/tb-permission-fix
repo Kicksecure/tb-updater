@@ -51,13 +51,13 @@ fi
 
 ## Allow user in regular VM (i.e. not in a Qubes Disposable) to copy this to root.
 ## In Qubes Disposable 'mount' is being used rather than 'cp'.
-chmod --recursive o+r /var/cache/tb-binary
+chmod --recursive o+r -- /var/cache/tb-binary
 ## Somehow needed too.
-chmod --recursive g+r /var/cache/tb-binary
+chmod --recursive g+r -- /var/cache/tb-binary
 
 find /var/cache/tb-binary -type d -print0 | xargs -0 chmod 0775
 
-chmod --recursive u+X /var/cache/tb-binary
+chmod --recursive u+X -- /var/cache/tb-binary
 
 ## For Non-Qubes.
 user_name=user
@@ -65,15 +65,15 @@ user_name=user
 ## Only in Qubes.
 if command -v qubesdb-read &>/dev/null ; then
    if ! user_name=$(qubesdb-read /default-user) ; then
-      echo "$0: WARNING: failed to run 'qubesdb-read /default-user', falling back to user_name=user"
+      printf '%s\n' "$0: WARNING: failed to run 'qubesdb-read /default-user', falling back to user_name=user"
       user_name=user
    fi
 fi
 
-if ! id "$user_name" &>/dev/null ; then
-   echo "$0: WARNING: user '$user_name' does not exist!"
+if ! id -- "$user_name" &>/dev/null ; then
+   printf '%s\n' "$0: WARNING: user '$user_name' does not exist!"
    exit 0
 fi
 
 ## Allow Qubes Template to run 'update-torbrowser' as non-root, for example as account "user".
-chown --recursive "$user_name":"$user_name" /var/cache/tb-binary
+chown --recursive -- "$user_name":"$user_name" /var/cache/tb-binary

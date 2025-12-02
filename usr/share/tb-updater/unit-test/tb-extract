@@ -11,8 +11,8 @@ set -o pipefail
 
 source /usr/bin/update-torbrowser
 
-export who_ami=$(whoami)
-TEMP_DIR=$(mktemp --directory)
+export who_ami="$(whoami)"
+TEMP_DIR="$(mktemp --directory)"
 IDENTIFIER=test
 export IDENTIFIER
 tb_extract_temp_folder=/tmp/test
