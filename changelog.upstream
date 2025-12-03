@@ -1,3 +1,81 @@
+commit d161ca97a7710ca5e4a5602df7421611b90948ec
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 3 08:20:14 2025 -0500
+
+    hardening
+
+commit 4018204ffe4d76f3c3f66aa1db49beb3bfb7ef56
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 3 08:13:17 2025 -0500
+
+    todo
+
+commit 813d531d8b2d6c3372929ffc485b2e513bfacaea
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 3 08:04:42 2025 -0500
+
+    hardening
+
+commit 1231d914c277b8122fd19b1ff1475cf67546cba0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 3 07:56:27 2025 -0500
+
+    fix
+
+commit 78388fb67c6d8ea5e8e5d844912d133df14e3708
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 3 07:53:45 2025 -0500
+
+    fix
+
+commit df46441d00b6786a21b06b04923f9a2edc294938
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 3 07:50:53 2025 -0500
+
+    fix
+
+commit 95edeb11621e1e19defc02a2b22d0091c1a3634e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 3 07:46:43 2025 -0500
+
+    refactoring
+
+commit ef650a97a34235b5e75ba38735742b5c7acac9c7
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 3 06:07:19 2025 -0500
+
+    output
+
+commit 1f33fc171d360eaaedd9dbd9261acb39decf0991
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 3 06:06:47 2025 -0500
+
+    code simlification
+
+commit 46ee95cdd4e9fcd9ba412a91833fd06e06f1ac6a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 3 05:51:24 2025 -0500
+
+    refactoring
+
+commit fbd6f03e1147473a5f74f8f7cfc5fa78baebf2da
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 3 05:50:33 2025 -0500
+
+    refactoring
+
+commit 2f4ca74b03ab6e0b183f602a1c2d5fa10777873b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 3 05:26:26 2025 -0500
+
+    fix
+
+commit bda54db83743e2f9b65e0e71fa5c16ddddd9f216
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 3 08:33:04 2025 +0000
+
+    bumped changelog version
+
 commit 5f2c30749179dcb36842212069c1203deabb8bcf
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Dec 2 08:58:47 2025 -0500
