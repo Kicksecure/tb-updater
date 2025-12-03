@@ -210,12 +210,7 @@ tb_sanity_tests() {
    command -v pv >/dev/null
    command -v mkfifo >/dev/null
    command -v jq >/dev/null
-
-   if command -v /usr/bin/sanitize-string >/dev/null ; then
-      sanitize_cmd=/usr/bin/sanitize-string
-   else
-      error "missing sanitize_cmd"
-   fi
+   command -v sanitize-string >/dev/null
 }
 
 tb_ex_funct() {
@@ -420,7 +415,7 @@ More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Us
 
 output_cli() {
    local MSG
-   MSG="$("$sanitize_cmd" -- nolimit "$@")"
+   MSG="$(sanitize-string -- nolimit "$@")"
    printf '%s\n' "$MSG"
 }
 
@@ -453,7 +448,7 @@ output_gui() {
       ## MSG will be unset for '--progressx'.
       [[ -v MSG ]] || MSG=""
       if [ ! "$MSG" = "" ]; then
-         MSG="$("$sanitize_cmd" -- nolimit "$MSG")"
+         MSG="$(sanitize-string -- nolimit "$MSG")"
          printf '%s\n' "$MSG"
       fi
    elif [ "$outputfunc_verbose" = "true" ]; then
@@ -923,7 +918,7 @@ tb_preparation() {
       [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="$(stcat "$tbb_version_last_downloaded_save_file")"
    fi
    [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="none"
-   tbb_version_previous_downloaded_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_version_previous_downloaded_version")"
+   tbb_version_previous_downloaded_version_stripped="$(sanitize-string -- nolimit "$tbb_version_previous_downloaded_version")"
 
    if ! test -f /usr/share/whonix/marker ; then
       [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
@@ -1176,7 +1171,7 @@ tb_remote_version_parser() {
    ## sets: tbb_version
    ## sets: tbb_recommended_versions_error
    tb_run_function tbbversion
-   tbb_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_version")"
+   tbb_version_stripped="$(sanitize-string -- nolimit "$tbb_version")"
 }
 
 tb_remote_version_sanity_test() {
@@ -1253,7 +1248,7 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    ## sets: tbb_locally_installed_version
    ## sets: tbb_locally_installed_version_detect_success
    tb_run_function tbbversion_installed
-   tbb_locally_installed_version_stripped="$("$sanitize_cmd" -- nolimit "$tbb_locally_installed_version")"
+   tbb_locally_installed_version_stripped="$(sanitize-string -- nolimit "$tbb_locally_installed_version")"
 
    if [ -d "$tb_browser_folder" ]; then
       installed_or_not_result="true"
