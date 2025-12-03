@@ -9,6 +9,7 @@ tbbversion() {
 
    command -v /usr/libexec/tb-updater/version-parser >/dev/null
    command -v sanitize-string >/dev/null
+   command -v unicode-show >/dev/null
    command -v grep-find-unicode-wrapper >/dev/null
 
    ## fallback
@@ -52,6 +53,23 @@ tbbversion() {
 
          ## Check for non-ASCII weirdness to mitigate potential attacks against
          ## bash or our scripts
+
+         ## Check with python (unicode-show) first.
+         ## TODO: Handle expected missing newline.
+         ## /tmp/user/1000/tmp.pwSsfFTTML:1: [missing newline at end]
+#          if unicode-show "${tbb_version_output_file}"; then
+#             true "INFO: No unicode found using unicode-show, ok."
+#          else
+#             tbb_version='UNKNOWN'
+#             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+# (Non-ASCII characters found in version using unicode-show.)"
+#             safe-rm -- "${tbb_version_remote_file}"
+#             safe-rm -- "${tbb_version_output_file}"
+#             return 0
+#          fi
+
+         ## Additional check using C (grep-find-unicode-wrapper / grep).
+
          if grep-find-unicode-wrapper -- "${tbb_version_output_file}"; then
             tbb_version='UNKNOWN'
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
