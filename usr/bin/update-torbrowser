@@ -1333,7 +1333,7 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
 <p>$qubes_running_inside_template_vm_msg</p>"
       else
          ## installed, local version number known
-         if dpkg --compare-versions -- "$tbb_compare_version" eq "$tbb_locally_installed_version"; then
+         if dpkg --compare-versions -- "$tbb_version_stripped" eq "$tbb_locally_installed_version"; then
             up_to_date_or_not_text="Looks like $tb_title is already up to date."
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
 	          if [ "$UPDATE_ONLY_IF_NEWER" = "1" ]; then
@@ -1341,10 +1341,10 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
                printf '%s\n' "INFO: Skip downloading: current '$tb_title' '$tbb_locally_installed_version' is already up-to-date."
                tb_exit_function 0
 	          fi
-         elif dpkg --compare-versions -- "$tbb_compare_version" gt "$tbb_locally_installed_version"; then
+         elif dpkg --compare-versions -- "$tbb_version_stripped" gt "$tbb_locally_installed_version"; then
             up_to_date_or_not_text="Looks like there is an upgrade for $tb_title."
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
-         elif dpkg --compare-versions -- "$tbb_compare_version" lt "$tbb_locally_installed_version"; then
+         elif dpkg --compare-versions -- "$tbb_version_stripped" lt "$tbb_locally_installed_version"; then
             up_to_date_or_not_text="<b><u>WARNING: Looks like a downgrade attack!</u></b>"
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
          else
@@ -1367,7 +1367,7 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
 <p>$confirmation_screen_learn_more_link</p>"
       fi
 
-      output_cli "WARNING: $MSG"
+      output_cli "$MSG"
    else
       ## not installed
       type="info"
