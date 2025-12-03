@@ -1354,7 +1354,7 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
          else
             error "Failed to compare versions using dpkg.
-
+<br></br>
 <br></br>tbb_locally_installed_version_detect_success: $tbb_locally_installed_version_detect_success"
             tb_exit_function 1
          fi
