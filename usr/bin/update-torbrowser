@@ -1786,8 +1786,8 @@ y/n?"
       fi
    fi
 
-   printf '%s\n' "$gpg_bash_lib_output_signed_on_date" > "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_date"
-   printf '%s\n' "$gpg_bash_lib_output_signed_on_unixtime"  > "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime"
+   overwrite "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_date" "$gpg_bash_lib_output_signed_on_date"
+   overwrite "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime" "$gpg_bash_lib_output_signed_on_unixtime"
 }
 
 tb_extract() {
@@ -2017,7 +2017,7 @@ tb_chroot_pre_exit() {
 }
 
 tb_hardcoded_version_last_downloaded_save() {
-   printf '%s\n' "$tbb_version_stripped" > "$tbb_version_last_downloaded_save_file"
+   overwrite "$tbb_version_last_downloaded_save_file" "$tbb_version_stripped"
    printf '%s\n' "INFO: Saved '$tbb_version_stripped' in '$tbb_version_last_downloaded_save_file'."
 }
 
