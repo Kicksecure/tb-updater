@@ -976,7 +976,7 @@ tb_connectivity_checks_interfaces() {
       return 0
    fi
 
-   printf '%s\n' -n "INFO: Running network interface available check... "
+   printf '%s' "INFO: Running network interface available check... "
    if /usr/libexec/helper-scripts/check-network-access; then
       printf '%s\n' "Done."
       return 0
