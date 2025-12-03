@@ -112,7 +112,7 @@ tb_error_handler() {
       mkdir --parents -- "$tb_user_home/.cache/$tb_install_folder"
    fi
    if test -w "$tb_user_home/.cache/$tb_install_folder/torbrowser_updater_error.log" ; then
-      printf '%s\n' "$MSG" >> "$tb_user_home/.cache/$tb_install_folder/torbrowser_updater_error.log"
+      append "$tb_user_home/.cache/$tb_install_folder/torbrowser_updater_error.log" "$MSG"
    fi
 
    ## In case function output_gui does not exist yet.
