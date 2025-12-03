@@ -9,6 +9,7 @@ tbbversion() {
 
    command -v /usr/libexec/tb-updater/version-parser >/dev/null
    command -v sanitize-string >/dev/null
+   command -v grep-find-unicode-wrapper >/dev/null
 
    ## fallback
    tbb_version="UNKNOWN"
@@ -51,10 +52,10 @@ tbbversion() {
 
          ## Check for non-ASCII weirdness to mitigate potential attacks against
          ## bash or our scripts
-         if LC_ALL=C grep --quiet -P -n "[\x80-\xFF]" -- "${tbb_version_output_file}"; then
+         if grep-find-unicode-wrapper -- "${tbb_version_output_file}"; then
             tbb_version='UNKNOWN'
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
-(Non-ASCII characters found in version.)"
+(Non-ASCII characters found in version using grep-find-unicode-wrapper.)"
             safe-rm -- "${tbb_version_remote_file}"
             safe-rm -- "${tbb_version_output_file}"
             return 0
