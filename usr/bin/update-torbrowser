@@ -946,34 +946,34 @@ tb_create_folders() {
    mkdir --parents -- "$TEMP_DIR"
 }
 
-tb_skip_if_higher_or_equal_version_already_downloaded() {
-   ## Do this only when using --postinst.
-   if [ ! "$tb_postinst" = "true" ]; then
-      true "INFO: Not using --postinst, therefore skipping $FUNCNAME."
-      return 0
-   fi
-   if [ "$tbb_version_previous_downloaded_version_stripped" = "none" ]; then
-      true "INFO: Could not determine tbb_version_previous_downloaded_version_stripped (set to 'none'), therefore skipping $FUNCNAME."
-      return 0
-   fi
-   if [ "$tbb_hardcoded_version" = "" ]; then
-      true "INFO: tbb_hardcoded_version is empty, therefore skipping $FUNCNAME."
-      return 0
-   fi
-   if dpkg --compare-versions -- "$tbb_version_previous_downloaded_version_stripped" ge "$tbb_hardcoded_version" ; then
-      printf '%s\n' "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version_stripped'"
-      printf '%s\n' "INFO: Previously downloaded version is greater or equal tbb_hardcoded_version, good, ok."
-   fi
-
-   ## TODO: Does not belong here?
-   ## Being careful with deletion.
-#    if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/$tb_install_folder/files" ]; then
-#       printf '%s\n' "INFO: No need to keep older versions in Qubes root image. Saving disk space. Therefore deleting..."
-#       printf '%s\n' "safe-rm -r -f -- '$tb_downloaded_files_folder'"
-#       safe-rm -r -f -- "$tb_downloaded_files_folder"
-#       mkdir --parents -- "$tb_downloaded_files_folder"
+# tb_skip_if_higher_or_equal_version_already_downloaded() {
+#    ## Do this only when using --postinst.
+#    if [ ! "$tb_postinst" = "true" ]; then
+#       true "INFO: Not using --postinst, therefore skipping $FUNCNAME."
+#       return 0
 #    fi
-}
+#    if [ "$tbb_version_previous_downloaded_version_stripped" = "none" ]; then
+#       true "INFO: Could not determine tbb_version_previous_downloaded_version_stripped (set to 'none'), therefore skipping $FUNCNAME."
+#       return 0
+#    fi
+#    if [ "$tbb_hardcoded_version" = "" ]; then
+#       true "INFO: tbb_hardcoded_version is empty, therefore skipping $FUNCNAME."
+#       return 0
+#    fi
+#    if dpkg --compare-versions -- "$tbb_version_previous_downloaded_version_stripped" ge "$tbb_hardcoded_version" ; then
+#       printf '%s\n' "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version_stripped'"
+#       printf '%s\n' "INFO: Previously downloaded version is greater or equal tbb_hardcoded_version, good, ok."
+#    fi
+#
+#    ## TODO: Does not belong here?
+#    ## Being careful with deletion.
+# #    if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/$tb_install_folder/files" ]; then
+# #       printf '%s\n' "INFO: No need to keep older versions in Qubes root image. Saving disk space. Therefore deleting..."
+# #       printf '%s\n' "safe-rm -r -f -- '$tb_downloaded_files_folder'"
+# #       safe-rm -r -f -- "$tb_downloaded_files_folder"
+# #       mkdir --parents -- "$tb_downloaded_files_folder"
+# #    fi
+# }
 
 tb_connectivity_checks_interfaces() {
    if [ "$running_inside_qubes_template_vm" = "true" ] ; then
@@ -1297,29 +1297,6 @@ Otherwise updating <code>$tb_title</code> in this Template will not result in ne
    printf '%s\n' "INFO: Currently installed version  : '$tbb_locally_installed_version_stripped'"
    printf '%s\n' "INFO: Online detected version      : '$tbb_version_stripped'"
 
-   if [ "$tbb_locally_installed_version_detect_success" = "1" ]; then
-      if [ "$installed_or_not_result" = "true" ]; then
-         local tbb_compare_version
-         for tbb_compare_version in $tbb_version_stripped ; do
-            local dpkg_compare_versions_equals_exit_code="0"
-            dpkg --compare-versions -- "$tbb_compare_version" eq "$tbb_locally_installed_version" || { dpkg_compare_versions_equals_exit_code="$?" ; true; };
-            if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
-               break
-            fi
-            local dpkg_compare_versions_greater_than_exit_code="0"
-            dpkg --compare-versions -- "$tbb_compare_version" gt "$tbb_locally_installed_version" || { dpkg_compare_versions_greater_than_exit_code="$?" ; true; };
-            if [ "$dpkg_compare_versions_greater_than_exit_code" = "0" ]; then
-               break
-            fi
-            local dpkg_compare_versions_lower_than_exit_code="0"
-            dpkg --compare-versions -- "$tbb_compare_version" lt "$tbb_locally_installed_version" || { dpkg_compare_versions_lower_than_exit_code="$?" ; true; };
-            #if [ "$dpkg_compare_versions_lower_than_exit_code" = "0" ]; then
-               #break
-            #fi
-         done
-      fi
-   fi
-
    local MSG question button type
    button="yesno"
    question="Download now?"
@@ -1361,7 +1338,7 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
 <p>$qubes_running_inside_template_vm_msg</p>"
       else
          ## installed, local version number known
-         if [ "$dpkg_compare_versions_equals_exit_code" = "0" ]; then
+         if dpkg --compare-versions -- "$tbb_compare_version" eq "$tbb_locally_installed_version"; then
             up_to_date_or_not_text="Looks like $tb_title is already up to date."
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
 	          if [ "$UPDATE_ONLY_IF_NEWER" = "1" ]; then
@@ -1369,18 +1346,15 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
                printf '%s\n' "INFO: Skip downloading: current '$tb_title' '$tbb_locally_installed_version' is already up-to-date."
                tb_exit_function 0
 	          fi
-         elif [ "$dpkg_compare_versions_greater_than_exit_code" = "0" ]; then
+         elif dpkg --compare-versions -- "$tbb_compare_version" gt "$tbb_locally_installed_version"; then
             up_to_date_or_not_text="Looks like there is an upgrade for $tb_title."
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
-         elif [ "$dpkg_compare_versions_lower_than_exit_code" = "0" ]; then
+         elif dpkg --compare-versions -- "$tbb_compare_version" lt "$tbb_locally_installed_version"; then
             up_to_date_or_not_text="<b><u>WARNING: Looks like a downgrade attack!</u></b>"
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
          else
-            error "Neither of the following were zero.
-<br></br>dpkg_compare_versions_equals_exit_code: $dpkg_compare_versions_equals_exit_code
-<br></br>dpkg_compare_versions_lower_than_exit_code: $dpkg_compare_versions_lower_than_exit_code
-<br></br>dpkg_compare_versions_greater_than_exit_code: $dpkg_compare_versions_greater_than_exit_code
-<br></br>
+            error "Failed to compare versions using dpkg.
+
 <br></br>tbb_locally_installed_version_detect_success: $tbb_locally_installed_version_detect_success"
             tb_exit_function 1
          fi
@@ -2124,7 +2098,7 @@ main_function() {
       return 0
    fi
 
-   tb_run_function tb_skip_if_higher_or_equal_version_already_downloaded
+   #tb_run_function tb_skip_if_higher_or_equal_version_already_downloaded
    tb_run_function tb_connectivity_checks_interfaces
    tb_run_function tb_connectivity_checks_tor
    tb_run_function tb_connectivity_checks_curl
