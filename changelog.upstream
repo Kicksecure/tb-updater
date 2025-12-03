@@ -1,3 +1,82 @@
+commit 5f2c30749179dcb36842212069c1203deabb8bcf
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Dec 2 08:58:47 2025 -0500
+
+    fix
+
+commit 4e0705b5851b2c2a7f2671acb25e72d76c6cdb50
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Dec 2 08:56:00 2025 -0500
+
+    fix
+
+commit 3b5da19092bd54c941137dd5e3bb17b596def4e9
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Dec 2 08:50:22 2025 -0500
+
+    refactoring
+
+commit 066296c8cd40a792e1daa419ffe40c1d0efc4284
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Dec 2 08:45:38 2025 -0500
+
+    output
+
+commit cafd467999e81b1bf069f52f44939fb36a00625b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Dec 2 08:43:22 2025 -0500
+
+    fix
+
+commit 62e059f4eb219abaedf71fbebf2b6593bfcdcedd
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Dec 2 08:36:49 2025 -0500
+
+    output
+
+commit 26eaaef2f438fe9d4c4bc564c98414da5f5b8637
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Dec 2 07:04:20 2025 -0500
+
+    output
+
+commit 6e0b7035f0dac3890a35bb083300fac11da92d59
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Dec 2 06:51:17 2025 -0500
+
+    refactoring
+
+commit 52be392e6422a12e10483d2b5bb35e65fa630429
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Dec 2 06:47:09 2025 -0500
+
+    hardening
+
+commit 7db3d39511b5892af7ca0456cb56a9d793d74280
+Merge: d9db091 ce1f78c
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Dec 2 06:10:08 2025 -0500
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit ce1f78c1ab12779547eb88972b7d2a6ac59817c7
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Mon Dec 1 20:31:50 2025 -0600
+
+    Adjust to new sanitize-string API, remove support for striphtml sanitization as the command no longer exists and the API is different
+
+commit 613ed205fdc78b413aea92356acc350370ce4537
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Fri Nov 28 16:45:27 2025 -0600
+
+    If Tor Browser is not installed, install latest TBB version even if hardcoded version is out of date, add hardcoded version check to manual install workflow
+
+commit d9db09159f11d02e2ca947cce96ed2c9a3c65528
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Nov 24 09:28:43 2025 +0000
+
+    bumped changelog version
+
 commit 0b6a4d384617d2ec79bd7e196ff06d9e6a81c060
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Mon Nov 24 04:26:20 2025 -0500
