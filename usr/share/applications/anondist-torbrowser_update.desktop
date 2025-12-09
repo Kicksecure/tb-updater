@@ -6,6 +6,7 @@ Exec=/usr/libexec/tb-updater/desktop-starter-wrapper
 Type=Application
 Name=Tor Browser Downloader (AnonDist)
 GenericName=Download Tor Browser
+StartupWMClass=Tor Browser Downloader (AnonDist)
 Comment=Download Tor Browser (AnonDist)
 Categories=System;
 Icon=/usr/share/icons/icon-pack-dist/tbupdate.ico
