@@ -123,7 +123,7 @@ tbbversion() {
 
          true "INFO: version-parser output not empty, ok."
 
-         if ! check_is_not_empty_and_only_one_line parsed_version_temp; then
+         if ! check_is_not_empty_and_only_one_line parsed_version_temp &>/dev/null; then
             set_stripped_tbb_version "UNKNOWN"
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser output failed check_is_not_empty_and_only_one_line test.)"
