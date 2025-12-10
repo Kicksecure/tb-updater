@@ -194,7 +194,7 @@ tbbversion_installed() {
    tb_local_version_contents="$(stcat "$tb_local_version_file")" || \
       { tbb_locally_installed_version="Reading version file <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
-   parsed_version_temp="$(stecho "$tb_local_version_contents" | jq ".version" --)" || \
+   parsed_version_temp="$(jq -r ".version" <<< "$tb_local_version_contents")" || \
       { tbb_locally_installed_version="Parsing version file (part 1) <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
    parsed_version_temp="$(stecho "$parsed_version_temp" | xargs -- printf '%s\n')" || \
