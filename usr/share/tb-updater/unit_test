@@ -24,7 +24,7 @@ tbbversion
 if [ "$tbb_version_stripped" = "15.0.3" ]; then
    true "$0: INFO: OK"
 else
-   stecho "$0: tbb_version: $tbb_version_stripped"
+   stecho "$0: tbb_version: '$tbb_version_stripped'"
    stecho "$0: ERROR 1!"
    exit 1
 fi
@@ -39,7 +39,7 @@ tbbversion
 if [ "$tbb_version_stripped" = "UNKNOWN" ]; then
    true "$0: INFO: OK"
 else
-   stecho "$0: tbb_version: $tbb_version_stripped"
+   stecho "$0: tbb_version: '$tbb_version_stripped'"
    stecho "$0: ERROR 2!"
    exit 1
 fi
