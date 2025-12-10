@@ -13,9 +13,11 @@ tbbversion() {
    local tbb_version_remote_file tbb_version_output_file \
       tbb_parser_exit_code tbb_version_max_length tbb_version_length parsed_version_temp
 
+   command -v printf >/dev/null
    command -v /usr/libexec/tb-updater/version-parser >/dev/null
    command -v sanitize-string >/dev/null
    command -v unicode-show >/dev/null
+   command -v append >/dev/null
    command -v grep-find-unicode-wrapper >/dev/null
 
    ## fallback
@@ -34,6 +36,7 @@ tbbversion() {
    tbb_version_remote_file="$(mktemp)"
    tbb_version_output_file="$(mktemp)"
    tbb_parser_exit_code='0'
+   ## AUDIT: string limit?
    tbb_version_max_length='10'
    cp -- "${RecommendedTBBVersions}" "${tbb_version_remote_file}"
 
@@ -66,6 +69,7 @@ tbbversion() {
          ## ...by making sure there is a newline at the end.
          append "${tbb_version_output_file}" "" >/dev/null
 
+         ## https://www.kicksecure.com/wiki/Unicode#unicode-show
          ## Use '>/dev/null' to avoid outputting potentially malicious message.
          if unicode-show "${tbb_version_output_file}" >/dev/null; then
             true "INFO: No unicode found using unicode-show, ok."
@@ -81,6 +85,7 @@ tbbversion() {
 
          ## Additional check using C (grep-find-unicode-wrapper / grep).
 
+         ## https://www.kicksecure.com/wiki/Unicode#grep-find-unicode-wrapper
          ## Failing sometimes. Unknown reason.
          ## https://github.com/QubesOS/updates-status/issues/6255#issuecomment-3627460001
          if grep-find-unicode-wrapper -- "${tbb_version_output_file}"; then
@@ -178,6 +183,7 @@ tbbversion_installed() {
 
    command -v xargs >/dev/null
    command -v printf >/dev/null
+   command -v jq >/dev/null
 
    ## Fallbacks.
    tbb_locally_installed_version="UNKNOWN. Please report this tb-updater Bug!"
