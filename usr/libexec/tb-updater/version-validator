@@ -60,7 +60,8 @@ tbbversion() {
          ## ...by making sure there is a newline at the end.
          append "${tbb_version_output_file}" "" >/dev/null
 
-         if unicode-show "${tbb_version_output_file}"; then
+         ## Use '>/dev/null' to avoid outputting potentially malicious message.
+         if unicode-show "${tbb_version_output_file}" >/dev/null; then
             true "INFO: No unicode found using unicode-show, ok."
          else
 #             tbb_version='UNKNOWN'
@@ -89,7 +90,7 @@ tbbversion() {
          ## At this point we trust the version string enough to load it - if
          ## it's not ridiculously long, and it's entirely 7-bit ASCII, the
          ## worst it could be is an invalid version number.
-         tbb_version="$(stcat "${tbb_version_output_file}")"
+         tbb_version="$(stcat "${tbb_version_output_file}")" >
          ## Thanks to:
          ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
          ## for the leading/trailing whitespace removal code
