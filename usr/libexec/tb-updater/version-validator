@@ -11,7 +11,7 @@ set_stripped_tbb_version() {
 
 tbbversion() {
    local tbb_version_remote_file tbb_version_output_file \
-      tbb_parser_exit_code tbb_version_max_length tbb_version_length temp
+      tbb_parser_exit_code tbb_version_max_length tbb_version_length parsed_version_temp
 
    command -v /usr/libexec/tb-updater/version-parser >/dev/null
    command -v sanitize-string >/dev/null
@@ -96,16 +96,16 @@ tbbversion() {
          ## At this point we trust the version string enough to load it - if
          ## it's not ridiculously long, and it's entirely 7-bit ASCII, the
          ## worst it could be is an invalid version number.
-         temp="$(stcat "${tbb_version_output_file}")"
+         parsed_version_temp="$(stcat "${tbb_version_output_file}")"
          ## Thanks to:
          ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
          ## for the leading/trailing whitespace removal code
          ## Using 'nolimit' here but 'update-torbrowser' will set a limit.
-         temp="$(sanitize-string -- nolimit "$temp")"
-         temp="${temp#"${temp%%[![:space:]]*}"}" ## remove leading whitespace characters
-         temp="${temp%"${temp##*[![:space:]]}"}" ## remove trailing whitespace characters
+         parsed_version_temp="$(sanitize-string -- nolimit "$parsed_version_temp")"
+         parsed_version_temp="${parsed_version_temp#"${parsed_version_temp%%[![:space:]]*}"}" ## remove leading whitespace characters
+         parsed_version_temp="${parsed_version_temp%"${parsed_version_temp##*[![:space:]]}"}" ## remove trailing whitespace characters
 
-         if [ -z "$temp" ]; then
+         if [ -z "$parsed_version_temp" ]; then
             set_stripped_tbb_version "UNKNOWN"
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser output empty.)"
@@ -119,7 +119,7 @@ tbbversion() {
          ## Regex-validate version to be absolutely sure it's valid.
          ## Should match versions like 14.0.2, 14.0a9, and 13.0.9-arm64, but
          ## reject malformed versions like 14.5:8 or 1.2..3.
-         if ! [[ "$temp" =~ ^([0-9a-z]+\.)+[0-9a-z]+(-arm64|-armhf)?$ ]]; then
+         if ! [[ "$parsed_version_temp" =~ ^([0-9a-z]+\.)+[0-9a-z]+(-arm64|-armhf)?$ ]]; then
             set_stripped_tbb_version "UNKNOWN"
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser output does not look like a valid version number.)"
@@ -128,7 +128,7 @@ tbbversion() {
             return 0
          fi
 
-         set_stripped_tbb_version "$temp"
+         set_stripped_tbb_version "$parsed_version_temp"
 
          true "INFO: version-parser output is ok."
 
@@ -190,16 +190,16 @@ tbbversion_installed() {
       return 0
    fi
 
-   local tb_local_version_contents temp
+   local tb_local_version_contents parsed_version_temp
    tb_local_version_contents="$(stcat "$tb_local_version_file")" || \
       { tbb_locally_installed_version="Reading version file <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
-   temp="$(stecho "$tb_local_version_contents" | jq ".version" --)" || \
+   parsed_version_temp="$(stecho "$tb_local_version_contents" | jq ".version" --)" || \
       { tbb_locally_installed_version="Parsing version file (part 1) <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
-   temp="$(stecho "$temp" | xargs -- printf '%s\n')" || \
+   parsed_version_temp="$(stecho "$parsed_version_temp" | xargs -- printf '%s\n')" || \
       { tbb_locally_installed_version="Parsing version file (part 2) <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
-   tbb_locally_installed_version="$temp"
+   tbb_locally_installed_version="$parsed_version_temp"
    tbb_locally_installed_version_detect_success="1"
 }
