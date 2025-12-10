@@ -1,3 +1,95 @@
+commit 73bdd05858cb4579f4429470c2b8567a3afe5a50
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 10 09:55:46 2025 -0500
+
+    comment
+
+commit 3c118d1a11971081941f099a12927344bef20a18
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 10 09:55:22 2025 -0500
+
+    fix
+
+commit e6ce093e880ae7bb8fb93952e6a7f74e7e5e5423
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 10 09:53:43 2025 -0500
+
+    hardening
+
+commit e32004b1e34b32d0f982fcbc5a7e85a18293f1f4
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 10 09:50:10 2025 -0500
+
+    fix
+
+commit aa3d4454d900ad8ffc600f60928a5cf4e5c043b9
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 10 09:49:40 2025 -0500
+
+    fix
+
+commit fdf2a9567a80fcb2526ce285f0f467cd2198f73f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 10 09:43:14 2025 -0500
+
+    fix
+
+commit c46b288e0be8bd5e49223f863ade812ed46ad75f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 10 09:25:50 2025 -0500
+
+    fix
+
+commit 878fb0b180f52e25f3225b57cc467f0f866203d1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 10 09:19:48 2025 -0500
+
+    cleanup
+
+commit 5eef7053d35511c51afdf8c92465c160b03ac103
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 10 09:18:58 2025 -0500
+
+    fix
+
+commit b157dd1fc9adce5db88a919d3f3e93d291158a73
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 10 09:11:26 2025 -0500
+
+    refactoring
+
+commit f8ff49b3d8bafed9b0268b4c6f169e99d0dc3571
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 10 09:09:58 2025 -0500
+
+    fix
+
+commit 9674901b724c0270343990c112f0b4d7bcfd6c32
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 10 09:00:33 2025 -0500
+
+    fix
+
+commit 99355e005af31ac86d44eab7718833ce5a5c5ad6
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 10 08:58:03 2025 -0500
+
+    revert tbb version issues detection show code to fix build issue
+    
+    https://github.com/QubesOS/updates-status/issues/6255#issuecomment-3627460001
+
+commit 874f0ea529c7f9372904da079b3e4297255d720a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Dec 10 08:24:50 2025 -0500
+
+    tbb_hardcoded_version update
+
+commit 3da365c3818f3872dd00bb8bc876818f0dec9a48
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Dec 9 14:08:08 2025 +0000
+
+    bumped changelog version
+
 commit 1ad09e92cad36e7fde4be28570b4facca24824ad
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Dec 9 02:51:21 2025 -0500
