@@ -55,28 +55,35 @@ tbbversion() {
          ## bash or our scripts
 
          ## Check with python (unicode-show) first.
-         ## TODO: Handle expected missing newline.
+         ## Handle expected missing newline...
          ## /tmp/user/1000/tmp.pwSsfFTTML:1: [missing newline at end]
-#          if unicode-show "${tbb_version_output_file}"; then
-#             true "INFO: No unicode found using unicode-show, ok."
-#          else
+         ## ...by making sure there is a newline at the end.
+         append "${tbb_version_output_file}" "" >/dev/null
+
+         if unicode-show "${tbb_version_output_file}"; then
+            true "INFO: No unicode found using unicode-show, ok."
+         else
 #             tbb_version='UNKNOWN'
 #             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 # (Non-ASCII characters found in version using unicode-show.)"
 #             safe-rm -- "${tbb_version_remote_file}"
 #             safe-rm -- "${tbb_version_output_file}"
 #             return 0
-#          fi
+            printf '%s\n' "$0: development: unicode-show unexpected non-zero exit code. This message is for developers only. No need to report this."
+         fi
 
          ## Additional check using C (grep-find-unicode-wrapper / grep).
 
+         ## Failing sometimes. Unknown reason.
+         ## https://github.com/QubesOS/updates-status/issues/6255#issuecomment-3627460001
          if grep-find-unicode-wrapper -- "${tbb_version_output_file}"; then
-            tbb_version='UNKNOWN'
-            tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
-(Non-ASCII characters found in version using grep-find-unicode-wrapper.)"
-            safe-rm -- "${tbb_version_remote_file}"
-            safe-rm -- "${tbb_version_output_file}"
-            return 0
+#             tbb_version='UNKNOWN'
+#             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+# (Non-ASCII characters found in version using grep-find-unicode-wrapper.)"
+#             safe-rm -- "${tbb_version_remote_file}"
+#             safe-rm -- "${tbb_version_output_file}"
+#             return 0
+            printf '%s\n' "$0: development: grep-find-unicode-wrapper unexpected exit code 0. This message is for developers only. No need to report this."
          fi
 
          ## At this point we trust the version string enough to load it - if
@@ -178,10 +185,10 @@ tbbversion_installed() {
    tb_local_version_contents="$(stcat "$tb_local_version_file")" || \
       { tbb_locally_installed_version="Reading version file <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
-   temp="$(stecho "$tb_local_version_contents" | jq ".version")" || \
+   temp="$(stecho "$tb_local_version_contents" | jq ".version" --)" || \
       { tbb_locally_installed_version="Parsing version file (part 1) <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
-   temp="$(stecho "$temp" | xargs printf)" || \
+   temp="$(stecho "$temp" | xargs -- printf '%s\n')" || \
       { tbb_locally_installed_version="Parsing version file (part 2) <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
    tbb_locally_installed_version="$temp"
