@@ -1168,11 +1168,10 @@ tb_remote_version_parser() {
    fi
 
    ## needs: $RecommendedTBBVersions
-   ## sets: tbb_version
+   ## sets: tbb_version_raw
+   ## sets: tbb_version_stripped
    ## sets: tbb_recommended_versions_error
    tb_run_function tbbversion
-   ## AUDIT: string limit?
-   tbb_version_stripped="$(sanitize-string -- 20 "$tbb_version")"
 }
 
 tb_remote_version_sanity_test() {
