@@ -3,6 +3,8 @@
 ## Copyright (C) 2012 - 2025 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
 ## See the file COPYING for copying conditions.
 
+source /usr/libexec/helper-scripts/strings.bsh
+
 set_stripped_tbb_version() {
    tbb_version_raw="$@"
    ## AUDIT: string limit?
@@ -120,6 +122,15 @@ tbbversion() {
          fi
 
          true "INFO: version-parser output not empty, ok."
+
+         if ! check_is_not_empty_and_only_one_line parsed_version_temp; then
+            set_stripped_tbb_version "UNKNOWN"
+            tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(version-parser output failed check_is_not_empty_and_only_one_line test.)"
+            safe-rm -- "${tbb_version_remote_file}"
+            safe-rm -- "${tbb_version_output_file}"
+            return 0
+         fi
 
          ## Regex-validate version to be absolutely sure it's valid.
          ## Should match versions like 14.0.2, 14.0a9, and 13.0.9-arm64, but
