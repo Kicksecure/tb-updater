@@ -130,6 +130,9 @@ tbbversion() {
 
          set_stripped_tbb_version "$parsed_version_temp"
 
+         safe-rm -- "${tbb_version_remote_file}"
+         safe-rm -- "${tbb_version_output_file}"
+
          true "INFO: version-parser output is ok."
 
          ## If we get here, tbb_version is set to the sanitized version
