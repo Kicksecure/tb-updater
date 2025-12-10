@@ -1,7 +1,9 @@
 {
-   "binary" : "https://dist.torproject.org/torbrowser/15.0.3/tor-browser-linux-x86_64-15.0.3.tar.xz",
-   "git_tag" : "tbb-15.0.3-build3",
-   "sig" : "https://dist.torproject.org/torbrowser/15.0.3/tor-browser-linux-x86_64-15.0.3.tar.xz.asc",
-   "version" : "15.0.3
-ls\r\n"
+  "version": "1.2.3`\nls`",
+  "downloads": {
+    "linux": {
+      "sha256": "0",
+      "url": "https://dist.torproject.org/torbrowser/15.0.3/tor-browser-linux-x86_64-15.0.3.tar.xz.asc"
+    }
+  }
 }
