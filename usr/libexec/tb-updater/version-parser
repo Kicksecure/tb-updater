@@ -86,8 +86,8 @@ if not input_path.absolute().as_posix().startswith("/tmp"):
 if not output_path.absolute().as_posix().startswith("/tmp"):
     print_noisy("WARNING: The output file is not under /tmp. This may not work.")
 
-if not input_path.exists():
-    print_noisy("ERROR: Input file does not exist.")
+if not input_path.is_file():
+    print_noisy("ERROR: Input file does not exist or is not a regular file.")
     exit(2)
 else:
     try:
@@ -95,5 +95,10 @@ else:
     except:
         print_noisy("ERROR: Cannot access output file.")
         exit(2)
+
+MAX_INPUT_BYTES = 2 * 1024 * 1024
+if input_path.stat().st_size > MAX_INPUT_BYTES:
+    print_noisy("ERROR: Rejecting input file, size exceeds 2 MiB!")
+    exit(3)
 
 tbbversion_x64()
