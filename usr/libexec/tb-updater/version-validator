@@ -39,7 +39,7 @@ tbbversion() {
    tbb_version_output_file="$(mktemp)"
    tbb_parser_exit_code='0'
    ## AUDIT: string limit?
-   tbb_version_max_length='10'
+   tbb_version_max_length='20'
    cp -- "${RecommendedTBBVersions}" "${tbb_version_remote_file}"
 
    ## Global variable, expected to be set by the caller
