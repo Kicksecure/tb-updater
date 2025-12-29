@@ -21,7 +21,10 @@ def print_noisy(msg):
 
 def tbbversion_x64():
     try:
-        input_text = input_path.read_text()
+        input_text = input_path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        print_noisy("ERROR: Rejecting input file, input is not valid UTF-8!")
+        exit(3)
     except:
         print_noisy("ERROR: Cannot read input file!")
         exit(2)
@@ -46,6 +49,13 @@ def tbbversion_x64():
     ## file MUST redo this check.
     if len(version_string) > 10:
         print_noisy("ERROR: Rejecting input JSON, version string is abnormally long!")
+        exit(3)
+
+    ## Not necessary for security, but useful for debugging.
+    try:
+        version_string.encode(encoding="utf-8")
+    except UnicodeEncodeError:
+        print_noisy("ERROR: Rejecting input JSON, version string contains invalid Unicode!")
         exit(3)
 
     try:
