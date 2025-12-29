@@ -7,43 +7,51 @@ set -e
 set -x
 
 mydir="$( cd "$( dirname "$0" )" && pwd )"
-cd "$mydir"
+cd "${mydir}"
 cd ..
 cd ..
 cd ..
 
 source ./usr/libexec/tb-updater/version-validator
 
-####
+expected_version_list=(
+  '15.0.3'
+  'UNKNOWN'
+  'UNKNOWN'
+  'UNKNOWN'
+  'UNKNOWN'
+  'UNKNOWN'
+)
 
-RecommendedTBBVersions="./usr/share/tb-updater/unit-test/RecommendedTBBVersions"
-test -f "$RecommendedTBBVersions"
+expected_error_list=(
+  ''
+  'Rejected invalid RecommendedTBBVersions versions file. (version-parser output failed check_is_not_empty_and_only_one_line test.)'
+  'Rejected invalid RecommendedTBBVersions versions file. (version-parser failed - file invalid or malicious)'
+  'Rejected invalid RecommendedTBBVersions versions file. (version-parser output does not look like a valid version number.)'
+  'Rejected invalid RecommendedTBBVersions versions file. (version-parser output failed check_is_not_empty_and_only_one_line test.)'
+  'Rejected invalid RecommendedTBBVersions versions file. (version-parser output does not look like a valid version number.)'
+)
 
-tbbversion
+for idx in "${!expected_version_list[@]}"; do
+  disp_idx=$(( idx + 1 ))
 
-if [ "$tbb_version_stripped" = "15.0.3" ]; then
-   true "$0: INFO: OK"
-else
-   stecho "$0: tbb_version: '$tbb_version_stripped'"
-   stecho "$0: ERROR 1!"
-   exit 1
-fi
+  RecommendedTBBVersions="./usr/share/tb-updater/unit-test/RecommendedTBBVersions${disp_idx}"
+  test -f "${RecommendedTBBVersions}"
 
-####
+  tbbversion
 
-RecommendedTBBVersions="./usr/share/tb-updater/unit-test/RecommendedTBBVersions2"
-test -f "$RecommendedTBBVersions"
+  if [ "${tbb_version_stripped}" != "${expected_version_list[idx]}" ]; then
+    stecho "$0: Actual tbb_version: '${tbb_version_stripped}'"
+    stecho "$0: Expected tbb_version: '${expected_version_list[idx]}'"
+    stecho "$0: ERROR on test ${disp_idx}!"
+    exit 1
+  fi
+  if [ "${tbb_recommended_versions_error}" != "${expected_error_list[idx]}" ]; then
+    stecho "$0: Actual tbb_recommended_versions_error: '${tbb_recommended_versions_error}'"
+    stecho "$0: Expected tbb_recommended_versions_error: '${expected_error_list[idx]}'"
+    stecho "$0: ERROR on test ${disp_idx}!"
+    exit 1
+  fi
 
-tbbversion
-
-if [ "$tbb_version_stripped" = "UNKNOWN" ]; then
-   true "$0: INFO: OK"
-else
-   stecho "$0: tbb_version: '$tbb_version_stripped'"
-   stecho "$0: ERROR 2!"
-   exit 1
-fi
-
-####
-
-true "$0: INFO: OK"
+  true "$0: INFO: OK"
+done

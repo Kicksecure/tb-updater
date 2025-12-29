@@ -1,0 +1,9 @@
+{
+  "version": "15.0:3",
+  "downloads": {
+    "linux": {
+      "sha256": "0",
+      "url": "https://dist.torproject.org/torbrowser/15.0.3/tor-browser-linux-x86_64-15.0.3.tar.xz.asc"
+    }
+  }
+}

@@ -10,7 +10,6 @@
 from pathlib import Path
 import argparse
 import json
-import re
 import sys
 
 # Prints a message to stdout unless running in quiet mode.
@@ -21,41 +20,51 @@ def print_noisy(msg):
 
 def tbbversion_x64():
     try:
-        input_text = input_path.read_text()
-    except:
+        input_text = input_path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        print_noisy("ERROR: Rejecting input file, input is not valid UTF-8!")
+        sys.exit(3)
+    except Exception:
         print_noisy("ERROR: Cannot read input file!")
-        exit(2)
+        sys.exit(2)
 
     try:
         input_json = json.loads(input_text)
-    except:
+    except Exception:
         print_noisy("ERROR: JSON parsing failed!")
-        exit(3)
+        sys.exit(3)
 
     if type(input_json) is not dict:
         print_noisy("ERROR: Rejecting input JSON, did not deserialize to a Python dict!")
-        exit(3)
+        sys.exit(3)
 
     version_string = input_json.get("version")
     if type(version_string) is not str:
         print_noisy("ERROR: Rejecting input JSON, version object did not deserialize to a Python string!")
-        exit(3)
+        sys.exit(3)
 
     ## In the event the parser is compromised, this check can't be relied on,
     ## but it harms nothing to include it. Anything that reads from the output
     ## file MUST redo this check.
-    if len(version_string) > 10:
+    if len(version_string) > 20:
         print_noisy("ERROR: Rejecting input JSON, version string is abnormally long!")
-        exit(3)
+        sys.exit(3)
+
+    ## Not necessary for security, but useful for debugging.
+    try:
+        version_string.encode(encoding="utf-8")
+    except UnicodeEncodeError:
+        print_noisy("ERROR: Rejecting input JSON, version string contains invalid Unicode!")
+        sys.exit(3)
 
     try:
         with output_path.open(mode = 'w') as f:
             f.writelines([version_string])
-    except:
+    except Exception:
         print_noisy("ERROR: Could not write version string to output file!")
-        exit(2)
+        sys.exit(2)
 
-    exit(0)
+    sys.exit(0)
 
 argument_parser = argparse.ArgumentParser(prog = "version-parser",
                                           description = "Parses JSON files to find the latest version of Tor Browser.")
@@ -73,27 +82,34 @@ args = argument_parser.parse_args()
 
 if args.input_file is None:
     print_noisy("ERROR: No input file provided.")
-    exit(1)
+    sys.exit(1)
 elif args.output_file is None:
     print_noisy("ERROR: No output file provided.")
-    exit(1)
+    sys.exit(1)
 
-input_path = Path(args.input_file)
-output_path = Path(args.output_file)
+input_path = Path(args.input_file).resolve(strict=False)
+output_path = Path(args.output_file).resolve(strict=False)
 
-if not input_path.absolute().as_posix().startswith("/tmp"):
-    print_noisy("WARNING: The input file is not under /tmp. This may not work.")
-if not output_path.absolute().as_posix().startswith("/tmp"):
-    print_noisy("WARNING: The output file is not under /tmp. This may not work.")
+if not input_path.as_posix().startswith("/tmp/"):
+    print_noisy("ERROR: The input file must be under /tmp.")
+    sys.exit(2)
+if not output_path.as_posix().startswith("/tmp/"):
+    print_noisy("ERROR: The output file must be under /tmp.")
+    sys.exit(2)
 
-if not input_path.exists():
-    print_noisy("ERROR: Input file does not exist.")
-    exit(2)
+if not input_path.is_file():
+    print_noisy("ERROR: Input file does not exist or is not a regular file.")
+    sys.exit(2)
 else:
     try:
         output_path.touch(mode=0o644, exist_ok=True)
-    except:
+    except Exception:
         print_noisy("ERROR: Cannot access output file.")
-        exit(2)
+        sys.exit(2)
+
+MAX_INPUT_BYTES = 2 * 1024 * 1024
+if input_path.stat().st_size > MAX_INPUT_BYTES:
+    print_noisy("ERROR: Rejecting input file, size exceeds 2 MiB!")
+    sys.exit(3)
 
 tbbversion_x64()
