@@ -1,3 +1,34 @@
+commit 03a5a6f60df56db14460af2913cae15ad48c08f0
+Merge: b4f0b30 e4d50e8
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Dec 29 02:40:23 2025 -0500
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit e4d50e880a481875edfc051c0b331fb77cb87d5b
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Sun Dec 28 18:39:34 2025 -0600
+
+    version-parser: only work with files under /tmp, fix exception and exit handling, increase version string length in preparation to support aarch64 Tor Browser downloads (suggested by ChatGPT Codex)
+
+commit d4889fada2293dae43fa8853f605eda8314fb4d3
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Sun Dec 28 18:10:25 2025 -0600
+
+    Minor hardening / debugging improvements, improve unit tests (based on suggestions from ChatGPT Codex)
+
+commit 7f41f98d978e0009ad4ac532d75f901548223b35
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Sun Dec 28 16:53:30 2025 -0600
+
+    Slightly harden version-parser (suggestions provided by ChatGPT Codex)
+
+commit b4f0b300340597095d239b55f8c7e760f54ab057
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Dec 25 16:00:45 2025 +0000
+
+    bumped changelog version
+
 commit 7e52d8d3f209b31880b754415c90bfaeaf1c68b1
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Dec 25 10:57:11 2025 -0500
