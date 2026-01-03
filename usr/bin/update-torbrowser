@@ -1245,10 +1245,9 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    ## Used by function tbbversion_installed
    [ -n "$tbb_folder" ] || tbb_folder="$tb_browser_folder"
 
-   ## sets: tbb_locally_installed_version
+   ## sets: tbb_locally_installed_version_stripped
    ## sets: tbb_locally_installed_version_detect_success
    tb_run_function tbbversion_installed
-   tbb_locally_installed_version_stripped="$(sanitize-string -- 20 "$tbb_locally_installed_version")"
 
    if [ -d "$tb_browser_folder" ]; then
       installed_or_not_result="true"
@@ -1333,18 +1332,18 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
 <p>$qubes_running_inside_template_vm_msg</p>"
       else
          ## installed, local version number known
-         if dpkg --compare-versions -- "$tbb_version_stripped" eq "$tbb_locally_installed_version"; then
+         if dpkg --compare-versions -- "$tbb_version_stripped" eq "$tbb_locally_installed_version_stripped"; then
             up_to_date_or_not_text="Looks like $tb_title is already up to date."
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
 	          if [ "$UPDATE_ONLY_IF_NEWER" = "1" ]; then
                true "INFO: UPDATE_ONLY_IF_NEWER is set 1."
-               printf '%s\n' "INFO: Skip downloading: current '$tb_title' '$tbb_locally_installed_version' is already up-to-date."
+               printf '%s\n' "INFO: Skip downloading: current '$tb_title' '$tbb_locally_installed_version_stripped' is already up-to-date."
                tb_exit_function 0
 	          fi
-         elif dpkg --compare-versions -- "$tbb_version_stripped" gt "$tbb_locally_installed_version"; then
+         elif dpkg --compare-versions -- "$tbb_version_stripped" gt "$tbb_locally_installed_version_stripped"; then
             up_to_date_or_not_text="Looks like there is an upgrade for $tb_title."
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
-         elif dpkg --compare-versions -- "$tbb_version_stripped" lt "$tbb_locally_installed_version"; then
+         elif dpkg --compare-versions -- "$tbb_version_stripped" lt "$tbb_locally_installed_version_stripped"; then
             up_to_date_or_not_text="<b><u>WARNING: Looks like a downgrade attack!</u></b>"
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
          else

@@ -201,6 +201,19 @@ tbbversion_installed() {
    tbb_locally_installed_version="UNKNOWN. Please report this tb-updater Bug!"
    tbb_locally_installed_version_detect_success="0"
 
+   tbbversion_checks_installed
+
+   if [ "$tbb_locally_installed_version_detect_success" = "0" ]; then
+      ## Success. Real version number. Limit to 20 characters.
+      tbb_locally_installed_version_stripped="$(sanitize-string -- 20 "$tbb_locally_installed_version")"
+      return 0
+   fi
+
+   ## Failure. Longer error message.
+   tbb_locally_installed_version_stripped="$(sanitize-string -- 200 "$tbb_locally_installed_version")"
+}
+
+tbbversion_checks_installed() {
    if [ ! -d "$tbb_folder" ]; then
       tbb_locally_installed_version="None installed. (Folder <code>$tbb_folder</code> does not exist.)"
       return 0
