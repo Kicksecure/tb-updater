@@ -1,3 +1,21 @@
+commit ac2f7099317418f6da4a625e851bf151e87c6104
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jan 3 07:32:58 2026 -0500
+
+    fix
+
+commit dc557b89b234c8a03940301a9a269749eb241bfc
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jan 3 07:29:18 2026 -0500
+
+    fix local version number being truncated
+
+commit 765752421e3fcacf586f372d2813d94cd3ffed8d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Jan 1 15:41:25 2026 +0000
+
+    bumped changelog version
+
 commit 03a5a6f60df56db14460af2913cae15ad48c08f0
 Merge: b4f0b30 e4d50e8
 Author: Patrick Schleizer <adrelanos@whonix.org>
