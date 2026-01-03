@@ -199,11 +199,11 @@ tbbversion_installed() {
 
    ## Fallbacks.
    tbb_locally_installed_version="UNKNOWN. Please report this tb-updater Bug!"
-   tbb_locally_installed_version_detect_success="0"
+   tbb_locally_installed_version_detect_success="false"
 
    tbbversion_checks_installed
 
-   if [ "$tbb_locally_installed_version_detect_success" = "0" ]; then
+   if [ "$tbb_locally_installed_version_detect_success" = "true" ]; then
       ## Success. Real version number. Limit to 20 characters.
       tbb_locally_installed_version_stripped="$(sanitize-string -- 20 "$tbb_locally_installed_version")"
       return 0

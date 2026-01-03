@@ -1324,7 +1324,7 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
 
    if [ "$installed_or_not_result" = "true" ]; then
       type="warning"
-      if [ "$tbb_locally_installed_version_detect_success" = "0" ]; then
+      if [ "$tbb_locally_installed_version_detect_success" = "false" ]; then
          ## installed, but local version number unknown
          MSG="\
 <p>$updater_vs_downloader_msg</p>
