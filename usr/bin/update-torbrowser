@@ -41,19 +41,19 @@ source /usr/libexec/gpg-bash-lib/source_all
 ## I would be very happy if this script would not be required.
 ## Unfortunately, it is required. It works around a lot bugs:
 ## - There is no deb/rpm/whatever package with Tor Browser.
-##   https://trac.torproject.org/projects/tor/ticket/5236
-##   https://trac.torproject.org/projects/tor/ticket/3994
+##   https://gitlab.torproject.org/tpo/community/trac/-/issues/5236
+##   https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/3994
 ## - There is no way to add the Documentation page well visible to Tor Browser:
-##   https://trac.torproject.org/projects/tor/ticket/6025
-##   https://trac.torproject.org/projects/tor/ticket/6053
+##   https://gitlab.torproject.org/legacy/trac/-/issues/6025
+##   https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/6053
 ## - Tor Browsers support for Isolating and Transparent Proxies is very limited:
-##   https://trac.torproject.org/projects/tor/ticket/5611
+##   https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/5611
 ## - RecommendedTBBVersions format is not finalized
-##   https://trac.torproject.org/projects/tor/ticket/14383
+##   https://gitlab.torproject.org/tpo/web/tpo/-/issues/307
 ## - counter downgrade / stale mirror attacks on RecommendedTBBVersions - sign / verify tbb versions file
-##   https://trac.torproject.org/projects/tor/ticket/13065
+##   https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/13065
 ## - GETINFO consensus/packages exists but not yet populated.
-##   https://trac.torproject.org/projects/tor/ticket/10395
+##   https://gitlab.torproject.org/tpo/core/tor/-/issues/10395
 ## - Using torbrowser-launcher instead of tb-updater in Whonix
 ##   https://forums.whonix.org/t/using-torbrowser-launcher-instead-of-tb-updater-in-whonix/385
 
@@ -272,7 +272,7 @@ trap "trap_sigusr2" SIGUSR2 ## msgcollector, yad cancel button
 
 tb_parse_cmd_options() {
    ## Thanks to:
-   ## http://mywiki.wooledge.org/BashFAQ/035
+   ## https://mywiki.wooledge.org/BashFAQ/035
 
    while :
    do
@@ -843,22 +843,20 @@ tb_preparation() {
       [ -n "$TBB_RELEASE_CHANNEL" ] || TBB_RELEASE_CHANNEL="release"
    fi
 
-   ## https://dist.torproject.org/torbrowser/10.0.17/tor-browser-linux64-10.0.17_en-US.tar.xz
+   ## https://web.archive.org/web/20210603225307/https://dist.torproject.org/torbrowser/10.0.17/tor-browser-linux64-10.0.17_en-US.tar.xz
    [ -n "$TBB_DOWNLOAD_APPENDIX" ] || TBB_DOWNLOAD_APPENDIX=""
    [ -n "$tbb_versions_base_folder" ] || tbb_versions_base_folder="torbrowser/update_3"
 
-   ## https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/ file was abolished by upstream
+   ## https://web.archive.org/web/20141004085451/https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions file was later abolished by upstream
    ## https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/33521
    ## https://web.archive.org/web/20201210123314/https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/
    ## https://forums.whonix.org/t/update-torbrowser-does-not-see-version-10-0-6/10711
    ##
    ## example:
-   ##    https://www.torproject.org/dist/torbrowser/10.0.6/tor-browser-linux64-10.0.6_en-US.tar.xz
    ## http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/dist/torbrowser/10.0.6/tor-browser-linux64-10.0.6_en-US.tar.xz
 
    if [ "$tb_onion" = "true" ]; then
       ## dist.torproject.org has no corresponding onion address at time of writing.
-      ## https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
       ## https://web.archive.org/web/20210424113513/https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
       ##
       ## https://onion.torproject.org/
@@ -1655,7 +1653,7 @@ tb_confirm_install() {
    fi
 
    ## Thanks to:
-   ## http://mywiki.wooledge.org/BashFAQ/054
+   ## https://mywiki.wooledge.org/BashFAQ/054
    if [[ "$last_used_gpg_bash_lib_output_signed_on_unixtime" != *[!0-9]* ]]; then
       true "'$last_used_gpg_bash_lib_output_signed_on_unixtime' is strictly numeric."
       if [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" -lt "$gpg_bash_lib_output_signed_on_unixtime" ]; then
