@@ -1,3 +1,17 @@
+commit c777205db4529849a2ac64a083960b898c0e4df5
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jan 7 06:03:38 2026 -0500
+
+    implement `torS0X` stream isolation
+    
+    https://spec.torproject.org/socks-extensions.html
+
+commit e447e607340d452563fb493ec5ced559f4130981
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Jan 5 10:30:37 2026 +0000
+
+    bumped changelog version
+
 commit 635c93bc8247a45fb497e06c893f5688959a80f4
 Merge: 51bf453 30db412
 Author: Patrick Schleizer <adrelanos@whonix.org>
