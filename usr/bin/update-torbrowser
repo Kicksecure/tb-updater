@@ -562,7 +562,7 @@ tb_settings_chroot_common() {
    [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
    ## Hack to disable using proxy settings when running inside chroot.
    ## We are using --fail anyhow. No problem to duplicate it.
-   [ -n "$CURL_PROXY" ] || CURL_PROXY="--fail"
+   [ -n "$CURL_PROXY" ] || CURL_PROXY=( "--fail" )
 
    ## Careful as it would like information to logs:
    ## Connection #0 to host 10.137.0.82 left intact
@@ -928,7 +928,7 @@ tb_preparation() {
       [ -n "$CURL_PROXY" ] || CURL_PROXY=()
    fi
 
-   printf '%s\n' "INFO: CURL_PROXY: '${CURL_PROXY[@]}'"
+   printf '%s\n' "INFO: CURL_PROXY: '${CURL_PROXY[*]}'"
 
    ## Also used by function tbbversion.
    [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
