@@ -32,6 +32,8 @@ if [ "$tb_updater_was_sourced" = "false" ]; then
 fi
 
 source /usr/libexec/helper-scripts/strings.bsh
+## sets: boot_session
+source /usr/libexec/helper-scripts/boot-session-detection.sh
 source /usr/libexec/gpg-bash-lib/source_all
 
 [[ -v SCRIPTNAME ]] || SCRIPTNAME="$(basename "$BASH_SOURCE")"
@@ -182,6 +184,27 @@ root_check() {
    fi
 
    printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' as root (sudo)!"
+   tb_exit_function 2
+}
+
+sysmaint_check() {
+   if ! [ "$boot_session" = "sysmaint_session" ]; then
+      true "INFO: sysmaint_session: no"
+      return 0
+   fi
+   local who_ami
+   who_ami="$(whoami)"
+   true "INFO: sysmaint_session: yes"
+   if [ "$who_ami" = "sysmaint" ]; then
+      true "INFO: sysmaint_session: yes and running as account sysmaint, ok."
+      return 0
+   fi
+   if [ "$who_ami" = "root" ]; then
+      ## If this is OK is tested in function 'root_check'.
+      true "INFO: sysmaint_session: yes and running as root, ok."
+      return 0
+   fi
+   printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' under account '$who_ami' in sysmaint session!"
    tb_exit_function 2
 }
 
@@ -2066,6 +2089,7 @@ y/n?"
 
 main_function() {
    tb_run_function root_check "$@"
+   tb_run_function sysmaint_check "$@"
    tb_run_function tb_sanity_tests
    tb_run_function tb_config_folder_parser
    tb_run_function tb_parse_cmd_options "$@"
