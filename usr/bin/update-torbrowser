@@ -184,7 +184,7 @@ root_check() {
       return 0
    fi
 
-   printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' as root (sudo)!"
+   printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' as root (sudo)! Instead, '$SCRIPTNAME' should be run as non-root user."
    tb_exit_function 2
 }
 
@@ -205,7 +205,7 @@ sysmaint_check() {
       true "INFO: sysmaint_session: yes and running as root, ok."
       return 0
    fi
-   printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' under account '$who_ami' in sysmaint session!"
+   printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' under account '$who_ami' in sysmaint session! Instead, in sysmaint session '$SCRIPTNAME' should be run under user 'sysmaint'."
    tb_exit_function 2
 }
 
