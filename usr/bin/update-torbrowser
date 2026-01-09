@@ -627,7 +627,7 @@ tb_settings_qubes_manual_run_templatevm() {
    [ -n "$tb_updater_run" ] || tb_updater_run=true
    if [ "$tb_user_home" = "" ]; then
       tb_user_home="/var/cache/tb-binary"
-      tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because running inside Qubes Template but not run from postinst. \
+      tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because started by the user inside Qubes Template. \
 This is useful so you get up to date versions of '$tb_title' in newly created App Qubes inherited from updated Templates.
 More info: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific"
    fi
