@@ -26,6 +26,7 @@ else
 fi
 
 if [ "$tb_updater_was_sourced" = "false" ]; then
+  set -o errexit
   # shellcheck disable=SC2317
   set -o pipefail
   set -o errtrace
