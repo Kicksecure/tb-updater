@@ -1,3 +1,27 @@
+commit 0eb606a38fd1e1655975f6d9c7a437c4a06fbf2e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 9 05:29:21 2026 -0500
+
+    fix
+
+commit 107884b0c06f4060e9b765925b10267226182e5a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 9 05:21:01 2026 -0500
+
+    fix
+
+commit a5c1e5ade3ac48d65c47d2d6d5331e8f43f1bc90
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 9 05:13:59 2026 -0500
+
+    refuse running in sysmaint session as account other than `sysmaint` or `root`
+
+commit ca3ac571b291fd2d822b29df641570fe0b22742e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jan 7 11:05:41 2026 +0000
+
+    bumped changelog version
+
 commit c777205db4529849a2ac64a083960b898c0e4df5
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Jan 7 06:03:38 2026 -0500
