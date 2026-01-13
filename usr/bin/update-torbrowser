@@ -101,7 +101,7 @@ tb_error_handler() {
 <br></br>## BASH_COMMAND: <code>$BASH_COMMAND</code>
 <br></br>## exit_code: <code>$exit_code</code>
 <br></br>##
-<br></br>## output_opts: <code>${output_opts[@]}</code>
+<br></br>## output_opts: <code>${output_opts[*]}</code>
 <br></br>## progressbaridx: <code>$progressbaridx</code>
 <br></br>##
 <br></br>## For debugging, run:
@@ -154,13 +154,14 @@ DOWNLOAD_FAIL_HELP="<p>Possible reasons for download failure:</p>
 }
 
 tb_run_function() {
+   [[ -v "${tb_skip_functions}" ]] || tb_skip_functions=''
    case $tb_skip_functions in
-   *"$@"*) printf '%s\n' "INFO: Skipping '$@', because tb_skip_functions includes it."
+   *"$@"*) printf '%s\n' "INFO: Skipping '$*', because tb_skip_functions includes it."
                   return 0
                   ;;
    esac
 
-   true "INFO: Running '$@', because tb_skip_functions does not include it."
+   true "INFO: Running '$*', because tb_skip_functions does not include it."
    "$@"
 }
 
@@ -175,12 +176,12 @@ root_check() {
    fi
 
    if [ "$tb_running_as_root" = "false" ]; then
-      true "INFO: $FUNCNAME: running as user (non-root)."
+      true "INFO: ${FUNCNAME[0]}: running as user (non-root)."
       return 0
    fi
 
    if printf '%s\n' "$@" | grep -- "--postinst" >/dev/null 2>/dev/null ; then
-      true "INFO: $FUNCNAME: Allow running as root because using --postinst."
+      true "INFO: ${FUNCNAME[0]}: Allow running as root because using --postinst."
       return 0
    fi
 
@@ -239,7 +240,7 @@ tb_sanity_tests() {
 
 tb_ex_funct() {
    local MSG
-   MSG="$0: INFO: $FUNCNAME: Signal '$SIGNAL_TYPE' received. Cleaning up..."
+   MSG="$0: INFO: ${FUNCNAME[0]}: Signal '$SIGNAL_TYPE' received. Cleaning up..."
 
    if [ "$last_pid_list" = "" ]; then
       true
@@ -266,7 +267,7 @@ tb_ex_funct() {
    #output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
    #printf '%s\n' "ERROR: $MSG"
 
-   MSG="$0: INFO: $FUNCNAME: Signal '$SIGNAL_TYPE' received. Exiting."
+   MSG="$0: INFO: ${FUNCNAME[0]}: Signal '$SIGNAL_TYPE' received. Exiting."
    output_gui ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 }
 
@@ -392,7 +393,7 @@ tb_parse_cmd_options() {
 
    ## If there are input files (for example) that follow the options, they
    ## will remain in the "$@" positional parameters.
-   true "$BASH_SOURCE \$@: $@"
+   true "$BASH_SOURCE \$*: $*"
 }
 
 tb_stdin() {
@@ -445,8 +446,8 @@ output_cli() {
 
 output_gui() {
    local MSG output_tool
-   true "$FUNCNAME: START"
-   true "$FUNCNAME: args: ${1+$@}"
+   true "${FUNCNAME[0]}: START"
+   true "${FUNCNAME[0]}: args: ${1+$@}"
    output_tool="/usr/libexec/msgcollector/msgcollector"
    ## Variable initialization required because 'curl-prgrs' uses "set -o nounset".
    [[ -v TB_USE_MSGCOLLECTOR ]] || TB_USE_MSGCOLLECTOR=""
@@ -456,7 +457,7 @@ output_gui() {
          case $1 in
             --messagex)
                ## Only show --messagecli. Skip --messagex.
-               true "$FUNCNAME: --messagex END"
+               true "${FUNCNAME[0]}: --messagex END"
                return 0
                ;;
             --message)
@@ -481,7 +482,7 @@ output_gui() {
    else
       $output_tool --identifier "$IDENTIFIER" "$@"
    fi
-   true "$FUNCNAME: END END"
+   true "${FUNCNAME[0]}: END END"
 }
 
 tb_config_folder_parser() {
@@ -916,7 +917,7 @@ tb_preparation() {
       fi
    elif [ -f /usr/share/whonix/marker ]; then
       ## sets: GATEWAY_IP
-      eval $(/usr/libexec/helper-scripts/settings_echo)
+      eval "$(/usr/libexec/helper-scripts/settings_echo)"
       [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
       local random_socks_password
       ## https://spec.torproject.org/socks-extensions.html
@@ -966,15 +967,15 @@ tb_create_folders() {
 # tb_skip_if_higher_or_equal_version_already_downloaded() {
 #    ## Do this only when using --postinst.
 #    if [ ! "$tb_postinst" = "true" ]; then
-#       true "INFO: Not using --postinst, therefore skipping $FUNCNAME."
+#       true "INFO: Not using --postinst, therefore skipping ${FUNCNAME[0]}."
 #       return 0
 #    fi
 #    if [ "$tbb_version_previous_downloaded_version_stripped" = "none" ]; then
-#       true "INFO: Could not determine tbb_version_previous_downloaded_version_stripped (set to 'none'), therefore skipping $FUNCNAME."
+#       true "INFO: Could not determine tbb_version_previous_downloaded_version_stripped (set to 'none'), therefore skipping ${FUNCNAME[0]}."
 #       return 0
 #    fi
 #    if [ "$tbb_hardcoded_version" = "" ]; then
-#       true "INFO: tbb_hardcoded_version is empty, therefore skipping $FUNCNAME."
+#       true "INFO: tbb_hardcoded_version is empty, therefore skipping ${FUNCNAME[0]}."
 #       return 0
 #    fi
 #    if dpkg --compare-versions -- "$tbb_version_previous_downloaded_version_stripped" ge "$tbb_hardcoded_version" ; then
@@ -1056,7 +1057,7 @@ tb_connectivity_checks_tor() {
 <p>If systemcheck reports no problems with internet activity and downloading $tb_title still fails, please report a bug!</p>
 
 <p>Debugging information:<br />
-You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCNAME</code> should be skipped.</p>"
+You could use <code>--no-tor-con-check</code> if you think function <code>${FUNCNAME[0]}</code> should be skipped.</p>"
 
          output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
@@ -1151,7 +1152,7 @@ tb_connectivity_checks_curl() {
 
 tb_update_check() {
    if [ ! "$tbb_version_stripped" = "" ]; then
-      true "INFO: tbb_version already set to '$tbb_version_stripped'. Skipping $FUNCNAME, ok."
+      true "INFO: tbb_version already set to '$tbb_version_stripped'. Skipping ${FUNCNAME[0]}, ok."
       return 0
    fi
 
@@ -1184,7 +1185,7 @@ tb_update_check() {
 
 tb_remote_version_parser() {
    if [ ! "$tbb_version_stripped" = "" ]; then
-      true "INFO: tbb_version_stripped already set to '$tbb_version_stripped'. Simplified $FUNCNAME, ok."
+      true "INFO: tbb_version_stripped already set to '$tbb_version_stripped'. Simplified ${FUNCNAME[0]}, ok."
       [ -n "$tbb_recommended_versions_error" ] || tbb_recommended_versions_error=""
       return 0
    fi
@@ -1497,7 +1498,7 @@ $tb_notify_details"
          ## Define what CURL_PRGRS is supposed to eval.
          ## ($percent is a local variable provided by $CURL_PRGRS.)
          export -f output_gui
-         CURL_PRGRS_EXEC="output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx"
+         CURL_PRGRS_EXEC="output_gui ${output_opts[*]} --progressbaridx $progressbaridx --progressx"
          export CURL_PRGRS_EXEC
       fi
    fi
@@ -1541,7 +1542,7 @@ $tb_notify_details"
    fi
 
    if [ "$tb_download_common_exit_on_fail" = "false" ]; then
-      true "$FUNCNAME is not supposed to exit, because tb_download_common_exit_on_fail is set to $tb_download_common_exit_on_fail."
+      true "${FUNCNAME[0]} is not supposed to exit, because tb_download_common_exit_on_fail is set to $tb_download_common_exit_on_fail."
       return 0
    fi
 
@@ -1782,7 +1783,7 @@ y/n?"
 
 tb_extract() {
    if [ "$TB_NO_EXTRACT" = "true" ]; then
-      true "INFO: Skipping $FUNCNAME, because TB_NO_EXTRACT is 'true', ok."
+      true "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_EXTRACT is 'true', ok."
       return 0
    fi
 
@@ -1838,10 +1839,16 @@ Extracting $tb_title... This could take a moment..."
       true "INFO: wait bsdtar lastpid"
       wait "$lastpid" || { tb_tar_exit_code="$?" ; true; };
    else
+      ## pv_echo_command is parsed using `eval`.
+      # shellcheck disable=SC2089
       pv_echo_command='echo "extraction percent done: "$percent" / 100" >&2'
+      # shellcheck disable=SC2090
       export pv_echo_command
       export -f output_gui
-      pv_wrapper_command="output_gui ${output_opts[@]} --progressbaridx $progressbaridx --progressx \"\$percent\""
+      ## pv_wrapper_command is parsed using `eval`.
+      # shellcheck disable=SC2089
+      pv_wrapper_command="output_gui ${output_opts[*]} --progressbaridx $progressbaridx --progressx \"\$percent\""
+      # shellcheck disable=SC2090
       export pv_wrapper_command
 
       local tar_fifo tar_pid pv_wrapper_fifo pv_wrapper_fifo
@@ -1954,7 +1961,7 @@ tb_patch_download_folder_create() {
 
 tb_patch() {
    if [ "$TB_NO_PATCH" = "true" ]; then
-      true "INFO: Skipping $FUNCNAME, because TB_NO_PATCH is 'true', ok."
+      true "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_PATCH is 'true', ok."
       return 0
    fi
 
@@ -1963,7 +1970,7 @@ tb_patch() {
 
 tb_install() {
    if [ "$TB_NO_INSTALL" = "true" ]; then
-      true "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
+      true "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_INSTALL is 'true', ok."
       return 0
    fi
 
@@ -1976,11 +1983,11 @@ tb_install() {
 
 tb_cleanup() {
    if [ "$TB_NO_INSTALL" = "true" ]; then
-      true "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
+      true "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_INSTALL is 'true', ok."
       return 0
    fi
    if [ "$TB_NO_CLEANUP" = "true" ]; then
-      printf '%s\n' "INFO: Skipping $FUNCNAME, because TB_NO_CLEANUP is 'true', ok."
+      printf '%s\n' "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_CLEANUP is 'true', ok."
       return 0
    fi
 
