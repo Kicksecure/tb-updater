@@ -32,9 +32,14 @@ if [ "$tb_updater_was_sourced" = "false" ]; then
   set -o errtrace
 fi
 
+# shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/strings.bsh
 source /usr/libexec/helper-scripts/strings.bsh
 ## sets: boot_session
+# shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/boot-session-detection.sh
 source /usr/libexec/helper-scripts/boot-session-detection.sh
+# shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/has.sh
+source /usr/libexec/helper-scripts/has.sh
+# shellcheck source=../../../gpg-bash-lib/usr/libexec/gpg-bash-lib/source_all
 source /usr/libexec/gpg-bash-lib/source_all
 
 [[ -v SCRIPTNAME ]] || SCRIPTNAME="$(basename "$BASH_SOURCE")"
@@ -211,31 +216,31 @@ sysmaint_check() {
 }
 
 tb_sanity_tests() {
-   command -v id >/dev/null
-   command -v basename >/dev/null
-   command -v touch >/dev/null
-   command -v uname >/dev/null
-   command -v mkdir >/dev/null
-   command -v pidof >/dev/null
-   command -v chmod >/dev/null
-   command -v cp >/dev/null
-   command -v mv >/dev/null
-   command -v killall >/dev/null
-   command -v safe-rm >/dev/null
-   command -v head >/dev/null
-   command -v tar >/dev/null
-   command -v date >/dev/null
-   command -v /usr/libexec/msgcollector/msgcollector >/dev/null
-   command -v /usr/libexec/msgcollector/pv_wrapper >/dev/null
+   has id
+   has basename
+   has touch
+   has uname
+   has mkdir
+   has pidof
+   has chmod
+   has cp
+   has mv
+   has killall
+   has safe-rm
+   has head
+   has tar
+   has date
+   has /usr/libexec/msgcollector/msgcollector
+   has /usr/libexec/msgcollector/pv_wrapper
    ## tbbversion function
-   command -v grep >/dev/null
+   has grep
    ## tbbversion function
-   command -v sed >/dev/null
-   command -v sort >/dev/null
-   command -v pv >/dev/null
-   command -v mkfifo >/dev/null
-   command -v jq >/dev/null
-   command -v sanitize-string >/dev/null
+   has sed
+   has sort
+   has pv
+   has mkfifo
+   has jq
+   has sanitize-string
 }
 
 tb_ex_funct() {
@@ -671,7 +676,7 @@ tb_preparation() {
       [ -n "$tb_manual_run" ] || tb_manual_run=true
    fi
 
-   if command -v qubesdb-read >/dev/null 2>&1 ; then
+   if has qubesdb-read; then
       [ -n "$is_qubes" ] || is_qubes=true
 
       ## qubesdb-read fails
@@ -819,7 +824,7 @@ tb_preparation() {
    export who_ami
 
    ret="0"
-   command -v curl.anondist-orig >/dev/null || { ret="$?" ; true; };
+   has curl.anondist-orig || { ret="$?" ; true; };
 
    if [ "$ret" = "0" ]; then
       ## using the non-uwt-wrapped version, if the uwt wrapper is installed,
@@ -827,7 +832,7 @@ tb_preparation() {
       CURL=curl.anondist-orig
    else
       ret="0"
-      command -v curl >/dev/null || { ret="$?" ; true; };
+      has curl || { ret="$?" ; true; };
       if [ "$ret" = "0" ]; then
          ## falling back to real curl, if the uwt wrapper has been uninstalled
          CURL=curl
@@ -1839,14 +1844,14 @@ Extracting $tb_title... This could take a moment..."
       true "INFO: wait bsdtar lastpid"
       wait "$lastpid" || { tb_tar_exit_code="$?" ; true; };
    else
-      ## pv_echo_command is parsed using `eval`.
-      # shellcheck disable=SC2089
+     ## pv_echo_command is parsed using `eval`.
+     # shellcheck disable=SC2089
       pv_echo_command='echo "extraction percent done: "$percent" / 100" >&2'
       # shellcheck disable=SC2090
       export pv_echo_command
       export -f output_gui
-      ## pv_wrapper_command is parsed using `eval`.
-      # shellcheck disable=SC2089
+     ## pv_wrapper_command is parsed using `eval`.
+     # shellcheck disable=SC2089
       pv_wrapper_command="output_gui ${output_opts[*]} --progressbaridx $progressbaridx --progressx \"\$percent\""
       # shellcheck disable=SC2090
       export pv_wrapper_command
@@ -2030,10 +2035,10 @@ tb_start_ask() {
       return 0
    fi
 
-   local command_v_torbrowser_exit_code="0"
-   command -v $tb_bin || { command_v_torbrowser_exit_code="$?" ; true; };
+   local has_torbrowser_exit_code="0"
+   has "$tb_bin" || { has_torbrowser_exit_code="$?" ; true; };
 
-   if [ ! "$command_v_torbrowser_exit_code" = "0" ]; then
+   if [ ! "$has_torbrowser_exit_code" = "0" ]; then
       printf '%s\n' "INFO: '$tb_bin' binary not found in path. tb-starter is probably not installed. \
 Skipping question to start '$tb_title'."
       return 0
