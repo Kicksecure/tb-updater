@@ -4,7 +4,7 @@
 ## See the file COPYING for copying conditions.
 
 : "${tpo_downloader_debug:=""}"
-if [ ! "$tpo_downloader_debug" = "" ]; then
+if [ ! "$tpo_downloader_debug" = "" ] && [[ "$tpo_downloader_debug" =~ ^[0-9]+$ ]]; then
    if [ "$tpo_downloader_debug" -ge "1" ]; then
       set -x
    fi
@@ -39,6 +39,8 @@ source /usr/libexec/helper-scripts/strings.bsh
 source /usr/libexec/helper-scripts/boot-session-detection.sh
 # shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/has.sh
 source /usr/libexec/helper-scripts/has.sh
+# shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/package_installed_check.sh
+source /usr/libexec/helper-scripts/package_installed_check.sh
 # shellcheck source=../../../gpg-bash-lib/usr/libexec/gpg-bash-lib/source_all
 source /usr/libexec/gpg-bash-lib/source_all
 
@@ -125,7 +127,9 @@ tb_error_handler() {
 
    ## In case function output_gui does not exist yet.
    if [ ! "$(type -t "output_gui")" = "function" ]; then
-      output_gui="stecho"
+      output_gui() {
+         stecho
+      }
    fi
 
    if [ "$progressbaridx" = "" ]; then
@@ -143,7 +147,7 @@ tb_error_handler() {
 trap "tb_error_handler" ERR
 
 download_fail_help_set() {
-DOWNLOAD_FAIL_HELP="<p>Possible reasons for download failure:</p>
+   DOWNLOAD_FAIL_HELP="<p>Possible reasons for download failure:</p>
 <ul>
   <li>Internet connectivity issue.</li>
   <li>The download server is down.</li>
@@ -171,48 +175,84 @@ tb_run_function() {
 }
 
 root_check() {
-   if [ "$(id -u)" = "0" ]; then
-      tb_running_as_root=true
-      ## Runs as root during build process (chroot), where msgcollector is not running.
-      ## Under Wayland cannot use gui applications as root.
-      export TB_USE_MSGCOLLECTOR="false"
-   else
-      tb_running_as_root=false
+   if [ "$(id --user)" != "0" ]; then
+     true "INFO: ${FUNCNAME[0]}: running as user (non-root)."
+     tb_running_as_root=false
+     return 0
    fi
-
-   if [ "$tb_running_as_root" = "false" ]; then
-      true "INFO: ${FUNCNAME[0]}: running as user (non-root)."
-      return 0
-   fi
+   tb_running_as_root=true
 
    if printf '%s\n' "$@" | grep -- "--postinst" >/dev/null 2>/dev/null ; then
-      true "INFO: ${FUNCNAME[0]}: Allow running as root because using --postinst."
-      return 0
+      if printf '%s\n' "$@" | grep -- '--is-chroot' >/dev/null 2>/dev/null ; then
+         ## Allow running as root when building images. This keeps us from
+         ## having to worry about `sudo` being hardened too early during the
+         ## build process.
+         true "INFO: ${FUNCNAME[0]}: Allow run as root because using --postinst and --is-chroot."
+         ## msgcollector is not running during the build process.
+         export TB_USE_MSGCOLLECTOR="false"
+         return 0
+      fi
+
+      true "INFO: ${FUNCNAME[0]}: Allow dropping privileges to account 'tb-updater' because using --postinst without --is-chroot."
+      exec /usr/libexec/tb-updater/sandbox-update-torbrowser "$@" || {
+         printf '%s\n' "ERROR: '$SCRIPTNAME' cannot exec '/usr/libexec/tb-updater/sandbox-update-torbrowser'!"
+         tb_exit_function 1
+      }
    fi
 
    printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' as root (sudo)! Instead, '$SCRIPTNAME' should be run as non-root user."
    tb_exit_function 2
 }
 
+qubes_template_check() {
+   local who_ami
+   if ! [ -f /run/qubes/this-is-templatevm ]; then
+      true "INFO: ${FUNCNAME[0]}: not running in TemplateVM, ok."
+      return 0
+   fi
+   who_ami="$(whoami)"
+   if [ "${who_ami}" = 'tb-updater' ]; then
+      true "INFO: ${FUNCNAME[0]}: Running in TemplateVM as user 'tb-updater', ok."
+      return 0
+   fi
+   if pkg_installed user-sysmaint-split && [ "$(whoami)" != 'sysmaint' ]; then
+      printf '%s\n' "ERROR: '$SCRIPTNAME' must be run using account 'sysmaint' when running in a Qubes TemplateVM with user-sysmaint-split installed!"
+      tb_exit_function 2
+   fi
+   exec sudo /usr/libexec/tb-updater/sandbox-update-torbrowser "$@" || {
+      printf '%s\n' "ERROR: '$SCRIPTNAME' cannot exec 'sudo /usr/libexec/tb-updater/sandbox-update-torbrowser'!"
+      tb_exit_function 1
+   }
+}
+
 sysmaint_check() {
+  local who_ami
+  who_ami="$(whoami)"
    if ! [ "$boot_session" = "sysmaint_session" ]; then
       true "INFO: sysmaint_session: no"
-      return 0
+      if [ "$who_ami" != "sysmaint" ]; then
+         true "INFO: sysmaint_session: no and not running as sysmaint, ok."
+         return 0
+      fi
+      ## No need to check for account tb-updater, since we're blacklisting
+      ## accounts here, not whitelisting them.
+      printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' under account '$who_ami' in user session! Instead, in user session '$SCRIPTNAME' should be run under account 'user' or another unprivileged user."
+      tb_exit_function 2
+   else
+      true "INFO: sysmaint_session: yes"
+      if [ "$who_ami" = "sysmaint" ]; then
+         true "INFO: sysmaint_session: yes and running as account 'sysmaint', ok."
+         return 0
+      fi
+      ## We do need to check for account tb-updater here because we're
+      ## whitelisting accounts in this scenario.
+      if [ "$who_ami" = "tb-updater" ]; then
+         true "INFO: sysmaint_session: yes and running as account 'tb-updater', ok."
+         return 0
+      fi
+      printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' under account '$who_ami' in sysmaint session! Instead, in sysmaint session '$SCRIPTNAME' should be run under account 'sysmaint'."
+      tb_exit_function 2
    fi
-   local who_ami
-   who_ami="$(whoami)"
-   true "INFO: sysmaint_session: yes"
-   if [ "$who_ami" = "sysmaint" ]; then
-      true "INFO: sysmaint_session: yes and running as account sysmaint, ok."
-      return 0
-   fi
-   if [ "$who_ami" = "root" ]; then
-      ## If this is OK is tested in function 'root_check'.
-      true "INFO: sysmaint_session: yes and running as root, ok."
-      return 0
-   fi
-   printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' under account '$who_ami' in sysmaint session! Instead, in sysmaint session '$SCRIPTNAME' should be run under user 'sysmaint'."
-   tb_exit_function 2
 }
 
 tb_sanity_tests() {
@@ -329,13 +369,6 @@ tb_parse_cmd_options() {
                ;;
            --nokilltb)
                NOKILLTB="1"
-               shift
-               ;;
-           --devbuildpassthrough)
-               TB_FORCE_INSTALL="1"
-               DEV_BUILD_PASSTHROUGH="1"
-               DEV_PASSTHROUGH="1"
-               export TB_USE_MSGCOLLECTOR="false"
                shift
                ;;
            --postinst)
@@ -523,7 +556,7 @@ tb_resolv_conf_debugging() {
 }
 
 tb_anon_ws_dns_conf() {
-   true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
+   true "tb_disable_anon_ws_dns_conf: $tb_disable_anon_ws_dns_conf"
    true "is_chroot: $is_chroot"
 
    if [ "$is_chroot" = "true" ]; then
@@ -531,15 +564,15 @@ tb_anon_ws_dns_conf() {
       tb_resolv_conf_debugging
    fi
 
-   if [ "$tb_disable_anon_ws_dnf_conf" = "true" ]; then
-      printf '%s\n' "INFO: tb_anon_ws_dns_conf: tb_disable_anon_ws_dnf_conf=true"
+   if [ "$tb_disable_anon_ws_dns_conf" = "true" ]; then
+      printf '%s\n' "INFO: tb_anon_ws_dns_conf: tb_disable_anon_ws_dns_conf=true"
       printf '%s\n' "INFO: Checking if /etc/resolv.conf is a symlink..."
       if test -h /etc/resolv.conf ; then
          ## This is only the case when whonix-ws-network-conf is already installed.
          printf '%s\n' "INFO: Yes, /etc/resolv.conf is a symlink..."
-         printf '%s\n' "INFO: Checking if /var/lib/dpkg/info/whonix-ws-network-conf.prerm is executable..."
+         printf '%s\n' "INFO: Checking if /var/lib/dpkg/info/whonix-ws-network-conf.prerm is an executable..."
          if test -x /var/lib/dpkg/info/whonix-ws-network-conf.prerm ; then
-            printf '%s\n' "INFO: Yes, /var/lib/dpkg/info/whonix-ws-network-conf.prerm is a executable."
+            printf '%s\n' "INFO: Yes, /var/lib/dpkg/info/whonix-ws-network-conf.prerm is an executable."
             [ -n "$tb_reenable_anon_ws_dns_conf" ] || tb_reenable_anon_ws_dns_conf=true
             tb_resolv_conf_debugging
 
@@ -559,6 +592,10 @@ tb_anon_ws_dns_conf() {
 }
 
 tb_settings_chroot_common() {
+   if [ "${tb_running_as_root}" = 'false' ]; then
+      printf '%s\n' "ERROR: ${FUNCNAME[0]}: Cannot use --is-chroot option if not running as root!"
+      tb_exit_function 2
+   fi
    ## Do not run in chroot if tb_install_in_chroot=false.
    if [ ! "$tb_install_in_chroot" = "false" ]; then
       [ -n "$tb_updater_run" ] || tb_updater_run=true
@@ -571,11 +608,11 @@ tb_settings_chroot_common() {
    ## We are using --fail anyhow. No problem to duplicate it.
    [ -n "$CURL_PROXY" ] || CURL_PROXY=( "--fail" )
 
-   ## Careful as it would like information to logs:
+   ## Careful as it would leak information to logs:
    ## Connection #0 to host 10.137.0.82 left intact
    #[ -n "$CURL_OPTS" ] || CURL_OPTS="--verbose"
 
-   [ -n "$tb_disable_anon_ws_dnf_conf" ] || tb_disable_anon_ws_dnf_conf=true
+   [ -n "$tb_disable_anon_ws_dns_conf" ] || tb_disable_anon_ws_dns_conf=true
    ## Debugging.
    [ -n "$pv_wrapper_debug" ] || pv_wrapper_debug=true
 }
@@ -599,8 +636,8 @@ tb_settings_postinst_common() {
    ## Using curl instead of curl-prgrs to debug server issue.
    ## --ordinary
    #[ -n "$ordinary" ] || ordinary="true"
+
    ## Careful as it would like information to logs:
-   ## TODO: out comment this
    ## Connection #0 to host 10.137.0.82 left intact
    #[ -n "$CURL_OPTS" ] || CURL_OPTS="--verbose"
 }
@@ -609,11 +646,11 @@ tb_settings_qubes_common_templatevm() {
    ## Skip Tor connectivity check when running inside Qubes Template,
    ## because since Qubes R4 Templates are non-networked by default.
    [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
-   [ -n "$tb_qubes_template_detected" ] || tb_qubes_template_detected=true
 }
 
-tb_settings_not_tempaltevm() {
-   [ -n "$tb_qubes_template_detected" ] || tb_qubes_template_detected=false
+tb_settings_not_templatevm() {
+   ## TODO: Unused, remove?
+   true;
 }
 
 tb_settings_qubes_postinst_templatevm() {
@@ -621,42 +658,14 @@ tb_settings_qubes_postinst_templatevm() {
    if [ ! "$tb_install_follow" = "false" ]; then
       [ -n "$tb_updater_run" ] || tb_updater_run=true
    fi
-   if [ "$tb_user_home" = "" ]; then
-      tb_user_home="/var/cache/tb-binary"
-      tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because running inside Qubes Template and from postinst. \
-This is useful so you get up to date versions of $tb_title in newly created App Qubes inherited from updated Templates.
-More info: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific"
-   fi
 }
 
 tb_settings_qubes_manual_run_templatevm() {
    [ -n "$tb_updater_run" ] || tb_updater_run=true
-   if [ "$tb_user_home" = "" ]; then
-      tb_user_home="/var/cache/tb-binary"
-      tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because started by the user inside Qubes Template. \
-This is useful so you get up to date versions of '$tb_title' in newly created App Qubes inherited from updated Templates.
-More info: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific"
-   fi
 }
 
 tb_settings_manual_run_common() {
    [ -n "$tb_updater_run" ] || tb_updater_run=true
-}
-
-tb_fix_permissions() {
-   ## This function is duplicated in tb-updater, tb-starter.
-   ## /usr/libexec/tb-updater/tb-permission-fix fixes permissions in folder /var/cache/tb-binary
-   ## Save to do in Qubes Template as well as in App Qube.
-   if [ "$tb_running_as_root" = "true" ]; then
-      ## Already running as root. No need to use sudo or leaprun.
-      ## Fix build issue.
-      ## /usr/bin/update-torbrowser: line 591: /usr/bin/sudo: Operation not permitted
-      /usr/libexec/tb-updater/tb-permission-fix
-      return 0
-   fi
-   ## Running as user, not as root.
-   ## Requires root, therefore running this with leaprun.
-   leaprun tb-permission-fix
 }
 
 tb_preparation() {
@@ -706,7 +715,7 @@ tb_preparation() {
    if [ "$running_inside_qubes_template_vm" = "true" ] ; then
       tb_settings_qubes_common_templatevm
    else
-      tb_settings_not_tempaltevm
+      tb_settings_not_templatevm
    fi
 
    if [ "$tb_postinst" = "true" ]; then
@@ -719,16 +728,15 @@ tb_preparation() {
    true "tb_manual_run: $tb_manual_run"
    if [ "$tb_manual_run" = "true" ]; then
       tb_settings_manual_run_common
-      if [ "$running_inside_qubes_template_vm" = "true" ] ; then
+      if [ "$running_inside_qubes_template_vm" = "true" ]; then
          tb_settings_qubes_manual_run_templatevm
       fi
    fi
 
    if [ "$tb_user_home" = "" ]; then
       tb_user_home=~
-      ## In case of running as root from postinst.
-      if [ "$tb_user_home" = "/root" ] || [ "$(whoami)" = "root" ]; then
-         tb_user_home="/var/cache/tb-binary"
+      if [ "${tb_user_home}" = '/root' ] || [ "${tb_running_as_root}" = 'true' ]; then
+         tb_user_home='/var/cache/tb-binary'
          tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because running as root."
       fi
    fi
@@ -822,6 +830,10 @@ tb_preparation() {
    ## Make visible to curl-prgrs.
    export IDENTIFIER
    export who_ami
+
+   if [ "${who_ami}" = 'tb-updater' ]; then
+      noaskstart='true'
+   fi
 
    ret="0"
    has curl.anondist-orig || { ret="$?" ; true; };
@@ -1031,10 +1043,6 @@ tb_connectivity_checks_interfaces() {
 }
 
 tb_connectivity_checks_tor() {
-   if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
-      return 0
-   fi
-
    if [ "$TB_NO_TOR_CON_CHECK" = "1" ]; then
       return 0
    fi
@@ -1110,10 +1118,10 @@ You could use <code>--no-tor-con-check</code> if you think function <code>${FUNC
 }
 
 tb_connectivity_checks_curl() {
-   if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
-      return 0
-   fi
-
+   ## TODO: Maybe we should split the actual curl operation into a yet
+   ## different user account? That would prevent a compromised curl from
+   ## being able to affect later signature checks. Or maybe we need a
+   ## general-purpose sandboxed curl wrapper.
    tb_notify_details="Checking connectivity... Will take a moment..."
    printf '%s\n' "INFO: Running connectivity check...  Downloading...: '$tbb_download_base_url'"
 
@@ -1159,14 +1167,6 @@ tb_update_check() {
    if [ ! "$tbb_version_stripped" = "" ]; then
       true "INFO: tbb_version already set to '$tbb_version_stripped'. Skipping ${FUNCNAME[0]}, ok."
       return 0
-   fi
-
-   ## do not re-download Tor Browser if a previous build already did
-   if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
-      if [ -d "$tb_browser_folder" ]; then
-         printf '%s\n' "$SCRIPTNAME: Not downloading '$tb_title' again, because folder '$tb_browser_folder' already exists."
-         tb_exit_function 0
-      fi
    fi
 
    tb_notify_details="Checking $tb_title version... Will take a moment..."
@@ -1792,9 +1792,7 @@ tb_extract() {
       return 0
    fi
 
-   if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      true
-   else
+   if [ "$TB_FORCE_INSTALL" != "1" ]; then
       progressbaridx="$(cat -- "/proc/sys/kernel/random/uuid")"
       tb_notify_msg="Extraction
 ----------------------------------------------------------------------
@@ -2102,15 +2100,16 @@ y/n?"
 
 main_function() {
    tb_run_function root_check "$@"
+   tb_run_function qubes_template_check "$@"
+
    tb_run_function sysmaint_check "$@"
    tb_run_function tb_sanity_tests
    tb_run_function tb_config_folder_parser
    tb_run_function tb_parse_cmd_options "$@"
    tb_run_function tb_preparation
    tb_run_function tb_stdin
-   tb_run_function tb_fix_permissions
-   tb_run_function tb_create_folders
    tb_run_function tb_qubes_dvm_template
+   tb_run_function tb_create_folders
    tb_run_function tb_anon_ws_dns_conf
    tb_run_function tb_local_version_detection
 
@@ -2146,7 +2145,6 @@ main_function() {
    tb_run_function tb_install
    tb_run_function tb_cleanup
    tb_run_function tb_hardcoded_version_last_downloaded_save
-   tb_run_function tb_fix_permissions
    tb_run_function tb_chroot_pre_exit
    tb_run_function tb_start_ask
 }

@@ -15,6 +15,10 @@ true "
 #####################################################################
 "
 
+create_tb_updater_user_account() {
+   adduser --home /var/lib/tb-updater/work --quiet --system --group tb-updater || true
+}
+
 download() {
    if ischroot --default-false ; then
       chroot_maybe="--is-chroot"
@@ -38,35 +42,40 @@ download() {
       ## TODO:
       #tpo_downloader_debug="$tpo_downloader_debug"
 
-      ## TODO: Use a dedicated Linux user account.
-      ## Ideally this would be run as account "user", but the existence of that account
-      ## is not guaranteed by the time this script is running.
-      ## Using a dedicated user account is difficult versus Wayland because there
-      ## is also tb-updater GUI and no way to run a GUI application under a
-      ## different account. could be found for Wayland. tb-updater CLI versus
-      ## tb-updater GUI would need to be cleanly separated.
-
       $tool_item \
          $chroot_maybe \
          --postinst
    done
 }
 
+true "anon_shared_inst_tb: $anon_shared_inst_tb"
+true "tb_onion: $tb_onion"
+true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
+
+case "$1" in
+   configure)
+      create_tb_updater_user_account
+      download
+   ;;
+
+   abort-upgrade|abort-remove|abort-deconfigure|triggered)
+   ;;
+
+   *)
+      printf '%s\n' "${DPKG_MAINTSCRIPT_NAME} called with unknown argument \`$1'" >&2
+      exit 1
+   ;;
+esac
+
+## Makes assumption on account 'user' existing.
+## Not needed since done by 'update-torbrowser' and 'torbrowser'.
+#/usr/libexec/tb-updater/tb-permission-fix
+
 true "INFO: debhelper beginning here."
 
 #DEBHELPER#
 
 true "INFO: Done with debhelper."
-
-true "anon_shared_inst_tb: $anon_shared_inst_tb"
-true "tb_onion: $tb_onion"
-true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
-
-download
-
-## Makes assumption on account 'user' existing.
-## Not needed since done by 'update-torbrowser' and 'torbrowser'.
-#/usr/libexec/tb-updater/tb-permission-fix
 
 true "
 #####################################################################

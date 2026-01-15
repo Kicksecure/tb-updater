@@ -1,0 +1,280 @@
+#!/bin/bash
+
+## Copyright (C) 2026 - 2026 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
+## See the file COPYING for copying conditions.
+
+set -o errexit
+set -o nounset
+set -o errtrace
+set -o pipefail
+
+## shellcheck source=../../../../helper-scripts/usr/libexec/helper-scripts/has.sh
+source /usr/libexec/helper-scripts/has.sh
+
+has setfacl
+
+tb_updater_home='/var/lib/tb-updater/work'
+root_browser_dir='/var/cache/tb-binary'
+tb_updater_run_dir="/run/user/$(id -u tb-updater)"
+wl_sock="${tb_updater_run_dir}/wayland-0"
+use_x11_gui='false'
+
+cleanup() {
+  ## Kill all children of the shell (this will terminate msgdispatcher and
+  ## everything under it, assuming nothing in msgdispatcher daemonizes).
+  pkill -P "$$" >/dev/null 2>&1 || true
+
+  if [ -S "${wl_sock}" ] \
+    && ! setfacl --remove u:tb-updater -- "${wl_sock}"; then
+    printf '%s\n' "WARNING: ${FUNCNAME[0]}: Cannot remove ACL on '${wl_sock}' to revoke account 'tb-updater' access!"
+  fi
+
+  if mountpoint "${wl_sock}" >/dev/null 2>&1 && ! umount "${wl_sock}"; then
+    printf '%s\n' "WARNING: ${FUNCNAME[0]}: Cannot unmount '${wl_sock}'!"
+  fi
+
+  if [ "${use_x11_gui}" = 'true' ] && ! xhost -si:localuser:tb-updater; then
+    printf '%s\n' "WARNING: ${FUNCNAME[0]}: Could not revoke X11 access from account 'tb-updater'!"
+  fi
+
+  ## Dropping permissions before deletion so that there isn't any way for this
+  ## to delete files that `tb-updater` doesn't have permission to delete.
+  sudo -H -u 'tb-updater' \
+    bash -c "safe-rm --recursive --force -- '${tb_updater_home}'/{,.}*" \
+    >/dev/null 2>&1 || true
+  if [ -d "${tb_updater_run_dir}" ]; then
+    sudo -H -u 'tb-updater' \
+      bash -c "safe-rm --recursive --force -- '${tb_updater_run_dir}'/{,.}*" \
+      >/dev/null 2>&1 || true
+  fi
+  rmdir "${tb_updater_run_dir}" >/dev/null 2>&1 || true
+}
+
+error_handler() {
+  cleanup
+  exit 1
+}
+
+trap error_handler EXIT INT TERM
+
+exit_clean() {
+  local exit_code
+  exit_code="${1:-}"
+  [ -z "${exit_code}" ] && exit_code='0'
+  trap '' EXIT INT TERM
+  exit "${exit_code}"
+}
+
+is_gui_enabled() {
+  while [ -n "${1:-}" ]; do
+    case "$1" in
+      --input)
+        if [ -n "${2:-}" ]; then
+          TB_INPUT="$2"
+        fi
+        shift 2
+        ;;
+      --)
+        break
+        ;;
+      *)
+        shift
+        ;;
+    esac
+  done
+
+  if [ "${TB_INPUT:-}" = 'gui' ]; then
+    printf '%s\n' 'true'
+    return
+  fi
+  printf '%s\n' 'false'
+}
+
+sandbox_update_torbrowser() {
+  local _ gui_enabled orig_wl_sock gui_ready sock_owner
+
+  if [ "$(id -u)" != '0' ]; then
+    printf '%s\n' "ERROR: ${FUNCNAME[0]}: This script requires root privileges!"
+    exit_clean 1
+  fi
+
+  if ! [ -d "${tb_updater_home}" ]; then
+     printf '%s\n' "ERROR: ${FUNCNAME[0]}: '${tb_updater_home}' does not exist or is not a directory!"
+     exit_clean 1
+  fi
+
+  orig_wl_sock=''
+  gui_enabled="$(is_gui_enabled "$@")"
+  gui_ready='false'
+  [ -n "${SUDO_USER:-}" ] || SUDO_USER=''
+
+  ## Run cleanup before starting, so that if there are any problematic
+  ## leftovers from a previous interrupted run, they are removed.
+  cleanup
+
+  mkdir --parents -- "${tb_updater_run_dir}"
+  chown -R -- tb-updater:tb-updater "${tb_updater_run_dir}"
+
+  ## One-run loop makes it easy to skip "everything else" in the block by
+  ## using 'break'.
+  # shellcheck disable=SC2043
+  for _ in 1; do
+    if [ "${gui_enabled}" != 'true' ]; then
+      break
+    fi
+    if [ -z "$SUDO_USER" ]; then
+      true "INFO: ${FUNCNAME[0]}: Cannot determine calling user, skipping GUI setup, ok."
+      break
+    fi
+
+    ## Note that if the user is using a nested Wayland compositor within an X
+    ## session, we will end up displaying the UI in that nested compositor.
+    ## This most likely is not a concern, since this is a rare setup we don't
+    ## support.
+    if ! orig_wl_sock="$(/usr/libexec/helper-scripts/find_wl_compositor)"; then
+      true "INFO: ${FUNCNAME[0]}: Cannot find Wayland socket, assuming the use of X11."
+
+      if ! has xhost; then
+        true "INFO: ${FUNCNAME[0]}: Cannot find xhost executable, skipping GUI setup, ok."
+        break
+      fi
+
+      local xserver_id_calc xserver_id
+
+      ## This finds *an* X server corresponding to the calling user. That
+      ## isn't necessarily the X server on the active TTY. However, this only
+      ## needs to support Qubes, and Qubes only has one X server running per
+      ## qube by default, so this should be good enough.
+      xserver_id_calc="$(who \
+        | grep "^${SUDO_USER}" \
+        | grep '(:[0-9]\+)$' \
+        | head -n1)" || true
+      if [[ "${xserver_id_calc}" =~ \((:[0-9]+)\)$ ]]; then
+        xserver_id="${BASH_REMATCH[1]}"
+      else
+        true "INFO: ${FUNCNAME[0]}: Cannot find X server, skipping GUI setup, ok."
+        break
+      fi
+
+      export DISPLAY="${xserver_id}"
+      xhost si:localuser:tb-updater
+      use_x11_gui='true'
+      gui_ready='true'
+
+      break
+    fi
+
+    ## If we get to this point, Wayland is in use.
+    ##
+    ## /run/user/ORIG_UID is unreadable to all except the owner, so we can't
+    ## simply point to the existing Wayland socket (either with an environment
+    ## variable or a symlink).
+    ##
+    ## We also can't just bind-mount the socket into the proper location,
+    ## because the socket's permissions are also restrictive and prevent
+    ## non-owners from connecting.
+    ##
+    ## We don't want to change the permissions on the socket to make it
+    ## world-readable and world-writable, but we also cannot change the
+    ## socket's ownership. For this reason, we use an ACL to temporarily allow
+    ## the tb_updater user to connect to the socket. The cleanup routine
+    ## revokes the ACL once it's no longer in use.
+
+    if ! sock_owner="$(stat --format='%U' -- "${orig_wl_sock}")"; then
+      true "INFO: ${FUNCNAME[0]}: Cannot get owner of Wayland socket, skipping GUI setup, ok."
+      break
+    fi
+    if [ "${sock_owner}" != "${SUDO_USER}" ]; then
+      true "INFO: ${FUNCNAME[0]}: Calling user is different than Wayland socket owner, skipping GUI setup, ok."
+      break
+    fi
+
+    if [ -f "${wl_sock}" ] || [ -S "${wl_sock}" ]; then
+      if mountpoint "${wl_sock}" >/dev/null 2>&1 \
+        && ! umount "${wl_sock}"; then
+        printf '%s\n' "WARNING: ${FUNCNAME[0]}: '${wl_sock}' is a bind mount, but cannot be unmounted! GUI will be disabled."
+        break
+      fi
+
+    elif [ -e "${wl_sock}" ]; then
+      printf '%s\n' "WARNING: ${FUNCNAME[0]}: '${wl_sock}' exists but is not a file or socket! GUI will be disabled."
+      break
+
+    ## In order to bind-mount a socket somewhere, you need to have a file to
+    ## bind-mount over the top of. (One can bind-mount over the top of a
+    ## socket also, which this code allows. This isn't expected to ever
+    ## happen, but it should be harmless if it does.)
+    elif ! touch "${wl_sock}"; then
+      printf '%s\n' "WARNING: ${FUNCNAME[0]}: Cannot create file '${wl_sock}'! GUI will be disabled."
+      break
+    fi
+
+    if ! mount --bind "${orig_wl_sock}" "${wl_sock}"; then
+      printf '%s\n' "WARNING: ${FUNCNAME[0]}: Cannot bind-mount Wayland socket from '${orig_wl_sock}' to '${wl_sock}'! GUI will be disabled."
+      break
+    fi
+
+    if ! setfacl --modify u:tb-updater:rw -- "${wl_sock}"; then
+      printf '%s\n' "WARNING: ${FUNCNAME[0]}: Cannot set ACL on '${wl_sock}' to permit account 'tb-updater' access! GUI will be disabled."
+      umount "${wl_sock}" \
+        || printf '%s\n' "WARNING: ${FUNCNAME[0]}: Cannot clean up bind-mount of Wayland socket from '${orig_wl_sock}' to '${wl_sock}'!"
+      break
+    fi
+
+    gui_ready='true'
+  done
+
+  if [ "${gui_ready}" = 'true' ]; then
+    if [ "${use_x11_gui}" = 'true' ]; then
+      sudo -H -u 'tb-updater' \
+        XDG_RUNTIME_DIR="${tb_updater_run_dir}" \
+        DISPLAY="${DISPLAY}" \
+        QT_QPA_PLATFORM='xcb' \
+        GDK_BACKEND='x11' \
+        /usr/libexec/msgcollector/msgdispatcher &
+      sudo -H -u 'tb-updater' \
+        XDG_RUNTIME_DIR="${tb_updater_run_dir}" \
+        DISPLAY="${DISPLAY}" \
+        QT_QPA_PLATFORM='xcb' \
+        GDK_BACKEND='x11' \
+        /usr/bin/update-torbrowser "$@"
+    else
+      sudo -H -u 'tb-updater' \
+        XDG_RUNTIME_DIR="${tb_updater_run_dir}" \
+        WAYLAND_DISPLAY='wayland-0' \
+        QT_QPA_PLATFORM='wayland' \
+        GDK_BACKEND='wayland' \
+        /usr/libexec/msgcollector/msgdispatcher &
+      sudo -H -u 'tb-updater' \
+        XDG_RUNTIME_DIR="${tb_updater_run_dir}" \
+        WAYLAND_DISPLAY='wayland-0' \
+        QT_QPA_PLATFORM='wayland' \
+        GDK_BACKEND='wayland' \
+        /usr/bin/update-torbrowser "$@"
+    fi
+  else
+    sudo -H -u 'tb-updater' /usr/bin/update-torbrowser "$@"
+  fi
+
+  if [ -d "${tb_updater_home}/.tb" ] && [ -d "${tb_updater_home}/.cache/tb" ]; then
+    true "INFO: ${FUNCNAME[0]}: Found browser installation in '${tb_updater_home}', moving to '${root_browser_dir}'."
+    mkdir --parents -- "${root_browser_dir}"
+    safe-rm --recursive --force -- "${root_browser_dir}"/*
+    cp --recursive -- "${tb_updater_home}/.tb" "${root_browser_dir}/"
+    mkdir --parents -- "${root_browser_dir}/.cache"
+    cp --recursive -- "${tb_updater_home}/.cache/tb" "${root_browser_dir}/.cache/"
+
+    chmod --recursive o+r -- "${root_browser_dir}"
+    chmod --recursive g+r -- "${root_browser_dir}"
+    find "${root_browser_dir}" -type d -print0 | xargs -0 chmod 0775
+    chmod --recursive -- u+X "${root_browser_dir}"
+    chown --recursive -- 0:0 "${root_browser_dir}"
+  fi
+
+  true "INFO: ${FUNCNAME[0]}: Cleaning up '${tb_updater_home}'."
+
+  cleanup
+  exit_clean 0
+}
+
+sandbox_update_torbrowser "$@"
