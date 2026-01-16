@@ -472,16 +472,17 @@ More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Us
 
    output_gui ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
 
-   output_cli "ERROR: $MSG"
+   output_cli error "$MSG"
 
    tb_exit_function 1
 }
 
 output_cli() {
-   local MSG
+   local log_level MSG
+   log_level="$1"
+   shift || true
    MSG="$(sanitize-string -- nolimit "$@")"
-   ## TODO: use 'log' function
-   printf '%s\n' "$MSG"
+   log "$log_level" "$MSG"
 }
 
 output_gui() {
@@ -514,8 +515,7 @@ output_gui() {
       [[ -v MSG ]] || MSG=""
       if [ ! "$MSG" = "" ]; then
          MSG="$(sanitize-string -- nolimit "$MSG")"
-         ## TODO: use 'log' function
-         printf '%s\n' "$MSG"
+         log notice "$MSG"
       fi
    elif [ "$outputfunc_verbose" = "true" ]; then
       printf '%s\n' "RUNNING: bash -x $output_tool --identifier $IDENTIFIER ${1+$@}"
@@ -986,7 +986,7 @@ tb_connectivity_checks_interfaces() {
 
    output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
-   output_cli "ERROR: $MSG"
+   output_cli error "$MSG"
 
    tb_exit_function 18
 }
@@ -1023,7 +1023,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>${FUNC
 
          output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
-         output_cli "ERROR: $MSG"
+         output_cli error "$MSG"
 
          tb_exit_function 5
       fi
@@ -1054,7 +1054,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>${FUNC
 
          output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
-         output_cli "ERROR: $MSG"
+         output_cli error "$MSG"
 
          tb_exit_function 6
       fi
@@ -1104,7 +1104,7 @@ tb_connectivity_checks_curl() {
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
       output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
-      output_cli "ERROR: $MSG"
+      output_cli error "$MSG"
 
       tb_exit_function 7
    fi
@@ -1163,7 +1163,7 @@ tb_remote_version_sanity_test() {
 <p>$DOWNLOAD_FAIL_HELP</p>"
       output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
-      output_cli "ERROR: $MSG"
+      output_cli error "$MSG"
 
       tb_exit_function 9
    fi
@@ -1179,7 +1179,7 @@ tb_remote_version_sanity_test() {
 <p>$DOWNLOAD_FAIL_HELP</p>"
       output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
-      output_cli "ERROR: $MSG"
+      output_cli error "$MSG"
 
       tb_exit_function 9
    elif dpkg --compare-versions -- "$tbb_version_stripped" gt "$tbb_hardcoded_version" ; then
@@ -1199,7 +1199,7 @@ dpkg --compare-versions failed!</p>
 <p>$DOWNLOAD_FAIL_HELP</p>"
       output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
-      output_cli "ERROR: $MSG"
+      output_cli error "$MSG"
 
       tb_exit_function 9
    fi
@@ -1272,7 +1272,7 @@ Otherwise updating <code>$tb_title</code> in this Template will not result in ne
 <br />More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific</a></p>"
          output_gui ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
-         output_cli "INFO: $MSG"
+         output_cli notice "$MSG"
       fi
    fi
 
@@ -1355,7 +1355,7 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
 <p>$confirmation_screen_learn_more_link</p>"
       fi
 
-      output_cli "$MSG"
+      output_cli notice "$MSG"
    else
       ## not installed
       type="info"
@@ -1363,7 +1363,7 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
 <p>$confirmation_screen_learn_more_link</p>"
 
       if ! [ "$tb_postinst" = "true" ]; then
-         output_cli "INFO: $MSG"
+         output_cli notice "$MSG"
       fi
    fi
 
@@ -1376,8 +1376,7 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
    else
       local answer
       if [ "$TB_INPUT" = "stdin" ]; then
-         ## TODO: colorful output
-         printf '%s\n' "QUESTION: $question
+         log question "$question
 y/n?"
          read -r answer
          if [ ! "$answer" = "y" ]; then
@@ -1435,7 +1434,7 @@ tb_reset() {
 <br/><a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset</a></p>"
       output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
-      output_cli "ERROR: $MSG"
+      output_cli error "$MSG"
 
       tb_exit_function 16
    fi
@@ -1523,7 +1522,7 @@ $tb_notify_details"
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
       output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
-      output_cli "ERROR: $MSG"
+      output_cli error "$MSG"
 
       tb_exit_function "$tb_download_common_exit_on_fail"
    fi
@@ -1613,7 +1612,7 @@ tb_gpg_verify() {
 <p>$gpg_bash_lib_output_diagnostic_message</p>"
       output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
-      output_cli "ERROR: $MSG"
+      output_cli error "$MSG"
 
       tb_exit_function 12
    fi
@@ -1724,7 +1723,7 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
 $gpg_bash_lib_output_gpg_verify_output_br_added</p>
 <p><a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Installation_Confirmation_Notification>Learn more about this Installation Confirmation Notification.</a></p>"
 
-   output_cli "INFO: $MSG"
+   output_cli notice "$MSG"
 
    printf '%s\n' "$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Installation_Confirmation_Notification"
 
@@ -1735,8 +1734,7 @@ $gpg_bash_lib_output_gpg_verify_output_br_added</p>
       true "INFO: TB_INPUT is set to '$TB_INPUT', continuing without asking."
    else
       if [ "$TB_INPUT" = "stdin" ]; then
-         ## TODO: colorful output
-         printf '%s\n' "QUESTION: $question
+         log question "QUESTION: $question
 y/n?"
          read -r answer
          if [ ! "$answer" = "y" ]; then
@@ -1924,7 +1922,7 @@ Extracting $tb_title... This could take a moment..."
 <br></br>Please report this bug!</p>"
       output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
-      output_cli "ERROR: $MSG"
+      output_cli error "$MSG"
 
       tb_exit_function 15
    fi
@@ -2010,7 +2008,7 @@ Skipping question to start '$tb_title'."
 <code>$tb_bin</code></p>"
          output_gui ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
 
-         output_cli "INFO: $MSG"
+         output_cli notice "$MSG"
 
          return 0
       fi
@@ -2030,8 +2028,7 @@ Skipping question to start '$tb_title'."
    fi
 
    if [ "$TB_INPUT" = "stdin" ]; then
-      ## TODO: colorful output
-      printf '%s\n' "QUESTION: $question
+      log question "QUESTION: $question
 y/n?"
       read -r answer
       if [ ! "$answer" = "y" ]; then
