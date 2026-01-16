@@ -1,8 +1,142 @@
+commit cc2f0190906ad75be07b1d27a41d85f48d3e020a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 07:11:00 2026 -0500
+
+    re-generate man pages (generated using "genmkfile manpages")
+
+commit 8fb92d97fc5a85cfb5dffbc0b7a55dbfce9f4721
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 06:46:51 2026 -0500
+
+    output
+
+commit 23db06028af00d0adc14cae3e0c6e04a9ef7f174
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 06:39:12 2026 -0500
+
+    improve
+
+commit 04384e35a026cf98d6f0129e06c44d464eeb0443
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 06:32:20 2026 -0500
+
+    end-of-options
+
+commit a884ac1bf469cadcf26088436def84d39ee478f0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 06:32:00 2026 -0500
+
+    output
+
+commit 611276c3d37552fcef1d686de620a213d18542cc
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 06:28:05 2026 -0500
+
+    improve
+
+commit d53f38e5a1d532a9dcc004568d0a18ea4555db9f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 06:15:03 2026 -0500
+
+    improve
+
+commit 6a3129c8fcad3b47d01709461a669c89135f50e8
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 06:06:17 2026 -0500
+
+    output
+
+commit 47a5c4936fe05dd9df21b92745c8cf489b02e6a0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 06:02:35 2026 -0500
+
+    port to log
+
+commit 1ac4a2c6b6ef3e3b79b185e45e3217e488261551
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 05:49:45 2026 -0500
+
+    output
+
+commit 0176fd8b227c38fbddb496c5b29371d8dc8b2b4b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 05:47:25 2026 -0500
+
+    port to log
+
+commit f7ce69831c8d4bc0cabae32c19339549a3bbc903
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 05:40:41 2026 -0500
+
+    improve
+
+commit caa17f961428655ec975b3aaf7ca043d4e8082e3
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 05:38:19 2026 -0500
+
+    improve
+
+commit 7303f893f9ca04653065830a6c4248ffe031bf35
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 05:35:26 2026 -0500
+
+    output
+
+commit 9dcd0088f232969a2be397c5ba9fc1ccc0d7d4ec
+Merge: fbe41f0 d439904
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 05:23:13 2026 -0500
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit d4399045ce3caef6299c32d0b8841711cb1f3f91
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Fri Jan 16 00:07:04 2026 -0600
+
+    Fix privleap issue, work around sudo being non-executable under torsocks, fix signature checking
+
+commit 87b394525e90c645ac6df201bae4c26d39cb81a3
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Thu Jan 15 21:51:36 2026 -0600
+
+    Polish previous work on sandboxing update-torbrowser
+
+commit ed08d4f40b2a1cac3dbe941fb5e42e994af63d4f
+Merge: fac48f9 fbe41f0
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Thu Jan 15 18:09:54 2026 -0600
+
+    Merge branch 'master' into arraybolt3/trixie
+
+commit fac48f9562fdb82a462ef8f54b4c24529fc3db74
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Wed Jan 14 23:07:39 2026 -0600
+
+    Work-in-progress, isolate browser installation into dedicated user account if installing into /var/cache/tb-binary
+
+commit fbe41f0968c2065212f8030aaa8ecc0fd2df3001
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jan 14 08:26:09 2026 +0000
+
+    bumped changelog version
+
 commit ed9d340f9b4b11826267790b20d894440e526117
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Jan 13 15:16:55 2026 -0500
 
     tbb_hardcoded_version update
+
+commit 26907cba90fc24472879f180feab92e65456a2b4
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Mon Jan 12 20:13:27 2026 -0600
+
+    Replace 'command -v' with 'has' where possible
+
+commit ff45c32056041dff16cd5b39f15e262448de78d7
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Mon Jan 12 20:05:28 2026 -0600
+
+    Make shellcheck happier
 
 commit 895fac54b8dd78e0dda43f2cfafdf8a3068dbbfd
 Author: Patrick Schleizer <adrelanos@whonix.org>
