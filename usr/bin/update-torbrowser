@@ -76,13 +76,13 @@ tb_exit_function() {
    who_ami="$(whoami)"
 
    if [ "$exit_code" = "0" ]; then
-      log notice "SUCCESS. (who_ami: '$who_ami')"
+      log notice "END: Success. (who_ami: '$who_ami')"
       exit 0
    fi
 
    if [ "$anon_shared_inst_tb" = "open" ]; then
       if [ "$tb_postinst" = "true" ]; then
-         log notice "Failing open.
+         log notice "END: Failing open.
 (who_ami: '$who_ami')
 More info:
 $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Update:_Technical_Details"
@@ -90,7 +90,7 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Upd
       exit 0
    else
       if [ "$tb_postinst" = "true" ]; then
-         log error "Failing closed.
+         log error "END: Failing closed.
 (who_ami: '$who_ami')
 More info:
 $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Update:_Technical_Details"
