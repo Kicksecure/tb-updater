@@ -3,6 +3,10 @@
 ## Copyright (C) 2026 - 2026 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
 ## See the file COPYING for copying conditions.
 
+## NOTE: Do NOT use `sudo` in this script! It will be run by tb-updater's
+## postinst, which may run under a torsocks'd apt due to uwtwrapper. torsocks
+## breaks sudo. Use setpriv instead, as this works with torsocks.
+
 ## TODO: Make this work with more than just Tor Browser.
 
 set -o errexit
@@ -22,9 +26,19 @@ if [ -z "${tb_updater_uid}" ]; then
    printf '%s\n' "ERROR: Unable to get UID of account 'tb-updater'! Exiting."
    exit 1
 fi
+tb_updater_gid="$(id -g tb-updater)"
+if [ -z "${tb_updater_gid}" ]; then
+   printf '%s\n' "ERROR: Unable to get GID of account 'tb-updater'! Exiting."
+   exit 1
+fi
 tb_updater_run_dir="/run/user/$(id -u tb-updater)"
 wl_sock="${tb_updater_run_dir}/wayland-0"
 use_x11_gui='false'
+
+setpriv_tb_updater() {
+  setpriv --reuid "${tb_updater_uid}" --regid "${tb_updater_gid}" \
+    --init-groups --reset-env -- "$@"
+}
 
 cleanup() {
   ## Kill all children of the shell (this will terminate msgdispatcher and
@@ -48,11 +62,10 @@ cleanup() {
   ## to delete files that `tb-updater` doesn't have permission to delete.
   shopt -s dotglob
   shopt -s nullglob
-  sudo -H -u 'tb-updater' \
-    safe-rm --recursive --force --one-file-system -- "${tb_updater_home}"/*
+  setpriv_tb_updater safe-rm --recursive --force --one-file-system \
+    -- "${tb_updater_home}"/*
   if [ -d "${tb_updater_run_dir}" ]; then
-    sudo -H -u 'tb-updater' \
-      safe-rm --recursive --force --one-file-system \
+    setpriv_tb_updater safe-rm --recursive --force --one-file-system \
       -- "${tb_updater_run_dir}"/*
     rmdir "${tb_updater_run_dir}" >/dev/null 2>&1
   fi
@@ -238,26 +251,30 @@ sandbox_update_torbrowser() {
 
   if [ "${gui_ready}" = 'true' ]; then
     if [ "${use_x11_gui}" = 'true' ]; then
-      sudo -H -u 'tb-updater' \
+      setpriv_tb_updater \
+        env \
         XDG_RUNTIME_DIR="${tb_updater_run_dir}" \
         DISPLAY="${DISPLAY}" \
         QT_QPA_PLATFORM='xcb' \
         GDK_BACKEND='x11' \
         /usr/libexec/msgcollector/msgdispatcher &
-      sudo -H -u 'tb-updater' \
+      setpriv_tb_updater \
+        env \
         XDG_RUNTIME_DIR="${tb_updater_run_dir}" \
         DISPLAY="${DISPLAY}" \
         QT_QPA_PLATFORM='xcb' \
         GDK_BACKEND='x11' \
         /usr/bin/update-torbrowser "$@"
     else
-      sudo -H -u 'tb-updater' \
+      setpriv_tb_updater \
+        env \
         XDG_RUNTIME_DIR="${tb_updater_run_dir}" \
         WAYLAND_DISPLAY='wayland-0' \
         QT_QPA_PLATFORM='wayland' \
         GDK_BACKEND='wayland' \
         /usr/libexec/msgcollector/msgdispatcher &
-      sudo -H -u 'tb-updater' \
+      setpriv_tb_updater \
+        env \
         XDG_RUNTIME_DIR="${tb_updater_run_dir}" \
         WAYLAND_DISPLAY='wayland-0' \
         QT_QPA_PLATFORM='wayland' \
@@ -265,7 +282,7 @@ sandbox_update_torbrowser() {
         /usr/bin/update-torbrowser "$@"
     fi
   else
-    sudo -H -u 'tb-updater' /usr/bin/update-torbrowser "$@"
+    setpriv_tb_updater /usr/bin/update-torbrowser "$@"
   fi
 
   if [ -d "${tb_updater_home}/.tb" ] && [ -d "${tb_updater_home}/.cache/tb" ]; then

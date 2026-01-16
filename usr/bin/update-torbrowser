@@ -1616,15 +1616,22 @@ tb_confirm_install() {
    local signature_freshness_msg signature_creation_msg
    local last_used_gpg_bash_lib_output_signed_on_date
    local last_used_gpg_bash_lib_output_signed_on_unixtime
+   local real_cache_folder
 
-   if [ -f "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_date" ]; then
-      last_used_gpg_bash_lib_output_signed_on_date="$(cat "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_date")" || true
+   if [ "${who_ami}" = 'tb-updater' ]; then
+      real_cache_folder="${tb_global_binary_dir}/.cache/$tb_install_folder"
+   else
+      real_cache_folder="${tb_cache_folder}"
+   fi
+
+   if [ -f "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_date" ]; then
+      last_used_gpg_bash_lib_output_signed_on_date="$(cat "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_date")" || true
    fi
    if [ "$last_used_gpg_bash_lib_output_signed_on_date" = "" ]; then
       last_used_gpg_bash_lib_output_signed_on_date="Unknown. Probably never downloaded a signature before."
    fi
-   if [ -f "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime" ]; then
-      last_used_gpg_bash_lib_output_signed_on_unixtime="$(cat -- "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime")" || true
+   if [ -f "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime" ]; then
+      last_used_gpg_bash_lib_output_signed_on_unixtime="$(cat -- "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime")" || true
    fi
    if [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" = "" ]; then
       last_used_gpg_bash_lib_output_signed_on_unixtime="unknown"
@@ -1730,6 +1737,10 @@ y/n?"
       fi
    fi
 
+   ## Intentionally using tb_cache_folder and not real_cache_folder here. If
+   ## running under sandbox-update-torbrowser, we will have no permission to
+   ## write to real_cache_folder directly. sandbox-update-torbrowser will move
+   ## these files into real_cache_folder later.
    overwrite "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_date" "$gpg_bash_lib_output_signed_on_date"
    overwrite "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime" "$gpg_bash_lib_output_signed_on_unixtime"
 }
