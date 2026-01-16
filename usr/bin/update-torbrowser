@@ -68,9 +68,9 @@ source /usr/libexec/gpg-bash-lib/source_all
 ##   https://forums.whonix.org/t/using-torbrowser-launcher-instead-of-tb-updater-in-whonix/385
 
 tb_exit_function() {
+   local exit_code="$1"
+   local who_ami
    trap "" ERR
-   local exit_code who_ami
-   exit_code="$1"
    who_ami="$(whoami)"
 
    if [ "$exit_code" = "0" ]; then
@@ -101,6 +101,9 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Upd
 
 tb_error_handler() {
    local exit_code="$?"
+   local who_ami
+   trap "" ERR
+   who_ami="$(whoami)"
 
    local MSG="<p>###########################################################
 <br></br>## $SCRIPTNAME script bug.
@@ -111,6 +114,7 @@ tb_error_handler() {
 <br></br>## <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki>$tb_documentation_base_url_clearnet/wiki/$tb_wiki</a>
 <br></br>## Please report this bug!
 <br></br>##
+<br></br>## who_ami: <code>$who_ami</code>
 <br></br>## BASH_COMMAND: <code>$BASH_COMMAND</code>
 <br></br>## exit_code: <code>$exit_code</code>
 <br></br>##
