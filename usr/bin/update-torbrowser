@@ -177,20 +177,20 @@ tb_run_function() {
 root_check() {
    local tb_sandbox_exit_code
    if [ "$(id --user)" != "0" ]; then
-     true "INFO: ${FUNCNAME[0]}: running as user (non-root)."
+     true "INFO: ${FUNCNAME[0]}: running as unprivileged account (non-root)."
      tb_running_as_root=false
      return 0
    fi
    tb_running_as_root=true
 
    if printf '%s\n' "$@" | grep -- "--postinst" >/dev/null 2>/dev/null ; then
-      true "INFO: ${FUNCNAME[0]}: Allow dropping privileges to account 'tb-updater' because using --postinst."
+      printf '%s\n' "INFO: Dropping privileges to account 'tb-updater' because using '--postinst' option."
       tb_sandbox_exit_code='0'
       /usr/libexec/tb-updater/sandbox-update-torbrowser "$@" || tb_sandbox_exit_code="$?"
       tb_exit_function "$tb_sandbox_exit_code"
    fi
 
-   printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' as root (sudo)! Instead, '$SCRIPTNAME' should be run as non-root user."
+   printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' as root (sudo)! Instead, '$SCRIPTNAME' should be run as unprivileged account (non-root)."
    tb_exit_function 2
 }
 
@@ -198,12 +198,12 @@ qubes_template_check() {
    local tb_sandbox_exit_code
    local who_ami
    if ! [ -f /run/qubes/this-is-templatevm ]; then
-      true "INFO: ${FUNCNAME[0]}: not running in TemplateVM, ok."
+      printf '%s\n' "INFO: Not running in a Qubes TemplateVM, ok."
       return 0
    fi
    who_ami="$(whoami)"
    if [ "${who_ami}" = 'tb-updater' ]; then
-      true "INFO: ${FUNCNAME[0]}: Running in TemplateVM as user 'tb-updater', ok."
+      printf '%s\n' "INFO: Running in a Qubes TemplateVM as user 'tb-updater', ok."
       return 0
    fi
    if pkg_installed user-sysmaint-split && [ "$(whoami)" != 'sysmaint' ]; then
@@ -211,6 +211,7 @@ qubes_template_check() {
       tb_exit_function 2
    fi
    tb_sandbox_exit_code='0'
+   printf '%s\n' "INFO: Dropping privileges to account 'tb-updater' because running in a Qubes TemplateVM, ok."
    sudo /usr/libexec/tb-updater/sandbox-update-torbrowser "$@" || tb_sandbox_exit_code="$?"
    tb_exit_function "$tb_sandbox_exit_code"
 }
