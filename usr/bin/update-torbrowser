@@ -69,24 +69,30 @@ source /usr/libexec/gpg-bash-lib/source_all
 
 tb_exit_function() {
    trap "" ERR
-   local exit_code
+   local exit_code who_ami
    exit_code="$1"
+   who_ami="$(whoami)"
 
    if [ "$exit_code" = "0" ]; then
+      printf '%s\n' "INFO: SUCCESS. (who_ami: '$who_ami')"
       exit 0
    fi
 
    if [ "$anon_shared_inst_tb" = "open" ]; then
       if [ "$tb_postinst" = "true" ]; then
          printf '%s\n' "\
-INFO: Failing open. More info:
+INFO: Failing open.
+(who_ami: '$who_ami')
+More info:
 $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Update:_Technical_Details"
       fi
       exit 0
    else
       if [ "$tb_postinst" = "true" ]; then
          printf '%s\n' "\
-INFO: Failing closed. More info:
+INFO: Failing closed.
+(who_ami: '$who_ami')
+More info:
 $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Update:_Technical_Details"
       fi
       exit "$exit_code"
