@@ -43,6 +43,8 @@ source /usr/libexec/helper-scripts/has.sh
 source /usr/libexec/helper-scripts/package_installed_check.sh
 # shellcheck source=../../../gpg-bash-lib/usr/libexec/gpg-bash-lib/source_all
 source /usr/libexec/gpg-bash-lib/source_all
+## shellcheck source=../../../../helper-scripts/usr/libexec/log_run_die.sh
+source /usr/libexec/helper-scripts/log_run_die.sh
 
 [[ -v SCRIPTNAME ]] || SCRIPTNAME="$(basename "$BASH_SOURCE")"
 [[ -v ICON ]] || ICON="/usr/share/icons/icon-pack-dist/tbupdate.ico"
@@ -74,14 +76,13 @@ tb_exit_function() {
    who_ami="$(whoami)"
 
    if [ "$exit_code" = "0" ]; then
-      printf '%s\n' "INFO: SUCCESS. (who_ami: '$who_ami')"
+      log notice "SUCCESS. (who_ami: '$who_ami')"
       exit 0
    fi
 
    if [ "$anon_shared_inst_tb" = "open" ]; then
       if [ "$tb_postinst" = "true" ]; then
-         printf '%s\n' "\
-INFO: Failing open.
+         log notice "Failing open.
 (who_ami: '$who_ami')
 More info:
 $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Update:_Technical_Details"
@@ -89,8 +90,7 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Upd
       exit 0
    else
       if [ "$tb_postinst" = "true" ]; then
-         printf '%s\n' "\
-INFO: Failing closed.
+         log error "Failing closed.
 (who_ami: '$who_ami')
 More info:
 $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Update:_Technical_Details"
@@ -175,7 +175,7 @@ download_fail_help_set() {
 tb_run_function() {
    [[ -v "${tb_skip_functions}" ]] || tb_skip_functions=''
    case $tb_skip_functions in
-   *"$@"*) printf '%s\n' "INFO: Skipping '$*', because tb_skip_functions includes it."
+   *"$@"*) log notice "Skipping '$*', because tb_skip_functions includes it."
                   return 0
                   ;;
    esac
@@ -194,13 +194,13 @@ root_check() {
    tb_running_as_root=true
 
    if printf '%s\n' "$@" | grep -- "--postinst" >/dev/null 2>/dev/null ; then
-      printf '%s\n' "INFO: Dropping privileges to account 'tb-updater' because using '--postinst' option."
+      log notice "Dropping privileges to account 'tb-updater' because using '--postinst' option."
       tb_sandbox_exit_code='0'
       /usr/libexec/tb-updater/sandbox-update-torbrowser "$@" || tb_sandbox_exit_code="$?"
       tb_exit_function "$tb_sandbox_exit_code"
    fi
 
-   printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' as root (sudo)! Instead, '$SCRIPTNAME' should be run as unprivileged account (non-root)."
+   log error "Do not run '$SCRIPTNAME' as root (sudo)! Instead, '$SCRIPTNAME' should be run as unprivileged account (non-root)."
    tb_exit_function 2
 }
 
@@ -208,20 +208,20 @@ qubes_template_check() {
    local tb_sandbox_exit_code
    local who_ami
    if ! [ -f /run/qubes/this-is-templatevm ]; then
-      printf '%s\n' "INFO: Not running in a Qubes TemplateVM, ok."
+      log notice "Not running in a Qubes TemplateVM, ok."
       return 0
    fi
    who_ami="$(whoami)"
    if [ "${who_ami}" = 'tb-updater' ]; then
-      printf '%s\n' "INFO: Running in a Qubes TemplateVM as user 'tb-updater', ok."
+      log notice "Running in a Qubes TemplateVM as user 'tb-updater', ok."
       return 0
    fi
    if pkg_installed user-sysmaint-split && [ "$(whoami)" != 'sysmaint' ]; then
-      printf '%s\n' "ERROR: '$SCRIPTNAME' must be run using account 'sysmaint' when running in a Qubes TemplateVM with user-sysmaint-split installed!"
+      log error "'$SCRIPTNAME' must be run using account 'sysmaint' when running in a Qubes TemplateVM with user-sysmaint-split installed!"
       tb_exit_function 2
    fi
    tb_sandbox_exit_code='0'
-   printf '%s\n' "INFO: Dropping privileges to account 'tb-updater' because running in a Qubes TemplateVM, ok."
+   log notice "Dropping privileges to account 'tb-updater' because running in a Qubes TemplateVM, ok."
    sudo /usr/libexec/tb-updater/sandbox-update-torbrowser "$@" || tb_sandbox_exit_code="$?"
    tb_exit_function "$tb_sandbox_exit_code"
 }
@@ -237,7 +237,7 @@ sysmaint_check() {
       fi
       ## No need to check for account tb-updater, since we're blacklisting
       ## accounts here, not whitelisting them.
-      printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' under account '$who_ami' in user session! Instead, in user session '$SCRIPTNAME' should be run under account 'user' or another unprivileged user."
+      log error "Do not run '$SCRIPTNAME' under account '$who_ami' in user session! Instead, in user session '$SCRIPTNAME' should be run under account 'user' or another unprivileged user."
       tb_exit_function 2
    fi
 
@@ -252,7 +252,7 @@ sysmaint_check() {
       true "INFO: sysmaint_session: yes and running as account 'tb-updater', ok."
       return 0
    fi
-   printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' under account '$who_ami' in sysmaint session! Instead, in sysmaint session '$SCRIPTNAME' should be run under account 'sysmaint'."
+   log error "Do not run '$SCRIPTNAME' under account '$who_ami' in sysmaint session! Instead, in sysmaint session '$SCRIPTNAME' should be run under account 'sysmaint'."
    tb_exit_function 2
 }
 
@@ -311,7 +311,7 @@ tb_ex_funct() {
 
    #MSG="Aborted."
    #output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-   #printf '%s\n' "ERROR: $MSG"
+   #log error "$MSG"
 
    MSG="$0: INFO: ${FUNCNAME[0]}: Signal '$SIGNAL_TYPE' received. Exiting."
    output_gui ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
@@ -419,9 +419,9 @@ tb_parse_cmd_options() {
                break
                ;;
            -*)
-               printf '%s\n' "$SCRIPTNAME: unknown option: '$1'"
-               printf '%s\n' "See:"
-               printf '%s\n' "    man $SCRIPTNAME"
+               log error "Unknown option: '$1'"
+               log error "See:"
+               log error "    man $SCRIPTNAME"
                tb_exit_function 4
                ;;
            *)
@@ -441,27 +441,27 @@ tb_stdin() {
       return 0
    fi
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      printf '%s\n' "INFO: TB_FORCE_INSTALL is set to '1', therefore setting TB_INPUT to 'none'."
+      log notice "TB_FORCE_INSTALL is set to '1', therefore setting TB_INPUT to 'none'."
       TB_INPUT="none"
       export TB_USE_MSGCOLLECTOR="false"
       return 0
    fi
    if [ -t "0" ]; then
-      #printf '%s\n' "INFO: stdin connected to terminal, setting \
+      #log notice "stdin connected to terminal, setting \
 #TB_INPUT to 'stdin', will use terminal for input, ok."
-      #printf '%s\n' "INFO: Alternatively, if want to run from \
+      #log notice "Alternatively, if want to run from \
 #command line, but still use the graphical user interface for input, \
 #you could add to command line: --input gui"
       TB_INPUT="stdin"
       export TB_USE_MSGCOLLECTOR="false"
       return 0
    fi
-   printf '%s\n' "INFO: stdin not connected to terminal, probably run in graphical environment, ok."
+   log notice "stdin not connected to terminal, probably run in graphical environment, ok."
 }
 
 tb_qubes_dvm_template() {
    if printf '%s\n' "$qubes_vm_name" | grep --invert-match -- "-dvm" >/dev/null 2>/dev/null ; then
-      printf '%s\n' "INFO: Not running inside Qubes Disposable Template, ok."
+      log notice "Not running inside Qubes Disposable Template, ok."
       return 0
    fi
 
@@ -480,6 +480,7 @@ More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Us
 output_cli() {
    local MSG
    MSG="$(sanitize-string -- nolimit "$@")"
+   ## TODO: use 'log' function
    printf '%s\n' "$MSG"
 }
 
@@ -513,10 +514,11 @@ output_gui() {
       [[ -v MSG ]] || MSG=""
       if [ ! "$MSG" = "" ]; then
          MSG="$(sanitize-string -- nolimit "$MSG")"
+         ## TODO: use 'log' function
          printf '%s\n' "$MSG"
       fi
    elif [ "$outputfunc_verbose" = "true" ]; then
-      printf '%s\n' "Running: bash -x $output_tool --identifier $IDENTIFIER ${1+$@}"
+      printf '%s\n' "RUNNING: bash -x $output_tool --identifier $IDENTIFIER ${1+$@}"
       bash -x $output_tool --identifier "$IDENTIFIER" "$@"
    else
       $output_tool --identifier "$IDENTIFIER" "$@"
@@ -540,7 +542,7 @@ tb_config_folder_parser() {
 
 tb_settings_chroot_common() {
    if [ "${tb_running_as_root}" = 'false' ]; then
-      printf '%s\n' "ERROR: ${FUNCNAME[0]}: Cannot use --is-chroot option if not running as root!"
+      log error "${FUNCNAME[0]}: Cannot use --is-chroot option if not running as root!"
       tb_exit_function 2
    fi
    ## Do not run in chroot if tb_install_in_chroot=false.
@@ -647,7 +649,7 @@ tb_preparation() {
    fi
 
    if [ "$is_chroot" = "true" ]; then
-      printf '%s\n' "INFO: chroot: is_chroot=true"
+      log notice "chroot: is_chroot=true"
       tb_settings_chroot_common
    else
       true "INFO: chroot: is_chroot=true is not set, ok."
@@ -704,7 +706,7 @@ tb_preparation() {
 
    if [ ! "$tb_updater_run" = "true" ]; then
       true "tb_updater_run is set to: '$tb_updater_run'"
-      printf '%s\n' "INFO: Using '--postinst' option but outside of Qubes Template, skipping, ok."
+      log notice "Using '--postinst' option but outside of Qubes Template, skipping, ok."
       tb_exit_function 0
    fi
 
@@ -717,10 +719,10 @@ tb_preparation() {
    if [ "$ARCH" = "" ]; then
       true "INFO: Auto detecting ARCH..."
       ARCH="$(uname --machine)"
-      printf '%s\n' "INFO: ARCH '$ARCH' detected."
+      log notice "ARCH '$ARCH' detected."
    else
-      printf '%s\n' "INFO: Skipping auto detecting ARCH because already set."
-      printf '%s\n' "INFO: ARCH is set to '$ARCH'."
+      log notice "Skipping auto detecting ARCH because already set."
+      log notice "ARCH is set to '$ARCH'."
    fi
 
    if [ "$ARCH_DOWNLOAD" = "" ]; then
@@ -740,13 +742,13 @@ tb_preparation() {
          [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-arm64"
       else
          [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-$ARCH"
-         printf '%s\n' "WARNING: Guessing. Setting ARCH_DOWNLOAD to '$ARCH_DOWNLOAD'. If functional, this is probably OK."
+         log warning "Guessing. Setting ARCH_DOWNLOAD to '$ARCH_DOWNLOAD'. If functional, this is probably OK."
       fi
 
-      printf '%s\n' "INFO: ARCH_DOWNLOAD '$ARCH_DOWNLOAD' detected."
+      log notice "ARCH_DOWNLOAD '$ARCH_DOWNLOAD' detected."
    else
-      printf '%s\n' "INFO: Skipping auto detecting ARCH_DOWNLOAD because already set."
-      printf '%s\n' "INFO: ARCH_DOWNLOAD is set to '$ARCH_DOWNLOAD'."
+      log notice "Skipping auto detecting ARCH_DOWNLOAD because already set."
+      log notice "ARCH_DOWNLOAD is set to '$ARCH_DOWNLOAD'."
    fi
 
    ## provides tbbversion function
@@ -798,7 +800,7 @@ tb_preparation() {
       else
          local MSG="uwt_tool: Can not find curl. Please report this bug!"
          output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG"
-         printf '%s\n' "ERROR: $MSG"
+         log error "$MSG"
          EXIT_CODE="1"
          return 0
       fi
@@ -894,7 +896,7 @@ tb_preparation() {
       [ -n "$CURL_PROXY" ] || CURL_PROXY=()
    fi
 
-   printf '%s\n' "INFO: CURL_PROXY: '${CURL_PROXY[*]}'"
+   log notice "CURL_PROXY: '${CURL_PROXY[*]}'"
 
    ## Also used by function tbbversion.
    [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
@@ -912,7 +914,7 @@ tb_preparation() {
    fi
 
    if [ ! "$tb_auto_set_user_home_msg" = "" ]; then
-      printf '%s\n' "INFO: $tb_auto_set_user_home_msg"
+      log notice "$tb_auto_set_user_home_msg"
    fi
 }
 
@@ -943,14 +945,14 @@ tb_create_folders() {
 #       return 0
 #    fi
 #    if dpkg --compare-versions -- "$tbb_version_previous_downloaded_version_stripped" ge "$tbb_hardcoded_version" ; then
-#       printf '%s\n' "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version_stripped'"
-#       printf '%s\n' "INFO: Previously downloaded version is greater or equal tbb_hardcoded_version, good, ok."
+#       log notice "Previously downloaded version: '$tbb_version_previous_downloaded_version_stripped'"
+#       log notice "Previously downloaded version is greater or equal tbb_hardcoded_version, good, ok."
 #    fi
 #
 #    ## TODO: Does not belong here?
 #    ## Being careful with deletion.
 # #    if [ "$tb_downloaded_files_folder" = "$tb_global_binary_dir/.cache/$tb_install_folder/files" ]; then
-# #       printf '%s\n' "INFO: No need to keep older versions in Qubes root image. Saving disk space. Therefore deleting..."
+# #       log notice "No need to keep older versions in Qubes root image. Saving disk space. Therefore deleting..."
 # #       printf '%s\n' "safe-rm -r -f -- '$tb_downloaded_files_folder'"
 # #       safe-rm -r -f -- "$tb_downloaded_files_folder"
 # #       mkdir --parents -- "$tb_downloaded_files_folder"
@@ -963,9 +965,9 @@ tb_connectivity_checks_interfaces() {
       return 0
    fi
 
-   printf '%s' "INFO: Running network interface available check... "
+   log notice "Running network interface available check... "
    if /usr/libexec/helper-scripts/check-network-access; then
-      printf '%s\n' "Done."
+      log notice "Network interface available."
       return 0
    fi
 
@@ -999,7 +1001,7 @@ tb_connectivity_checks_tor() {
    fi
 
    if [ -x /usr/libexec/helper-scripts/tor_enabled_check ]; then
-      printf '%s' "INFO: Running Tor enabled check... "
+      log notice "Running Tor enabled check... "
 
       source /usr/libexec/helper-scripts/tor_enabled_check
       ## sets: TOR_ENABLED
@@ -1025,13 +1027,13 @@ You could use <code>--no-tor-con-check</code> if you think function <code>${FUNC
 
          tb_exit_function 5
       fi
-      printf '%s\n' "Done."
+      log notice "Tor enabled check: success"
    else
       true "/usr/libexec/helper-scripts/tor_enabled_check does not exist, skipping."
    fi
 
    if [ -x /usr/libexec/helper-scripts/tor_bootstrap_check.bsh ]; then
-      printf '%s' "INFO: Running Tor bootstrap check... "
+      log notice "Running Tor bootstrap check... "
       source /usr/libexec/helper-scripts/tor_bootstrap_check.bsh
       ## sets: tor_bootstrap_percent
       tb_run_function check_tor_circuit_established
@@ -1056,7 +1058,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>${FUNC
 
          tb_exit_function 6
       fi
-      printf '%s\n' "Done."
+      log notice "Tor Bootstrap Check: success"
    else
       true "/usr/libexec/helper-scripts/tor_bootstrap_check.bsh not available, skipping."
    fi
@@ -1070,7 +1072,7 @@ tb_connectivity_checks_curl() {
    ## being able to affect later signature checks. Or maybe we need a
    ## general-purpose sandboxed curl wrapper.
    tb_notify_details="Checking connectivity... Will take a moment..."
-   printf '%s\n' "INFO: Running connectivity check...  Downloading...: '$tbb_download_base_url'"
+   log notice "Running connectivity check...  Downloading...: '$tbb_download_base_url'"
 
    [ -n "$timeout_connectivity_checks_curl" ] || timeout_connectivity_checks_curl=180
    ## 1 MB = 1048576 bytes
@@ -1107,7 +1109,7 @@ tb_connectivity_checks_curl() {
       tb_exit_function 7
    fi
 
-   printf '%s\n' "INFO: Connectivity check succeeded."
+   log notice "Connectivity check succeeded."
 }
 
 tb_update_check() {
@@ -1117,7 +1119,7 @@ tb_update_check() {
    fi
 
    tb_notify_details="Checking $tb_title version... Will take a moment..."
-   printf '%s\n' "INFO: Find out latest version... Downloading...: '$TBB_VERSIONS_FILE_LINK'"
+   log notice "Find out latest version... Downloading...: '$TBB_VERSIONS_FILE_LINK'"
 
    [ -n "$timeout_version_file_download" ] || timeout_version_file_download=300
    ## 1 MB = 1048576 bytes
@@ -1209,12 +1211,12 @@ tb_local_version_detection() {
    if [ "$tbb_download_alpha_version" = "true" ]; then
       ## sets: tbb_hardcoded_version
       source /usr/share/tb-updater/tbb_hardcoded_version_alpha
-      printf '%s\n' "INFO: Using alpha version. See:
+      log notice "Using alpha version. See:
 $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    else
       ## sets: tbb_hardcoded_version
       source /usr/share/tb-updater/tbb_hardcoded_version
-      printf '%s\n' "INFO: Using stable version. For alpha version, see: $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
+      log notice "Using stable version. For alpha version, see: $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    fi
 
    ## Used by function tbbversion_installed
@@ -1274,9 +1276,9 @@ Otherwise updating <code>$tb_title</code> in this Template will not result in ne
       fi
    fi
 
-   printf '%s\n' "INFO: Previously downloaded version: '$tbb_version_previous_downloaded_version_stripped'"
-   printf '%s\n' "INFO: Currently installed version  : '$tbb_locally_installed_version_stripped'"
-   printf '%s\n' "INFO: Online detected version      : '$tbb_version_stripped'"
+   log notice "Previously downloaded version: '$tbb_version_previous_downloaded_version_stripped'"
+   log notice "Currently installed version  : '$tbb_locally_installed_version_stripped'"
+   log notice "Online detected version      : '$tbb_version_stripped'"
 
    local MSG question button type
    button="yesno"
@@ -1324,7 +1326,7 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
 	          if [ "$UPDATE_ONLY_IF_NEWER" = "1" ]; then
                true "INFO: UPDATE_ONLY_IF_NEWER is set 1."
-               printf '%s\n' "INFO: Skip downloading: current '$tb_title' '$tbb_locally_installed_version_stripped' is already up-to-date."
+               log notice "Skip downloading: current '$tb_title' '$tbb_locally_installed_version_stripped' is already up-to-date."
                tb_exit_function 0
 	          fi
          elif dpkg --compare-versions -- "$tbb_version_stripped" gt "$tbb_locally_installed_version_stripped"; then
@@ -1374,11 +1376,12 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
    else
       local answer
       if [ "$TB_INPUT" = "stdin" ]; then
+         ## TODO: colorful output
          printf '%s\n' "QUESTION: $question
 y/n?"
          read -r answer
          if [ ! "$answer" = "y" ]; then
-            printf '%s\n' "INFO: Canceled. Exit."
+            log notice "Canceled. Exit."
             tb_exit_function 10
          fi
       else
@@ -1386,7 +1389,7 @@ y/n?"
 
          answer="$("/usr/libexec/msgcollector/tb_updater_gui" "$type" "$TITLE" "$tbb_locally_installed_version_stripped" "$tbb_version_stripped" "$MSG" "$question" "$button")"
          if [ "$answer" = "65536" ]; then ## Button 'Yes' has not been pressed.
-            printf '%s\n' "INFO: Canceled. Exit."
+            log notice "Canceled. Exit."
             tb_exit_function 10
          fi
       fi
@@ -1399,7 +1402,7 @@ tb_version_processing() {
    fi
 
    if [ "$tbb_version_stripped" = "" ]; then
-      printf '%s\n' "ERROR: in function tb_version_processing: variable $tbb_version_stripped not set!"
+      log error "in function tb_version_processing: variable $tbb_version_stripped not set!"
       tb_exit_function 17
    fi
 
@@ -1422,7 +1425,7 @@ tb_reset() {
       return 0
    fi
 
-   printf '%s\n' "INFO: --reset. Performing hard reset rather than download. See: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset"
+   log notice "--reset. Performing hard reset rather than download. See: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset"
 
    if ! test -f "$TBB_PACKAGE_FULL_PATH" ; then
       local MSG="\
@@ -1442,7 +1445,7 @@ tb_kill_already_running_tb_maybe() {
    if [ ! "$NOKILLTB" = "1" ]; then
       [ -n "$tb_process_name" ] || tb_process_name="firefox.real"
 
-      printf '%s\n' "INFO: Because you are not using --nokilltb, now killing potentially still running instances of '$tb_title'..."
+      log notice "Because you are not using --nokilltb, now killing potentially still running instances of '$tb_title'..."
       killall "$tb_process_name" || true
    fi
 }
@@ -1467,7 +1470,7 @@ $tb_notify_details"
       fi
    fi
 
-   printf '%s\n' "INFO: CURL_OUT_FILE: '$CURL_OUT_FILE'"
+   log notice "CURL_OUT_FILE: '$CURL_OUT_FILE'"
 
    ## Debugging: Simulating endless data attack.
    #export CURL_PRGRS_MAX_FILE_SIZE_BYTES="1048576"
@@ -1532,8 +1535,8 @@ tb_download_files() {
    ### signature ###
 
    tb_notify_details="Downloading $tb_title digital signature (GPG)... Will take a moment..."
-   printf '%s\n' "INFO: Digital signature (GPG) download... Will take a moment..."
-   printf '%s\n' "INFO: Downloading...: '$TBB_SIG_LINK'"
+   log notice "Digital signature (GPG) download... Will take a moment..."
+   log notice "Downloading...: '$TBB_SIG_LINK'"
 
    [ -n "$timeout_signature_file_download" ] || timeout_signature_file_download=300
    ## 1 MB = 1048576 bytes
@@ -1551,8 +1554,8 @@ tb_download_files() {
    ### archive file ###
 
    tb_notify_details="Downloading $tb_title... Will take a while..."
-   printf '%s\n' "INFO: Downloading '$tb_title'..."
-   printf '%s\n' "INFO: Downloading...: '$TBB_PACKAGE_LINK'"
+   log notice "Downloading '$tb_title'..."
+   log notice "Downloading...: '$TBB_PACKAGE_LINK'"
 
    [ -n "$timeout_archive_file_download" ] || timeout_archive_file_download=3600
    ## 1 MB = 1048576 bytes
@@ -1572,9 +1575,9 @@ tb_download_files() {
 }
 
 tb_gpg_verify() {
-   printf '%s\n' "INFO: Digital signature (GPG) verification... This will take a moment..."
+   log notice "Digital signature (GPG) verification... This will take a moment..."
 
-   printf '%s\n' "INFO: Using digital signature signing key by The Tor Project."
+   log notice "Using digital signature signing key by The Tor Project."
    gpg_bash_lib_input_key_import_dir="/usr/share/torbrowser-updater-keys.d"
 
    gpg_bash_lib_input_verify_timeout_after="60"
@@ -1615,7 +1618,7 @@ tb_gpg_verify() {
       tb_exit_function 12
    fi
 
-   printf '%s\n' "INFO: Digital signature (GPG) verification ok."
+   log notice "Digital signature (GPG) verification ok."
 }
 
 tb_confirm_install() {
@@ -1732,17 +1735,18 @@ $gpg_bash_lib_output_gpg_verify_output_br_added</p>
       true "INFO: TB_INPUT is set to '$TB_INPUT', continuing without asking."
    else
       if [ "$TB_INPUT" = "stdin" ]; then
+         ## TODO: colorful output
          printf '%s\n' "QUESTION: $question
 y/n?"
          read -r answer
          if [ ! "$answer" = "y" ]; then
-            printf '%s\n' "INFO: Canceled. Exit."
+            log notice "Canceled. Exit."
             tb_exit_function 14
          fi
       else
          answer="$(/usr/libexec/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
          if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-            printf '%s\n' "INFO: Canceled. Exit."
+            log notice "Canceled. Exit."
             tb_exit_function 14
          fi
       fi
@@ -1777,7 +1781,7 @@ Extracting $tb_title... This could take a moment..."
    kill_after="30"
    file_name="$TBB_PACKAGE_FULL_PATH"
 
-   printf '%s\n' "INFO: Extracting '$file_name'..."
+   log notice "Extracting '$file_name'..."
 
    ## Folder must be already exist, otherwise `tar` would fail.
    mkdir --parents -- "$tb_extract_temp_folder"
@@ -1925,7 +1929,7 @@ Extracting $tb_title... This could take a moment..."
       tb_exit_function 15
    fi
 
-   printf '%s\n' "INFO: Extraction of '$file_name' has been completed."
+   log notice "Extraction of '$file_name' has been completed."
 }
 
 tb_patch_download_folder_create() {
@@ -1947,10 +1951,10 @@ tb_install() {
       return 0
    fi
 
-   printf '%s\n' "INFO: Deleting old folder '$tb_browser_folder'."
+   log notice "Deleting old folder '$tb_browser_folder'."
    safe-rm --recursive --force -- "$tb_browser_folder"
 
-   printf '%s\n' "INFO: Moving temporary folder '$tb_extract_temp_folder' to '$tb_browser_folder'."
+   log notice "Moving temporary folder '$tb_extract_temp_folder' to '$tb_browser_folder'."
    mv -- "$tb_extract_temp_folder" "$tb_browser_folder"
 }
 
@@ -1960,17 +1964,17 @@ tb_cleanup() {
       return 0
    fi
    if [ "$TB_NO_CLEANUP" = "true" ]; then
-      printf '%s\n' "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_CLEANUP is 'true', ok."
+      log notice "Skipping ${FUNCNAME[0]}, because TB_NO_CLEANUP is 'true', ok."
       return 0
    fi
 
-   printf '%s\n' "INFO: Deleting no longer required file '$TBB_PACKAGE_FULL_PATH' to save space."
+   log notice "Deleting no longer required file '$TBB_PACKAGE_FULL_PATH' to save space."
    safe-rm --force -- "$TBB_PACKAGE_FULL_PATH"
 }
 
 tb_hardcoded_version_last_downloaded_save() {
    overwrite "$tbb_version_last_downloaded_save_file" "$tbb_version_stripped"
-   printf '%s\n' "INFO: Saved '$tbb_version_stripped' in '$tbb_version_last_downloaded_save_file'."
+   log notice "Saved '$tbb_version_stripped' in '$tbb_version_last_downloaded_save_file'."
 }
 
 tb_start_ask() {
@@ -1980,8 +1984,8 @@ tb_start_ask() {
    fi
 
    if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      printf '%s\n' "INFO: Finished installing '$tb_title'. Can be found in folder '$tb_browser_folder'."
-      printf '%s\n' "INFO: Not starting '$tb_title', because variable TB_FORCE_INSTALL is set to '1'."
+      log notice "Finished installing '$tb_title'. Can be found in folder '$tb_browser_folder'."
+      log notice "Not starting '$tb_title', because variable TB_FORCE_INSTALL is set to '1'."
       return 0
    fi
 
@@ -1989,7 +1993,7 @@ tb_start_ask() {
    has "$tb_bin" || { has_torbrowser_exit_code="$?" ; true; };
 
    if [ ! "$has_torbrowser_exit_code" = "0" ]; then
-      printf '%s\n' "INFO: '$tb_bin' binary not found in path. tb-starter is probably not installed. \
+      log notice "'$tb_bin' binary not found in path. tb-starter is probably not installed. \
 Skipping question to start '$tb_title'."
       return 0
    fi
@@ -2026,26 +2030,27 @@ Skipping question to start '$tb_title'."
    fi
 
    if [ "$TB_INPUT" = "stdin" ]; then
+      ## TODO: colorful output
       printf '%s\n' "QUESTION: $question
 y/n?"
       read -r answer
       if [ ! "$answer" = "y" ]; then
-         printf '%s\n' "INFO: Canceled starting '$tb_title', ok."
+         log notice "Canceled starting '$tb_title', ok."
       else
          $tb_bin
       fi
       return 0
    fi
 
-   printf '%s\n' "INFO: GUI is asking to start $tb_title."
+   log notice "GUI is asking to start $tb_title."
    answer="$(/usr/libexec/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
    if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
-      printf '%s\n' "INFO: Canceled starting '$tb_title', ok."
+      log notice "Canceled starting '$tb_title', ok."
       return 0
    else
-      printf '%s\n' "INFO: Running '$tb_title'."
+      log notice "Running '$tb_title'."
       $tb_bin
-      printf '%s\n' "INFO: '$tb_title' was terminated, ok."
+      log notice "'$tb_title' was terminated, ok."
       return 0
    fi
 }
