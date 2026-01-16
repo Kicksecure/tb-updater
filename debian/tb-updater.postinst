@@ -11,12 +11,70 @@ set -e
 
 true "
 #####################################################################
-## INFO: BEGIN: $DPKG_MAINTSCRIPT_PACKAGE $DPKG_MAINTSCRIPT_NAME $@
+## INFO: BEGIN: $DPKG_MAINTSCRIPT_PACKAGE $DPKG_MAINTSCRIPT_NAME $*
 #####################################################################
 "
 
+create_tb_updater_user_account() {
+   adduser --home /var/lib/tb-updater/work --quiet --system --group tb-updater || true
+}
+
+tb_resolv_conf_debugging() {
+   printf '%s\n' "INFO: tb_resolv_conf_debugging: start"
+
+   printf '%s\n' "ls -la /etc/resolv.conf"
+   ls -la -- /etc/resolv.conf || true
+
+   printf '%s\n' "cat -- /etc/resolv.conf"
+   cat -- /etc/resolv.conf || true
+
+   printf '%s\n' "cat -- /etc/resolv.whonix"
+   cat -- /etc/resolv.whonix || true
+
+   printf '%s\n' "cat -- /etc/resolv.conf.whonix-orig"
+   cat -- /etc/resolv.conf.whonix-orig || true
+
+   printf '%s\n' "INFO: tb_resolv_conf_debugging: end"
+}
+
+tb_anon_ws_dns_conf() {
+    tb_resolv_conf_debugging
+
+    printf '%s\n' "INFO: Checking if /etc/resolv.conf is a symlink..."
+    if test -h /etc/resolv.conf ; then
+       ## This is only the case when whonix-ws-network-conf is already installed.
+       printf '%s\n' "INFO: Yes, /etc/resolv.conf is a symlink..."
+       printf '%s\n' "INFO: Checking if /var/lib/dpkg/info/whonix-ws-network-conf.prerm is an executable..."
+       if test -x /var/lib/dpkg/info/whonix-ws-network-conf.prerm ; then
+          printf '%s\n' "INFO: Yes, /var/lib/dpkg/info/whonix-ws-network-conf.prerm is an executable."
+          [ -n "$tb_reenable_anon_ws_dns_conf" ] || tb_reenable_anon_ws_dns_conf=true
+          tb_resolv_conf_debugging
+
+          printf '%s\n' "INFO: tb_anon_ws_dns_conf: Restore original /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-pre ..."
+          /usr/libexec/tb-updater/chroot-pre
+
+          tb_resolv_conf_debugging
+       fi
+    fi
+}
+
+tb_chroot_pre_exit() {
+   if [ "$tb_reenable_anon_ws_dns_conf" = "true" ]; then
+      printf '%s\n' "INFO: tb_chroot_pre_exit: tb_reenable_anon_ws_dns_conf=true"
+
+      printf '%s\n' "INFO: tb_chroot_pre_exit: Restore whonix-ws-network-conf /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-post ..."
+
+      /usr/libexec/tb-updater/chroot-post
+
+      tb_resolv_conf_debugging
+   fi
+}
+
 download() {
+   local in_chroot chroot_maybe tool_list tool_item
+   in_chroot='false'
    if ischroot --default-false ; then
+      in_chroot='true'
       chroot_maybe="--is-chroot"
    fi
 
@@ -38,19 +96,42 @@ download() {
       ## TODO:
       #tpo_downloader_debug="$tpo_downloader_debug"
 
-      ## TODO: Use a dedicated Linux user account.
-      ## Ideally this would be run as account "user", but the existence of that account
-      ## is not guaranteed by the time this script is running.
-      ## Using a dedicated user account is difficult versus Wayland because there
-      ## is also tb-updater GUI and no way to run a GUI application under a
-      ## different account. could be found for Wayland. tb-updater CLI versus
-      ## tb-updater GUI would need to be cleanly separated.
+      if [ "${in_chroot}" = 'true' ]; then
+         tb_anon_ws_dns_conf
+      fi
 
       $tool_item \
          $chroot_maybe \
          --postinst
+
+      if [ "${in_chroot}" = 'true' ]; then
+         tb_chroot_pre_exit
+      fi
    done
 }
+
+true "anon_shared_inst_tb: $anon_shared_inst_tb"
+true "tb_onion: $tb_onion"
+true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
+
+case "$1" in
+   configure)
+      create_tb_updater_user_account
+      download
+   ;;
+
+   abort-upgrade|abort-remove|abort-deconfigure|triggered)
+   ;;
+
+   *)
+      printf '%s\n' "${DPKG_MAINTSCRIPT_NAME} called with unknown argument \`$1'" >&2
+      exit 1
+   ;;
+esac
+
+## Makes assumption on account 'user' existing.
+## Not needed since done by 'update-torbrowser' and 'torbrowser'.
+#/usr/libexec/tb-updater/tb-permission-fix
 
 true "INFO: debhelper beginning here."
 
@@ -58,19 +139,9 @@ true "INFO: debhelper beginning here."
 
 true "INFO: Done with debhelper."
 
-true "anon_shared_inst_tb: $anon_shared_inst_tb"
-true "tb_onion: $tb_onion"
-true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
-
-download
-
-## Makes assumption on account 'user' existing.
-## Not needed since done by 'update-torbrowser' and 'torbrowser'.
-#/usr/libexec/tb-updater/tb-permission-fix
-
 true "
 #####################################################################
-## INFO: END  : $DPKG_MAINTSCRIPT_PACKAGE $DPKG_MAINTSCRIPT_NAME $@
+## INFO: END  : $DPKG_MAINTSCRIPT_PACKAGE $DPKG_MAINTSCRIPT_NAME $*
 #####################################################################
 "
 

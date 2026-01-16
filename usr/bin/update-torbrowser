@@ -4,7 +4,7 @@
 ## See the file COPYING for copying conditions.
 
 : "${tpo_downloader_debug:=""}"
-if [ ! "$tpo_downloader_debug" = "" ]; then
+if [ ! "$tpo_downloader_debug" = "" ] && [[ "$tpo_downloader_debug" =~ ^[0-9]+$ ]]; then
    if [ "$tpo_downloader_debug" -ge "1" ]; then
       set -x
    fi
@@ -32,9 +32,16 @@ if [ "$tb_updater_was_sourced" = "false" ]; then
   set -o errtrace
 fi
 
+# shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/strings.bsh
 source /usr/libexec/helper-scripts/strings.bsh
 ## sets: boot_session
+# shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/boot-session-detection.sh
 source /usr/libexec/helper-scripts/boot-session-detection.sh
+# shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/has.sh
+source /usr/libexec/helper-scripts/has.sh
+# shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/package_installed_check.sh
+source /usr/libexec/helper-scripts/package_installed_check.sh
+# shellcheck source=../../../gpg-bash-lib/usr/libexec/gpg-bash-lib/source_all
 source /usr/libexec/gpg-bash-lib/source_all
 
 [[ -v SCRIPTNAME ]] || SCRIPTNAME="$(basename "$BASH_SOURCE")"
@@ -101,7 +108,7 @@ tb_error_handler() {
 <br></br>## BASH_COMMAND: <code>$BASH_COMMAND</code>
 <br></br>## exit_code: <code>$exit_code</code>
 <br></br>##
-<br></br>## output_opts: <code>${output_opts[@]}</code>
+<br></br>## output_opts: <code>${output_opts[*]}</code>
 <br></br>## progressbaridx: <code>$progressbaridx</code>
 <br></br>##
 <br></br>## For debugging, run:
@@ -120,7 +127,9 @@ tb_error_handler() {
 
    ## In case function output_gui does not exist yet.
    if [ ! "$(type -t "output_gui")" = "function" ]; then
-      output_gui="stecho"
+      output_gui() {
+         stecho
+      }
    fi
 
    if [ "$progressbaridx" = "" ]; then
@@ -138,7 +147,7 @@ tb_error_handler() {
 trap "tb_error_handler" ERR
 
 download_fail_help_set() {
-DOWNLOAD_FAIL_HELP="<p>Possible reasons for download failure:</p>
+   DOWNLOAD_FAIL_HELP="<p>Possible reasons for download failure:</p>
 <ul>
   <li>Internet connectivity issue.</li>
   <li>The download server is down.</li>
@@ -154,92 +163,119 @@ DOWNLOAD_FAIL_HELP="<p>Possible reasons for download failure:</p>
 }
 
 tb_run_function() {
+   [[ -v "${tb_skip_functions}" ]] || tb_skip_functions=''
    case $tb_skip_functions in
-   *"$@"*) printf '%s\n' "INFO: Skipping '$@', because tb_skip_functions includes it."
+   *"$@"*) printf '%s\n' "INFO: Skipping '$*', because tb_skip_functions includes it."
                   return 0
                   ;;
    esac
 
-   true "INFO: Running '$@', because tb_skip_functions does not include it."
+   true "INFO: Running '$*', because tb_skip_functions does not include it."
    "$@"
 }
 
 root_check() {
-   if [ "$(id -u)" = "0" ]; then
-      tb_running_as_root=true
-      ## Runs as root during build process (chroot), where msgcollector is not running.
-      ## Under Wayland cannot use gui applications as root.
-      export TB_USE_MSGCOLLECTOR="false"
-   else
-      tb_running_as_root=false
+   local tb_sandbox_exit_code
+   if [ "$(id --user)" != "0" ]; then
+     true "INFO: ${FUNCNAME[0]}: running as user (non-root)."
+     tb_running_as_root=false
+     return 0
    fi
-
-   if [ "$tb_running_as_root" = "false" ]; then
-      true "INFO: $FUNCNAME: running as user (non-root)."
-      return 0
-   fi
+   tb_running_as_root=true
 
    if printf '%s\n' "$@" | grep -- "--postinst" >/dev/null 2>/dev/null ; then
-      true "INFO: $FUNCNAME: Allow running as root because using --postinst."
-      return 0
+      true "INFO: ${FUNCNAME[0]}: Allow dropping privileges to account 'tb-updater' because using --postinst."
+      tb_sandbox_exit_code='0'
+      /usr/libexec/tb-updater/sandbox-update-torbrowser "$@" || tb_sandbox_exit_code="$?"
+      tb_exit_function "$tb_sandbox_exit_code"
    fi
 
    printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' as root (sudo)! Instead, '$SCRIPTNAME' should be run as non-root user."
    tb_exit_function 2
 }
 
-sysmaint_check() {
-   if ! [ "$boot_session" = "sysmaint_session" ]; then
-      true "INFO: sysmaint_session: no"
+qubes_template_check() {
+   local tb_sandbox_exit_code
+   local who_ami
+   if ! [ -f /run/qubes/this-is-templatevm ]; then
+      true "INFO: ${FUNCNAME[0]}: not running in TemplateVM, ok."
       return 0
    fi
+   who_ami="$(whoami)"
+   if [ "${who_ami}" = 'tb-updater' ]; then
+      true "INFO: ${FUNCNAME[0]}: Running in TemplateVM as user 'tb-updater', ok."
+      return 0
+   fi
+   if pkg_installed user-sysmaint-split && [ "$(whoami)" != 'sysmaint' ]; then
+      printf '%s\n' "ERROR: '$SCRIPTNAME' must be run using account 'sysmaint' when running in a Qubes TemplateVM with user-sysmaint-split installed!"
+      tb_exit_function 2
+   fi
+   tb_sandbox_exit_code='0'
+   sudo /usr/libexec/tb-updater/sandbox-update-torbrowser "$@" || tb_sandbox_exit_code="$?"
+   tb_exit_function "$tb_sandbox_exit_code"
+}
+
+sysmaint_check() {
    local who_ami
    who_ami="$(whoami)"
+   if ! [ "$boot_session" = "sysmaint_session" ]; then
+      true "INFO: sysmaint_session: no"
+      if [ "$who_ami" != "sysmaint" ]; then
+         true "INFO: sysmaint_session: no and not running as sysmaint, ok."
+         return 0
+      fi
+      ## No need to check for account tb-updater, since we're blacklisting
+      ## accounts here, not whitelisting them.
+      printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' under account '$who_ami' in user session! Instead, in user session '$SCRIPTNAME' should be run under account 'user' or another unprivileged user."
+      tb_exit_function 2
+   fi
+
    true "INFO: sysmaint_session: yes"
    if [ "$who_ami" = "sysmaint" ]; then
-      true "INFO: sysmaint_session: yes and running as account sysmaint, ok."
+      true "INFO: sysmaint_session: yes and running as account 'sysmaint', ok."
       return 0
    fi
-   if [ "$who_ami" = "root" ]; then
-      ## If this is OK is tested in function 'root_check'.
-      true "INFO: sysmaint_session: yes and running as root, ok."
+   ## We do need to check for account tb-updater here because we're
+   ## whitelisting accounts in this scenario.
+   if [ "$who_ami" = "tb-updater" ]; then
+      true "INFO: sysmaint_session: yes and running as account 'tb-updater', ok."
       return 0
    fi
-   printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' under account '$who_ami' in sysmaint session! Instead, in sysmaint session '$SCRIPTNAME' should be run under user 'sysmaint'."
+   printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' under account '$who_ami' in sysmaint session! Instead, in sysmaint session '$SCRIPTNAME' should be run under account 'sysmaint'."
    tb_exit_function 2
 }
 
 tb_sanity_tests() {
-   command -v id >/dev/null
-   command -v basename >/dev/null
-   command -v touch >/dev/null
-   command -v uname >/dev/null
-   command -v mkdir >/dev/null
-   command -v pidof >/dev/null
-   command -v chmod >/dev/null
-   command -v cp >/dev/null
-   command -v mv >/dev/null
-   command -v killall >/dev/null
-   command -v safe-rm >/dev/null
-   command -v head >/dev/null
-   command -v tar >/dev/null
-   command -v date >/dev/null
-   command -v /usr/libexec/msgcollector/msgcollector >/dev/null
-   command -v /usr/libexec/msgcollector/pv_wrapper >/dev/null
+   has id
+   has basename
+   has touch
+   has uname
+   has mkdir
+   has pidof
+   has chmod
+   has cp
+   has mv
+   has killall
+   has safe-rm
+   has head
+   has tar
+   has date
+   has /usr/libexec/msgcollector/msgcollector
+   has /usr/libexec/msgcollector/pv_wrapper
    ## tbbversion function
-   command -v grep >/dev/null
+   has grep
    ## tbbversion function
-   command -v sed >/dev/null
-   command -v sort >/dev/null
-   command -v pv >/dev/null
-   command -v mkfifo >/dev/null
-   command -v jq >/dev/null
-   command -v sanitize-string >/dev/null
+   has sed
+   has sort
+   has pv
+   has mkfifo
+   has jq
+   has sanitize-string
 }
 
 tb_ex_funct() {
    local MSG
-   MSG="$0: INFO: $FUNCNAME: Signal '$SIGNAL_TYPE' received. Cleaning up..."
+   MSG="$0: INFO: ${FUNCNAME[0]}: Signal '$SIGNAL_TYPE' received. Cleaning up..."
 
    if [ "$last_pid_list" = "" ]; then
       true
@@ -266,7 +302,7 @@ tb_ex_funct() {
    #output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
    #printf '%s\n' "ERROR: $MSG"
 
-   MSG="$0: INFO: $FUNCNAME: Signal '$SIGNAL_TYPE' received. Exiting."
+   MSG="$0: INFO: ${FUNCNAME[0]}: Signal '$SIGNAL_TYPE' received. Exiting."
    output_gui ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
 }
 
@@ -323,13 +359,6 @@ tb_parse_cmd_options() {
                ;;
            --nokilltb)
                NOKILLTB="1"
-               shift
-               ;;
-           --devbuildpassthrough)
-               TB_FORCE_INSTALL="1"
-               DEV_BUILD_PASSTHROUGH="1"
-               DEV_PASSTHROUGH="1"
-               export TB_USE_MSGCOLLECTOR="false"
                shift
                ;;
            --postinst)
@@ -392,7 +421,7 @@ tb_parse_cmd_options() {
 
    ## If there are input files (for example) that follow the options, they
    ## will remain in the "$@" positional parameters.
-   true "$BASH_SOURCE \$@: $@"
+   true "$BASH_SOURCE \$*: $*"
 }
 
 tb_stdin() {
@@ -445,8 +474,8 @@ output_cli() {
 
 output_gui() {
    local MSG output_tool
-   true "$FUNCNAME: START"
-   true "$FUNCNAME: args: ${1+$@}"
+   true "${FUNCNAME[0]}: START"
+   true "${FUNCNAME[0]}: args: ${1+$@}"
    output_tool="/usr/libexec/msgcollector/msgcollector"
    ## Variable initialization required because 'curl-prgrs' uses "set -o nounset".
    [[ -v TB_USE_MSGCOLLECTOR ]] || TB_USE_MSGCOLLECTOR=""
@@ -456,7 +485,7 @@ output_gui() {
          case $1 in
             --messagex)
                ## Only show --messagecli. Skip --messagex.
-               true "$FUNCNAME: --messagex END"
+               true "${FUNCNAME[0]}: --messagex END"
                return 0
                ;;
             --message)
@@ -481,7 +510,7 @@ output_gui() {
    else
       $output_tool --identifier "$IDENTIFIER" "$@"
    fi
-   true "$FUNCNAME: END END"
+   true "${FUNCNAME[0]}: END END"
 }
 
 tb_config_folder_parser() {
@@ -490,69 +519,19 @@ tb_config_folder_parser() {
    shopt -s nullglob
    local i
    for i in \
-      /etc/${tb_settings_folder}/*.conf \
-      /usr/local/etc/${tb_settings_folder}/*.conf \
+      "/etc/${tb_settings_folder}"/*.conf \
+      "/usr/local/etc/${tb_settings_folder}"/*.conf \
       ; do
          bash -n "$i"
          source "$i"
    done
 }
 
-tb_resolv_conf_debugging() {
-   printf '%s\n' "INFO: tb_resolv_conf_debugging: start"
-
-   printf '%s\n' "ls -la /etc/resolv.conf"
-   ls -la -- /etc/resolv.conf || true
-
-   printf '%s\n' "cat -- /etc/resolv.conf"
-   cat -- /etc/resolv.conf || true
-
-   printf '%s\n' "cat -- /etc/resolv.whonix"
-   cat -- /etc/resolv.whonix || true
-
-   printf '%s\n' "cat -- /etc/resolv.conf.whonix-orig"
-   cat -- /etc/resolv.conf.whonix-orig || true
-
-   printf '%s\n' "INFO: tb_resolv_conf_debugging: end"
-}
-
-tb_anon_ws_dns_conf() {
-   true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
-   true "is_chroot: $is_chroot"
-
-   if [ "$is_chroot" = "true" ]; then
-      ## Debugging.
-      tb_resolv_conf_debugging
-   fi
-
-   if [ "$tb_disable_anon_ws_dnf_conf" = "true" ]; then
-      printf '%s\n' "INFO: tb_anon_ws_dns_conf: tb_disable_anon_ws_dnf_conf=true"
-      printf '%s\n' "INFO: Checking if /etc/resolv.conf is a symlink..."
-      if test -h /etc/resolv.conf ; then
-         ## This is only the case when whonix-ws-network-conf is already installed.
-         printf '%s\n' "INFO: Yes, /etc/resolv.conf is a symlink..."
-         printf '%s\n' "INFO: Checking if /var/lib/dpkg/info/whonix-ws-network-conf.prerm is executable..."
-         if test -x /var/lib/dpkg/info/whonix-ws-network-conf.prerm ; then
-            printf '%s\n' "INFO: Yes, /var/lib/dpkg/info/whonix-ws-network-conf.prerm is a executable."
-            [ -n "$tb_reenable_anon_ws_dns_conf" ] || tb_reenable_anon_ws_dns_conf=true
-            tb_resolv_conf_debugging
-
-            printf '%s\n' "INFO: tb_anon_ws_dns_conf: Restore original /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-pre ..."
-
-            true "tb_running_as_root: $tb_running_as_root"
-            if [ "$tb_running_as_root" = "false" ]; then
-               ## TODO: port to privleap - but privleap may not be running inside chroot
-               sudo --non-interactive /usr/libexec/tb-updater/chroot-pre
-            else
-               /usr/libexec/tb-updater/chroot-pre
-            fi
-            tb_resolv_conf_debugging
-         fi
-      fi
-   fi
-}
-
 tb_settings_chroot_common() {
+   if [ "${tb_running_as_root}" = 'false' ]; then
+      printf '%s\n' "ERROR: ${FUNCNAME[0]}: Cannot use --is-chroot option if not running as root!"
+      tb_exit_function 2
+   fi
    ## Do not run in chroot if tb_install_in_chroot=false.
    if [ ! "$tb_install_in_chroot" = "false" ]; then
       [ -n "$tb_updater_run" ] || tb_updater_run=true
@@ -565,11 +544,10 @@ tb_settings_chroot_common() {
    ## We are using --fail anyhow. No problem to duplicate it.
    [ -n "$CURL_PROXY" ] || CURL_PROXY=( "--fail" )
 
-   ## Careful as it would like information to logs:
+   ## Careful as it would leak information to logs:
    ## Connection #0 to host 10.137.0.82 left intact
    #[ -n "$CURL_OPTS" ] || CURL_OPTS="--verbose"
 
-   [ -n "$tb_disable_anon_ws_dnf_conf" ] || tb_disable_anon_ws_dnf_conf=true
    ## Debugging.
    [ -n "$pv_wrapper_debug" ] || pv_wrapper_debug=true
 }
@@ -593,8 +571,8 @@ tb_settings_postinst_common() {
    ## Using curl instead of curl-prgrs to debug server issue.
    ## --ordinary
    #[ -n "$ordinary" ] || ordinary="true"
+
    ## Careful as it would like information to logs:
-   ## TODO: out comment this
    ## Connection #0 to host 10.137.0.82 left intact
    #[ -n "$CURL_OPTS" ] || CURL_OPTS="--verbose"
 }
@@ -603,11 +581,11 @@ tb_settings_qubes_common_templatevm() {
    ## Skip Tor connectivity check when running inside Qubes Template,
    ## because since Qubes R4 Templates are non-networked by default.
    [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
-   [ -n "$tb_qubes_template_detected" ] || tb_qubes_template_detected=true
 }
 
-tb_settings_not_tempaltevm() {
-   [ -n "$tb_qubes_template_detected" ] || tb_qubes_template_detected=false
+tb_settings_not_templatevm() {
+   ## TODO: Unused, remove?
+   true
 }
 
 tb_settings_qubes_postinst_templatevm() {
@@ -615,42 +593,14 @@ tb_settings_qubes_postinst_templatevm() {
    if [ ! "$tb_install_follow" = "false" ]; then
       [ -n "$tb_updater_run" ] || tb_updater_run=true
    fi
-   if [ "$tb_user_home" = "" ]; then
-      tb_user_home="/var/cache/tb-binary"
-      tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because running inside Qubes Template and from postinst. \
-This is useful so you get up to date versions of $tb_title in newly created App Qubes inherited from updated Templates.
-More info: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific"
-   fi
 }
 
 tb_settings_qubes_manual_run_templatevm() {
    [ -n "$tb_updater_run" ] || tb_updater_run=true
-   if [ "$tb_user_home" = "" ]; then
-      tb_user_home="/var/cache/tb-binary"
-      tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because started by the user inside Qubes Template. \
-This is useful so you get up to date versions of '$tb_title' in newly created App Qubes inherited from updated Templates.
-More info: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific"
-   fi
 }
 
 tb_settings_manual_run_common() {
    [ -n "$tb_updater_run" ] || tb_updater_run=true
-}
-
-tb_fix_permissions() {
-   ## This function is duplicated in tb-updater, tb-starter.
-   ## /usr/libexec/tb-updater/tb-permission-fix fixes permissions in folder /var/cache/tb-binary
-   ## Save to do in Qubes Template as well as in App Qube.
-   if [ "$tb_running_as_root" = "true" ]; then
-      ## Already running as root. No need to use sudo or leaprun.
-      ## Fix build issue.
-      ## /usr/bin/update-torbrowser: line 591: /usr/bin/sudo: Operation not permitted
-      /usr/libexec/tb-updater/tb-permission-fix
-      return 0
-   fi
-   ## Running as user, not as root.
-   ## Requires root, therefore running this with leaprun.
-   leaprun tb-permission-fix
 }
 
 tb_preparation() {
@@ -663,6 +613,7 @@ tb_preparation() {
    [ -n "$tb_bin" ] || tb_bin="torbrowser"
    [ -n "$tb_downloader_developers" ] || tb_downloader_developers="Whonix"
    [ -n "$tb_documentation_base_url_clearnet" ] || tb_documentation_base_url_clearnet="https://www.whonix.org"
+   [ -n "$tb_global_binary_dir" ] || tb_global_binary_dir='/var/cache/tb-binary'
 
    if [ "$tb_postinst" = "true" ]; then
       [ -n "$tb_manual_run" ] || tb_manual_run=false
@@ -670,7 +621,7 @@ tb_preparation() {
       [ -n "$tb_manual_run" ] || tb_manual_run=true
    fi
 
-   if command -v qubesdb-read >/dev/null 2>&1 ; then
+   if has qubesdb-read; then
       [ -n "$is_qubes" ] || is_qubes=true
 
       ## qubesdb-read fails
@@ -700,7 +651,7 @@ tb_preparation() {
    if [ "$running_inside_qubes_template_vm" = "true" ] ; then
       tb_settings_qubes_common_templatevm
    else
-      tb_settings_not_tempaltevm
+      tb_settings_not_templatevm
    fi
 
    if [ "$tb_postinst" = "true" ]; then
@@ -713,16 +664,15 @@ tb_preparation() {
    true "tb_manual_run: $tb_manual_run"
    if [ "$tb_manual_run" = "true" ]; then
       tb_settings_manual_run_common
-      if [ "$running_inside_qubes_template_vm" = "true" ] ; then
+      if [ "$running_inside_qubes_template_vm" = "true" ]; then
          tb_settings_qubes_manual_run_templatevm
       fi
    fi
 
    if [ "$tb_user_home" = "" ]; then
       tb_user_home=~
-      ## In case of running as root from postinst.
-      if [ "$tb_user_home" = "/root" ] || [ "$(whoami)" = "root" ]; then
-         tb_user_home="/var/cache/tb-binary"
+      if [ "${tb_user_home}" = '/root' ] || [ "${tb_running_as_root}" = 'true' ]; then
+         tb_user_home="$tb_global_binary_dir"
          tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because running as root."
       fi
    fi
@@ -817,8 +767,12 @@ tb_preparation() {
    export IDENTIFIER
    export who_ami
 
+   if [ "${who_ami}" = 'tb-updater' ]; then
+      noaskstart='true'
+   fi
+
    ret="0"
-   command -v curl.anondist-orig >/dev/null || { ret="$?" ; true; };
+   has curl.anondist-orig || { ret="$?" ; true; };
 
    if [ "$ret" = "0" ]; then
       ## using the non-uwt-wrapped version, if the uwt wrapper is installed,
@@ -826,7 +780,7 @@ tb_preparation() {
       CURL=curl.anondist-orig
    else
       ret="0"
-      command -v curl >/dev/null || { ret="$?" ; true; };
+      has curl || { ret="$?" ; true; };
       if [ "$ret" = "0" ]; then
          ## falling back to real curl, if the uwt wrapper has been uninstalled
          CURL=curl
@@ -916,7 +870,7 @@ tb_preparation() {
       fi
    elif [ -f /usr/share/whonix/marker ]; then
       ## sets: GATEWAY_IP
-      eval $(/usr/libexec/helper-scripts/settings_echo)
+      eval "$(/usr/libexec/helper-scripts/settings_echo)"
       [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
       local random_socks_password
       ## https://spec.torproject.org/socks-extensions.html
@@ -966,15 +920,15 @@ tb_create_folders() {
 # tb_skip_if_higher_or_equal_version_already_downloaded() {
 #    ## Do this only when using --postinst.
 #    if [ ! "$tb_postinst" = "true" ]; then
-#       true "INFO: Not using --postinst, therefore skipping $FUNCNAME."
+#       true "INFO: Not using --postinst, therefore skipping ${FUNCNAME[0]}."
 #       return 0
 #    fi
 #    if [ "$tbb_version_previous_downloaded_version_stripped" = "none" ]; then
-#       true "INFO: Could not determine tbb_version_previous_downloaded_version_stripped (set to 'none'), therefore skipping $FUNCNAME."
+#       true "INFO: Could not determine tbb_version_previous_downloaded_version_stripped (set to 'none'), therefore skipping ${FUNCNAME[0]}."
 #       return 0
 #    fi
 #    if [ "$tbb_hardcoded_version" = "" ]; then
-#       true "INFO: tbb_hardcoded_version is empty, therefore skipping $FUNCNAME."
+#       true "INFO: tbb_hardcoded_version is empty, therefore skipping ${FUNCNAME[0]}."
 #       return 0
 #    fi
 #    if dpkg --compare-versions -- "$tbb_version_previous_downloaded_version_stripped" ge "$tbb_hardcoded_version" ; then
@@ -984,7 +938,7 @@ tb_create_folders() {
 #
 #    ## TODO: Does not belong here?
 #    ## Being careful with deletion.
-# #    if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/$tb_install_folder/files" ]; then
+# #    if [ "$tb_downloaded_files_folder" = "$tb_global_binary_dir/.cache/$tb_install_folder/files" ]; then
 # #       printf '%s\n' "INFO: No need to keep older versions in Qubes root image. Saving disk space. Therefore deleting..."
 # #       printf '%s\n' "safe-rm -r -f -- '$tb_downloaded_files_folder'"
 # #       safe-rm -r -f -- "$tb_downloaded_files_folder"
@@ -1025,10 +979,6 @@ tb_connectivity_checks_interfaces() {
 }
 
 tb_connectivity_checks_tor() {
-   if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
-      return 0
-   fi
-
    if [ "$TB_NO_TOR_CON_CHECK" = "1" ]; then
       return 0
    fi
@@ -1056,7 +1006,7 @@ tb_connectivity_checks_tor() {
 <p>If systemcheck reports no problems with internet activity and downloading $tb_title still fails, please report a bug!</p>
 
 <p>Debugging information:<br />
-You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCNAME</code> should be skipped.</p>"
+You could use <code>--no-tor-con-check</code> if you think function <code>${FUNCNAME[0]}</code> should be skipped.</p>"
 
          output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
 
@@ -1104,10 +1054,10 @@ You could use <code>--no-tor-con-check</code> if you think function <code>$FUNCN
 }
 
 tb_connectivity_checks_curl() {
-   if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
-      return 0
-   fi
-
+   ## TODO: Maybe we should split the actual curl operation into a yet
+   ## different user account? That would prevent a compromised curl from
+   ## being able to affect later signature checks. Or maybe we need a
+   ## general-purpose sandboxed curl wrapper.
    tb_notify_details="Checking connectivity... Will take a moment..."
    printf '%s\n' "INFO: Running connectivity check...  Downloading...: '$tbb_download_base_url'"
 
@@ -1151,16 +1101,8 @@ tb_connectivity_checks_curl() {
 
 tb_update_check() {
    if [ ! "$tbb_version_stripped" = "" ]; then
-      true "INFO: tbb_version already set to '$tbb_version_stripped'. Skipping $FUNCNAME, ok."
+      true "INFO: tbb_version already set to '$tbb_version_stripped'. Skipping ${FUNCNAME[0]}, ok."
       return 0
-   fi
-
-   ## do not re-download Tor Browser if a previous build already did
-   if [ "$DEV_BUILD_PASSTHROUGH" = "1" ]; then
-      if [ -d "$tb_browser_folder" ]; then
-         printf '%s\n' "$SCRIPTNAME: Not downloading '$tb_title' again, because folder '$tb_browser_folder' already exists."
-         tb_exit_function 0
-      fi
    fi
 
    tb_notify_details="Checking $tb_title version... Will take a moment..."
@@ -1184,7 +1126,7 @@ tb_update_check() {
 
 tb_remote_version_parser() {
    if [ ! "$tbb_version_stripped" = "" ]; then
-      true "INFO: tbb_version_stripped already set to '$tbb_version_stripped'. Simplified $FUNCNAME, ok."
+      true "INFO: tbb_version_stripped already set to '$tbb_version_stripped'. Simplified ${FUNCNAME[0]}, ok."
       [ -n "$tbb_recommended_versions_error" ] || tbb_recommended_versions_error=""
       return 0
    fi
@@ -1265,19 +1207,31 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    fi
 
    ## Used by function tbbversion_installed
-   [ -n "$tbb_folder" ] || tbb_folder="$tb_browser_folder"
+   if [ -z "$tbb_folder" ]; then
+      if [ "$who_ami" = 'tb-updater' ]; then
+         ## We install the browser into the tb-updater home folder, but it will
+         ## be moved into a system-wide location later. Thus we need to check
+         ## the system-wide location to see if the browser is already
+         ## installed and what version it's at.
+         tbb_folder="$tb_global_binary_dir/$tb_install_folder_dot/$tb_browser_name"
+         tb_local_version_file="$tbb_folder/Browser/$tb_local_version_filename"
+      else
+         tbb_folder="$tb_browser_folder"
+         ## tb_local_version_file set earlier by function tb_preparation.
+      fi
+   fi
 
    ## sets: tbb_locally_installed_version_stripped
    ## sets: tbb_locally_installed_version_detect_success
    tb_run_function tbbversion_installed
 
-   if [ -d "$tb_browser_folder" ]; then
+   if [ -d "$tbb_folder" ]; then
       installed_or_not_result="true"
       installed_or_not_text=""
    else
       installed_or_not_result="false"
       installed_or_not_text="$tb_title is currently not installed.
-(Folder $tb_browser_folder does not exist.)"
+(Folder $tbb_folder does not exist.)"
    fi
 }
 
@@ -1497,7 +1451,7 @@ $tb_notify_details"
          ## Define what CURL_PRGRS is supposed to eval.
          ## ($percent is a local variable provided by $CURL_PRGRS.)
          export -f output_gui
-         CURL_PRGRS_EXEC="output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx"
+         CURL_PRGRS_EXEC="output_gui ${output_opts[*]} --progressbaridx $progressbaridx --progressx"
          export CURL_PRGRS_EXEC
       fi
    fi
@@ -1541,7 +1495,7 @@ $tb_notify_details"
    fi
 
    if [ "$tb_download_common_exit_on_fail" = "false" ]; then
-      true "$FUNCNAME is not supposed to exit, because tb_download_common_exit_on_fail is set to $tb_download_common_exit_on_fail."
+      true "${FUNCNAME[0]} is not supposed to exit, because tb_download_common_exit_on_fail is set to $tb_download_common_exit_on_fail."
       return 0
    fi
 
@@ -1662,15 +1616,22 @@ tb_confirm_install() {
    local signature_freshness_msg signature_creation_msg
    local last_used_gpg_bash_lib_output_signed_on_date
    local last_used_gpg_bash_lib_output_signed_on_unixtime
+   local real_cache_folder
 
-   if [ -f "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_date" ]; then
-      last_used_gpg_bash_lib_output_signed_on_date="$(cat "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_date")" || true
+   if [ "${who_ami}" = 'tb-updater' ]; then
+      real_cache_folder="${tb_global_binary_dir}/.cache/$tb_install_folder"
+   else
+      real_cache_folder="${tb_cache_folder}"
+   fi
+
+   if [ -f "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_date" ]; then
+      last_used_gpg_bash_lib_output_signed_on_date="$(cat "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_date")" || true
    fi
    if [ "$last_used_gpg_bash_lib_output_signed_on_date" = "" ]; then
       last_used_gpg_bash_lib_output_signed_on_date="Unknown. Probably never downloaded a signature before."
    fi
-   if [ -f "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime" ]; then
-      last_used_gpg_bash_lib_output_signed_on_unixtime="$(cat -- "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime")" || true
+   if [ -f "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime" ]; then
+      last_used_gpg_bash_lib_output_signed_on_unixtime="$(cat -- "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime")" || true
    fi
    if [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" = "" ]; then
       last_used_gpg_bash_lib_output_signed_on_unixtime="unknown"
@@ -1776,19 +1737,21 @@ y/n?"
       fi
    fi
 
+   ## Intentionally using tb_cache_folder and not real_cache_folder here. If
+   ## running under sandbox-update-torbrowser, we will have no permission to
+   ## write to real_cache_folder directly. sandbox-update-torbrowser will move
+   ## these files into real_cache_folder later.
    overwrite "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_date" "$gpg_bash_lib_output_signed_on_date"
    overwrite "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime" "$gpg_bash_lib_output_signed_on_unixtime"
 }
 
 tb_extract() {
    if [ "$TB_NO_EXTRACT" = "true" ]; then
-      true "INFO: Skipping $FUNCNAME, because TB_NO_EXTRACT is 'true', ok."
+      true "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_EXTRACT is 'true', ok."
       return 0
    fi
 
-   if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      true
-   else
+   if [ "$TB_FORCE_INSTALL" != "1" ]; then
       progressbaridx="$(cat -- "/proc/sys/kernel/random/uuid")"
       tb_notify_msg="Extraction
 ----------------------------------------------------------------------
@@ -1838,10 +1801,16 @@ Extracting $tb_title... This could take a moment..."
       true "INFO: wait bsdtar lastpid"
       wait "$lastpid" || { tb_tar_exit_code="$?" ; true; };
    else
+     ## pv_echo_command is parsed using `eval`.
+     # shellcheck disable=SC2089
       pv_echo_command='echo "extraction percent done: "$percent" / 100" >&2'
+      # shellcheck disable=SC2090
       export pv_echo_command
       export -f output_gui
-      pv_wrapper_command="output_gui ${output_opts[@]} --progressbaridx $progressbaridx --progressx \"\$percent\""
+     ## pv_wrapper_command is parsed using `eval`.
+     # shellcheck disable=SC2089
+      pv_wrapper_command="output_gui ${output_opts[*]} --progressbaridx $progressbaridx --progressx \"\$percent\""
+      # shellcheck disable=SC2090
       export pv_wrapper_command
 
       local tar_fifo tar_pid pv_wrapper_fifo pv_wrapper_fifo
@@ -1954,7 +1923,7 @@ tb_patch_download_folder_create() {
 
 tb_patch() {
    if [ "$TB_NO_PATCH" = "true" ]; then
-      true "INFO: Skipping $FUNCNAME, because TB_NO_PATCH is 'true', ok."
+      true "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_PATCH is 'true', ok."
       return 0
    fi
 
@@ -1963,7 +1932,7 @@ tb_patch() {
 
 tb_install() {
    if [ "$TB_NO_INSTALL" = "true" ]; then
-      true "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
+      true "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_INSTALL is 'true', ok."
       return 0
    fi
 
@@ -1976,34 +1945,16 @@ tb_install() {
 
 tb_cleanup() {
    if [ "$TB_NO_INSTALL" = "true" ]; then
-      true "INFO: Skipping $FUNCNAME, because TB_NO_INSTALL is 'true', ok."
+      true "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_INSTALL is 'true', ok."
       return 0
    fi
    if [ "$TB_NO_CLEANUP" = "true" ]; then
-      printf '%s\n' "INFO: Skipping $FUNCNAME, because TB_NO_CLEANUP is 'true', ok."
+      printf '%s\n' "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_CLEANUP is 'true', ok."
       return 0
    fi
 
    printf '%s\n' "INFO: Deleting no longer required file '$TBB_PACKAGE_FULL_PATH' to save space."
    safe-rm --force -- "$TBB_PACKAGE_FULL_PATH"
-}
-
-tb_chroot_pre_exit() {
-   if [ "$tb_reenable_anon_ws_dns_conf" = "true" ]; then
-      printf '%s\n' "INFO: tb_chroot_pre_exit: tb_reenable_anon_ws_dns_conf=true"
-
-      printf '%s\n' "INFO: tb_chroot_pre_exit: Restore whonix-ws-network-conf /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-post ..."
-
-      true "tb_running_as_root: $tb_running_as_root"
-      if [ "$tb_running_as_root" = "false" ]; then
-         ## TODO: port to privleap - but privleap may not be running inside chroot
-         sudo --non-interactive /usr/libexec/tb-updater/chroot-post
-      else
-         /usr/libexec/tb-updater/chroot-post
-      fi
-
-      tb_resolv_conf_debugging
-   fi
 }
 
 tb_hardcoded_version_last_downloaded_save() {
@@ -2023,10 +1974,10 @@ tb_start_ask() {
       return 0
    fi
 
-   local command_v_torbrowser_exit_code="0"
-   command -v $tb_bin || { command_v_torbrowser_exit_code="$?" ; true; };
+   local has_torbrowser_exit_code="0"
+   has "$tb_bin" || { has_torbrowser_exit_code="$?" ; true; };
 
-   if [ ! "$command_v_torbrowser_exit_code" = "0" ]; then
+   if [ ! "$has_torbrowser_exit_code" = "0" ]; then
       printf '%s\n' "INFO: '$tb_bin' binary not found in path. tb-starter is probably not installed. \
 Skipping question to start '$tb_title'."
       return 0
@@ -2090,16 +2041,16 @@ y/n?"
 
 main_function() {
    tb_run_function root_check "$@"
+   tb_run_function qubes_template_check "$@"
+
    tb_run_function sysmaint_check "$@"
    tb_run_function tb_sanity_tests
    tb_run_function tb_config_folder_parser
    tb_run_function tb_parse_cmd_options "$@"
    tb_run_function tb_preparation
    tb_run_function tb_stdin
-   tb_run_function tb_fix_permissions
-   tb_run_function tb_create_folders
    tb_run_function tb_qubes_dvm_template
-   tb_run_function tb_anon_ws_dns_conf
+   tb_run_function tb_create_folders
    tb_run_function tb_local_version_detection
 
    if [ "$tb_hard_reset" == "true" ]; then
@@ -2134,8 +2085,6 @@ main_function() {
    tb_run_function tb_install
    tb_run_function tb_cleanup
    tb_run_function tb_hardcoded_version_last_downloaded_save
-   tb_run_function tb_fix_permissions
-   tb_run_function tb_chroot_pre_exit
    tb_run_function tb_start_ask
 }
 

@@ -139,7 +139,7 @@ See also EXAMPLES below.
 
 1 Internal Error.
 
-2 Aborted because running as root.
+2 Aborted because running under an unsuitable user account.
 
 3 Cancel button pressed.
 
