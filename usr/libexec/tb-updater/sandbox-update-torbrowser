@@ -50,15 +50,15 @@ cleanup() {
 
   if [ -S "${wl_sock}" ] \
     && ! setfacl --remove u:tb-updater -- "${wl_sock}"; then
-    log warn "${FUNCNAME[0]}: Cannot remove ACL on '${wl_sock}' to revoke account 'tb-updater' access!"
+    log warn "Cannot remove ACL on '${wl_sock}' to revoke account 'tb-updater' access!"
   fi
 
   if mountpoint "${wl_sock}" >/dev/null 2>&1 && ! umount "${wl_sock}"; then
-    log warn "${FUNCNAME[0]}: Cannot unmount '${wl_sock}'!"
+    log warn "Cannot unmount '${wl_sock}'!"
   fi
 
   if [ "${use_x11_gui}" = 'true' ] && ! xhost -si:localuser:tb-updater; then
-    log warn "${FUNCNAME[0]}: Could not revoke X11 access from account 'tb-updater'!"
+    log warn "Could not revoke X11 access from account 'tb-updater'!"
   fi
 
   ## Dropping permissions before deletion so that there isn't any way for this
@@ -122,12 +122,12 @@ sandbox_update_torbrowser() {
   local _ gui_enabled orig_wl_sock gui_ready sock_owner
 
   if [ "$(id -u)" != '0' ]; then
-    log error "${FUNCNAME[0]}: This script requires root privileges!"
+    log error "This script requires root privileges!"
     exit_clean 1
   fi
 
   if ! [ -d "${tb_updater_home}" ]; then
-     log error "${FUNCNAME[0]}: '${tb_updater_home}' does not exist or is not a directory!"
+     log error "'${tb_updater_home}' does not exist or is not a directory!"
      exit_clean 1
   fi
 
@@ -151,7 +151,7 @@ sandbox_update_torbrowser() {
       break
     fi
     if [ -z "$SUDO_USER" ]; then
-      log notice "${FUNCNAME[0]}: Cannot determine calling user, skipping GUI setup, ok."
+      log notice "Cannot determine calling user, skipping GUI setup, ok."
       break
     fi
 
@@ -160,10 +160,10 @@ sandbox_update_torbrowser() {
     ## This most likely is not a concern, since this is a rare setup we don't
     ## support.
     if ! orig_wl_sock="$(/usr/libexec/helper-scripts/find_wl_compositor)"; then
-      log notice "${FUNCNAME[0]}: Cannot find Wayland socket, assuming the use of X11."
+      log notice "Cannot find Wayland socket, assuming the use of X11."
 
       if ! has xhost; then
-        log notice "${FUNCNAME[0]}: Cannot find xhost executable, skipping GUI setup, ok."
+        log notice "Cannot find xhost executable, skipping GUI setup, ok."
         break
       fi
 
@@ -180,7 +180,7 @@ sandbox_update_torbrowser() {
       if [[ "${xserver_id_calc}" =~ \((:[0-9]+)\)$ ]]; then
         xserver_id="${BASH_REMATCH[1]}"
       else
-        log notice "${FUNCNAME[0]}: Cannot find X server, skipping GUI setup, ok."
+        log notice "Cannot find X server, skipping GUI setup, ok."
         break
       fi
 
@@ -209,23 +209,23 @@ sandbox_update_torbrowser() {
     ## revokes the ACL once it's no longer in use.
 
     if ! sock_owner="$(stat --format='%U' -- "${orig_wl_sock}")"; then
-      log notice "${FUNCNAME[0]}: Cannot get owner of Wayland socket, skipping GUI setup, ok."
+      log notice "Cannot get owner of Wayland socket, skipping GUI setup, ok."
       break
     fi
     if [ "${sock_owner}" != "${SUDO_USER}" ]; then
-      log notice "${FUNCNAME[0]}: Calling user is different than Wayland socket owner, skipping GUI setup, ok."
+      log notice "Calling user is different than Wayland socket owner, skipping GUI setup, ok."
       break
     fi
 
     if [ -f "${wl_sock}" ] || [ -S "${wl_sock}" ]; then
       if mountpoint "${wl_sock}" >/dev/null 2>&1 \
         && ! umount "${wl_sock}"; then
-        log warn "${FUNCNAME[0]}: '${wl_sock}' is a bind mount, but cannot be unmounted! GUI will be disabled."
+        log warn "'${wl_sock}' is a bind mount, but cannot be unmounted! GUI will be disabled."
         break
       fi
 
     elif [ -e "${wl_sock}" ]; then
-      log warn "${FUNCNAME[0]}: '${wl_sock}' exists but is not a file or socket! GUI will be disabled."
+      log warn "'${wl_sock}' exists but is not a file or socket! GUI will be disabled."
       break
 
     ## In order to bind-mount a socket somewhere, you need to have a file to
@@ -233,19 +233,19 @@ sandbox_update_torbrowser() {
     ## socket also, which this code allows. This isn't expected to ever
     ## happen, but it should be harmless if it does.)
     elif ! touch "${wl_sock}"; then
-      log warn "${FUNCNAME[0]}: Cannot create file '${wl_sock}'! GUI will be disabled."
+      log warn "Cannot create file '${wl_sock}'! GUI will be disabled."
       break
     fi
 
     if ! mount --bind "${orig_wl_sock}" "${wl_sock}"; then
-      log warn "${FUNCNAME[0]}: Cannot bind-mount Wayland socket from '${orig_wl_sock}' to '${wl_sock}'! GUI will be disabled."
+      log warn "Cannot bind-mount Wayland socket from '${orig_wl_sock}' to '${wl_sock}'! GUI will be disabled."
       break
     fi
 
     if ! setfacl --modify u:tb-updater:rw -- "${wl_sock}"; then
-      log warn "${FUNCNAME[0]}: Cannot set ACL on '${wl_sock}' to permit account 'tb-updater' access! GUI will be disabled."
+      log warn "Cannot set ACL on '${wl_sock}' to permit account 'tb-updater' access! GUI will be disabled."
       umount "${wl_sock}" \
-        || log warn "${FUNCNAME[0]}: Cannot clean up bind-mount of Wayland socket from '${orig_wl_sock}' to '${wl_sock}'!"
+        || log warn "Cannot clean up bind-mount of Wayland socket from '${orig_wl_sock}' to '${wl_sock}'!"
       break
     fi
 
@@ -289,7 +289,7 @@ sandbox_update_torbrowser() {
   fi
 
   if [ -d "${tb_updater_home}/.tb" ] && [ -d "${tb_updater_home}/.cache/tb" ]; then
-    log notice "${FUNCNAME[0]}: Found browser installation in '${tb_updater_home}', moving to '${root_browser_dir}'."
+    log notice "Found browser installation in '${tb_updater_home}', moving to '${root_browser_dir}'."
     mkdir --parents -- "${root_browser_dir}"
     shopt -s dotglob
     shopt -s nullglob
@@ -316,7 +316,7 @@ sandbox_update_torbrowser() {
     chown --recursive -- root:root "${root_browser_dir}"
   fi
 
-  log notice "${FUNCNAME[0]}: Cleaning up '${tb_updater_home}'."
+  log notice "Cleaning up '${tb_updater_home}'."
 
   cleanup
   exit_clean 0
