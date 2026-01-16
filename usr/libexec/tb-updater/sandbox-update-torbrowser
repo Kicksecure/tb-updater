@@ -3,6 +3,8 @@
 ## Copyright (C) 2026 - 2026 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
 ## See the file COPYING for copying conditions.
 
+## TODO: Make this work with more than just Tor Browser.
+
 set -o errexit
 set -o nounset
 set -o errtrace
@@ -15,6 +17,11 @@ has setfacl
 
 tb_updater_home='/var/lib/tb-updater/work'
 root_browser_dir='/var/cache/tb-binary'
+tb_updater_uid="$(id -u tb-updater)"
+if [ -z "${tb_updater_uid}" ]; then
+   printf '%s\n' "ERROR: Unable to get UID of account 'tb-updater'! Exiting."
+   exit 1
+fi
 tb_updater_run_dir="/run/user/$(id -u tb-updater)"
 wl_sock="${tb_updater_run_dir}/wayland-0"
 use_x11_gui='false'
@@ -39,20 +46,25 @@ cleanup() {
 
   ## Dropping permissions before deletion so that there isn't any way for this
   ## to delete files that `tb-updater` doesn't have permission to delete.
+  shopt -s dotglob
+  shopt -s nullglob
   sudo -H -u 'tb-updater' \
-    bash -c "safe-rm --recursive --force -- '${tb_updater_home}'/{,.}*" \
-    >/dev/null 2>&1 || true
+    safe-rm --recursive --force --one-file-system -- "${tb_updater_home}"/*
   if [ -d "${tb_updater_run_dir}" ]; then
     sudo -H -u 'tb-updater' \
-      bash -c "safe-rm --recursive --force -- '${tb_updater_run_dir}'/{,.}*" \
-      >/dev/null 2>&1 || true
+      safe-rm --recursive --force --one-file-system \
+      -- "${tb_updater_run_dir}"/*
+    rmdir "${tb_updater_run_dir}" >/dev/null 2>&1
   fi
-  rmdir "${tb_updater_run_dir}" >/dev/null 2>&1 || true
+  shopt -u dotglob
+  shopt -u nullglob
 }
 
 error_handler() {
+  local error_code="$?"
+  trap '' EXIT INT TERM
   cleanup
-  exit 1
+  exit "${error_code}"
 }
 
 trap error_handler EXIT INT TERM
@@ -123,7 +135,7 @@ sandbox_update_torbrowser() {
       break
     fi
     if [ -z "$SUDO_USER" ]; then
-      true "INFO: ${FUNCNAME[0]}: Cannot determine calling user, skipping GUI setup, ok."
+      printf '%s\n' "INFO: ${FUNCNAME[0]}: Cannot determine calling user, skipping GUI setup, ok."
       break
     fi
 
@@ -132,10 +144,10 @@ sandbox_update_torbrowser() {
     ## This most likely is not a concern, since this is a rare setup we don't
     ## support.
     if ! orig_wl_sock="$(/usr/libexec/helper-scripts/find_wl_compositor)"; then
-      true "INFO: ${FUNCNAME[0]}: Cannot find Wayland socket, assuming the use of X11."
+      printf '%s\n' "INFO: ${FUNCNAME[0]}: Cannot find Wayland socket, assuming the use of X11."
 
       if ! has xhost; then
-        true "INFO: ${FUNCNAME[0]}: Cannot find xhost executable, skipping GUI setup, ok."
+        printf '%s\n' "INFO: ${FUNCNAME[0]}: Cannot find xhost executable, skipping GUI setup, ok."
         break
       fi
 
@@ -152,7 +164,7 @@ sandbox_update_torbrowser() {
       if [[ "${xserver_id_calc}" =~ \((:[0-9]+)\)$ ]]; then
         xserver_id="${BASH_REMATCH[1]}"
       else
-        true "INFO: ${FUNCNAME[0]}: Cannot find X server, skipping GUI setup, ok."
+        printf '%s\n' "INFO: ${FUNCNAME[0]}: Cannot find X server, skipping GUI setup, ok."
         break
       fi
 
@@ -181,11 +193,11 @@ sandbox_update_torbrowser() {
     ## revokes the ACL once it's no longer in use.
 
     if ! sock_owner="$(stat --format='%U' -- "${orig_wl_sock}")"; then
-      true "INFO: ${FUNCNAME[0]}: Cannot get owner of Wayland socket, skipping GUI setup, ok."
+      printf '%s\n' "INFO: ${FUNCNAME[0]}: Cannot get owner of Wayland socket, skipping GUI setup, ok."
       break
     fi
     if [ "${sock_owner}" != "${SUDO_USER}" ]; then
-      true "INFO: ${FUNCNAME[0]}: Calling user is different than Wayland socket owner, skipping GUI setup, ok."
+      printf '%s\n' "INFO: ${FUNCNAME[0]}: Calling user is different than Wayland socket owner, skipping GUI setup, ok."
       break
     fi
 
@@ -257,21 +269,34 @@ sandbox_update_torbrowser() {
   fi
 
   if [ -d "${tb_updater_home}/.tb" ] && [ -d "${tb_updater_home}/.cache/tb" ]; then
-    true "INFO: ${FUNCNAME[0]}: Found browser installation in '${tb_updater_home}', moving to '${root_browser_dir}'."
+    printf '%s\n' "INFO: ${FUNCNAME[0]}: Found browser installation in '${tb_updater_home}', moving to '${root_browser_dir}'."
     mkdir --parents -- "${root_browser_dir}"
+    shopt -s dotglob
+    shopt -s nullglob
     safe-rm --recursive --force -- "${root_browser_dir}"/*
+    shopt -u dotglob
+    shopt -u nullglob
     cp --recursive -- "${tb_updater_home}/.tb" "${root_browser_dir}/"
     mkdir --parents -- "${root_browser_dir}/.cache"
     cp --recursive -- "${tb_updater_home}/.cache/tb" "${root_browser_dir}/.cache/"
 
+    ## By default, the browser's files will end up with restrictive
+    ## permissions such as '0600' and '0700', preventing other users from
+    ## copying the browser to their home directory. To fix this, ensure that
+    ## all users have read permissions, all directories are readable and
+    ## "executable"
+    ## (https://superuser.com/questions/168578/why-must-a-folder-be-executable),
+    ## and all executables can be executed by the owning user. Do not open up
+    ## write permissions to any user other than the owner, and make sure the
+    ## system-wide location is owned by root to prevent tampering.
     chmod --recursive o+r -- "${root_browser_dir}"
     chmod --recursive g+r -- "${root_browser_dir}"
     find "${root_browser_dir}" -type d -print0 | xargs -0 chmod 0775
     chmod --recursive -- u+X "${root_browser_dir}"
-    chown --recursive -- 0:0 "${root_browser_dir}"
+    chown --recursive -- root:root "${root_browser_dir}"
   fi
 
-  true "INFO: ${FUNCNAME[0]}: Cleaning up '${tb_updater_home}'."
+  printf '%s\n' "INFO: ${FUNCNAME[0]}: Cleaning up '${tb_updater_home}'."
 
   cleanup
   exit_clean 0

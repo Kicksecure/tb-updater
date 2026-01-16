@@ -24,5 +24,6 @@ export tb_local_version_filename="version.json"
 export tb_downloader_developers="Kicksecure"
 export tb_documentation_base_url_clearnet="https://www.kicksecure.com"
 export tb_wiki="Mullvad_Browser"
+export tb_global_binary_dir='/var/cache/mullvadbrowser-binary'
 
 update-torbrowser "$@"

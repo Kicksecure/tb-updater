@@ -175,6 +175,7 @@ tb_run_function() {
 }
 
 root_check() {
+   local tb_sandbox_exit_code
    if [ "$(id --user)" != "0" ]; then
      true "INFO: ${FUNCNAME[0]}: running as user (non-root)."
      tb_running_as_root=false
@@ -183,21 +184,10 @@ root_check() {
    tb_running_as_root=true
 
    if printf '%s\n' "$@" | grep -- "--postinst" >/dev/null 2>/dev/null ; then
-      if printf '%s\n' "$@" | grep -- '--is-chroot' >/dev/null 2>/dev/null ; then
-         ## Allow running as root when building images. This keeps us from
-         ## having to worry about `sudo` being hardened too early during the
-         ## build process.
-         true "INFO: ${FUNCNAME[0]}: Allow run as root because using --postinst and --is-chroot."
-         ## msgcollector is not running during the build process.
-         export TB_USE_MSGCOLLECTOR="false"
-         return 0
-      fi
-
-      true "INFO: ${FUNCNAME[0]}: Allow dropping privileges to account 'tb-updater' because using --postinst without --is-chroot."
-      exec /usr/libexec/tb-updater/sandbox-update-torbrowser "$@" || {
-         printf '%s\n' "ERROR: '$SCRIPTNAME' cannot exec '/usr/libexec/tb-updater/sandbox-update-torbrowser'!"
-         tb_exit_function 1
-      }
+      true "INFO: ${FUNCNAME[0]}: Allow dropping privileges to account 'tb-updater' because using --postinst."
+      tb_sandbox_exit_code='0'
+      /usr/libexec/tb-updater/sandbox-update-torbrowser "$@" || tb_sandbox_exit_code="$?"
+      tb_exit_function "$tb_sandbox_exit_code"
    fi
 
    printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' as root (sudo)! Instead, '$SCRIPTNAME' should be run as non-root user."
@@ -205,6 +195,7 @@ root_check() {
 }
 
 qubes_template_check() {
+   local tb_sandbox_exit_code
    local who_ami
    if ! [ -f /run/qubes/this-is-templatevm ]; then
       true "INFO: ${FUNCNAME[0]}: not running in TemplateVM, ok."
@@ -219,15 +210,14 @@ qubes_template_check() {
       printf '%s\n' "ERROR: '$SCRIPTNAME' must be run using account 'sysmaint' when running in a Qubes TemplateVM with user-sysmaint-split installed!"
       tb_exit_function 2
    fi
-   exec sudo /usr/libexec/tb-updater/sandbox-update-torbrowser "$@" || {
-      printf '%s\n' "ERROR: '$SCRIPTNAME' cannot exec 'sudo /usr/libexec/tb-updater/sandbox-update-torbrowser'!"
-      tb_exit_function 1
-   }
+   tb_sandbox_exit_code='0'
+   sudo /usr/libexec/tb-updater/sandbox-update-torbrowser "$@" || tb_sandbox_exit_code="$?"
+   tb_exit_function "$tb_sandbox_exit_code"
 }
 
 sysmaint_check() {
-  local who_ami
-  who_ami="$(whoami)"
+   local who_ami
+   who_ami="$(whoami)"
    if ! [ "$boot_session" = "sysmaint_session" ]; then
       true "INFO: sysmaint_session: no"
       if [ "$who_ami" != "sysmaint" ]; then
@@ -238,21 +228,21 @@ sysmaint_check() {
       ## accounts here, not whitelisting them.
       printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' under account '$who_ami' in user session! Instead, in user session '$SCRIPTNAME' should be run under account 'user' or another unprivileged user."
       tb_exit_function 2
-   else
-      true "INFO: sysmaint_session: yes"
-      if [ "$who_ami" = "sysmaint" ]; then
-         true "INFO: sysmaint_session: yes and running as account 'sysmaint', ok."
-         return 0
-      fi
-      ## We do need to check for account tb-updater here because we're
-      ## whitelisting accounts in this scenario.
-      if [ "$who_ami" = "tb-updater" ]; then
-         true "INFO: sysmaint_session: yes and running as account 'tb-updater', ok."
-         return 0
-      fi
-      printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' under account '$who_ami' in sysmaint session! Instead, in sysmaint session '$SCRIPTNAME' should be run under account 'sysmaint'."
-      tb_exit_function 2
    fi
+
+   true "INFO: sysmaint_session: yes"
+   if [ "$who_ami" = "sysmaint" ]; then
+      true "INFO: sysmaint_session: yes and running as account 'sysmaint', ok."
+      return 0
+   fi
+   ## We do need to check for account tb-updater here because we're
+   ## whitelisting accounts in this scenario.
+   if [ "$who_ami" = "tb-updater" ]; then
+      true "INFO: sysmaint_session: yes and running as account 'tb-updater', ok."
+      return 0
+   fi
+   printf '%s\n' "ERROR: Do not run '$SCRIPTNAME' under account '$who_ami' in sysmaint session! Instead, in sysmaint session '$SCRIPTNAME' should be run under account 'sysmaint'."
+   tb_exit_function 2
 }
 
 tb_sanity_tests() {
@@ -529,66 +519,12 @@ tb_config_folder_parser() {
    shopt -s nullglob
    local i
    for i in \
-      /etc/${tb_settings_folder}/*.conf \
-      /usr/local/etc/${tb_settings_folder}/*.conf \
+      "/etc/${tb_settings_folder}"/*.conf \
+      "/usr/local/etc/${tb_settings_folder}"/*.conf \
       ; do
          bash -n "$i"
          source "$i"
    done
-}
-
-tb_resolv_conf_debugging() {
-   printf '%s\n' "INFO: tb_resolv_conf_debugging: start"
-
-   printf '%s\n' "ls -la /etc/resolv.conf"
-   ls -la -- /etc/resolv.conf || true
-
-   printf '%s\n' "cat -- /etc/resolv.conf"
-   cat -- /etc/resolv.conf || true
-
-   printf '%s\n' "cat -- /etc/resolv.whonix"
-   cat -- /etc/resolv.whonix || true
-
-   printf '%s\n' "cat -- /etc/resolv.conf.whonix-orig"
-   cat -- /etc/resolv.conf.whonix-orig || true
-
-   printf '%s\n' "INFO: tb_resolv_conf_debugging: end"
-}
-
-tb_anon_ws_dns_conf() {
-   true "tb_disable_anon_ws_dns_conf: $tb_disable_anon_ws_dns_conf"
-   true "is_chroot: $is_chroot"
-
-   if [ "$is_chroot" = "true" ]; then
-      ## Debugging.
-      tb_resolv_conf_debugging
-   fi
-
-   if [ "$tb_disable_anon_ws_dns_conf" = "true" ]; then
-      printf '%s\n' "INFO: tb_anon_ws_dns_conf: tb_disable_anon_ws_dns_conf=true"
-      printf '%s\n' "INFO: Checking if /etc/resolv.conf is a symlink..."
-      if test -h /etc/resolv.conf ; then
-         ## This is only the case when whonix-ws-network-conf is already installed.
-         printf '%s\n' "INFO: Yes, /etc/resolv.conf is a symlink..."
-         printf '%s\n' "INFO: Checking if /var/lib/dpkg/info/whonix-ws-network-conf.prerm is an executable..."
-         if test -x /var/lib/dpkg/info/whonix-ws-network-conf.prerm ; then
-            printf '%s\n' "INFO: Yes, /var/lib/dpkg/info/whonix-ws-network-conf.prerm is an executable."
-            [ -n "$tb_reenable_anon_ws_dns_conf" ] || tb_reenable_anon_ws_dns_conf=true
-            tb_resolv_conf_debugging
-
-            printf '%s\n' "INFO: tb_anon_ws_dns_conf: Restore original /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-pre ..."
-
-            true "tb_running_as_root: $tb_running_as_root"
-            if [ "$tb_running_as_root" = "false" ]; then
-               ## TODO: port to privleap - but privleap may not be running inside chroot
-               sudo --non-interactive /usr/libexec/tb-updater/chroot-pre
-            else
-               /usr/libexec/tb-updater/chroot-pre
-            fi
-            tb_resolv_conf_debugging
-         fi
-      fi
-   fi
 }
 
 tb_settings_chroot_common() {
@@ -612,7 +548,6 @@ tb_settings_chroot_common() {
    ## Connection #0 to host 10.137.0.82 left intact
    #[ -n "$CURL_OPTS" ] || CURL_OPTS="--verbose"
 
-   [ -n "$tb_disable_anon_ws_dns_conf" ] || tb_disable_anon_ws_dns_conf=true
    ## Debugging.
    [ -n "$pv_wrapper_debug" ] || pv_wrapper_debug=true
 }
@@ -650,7 +585,7 @@ tb_settings_qubes_common_templatevm() {
 
 tb_settings_not_templatevm() {
    ## TODO: Unused, remove?
-   true;
+   true
 }
 
 tb_settings_qubes_postinst_templatevm() {
@@ -678,6 +613,7 @@ tb_preparation() {
    [ -n "$tb_bin" ] || tb_bin="torbrowser"
    [ -n "$tb_downloader_developers" ] || tb_downloader_developers="Whonix"
    [ -n "$tb_documentation_base_url_clearnet" ] || tb_documentation_base_url_clearnet="https://www.whonix.org"
+   [ -n "$tb_global_binary_dir" ] || tb_global_binary_dir='/var/cache/tb-binary'
 
    if [ "$tb_postinst" = "true" ]; then
       [ -n "$tb_manual_run" ] || tb_manual_run=false
@@ -736,7 +672,7 @@ tb_preparation() {
    if [ "$tb_user_home" = "" ]; then
       tb_user_home=~
       if [ "${tb_user_home}" = '/root' ] || [ "${tb_running_as_root}" = 'true' ]; then
-         tb_user_home='/var/cache/tb-binary'
+         tb_user_home="$tb_global_binary_dir"
          tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because running as root."
       fi
    fi
@@ -1002,7 +938,7 @@ tb_create_folders() {
 #
 #    ## TODO: Does not belong here?
 #    ## Being careful with deletion.
-# #    if [ "$tb_downloaded_files_folder" = "/var/cache/tb-binary/.cache/$tb_install_folder/files" ]; then
+# #    if [ "$tb_downloaded_files_folder" = "$tb_global_binary_dir/.cache/$tb_install_folder/files" ]; then
 # #       printf '%s\n' "INFO: No need to keep older versions in Qubes root image. Saving disk space. Therefore deleting..."
 # #       printf '%s\n' "safe-rm -r -f -- '$tb_downloaded_files_folder'"
 # #       safe-rm -r -f -- "$tb_downloaded_files_folder"
@@ -1271,19 +1207,31 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    fi
 
    ## Used by function tbbversion_installed
-   [ -n "$tbb_folder" ] || tbb_folder="$tb_browser_folder"
+   if [ -z "$tbb_folder" ]; then
+      if [ "$who_ami" = 'tb-updater' ]; then
+         ## We install the browser into the tb-updater home folder, but it will
+         ## be moved into a system-wide location later. Thus we need to check
+         ## the system-wide location to see if the browser is already
+         ## installed and what version it's at.
+         tbb_folder="$tb_global_binary_dir/$tb_install_folder_dot/$tb_browser_name"
+         tb_local_version_file="$tbb_folder/Browser/$tb_local_version_filename"
+      else
+         tbb_folder="$tb_browser_folder"
+         ## tb_local_version_file set earlier by function tb_preparation.
+      fi
+   fi
 
    ## sets: tbb_locally_installed_version_stripped
    ## sets: tbb_locally_installed_version_detect_success
    tb_run_function tbbversion_installed
 
-   if [ -d "$tb_browser_folder" ]; then
+   if [ -d "$tbb_folder" ]; then
       installed_or_not_result="true"
       installed_or_not_text=""
    else
       installed_or_not_result="false"
       installed_or_not_text="$tb_title is currently not installed.
-(Folder $tb_browser_folder does not exist.)"
+(Folder $tbb_folder does not exist.)"
    fi
 }
 
@@ -1998,24 +1946,6 @@ tb_cleanup() {
    safe-rm --force -- "$TBB_PACKAGE_FULL_PATH"
 }
 
-tb_chroot_pre_exit() {
-   if [ "$tb_reenable_anon_ws_dns_conf" = "true" ]; then
-      printf '%s\n' "INFO: tb_chroot_pre_exit: tb_reenable_anon_ws_dns_conf=true"
-
-      printf '%s\n' "INFO: tb_chroot_pre_exit: Restore whonix-ws-network-conf /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-post ..."
-
-      true "tb_running_as_root: $tb_running_as_root"
-      if [ "$tb_running_as_root" = "false" ]; then
-         ## TODO: port to privleap - but privleap may not be running inside chroot
-         sudo --non-interactive /usr/libexec/tb-updater/chroot-post
-      else
-         /usr/libexec/tb-updater/chroot-post
-      fi
-
-      tb_resolv_conf_debugging
-   fi
-}
-
 tb_hardcoded_version_last_downloaded_save() {
    overwrite "$tbb_version_last_downloaded_save_file" "$tbb_version_stripped"
    printf '%s\n' "INFO: Saved '$tbb_version_stripped' in '$tbb_version_last_downloaded_save_file'."
@@ -2110,7 +2040,6 @@ main_function() {
    tb_run_function tb_stdin
    tb_run_function tb_qubes_dvm_template
    tb_run_function tb_create_folders
-   tb_run_function tb_anon_ws_dns_conf
    tb_run_function tb_local_version_detection
 
    if [ "$tb_hard_reset" == "true" ]; then
@@ -2145,7 +2074,6 @@ main_function() {
    tb_run_function tb_install
    tb_run_function tb_cleanup
    tb_run_function tb_hardcoded_version_last_downloaded_save
-   tb_run_function tb_chroot_pre_exit
    tb_run_function tb_start_ask
 }
 
