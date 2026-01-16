@@ -70,7 +70,7 @@ cleanup() {
   if [ -d "${tb_updater_run_dir}" ]; then
     setpriv_tb_updater safe-rm --recursive --force --one-file-system \
       -- "${tb_updater_run_dir}"/*
-    rmdir "${tb_updater_run_dir}" >/dev/null 2>&1
+    rmdir -- "${tb_updater_run_dir}" >/dev/null 2>&1
   fi
   shopt -u dotglob
   shopt -u nullglob
