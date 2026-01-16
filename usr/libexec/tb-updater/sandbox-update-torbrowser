@@ -14,6 +14,8 @@ set -o nounset
 set -o errtrace
 set -o pipefail
 
+who_ami="$(whoami)"
+
 ## shellcheck source=../../../../helper-scripts/usr/libexec/helper-scripts/has.sh
 source /usr/libexec/helper-scripts/has.sh
 
@@ -91,7 +93,11 @@ exit_clean() {
   exit_code="${1:-}"
   [ -z "${exit_code}" ] && exit_code='0'
   trap '' EXIT INT TERM
-  log notice "END: Success."
+  if [ "$exit_code" = "0" ]; then
+    log notice "END: Success."
+  else
+    log error "END: Failure."
+  fi
   exit "${exit_code}"
 }
 
@@ -122,6 +128,8 @@ is_gui_enabled() {
 
 sandbox_update_torbrowser() {
   local _ gui_enabled orig_wl_sock gui_ready sock_owner
+
+  log notice "Start."
 
   if [ "$(id -u)" != '0' ]; then
     log error "This script requires root privileges!"

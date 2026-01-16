@@ -48,6 +48,8 @@ source /usr/libexec/gpg-bash-lib/source_all
 ## shellcheck source=../../../../helper-scripts/usr/libexec/log_run_die.sh
 source /usr/libexec/helper-scripts/log_run_die.sh
 
+log info "Start."
+
 [[ -v SCRIPTNAME ]] || SCRIPTNAME="$(basename "$BASH_SOURCE")"
 [[ -v ICON ]] || ICON="/usr/share/icons/icon-pack-dist/tbupdate.ico"
 
