@@ -80,6 +80,7 @@ error_handler() {
   local error_code="$?"
   trap '' EXIT INT TERM
   cleanup
+  log error "END: Failed."
   exit "${error_code}"
 }
 
@@ -90,6 +91,7 @@ exit_clean() {
   exit_code="${1:-}"
   [ -z "${exit_code}" ] && exit_code='0'
   trap '' EXIT INT TERM
+  log notice "END: Success."
   exit "${exit_code}"
 }
 
