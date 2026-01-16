@@ -41,6 +41,7 @@ wl_sock="${tb_updater_run_dir}/wayland-0"
 use_x11_gui='false'
 
 setpriv_tb_updater() {
+  log notice "Executing under account tb-updater: '$*'"
   setpriv --reuid "${tb_updater_uid}" --regid "${tb_updater_gid}" \
     --init-groups --reset-env -- "$@"
 }
