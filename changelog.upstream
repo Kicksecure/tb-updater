@@ -1,3 +1,15 @@
+commit 7f3c5f1d52b9d1b7e1bc78ff139c237332297b5b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jan 17 11:22:55 2026 -0500
+
+    check version file using grep-find-unicode-wrapper
+
+commit 242c08f3b5c0f0d0cb0f63d9a7fd35848752e609
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jan 17 15:01:39 2026 +0000
+
+    bumped changelog version
+
 commit c71fd44a57e5eaa2c92072fb12198d11988f274a
 Merge: 01bc08e 05d351f
 Author: Patrick Schleizer <adrelanos@whonix.org>
