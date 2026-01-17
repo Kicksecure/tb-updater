@@ -1,3 +1,22 @@
+commit c71fd44a57e5eaa2c92072fb12198d11988f274a
+Merge: 01bc08e 05d351f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jan 17 02:50:27 2026 -0500
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit 05d351fdd3a3a4ec3683fd8ce6cc2e4eae8a2594
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Fri Jan 16 16:01:47 2026 -0600
+
+    Refactor sandbox-update-torbrowser cleanup code, run msgdispatcher in a separate cgroup
+
+commit 01bc08e357a0fd0fd6a4cbdc7895f7fdfb354efa
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Jan 16 12:11:01 2026 +0000
+
+    bumped changelog version
+
 commit cc2f0190906ad75be07b1d27a41d85f48d3e020a
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Jan 16 07:11:00 2026 -0500
