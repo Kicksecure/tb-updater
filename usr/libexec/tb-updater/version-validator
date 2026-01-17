@@ -11,6 +11,15 @@ set_stripped_tbb_version() {
    tbb_version_stripped="$(sanitize-string -- 20 "$tbb_version_raw")"
 }
 
+hexdump_file() {
+   local hex_dumped
+   printf '%s\n' "hexdump:"
+   printf '%s\n' "----------"
+   hex_dumped="$(timeout --kill-after=2 2 hexdump "$1")" || true
+   stecho "$hex_dumped"
+   printf '%s\n' "----------"
+}
+
 tbbversion() {
    local tbb_version_remote_file tbb_version_output_file \
       tbb_parser_exit_code tbb_version_max_length tbb_version_length parsed_version_temp
@@ -42,6 +51,10 @@ tbbversion() {
    tbb_version_max_length='20'
    cp -- "${RecommendedTBBVersions}" "${tbb_version_remote_file}"
 
+   ## Sanity test.
+   test -f "${tbb_version_remote_file}"
+   test -r "${tbb_version_remote_file}"
+
    ## Global variable, expected to be set by the caller
    ## stdout and stderr redirected to /dev/null in case the version-parser gets exploited to prevent it from echoing malicious advice.
    ## $RecommendedTBBVersions file should have a maximum size of 2 MB. This is enforced at update-torbrowser level.
@@ -57,6 +70,7 @@ tbbversion() {
             set_stripped_tbb_version 'UNKNOWN'
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (Excessive version string length of '${tbb_version_length}' bytes.)"
+            hexdump_file "${tbb_version_output_file}"
             safe-rm -- "${tbb_version_remote_file}"
             safe-rm -- "${tbb_version_output_file}"
             return 0
@@ -76,28 +90,24 @@ tbbversion() {
          if unicode-show "${tbb_version_output_file}" >/dev/null; then
             true "INFO: No unicode found using unicode-show, ok."
          else
-#             set_stripped_tbb_version 'UNKNOWN'
-#             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
-# (Non-ASCII characters found in version using unicode-show.)"
-#             safe-rm -- "${tbb_version_remote_file}"
-#             safe-rm -- "${tbb_version_output_file}"
-#             return 0
-            printf '%s\n' "$0: development: unicode-show unexpected non-zero exit code. This message is for developers only. No need to report this."
+            set_stripped_tbb_version 'UNKNOWN'
+            tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(Non-ASCII characters found in version using unicode-show.)"
+            hexdump_file "${tbb_version_output_file}"
+            safe-rm -- "${tbb_version_remote_file}"
+            safe-rm -- "${tbb_version_output_file}"
+            return 0
          fi
 
          ## Additional check using C (grep-find-unicode-wrapper / grep).
-
-         ## https://www.kicksecure.com/wiki/Unicode#grep-find-unicode-wrapper
-         ## Failing sometimes. Unknown reason.
-         ## https://github.com/QubesOS/updates-status/issues/6255#issuecomment-3627460001
          if grep-find-unicode-wrapper -- "${tbb_version_output_file}"; then
-#             set_stripped_tbb_version 'UNKNOWN'
-#             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
-# (Non-ASCII characters found in version using grep-find-unicode-wrapper.)"
-#             safe-rm -- "${tbb_version_remote_file}"
-#             safe-rm -- "${tbb_version_output_file}"
-#             return 0
-            printf '%s\n' "$0: development: grep-find-unicode-wrapper unexpected exit code 0. This message is for developers only. No need to report this."
+            set_stripped_tbb_version 'UNKNOWN'
+            tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
+(Non-ASCII characters found in version using grep-find-unicode-wrapper.)"
+            hexdump_file "${tbb_version_output_file}"
+            safe-rm -- "${tbb_version_remote_file}"
+            safe-rm -- "${tbb_version_output_file}"
+            return 0
          fi
 
          ## At this point we trust the version string enough to load it - if
@@ -116,6 +126,7 @@ tbbversion() {
             set_stripped_tbb_version "UNKNOWN"
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser output empty.)"
+            hexdump_file "${tbb_version_output_file}"
             safe-rm -- "${tbb_version_remote_file}"
             safe-rm -- "${tbb_version_output_file}"
             return 0
@@ -128,6 +139,7 @@ tbbversion() {
             set_stripped_tbb_version "UNKNOWN"
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser output failed check_is_not_empty_and_only_one_line test.)"
+            hexdump_file "${tbb_version_output_file}"
             safe-rm -- "${tbb_version_remote_file}"
             safe-rm -- "${tbb_version_output_file}"
             return 0
@@ -140,6 +152,7 @@ tbbversion() {
             set_stripped_tbb_version "UNKNOWN"
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser output does not look like a valid version number.)"
+            hexdump_file "${tbb_version_output_file}"
             safe-rm -- "${tbb_version_remote_file}"
             safe-rm -- "${tbb_version_output_file}"
             return 0
@@ -159,6 +172,7 @@ tbbversion() {
          set_stripped_tbb_version 'UNKNOWN'
          tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser failed - missing arguments)"
+         hexdump_file "${tbb_version_output_file}  "
          safe-rm -- "${tbb_version_remote_file}"
          safe-rm -- "${tbb_version_output_file}"
          return 0
@@ -167,6 +181,7 @@ tbbversion() {
          set_stripped_tbb_version 'UNKNOWN'
          tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser failed - file missing or inaccessible)"
+         hexdump_file "${tbb_version_output_file}  "
          safe-rm -- "${tbb_version_remote_file}"
          safe-rm -- "${tbb_version_output_file}"
          return 0
@@ -175,6 +190,7 @@ tbbversion() {
          set_stripped_tbb_version 'UNKNOWN'
          tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser failed - file invalid or malicious)"
+         hexdump_file "${tbb_version_output_file}  "
          safe-rm -- "${tbb_version_remote_file}"
          safe-rm -- "${tbb_version_output_file}"
          return 0
@@ -183,6 +199,7 @@ tbbversion() {
          set_stripped_tbb_version 'UNKNOWN'
          tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser failed - unknown error)"
+         hexdump_file "${tbb_version_output_file}  "
          safe-rm -- "${tbb_version_remote_file}"
          safe-rm -- "${tbb_version_output_file}"
          return 0
