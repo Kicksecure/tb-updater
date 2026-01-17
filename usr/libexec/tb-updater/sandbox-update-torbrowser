@@ -19,7 +19,7 @@ who_ami="$(whoami)"
 ## shellcheck source=../../../../helper-scripts/usr/libexec/helper-scripts/has.sh
 source /usr/libexec/helper-scripts/has.sh
 
-## shellcheck source=../../../../helper-scripts/usr/libexec/log_run_die.sh
+## shellcheck source=../../../../helper-scripts/usr/libexec/helper-scripts/log_run_die.sh
 source /usr/libexec/helper-scripts/log_run_die.sh
 
 has setfacl
@@ -39,6 +39,7 @@ fi
 tb_updater_run_dir="/run/user/$(id -u tb-updater)"
 wl_sock="${tb_updater_run_dir}/wayland-0"
 use_x11_gui='false'
+msgdispatcher_cgroup=''
 
 setpriv_tb_updater() {
   log notice "Executing under account tb-updater: '$*'"
@@ -46,10 +47,37 @@ setpriv_tb_updater() {
     --init-groups --reset-env -- "$@"
 }
 
+cleanup_dir_as_tb_updater() {
+  local target_dir
+  target_dir="$1"
+
+  if ! [ -d "${target_dir}" ]; then
+    ## Non-existent directory, skip
+    log notice "Skipping cleanup of non-existent directory '${target_dir}'."
+    return 0
+  fi
+  if [ "$(find "${target_dir}" | wc -l)"  = '1' ]; then
+    ## Empty directory, skip
+    log notice "Skipping cleanup of empty directory '${target_dir}'."
+    return 0
+  fi
+
+  log notice "Deleting contents of directory '${target_dir}' using account 'tb-updater'."
+  shopt -s dotglob
+  shopt -s nullglob
+  setpriv_tb_updater safe-rm --recursive --force --one-file-system \
+    -- "${target_dir}"/*
+  shopt -u dotglob
+  shopt -u nullglob
+}
+
 cleanup() {
-  ## Kill all children of the shell (this will terminate msgdispatcher and
-  ## everything under it, assuming nothing in msgdispatcher daemonizes).
-  pkill -P "$$" >/dev/null 2>&1 || true
+  if [ -n "${msgdispatcher_cgroup}" ]; then
+    printf '%s\n' '1' > "${msgdispatcher_cgroup}/cgroup.kill" \
+      || log warning "Cannot kill msgdispatcher cgroup at '${msgdispatcher_cgroup}'!"
+    rmdir "${msgdispatcher_cgroup}" \
+      || log warning "Cannot remove msgdispatcher cgroup at '${msgdispatcher_cgroup}'!"
+  fi
 
   if [ -S "${wl_sock}" ] \
     && ! setfacl --remove u:tb-updater -- "${wl_sock}"; then
@@ -66,19 +94,14 @@ cleanup() {
 
   ## Dropping permissions before deletion so that there isn't any way for this
   ## to delete files that `tb-updater` doesn't have permission to delete.
-  shopt -s dotglob
-  shopt -s nullglob
-  setpriv_tb_updater safe-rm --recursive --force --one-file-system \
-    -- "${tb_updater_home}"/*
+  cleanup_dir_as_tb_updater "${tb_updater_home}"
   if [ -d "${tb_updater_run_dir}" ]; then
-    setpriv_tb_updater safe-rm --recursive --force --one-file-system \
-      -- "${tb_updater_run_dir}"/*
+    cleanup_dir_as_tb_updater "${tb_updater_run_dir}"
     rmdir -- "${tb_updater_run_dir}" >/dev/null 2>&1
   fi
-  shopt -u dotglob
-  shopt -u nullglob
 }
 
+# shellcheck disable=SC2317
 error_handler() {
   local error_code="$?"
   trap '' EXIT INT TERM
@@ -265,13 +288,16 @@ sandbox_update_torbrowser() {
 
   if [ "${gui_ready}" = 'true' ]; then
     if [ "${use_x11_gui}" = 'true' ]; then
-      setpriv_tb_updater \
+      msgdispatcher_cgroup="$(/usr/libexec/helper-scripts/run-in-new-cgroup \
+        --detach \
+        -- \
+        setpriv_tb_updater \
         env \
         XDG_RUNTIME_DIR="${tb_updater_run_dir}" \
         DISPLAY="${DISPLAY}" \
         QT_QPA_PLATFORM='xcb' \
         GDK_BACKEND='x11' \
-        /usr/libexec/msgcollector/msgdispatcher &
+        /usr/libexec/msgcollector/msgdispatcher)"
       setpriv_tb_updater \
         env \
         XDG_RUNTIME_DIR="${tb_updater_run_dir}" \
@@ -280,13 +306,16 @@ sandbox_update_torbrowser() {
         GDK_BACKEND='x11' \
         /usr/bin/update-torbrowser "$@"
     else
-      setpriv_tb_updater \
+      msgdispatcher_cgroup="$(/usr/libexec/helper-scripts/run-in-new-cgroup \
+        --detach \
+        -- \
+        setpriv_tb_updater \
         env \
         XDG_RUNTIME_DIR="${tb_updater_run_dir}" \
         WAYLAND_DISPLAY='wayland-0' \
         QT_QPA_PLATFORM='wayland' \
         GDK_BACKEND='wayland' \
-        /usr/libexec/msgcollector/msgdispatcher &
+        /usr/libexec/msgcollector/msgdispatcher)"
       setpriv_tb_updater \
         env \
         XDG_RUNTIME_DIR="${tb_updater_run_dir}" \
