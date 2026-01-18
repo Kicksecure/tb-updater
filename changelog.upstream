@@ -1,3 +1,34 @@
+commit 30365af48aed39823412a71f17531c194155bd10
+Merge: 977ded8 2a8985e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Jan 18 05:15:03 2026 -0500
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit 2a8985e21bb1f76379146da84528e5e34172907e
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Sat Jan 17 23:48:24 2026 -0600
+
+    Don't wipe the system-wide browser location if a tb-updater update finds no new version of Tor Browser available
+
+commit dac784c6e62918684f2c4a4759a3e4a47eba25c1
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Sat Jan 17 22:08:01 2026 -0600
+
+    Fix Tor Browser download during image builds
+
+commit 36954e4f1e724029a6f86fe21b10dabe6f16aa15
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Sat Jan 17 20:22:49 2026 -0600
+
+    Don't forbid use of --is-chroot by non-root (so that the tb-updater user works)
+
+commit 977ded8a64fbbb670eb4dba08df837187e899014
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Jan 17 16:24:47 2026 +0000
+
+    bumped changelog version
+
 commit 7f3c5f1d52b9d1b7e1bc78ff139c237332297b5b
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Jan 17 11:22:55 2026 -0500
