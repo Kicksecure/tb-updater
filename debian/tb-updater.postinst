@@ -97,7 +97,13 @@ download() {
       #tpo_downloader_debug="$tpo_downloader_debug"
 
       if [ "${in_chroot}" = 'true' ]; then
-         tb_anon_ws_dns_conf
+         ## This variable may be set to 'false' by derivative-maker during an
+         ## image build.
+         [ -n "${tb_disable_anon_ws_dns_conf-}" ] || tb_disable_anon_ws_dns_conf='true'
+
+         if [ "$tb_disable_anon_ws_dns_conf" = 'true' ]; then
+            tb_anon_ws_dns_conf
+         fi
       fi
 
       $tool_item \
@@ -112,7 +118,7 @@ download() {
 
 true "anon_shared_inst_tb: $anon_shared_inst_tb"
 true "tb_onion: $tb_onion"
-true "tb_disable_anon_ws_dnf_conf: $tb_disable_anon_ws_dnf_conf"
+true "tb_disable_anon_ws_dns_conf: $tb_disable_anon_ws_dns_conf"
 
 case "$1" in
    configure)

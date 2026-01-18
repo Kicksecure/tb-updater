@@ -328,7 +328,7 @@ sandbox_update_torbrowser() {
     setpriv_tb_updater /usr/bin/update-torbrowser "$@"
   fi
 
-  if [ -d "${tb_updater_home}/.tb" ] && [ -d "${tb_updater_home}/.cache/tb" ]; then
+  if [ -d "${tb_updater_home}/.tb/tor-browser" ] && [ -d "${tb_updater_home}/.cache/tb" ]; then
     log notice "Found browser installation in '${tb_updater_home}', moving to '${root_browser_dir}'."
     mkdir --parents -- "${root_browser_dir}"
     shopt -s dotglob

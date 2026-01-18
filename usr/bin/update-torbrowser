@@ -535,10 +535,6 @@ tb_config_folder_parser() {
 }
 
 tb_settings_chroot_common() {
-   if [ "${tb_running_as_root}" = 'false' ]; then
-      log error "${FUNCNAME[0]}: Cannot use --is-chroot option if not running as root!"
-      tb_exit_function 2
-   fi
    ## Do not run in chroot if tb_install_in_chroot=false.
    if [ ! "$tb_install_in_chroot" = "false" ]; then
       [ -n "$tb_updater_run" ] || tb_updater_run=true
