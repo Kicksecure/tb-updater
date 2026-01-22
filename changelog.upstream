@@ -1,3 +1,22 @@
+commit d632029978c1ef8ad4016a8176104a848c4398fa
+Merge: 7bc32ee dcd260d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Jan 22 04:44:46 2026 -0500
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit dcd260d93c7717d289bc9af2bb54501d2b4ced5d
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Sun Jan 18 14:05:15 2026 -0600
+
+    Silence xhost output in sandbox-update-torbrowser unless xhost errors out
+
+commit 7bc32ee2f2d252ebfb4919f628b379c0bf660efd
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Jan 18 10:18:07 2026 +0000
+
+    bumped changelog version
+
 commit 30365af48aed39823412a71f17531c194155bd10
 Merge: 977ded8 2a8985e
 Author: Patrick Schleizer <adrelanos@whonix.org>
