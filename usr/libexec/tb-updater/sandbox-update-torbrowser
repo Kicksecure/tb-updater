@@ -72,6 +72,8 @@ cleanup_dir_as_tb_updater() {
 }
 
 cleanup() {
+  local xhost_output
+
   if [ -n "${msgdispatcher_cgroup}" ]; then
     printf '%s\n' '1' > "${msgdispatcher_cgroup}/cgroup.kill" \
       || log warning "Cannot kill msgdispatcher cgroup at '${msgdispatcher_cgroup}'!"
@@ -88,8 +90,10 @@ cleanup() {
     log warn "Cannot unmount '${wl_sock}'!"
   fi
 
-  if [ "${use_x11_gui}" = 'true' ] && ! xhost -si:localuser:tb-updater; then
-    log warn "Could not revoke X11 access from account 'tb-updater'!"
+  if [ "${use_x11_gui}" = 'true' ] \
+    && ! xhost_output="$(xhost -si:localuser:tb-updater 2>&1)"; then
+    log warn "Could not revoke X11 access from account 'tb-updater'! (Command 'xhost -si:localuser:tb-updater' failed.)"
+    log warn "xhost output: '${xhost_output}'"
   fi
 
   ## Dropping permissions before deletion so that there isn't any way for this
@@ -151,7 +155,7 @@ is_gui_enabled() {
 }
 
 sandbox_update_torbrowser() {
-  local _ gui_enabled orig_wl_sock gui_ready sock_owner
+  local _ gui_enabled orig_wl_sock gui_ready sock_owner xhost_output
 
   log notice "Start."
 
@@ -219,7 +223,11 @@ sandbox_update_torbrowser() {
       fi
 
       export DISPLAY="${xserver_id}"
-      xhost si:localuser:tb-updater
+      xhost_output="$(xhost si:localuser:tb-updater 2>&1)" || {
+        log error "Could not grant X11 access to account 'tb-updater'! (Command 'xhost si:localuser:tb-updater' failed.)"
+        log error "xhost output: '${xhost_output}'"
+        exit 1
+      }
       use_x11_gui='true'
       gui_ready='true'
 
