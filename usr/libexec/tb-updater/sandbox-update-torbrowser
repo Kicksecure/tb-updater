@@ -16,6 +16,9 @@ set -o pipefail
 
 who_ami="$(whoami)"
 
+## shellcheck source=../../../../helper-scripts/usr/libexec/helper-scripts/wc-test.sh
+source /usr/libexec/helper-scripts/wc-test.sh
+
 ## shellcheck source=../../../../helper-scripts/usr/libexec/helper-scripts/has.sh
 source /usr/libexec/helper-scripts/has.sh
 
@@ -47,7 +50,7 @@ cleanup_dir_as_tb_updater() {
     log notice "Skipping cleanup of non-existent directory '${target_dir}'."
     return 0
   fi
-  if [ "$(find "${target_dir}" | wc -l)"  = '1' ]; then
+  if [ "$(find -- "${target_dir}" | wc -l)"  = '1' ]; then
     ## Empty directory, skip
     log notice "Skipping cleanup of empty directory '${target_dir}'."
     return 0
@@ -71,6 +74,7 @@ cleanup() {
     cgroup_empty_str="populated 0
 frozen 0"
     (
+      true "exec {inotifywait_fd}<"
       exec {inotifywait_fd}< <(inotifywait --quiet --monitor --event modify "${tb_updater_cgroup}/cgroup.events")
       # shellcheck disable=SC2064
       trap "kill -s KILL $!" EXIT INT TERM
@@ -202,7 +206,7 @@ sandbox_update_torbrowser() {
 
   mkdir --parents -- "${tb_updater_run_dir}"
   chown -R -- tb-updater:tb-updater "${tb_updater_run_dir}"
-  chmod 0700 "${tb_updater_run_dir}"
+  chmod 0700 -- "${tb_updater_run_dir}"
 
   ## One-run loop makes it easy to skip "everything else" in the block by
   ## using 'break'.
@@ -235,8 +239,8 @@ sandbox_update_torbrowser() {
       ## needs to support Qubes, and Qubes only has one X server running per
       ## qube by default, so this should be good enough.
       xserver_id_calc="$(who \
-        | grep "^${SUDO_USER}" \
-        | grep '(:[0-9]\+)$' \
+        | grep -- "^${SUDO_USER}" \
+        | grep -- '(:[0-9]\+)$' \
         | head -n1)" || true
       if [[ "${xserver_id_calc}" =~ \((:[0-9]+)\)$ ]]; then
         xserver_id="${BASH_REMATCH[1]}"
@@ -283,8 +287,8 @@ sandbox_update_torbrowser() {
     fi
 
     if [ -f "${wl_sock}" ] || [ -S "${wl_sock}" ]; then
-      if mountpoint "${wl_sock}" >/dev/null 2>&1 \
-        && ! umount "${wl_sock}"; then
+      if mountpoint -- "${wl_sock}" >/dev/null 2>&1 \
+        && ! umount -- "${wl_sock}"; then
         log warn "'${wl_sock}' is a bind mount, but cannot be unmounted! GUI will be disabled."
         break
       fi
@@ -297,19 +301,19 @@ sandbox_update_torbrowser() {
     ## bind-mount over the top of. (One can bind-mount over the top of a
     ## socket also, which this code allows. This isn't expected to ever
     ## happen, but it should be harmless if it does.)
-    elif ! touch "${wl_sock}"; then
+    elif ! touch -- "${wl_sock}"; then
       log warn "Cannot create file '${wl_sock}'! GUI will be disabled."
       break
     fi
 
-    if ! mount --bind "${orig_wl_sock}" "${wl_sock}"; then
+    if ! mount --bind -- "${orig_wl_sock}" "${wl_sock}"; then
       log warn "Cannot bind-mount Wayland socket from '${orig_wl_sock}' to '${wl_sock}'! GUI will be disabled."
       break
     fi
 
     if ! setfacl --modify u:tb-updater:rw -- "${wl_sock}"; then
       log warn "Cannot set ACL on '${wl_sock}' to permit account 'tb-updater' access! GUI will be disabled."
-      umount "${wl_sock}" \
+      umount -- "${wl_sock}" \
         || log warn "Cannot clean up bind-mount of Wayland socket from '${orig_wl_sock}' to '${wl_sock}'!"
       break
     fi
