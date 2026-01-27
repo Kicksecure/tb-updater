@@ -1,3 +1,40 @@
+commit bd0031409cfee566d7f6c9180c48f96d405c528a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jan 27 11:35:15 2026 -0500
+
+    minor
+
+commit 5b5e9d4db8ec817b3cbfa65827c42afa30fd3cce
+Merge: 0c9793c 84f645e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jan 27 11:28:40 2026 -0500
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit 84f645ef0e51ec91bdfd7a8d0f40fbfda4343ed3
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Mon Jan 26 20:29:57 2026 -0600
+
+    Fix permissions on tb-updater user's XDG_RUNTIME_DIR in sandbox-update-torbrowser
+
+commit c4c0b82a13e1fee48a904e3d19bd0190b5578c6f
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Mon Jan 26 19:17:38 2026 -0600
+
+    Comment and output changes in sandbox-update-torbrowser
+
+commit 981c5b9b83f1bede725f5d122168e81a3cfeca9b
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Sun Jan 25 19:48:42 2026 -0600
+
+    sandbox-update-torbrowser: Add locking, avoid leftover msgprogress instances, fix broken msgdispatcher invocation
+
+commit 0c9793c66adc81e12f4544efc39435663b710af5
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Jan 22 11:01:22 2026 +0000
+
+    bumped changelog version
+
 commit d632029978c1ef8ad4016a8176104a848c4398fa
 Merge: 7bc32ee dcd260d
 Author: Patrick Schleizer <adrelanos@whonix.org>
