@@ -111,7 +111,7 @@ frozen 0"
   fi
 
   ## Dropping permissions before deletion so that there isn't any way for this
-  ## to delete files that `tb-updater` doesn't have permission to delete.
+  ## to delete files that 'tb-updater' doesn't have permission to delete.
   cleanup_dir_as_tb_updater "${tb_updater_home}"
   if [ -d "${tb_updater_run_dir}" ]; then
     cleanup_dir_as_tb_updater "${tb_updater_run_dir}"
@@ -329,7 +329,10 @@ sandbox_update_torbrowser() {
         GDK_BACKEND='x11' \
         /usr/libexec/msgcollector/msgdispatcher)"
       tb_updater_cgroup_name="${tb_updater_cgroup##*/}"
-      validate_uuid "${tb_updater_cgroup_name}"
+      if ! validate_uuid "${tb_updater_cgroup_name}"; then
+        log error "Invalid UUID '${tb_updater_cgroup_name}' returned by '/usr/libexec/helper-scripts/run-in-cgroup'!"
+        return 1
+      fi
       /usr/libexec/helper-scripts/run-in-cgroup \
         --cgroup-name "${tb_updater_cgroup_name}" \
         -- \
@@ -352,7 +355,10 @@ sandbox_update_torbrowser() {
         GDK_BACKEND='wayland' \
         /usr/libexec/msgcollector/msgdispatcher)"
       tb_updater_cgroup_name="${tb_updater_cgroup##*/}"
-      validate_uuid "${tb_updater_cgroup_name}"
+      if ! validate_uuid "${tb_updater_cgroup_name}"; then
+        log error "Invalid UUID '${tb_updater_cgroup_name}' returned by '/usr/libexec/helper-scripts/run-in-cgroup'!"
+        return 1
+      fi
       /usr/libexec/helper-scripts/run-in-cgroup \
         --cgroup-name "${tb_updater_cgroup_name}" \
         -- \
