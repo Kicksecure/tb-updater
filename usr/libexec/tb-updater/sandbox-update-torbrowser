@@ -202,6 +202,7 @@ sandbox_update_torbrowser() {
 
   mkdir --parents -- "${tb_updater_run_dir}"
   chown -R -- tb-updater:tb-updater "${tb_updater_run_dir}"
+  chmod 0700 "${tb_updater_run_dir}"
 
   ## One-run loop makes it easy to skip "everything else" in the block by
   ## using 'break'.
