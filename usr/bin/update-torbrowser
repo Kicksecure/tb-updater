@@ -904,10 +904,17 @@ tb_preparation() {
    ## Also used by function tbbversion.
    [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
 
-   [ -n "$tbb_version_last_downloaded_save_file" ] || tbb_version_last_downloaded_save_file="$tb_cache_folder/tbb_version_last_downloaded_save_file"
+   if [ -z "$tbb_version_last_downloaded_save_file" ]; then
+      tbb_version_last_downloaded_save_file="$tb_cache_folder/tbb_version_last_downloaded_save_file"
+      if [ "$who_ami" = 'tb-updater' ]; then
+         ## Read the existing version from the system-wide location.
+         tbb_version_last_downloaded_save_read_file="$tb_global_binary_dir/.cache/$tb_install_folder/tbb_version_last_downloaded_save_file"
+      fi
+   fi
+   [ -n "$tbb_version_last_downloaded_save_read_file" ] || tbb_version_last_downloaded_save_read_file="$tbb_version_last_downloaded_save_file"
 
-   if [ -f "$tbb_version_last_downloaded_save_file" ]; then
-      [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="$(stcat "$tbb_version_last_downloaded_save_file")"
+   if [ -f "$tbb_version_last_downloaded_save_read_file" ]; then
+      [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="$(stcat "$tbb_version_last_downloaded_save_read_file")"
    fi
    [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="none"
    tbb_version_previous_downloaded_version_stripped="$(sanitize-string -- 20 "$tbb_version_previous_downloaded_version")"
