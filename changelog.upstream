@@ -1,3 +1,17 @@
+commit 1787750d4660d0c291a413819ca0630e58d9377e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Feb 1 13:06:32 2026 -0500
+
+    fix `/var/cache/tb-binary` folder permissions
+    
+    https://forums.whonix.org/t/tor-browser-error-in-whonix-18-appvm-user-home-folder-permission-issue/22800
+
+commit b3fe2fb38d6ca93fc81117d9cd54cae703438e1a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Feb 1 14:02:33 2026 +0000
+
+    bumped changelog version
+
 commit 754b6462f7dbd8ca6bcd55681a2da45d8852a912
 Merge: 615197e ada18b0
 Author: Patrick Schleizer <adrelanos@whonix.org>
