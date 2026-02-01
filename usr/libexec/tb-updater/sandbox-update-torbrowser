@@ -400,11 +400,9 @@ sandbox_update_torbrowser() {
     ## and all executables can be executed by the owning user. Do not open up
     ## write permissions to any user other than the owner, and make sure the
     ## system-wide location is owned by root to prevent tampering.
-    chmod --recursive o+r -- "${root_browser_dir}"
-    chmod --recursive g+r -- "${root_browser_dir}"
-    find "${root_browser_dir}" -type d -print0 | xargs -0 chmod 0775
-    chmod --recursive -- u+X "${root_browser_dir}"
     chown --recursive -- root:root "${root_browser_dir}"
+    chmod --recursive og+rX -- "${root_browser_dir}"
+    chmod --recursive u+rwX -- "${root_browser_dir}"
   fi
 
   log notice "Cleaning up '${tb_updater_home}'."
