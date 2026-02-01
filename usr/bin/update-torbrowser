@@ -37,8 +37,8 @@ who_ami="$(whoami)"
 # shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/strings.bsh
 source /usr/libexec/helper-scripts/strings.bsh
 ## sets: boot_session
-# shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/boot-session-detection.sh
-source /usr/libexec/helper-scripts/boot-session-detection.sh
+# shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/boot-session-detection.bsh
+source /usr/libexec/helper-scripts/boot-session-detection.bsh
 # shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/has.sh
 source /usr/libexec/helper-scripts/has.sh
 # shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/package_installed_check.sh
@@ -873,6 +873,21 @@ tb_preparation() {
       ## sets: GATEWAY_IP
       eval "$(/usr/libexec/helper-scripts/settings_echo)"
       [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
+      local random_socks_password
+      ## https://spec.torproject.org/socks-extensions.html
+      random_socks_password="$(random_alpha_numeric 43)"
+      [ -n "$CURL_PROXY" ] || CURL_PROXY=(
+         '--proxy' "socks5h://$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD"
+         '--proxy-user' "<torS0X>0:tb-updater_${random_socks_password}"
+      )
+   elif [ "${tb_onion}" = 'true' ]; then
+      ## Onion download on non-Whonix.
+      ##
+      ## sets: GATEWAY_IP
+      eval "$(/usr/libexec/helper-scripts/settings_echo)"
+      ## Using port 9050 rather than 9115 here since Tor is likely not
+      ## configured with a separate port for downloading Tor Browser.
+      [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9050"
       local random_socks_password
       ## https://spec.torproject.org/socks-extensions.html
       random_socks_password="$(random_alpha_numeric 43)"
