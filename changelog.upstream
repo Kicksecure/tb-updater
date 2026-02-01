@@ -1,3 +1,22 @@
+commit 754b6462f7dbd8ca6bcd55681a2da45d8852a912
+Merge: 615197e ada18b0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Feb 1 08:04:19 2026 -0500
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit ada18b03b96401be0abd7ff54beafd2c5f93441d
+Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
+Date:   Sun Feb 1 06:13:34 2026 -0600
+
+    Fix onion downloads on non-Whonix systems, rename boot-session-detection.sh to boot-session-detection.bsh
+
+commit 615197e51d2aa7c07297a162c33b4058dd43b10f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Jan 27 17:19:38 2026 +0000
+
+    bumped changelog version
+
 commit bd0031409cfee566d7f6c9180c48f96d405c528a
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Jan 27 11:35:15 2026 -0500
