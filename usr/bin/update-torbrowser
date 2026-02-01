@@ -36,9 +36,17 @@ who_ami="$(whoami)"
 
 # shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/strings.bsh
 source /usr/libexec/helper-scripts/strings.bsh
+
 ## sets: boot_session
 # shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/boot-session-detection.bsh
-source /usr/libexec/helper-scripts/boot-session-detection.bsh
+if test -f /usr/libexec/helper-scripts/boot-session-detection.sh; then
+   ## Legacy.
+   source /usr/libexec/helper-scripts/boot-session-detection.sh
+else
+   ## Newer.
+   source /usr/libexec/helper-scripts/boot-session-detection.sh
+fi
+
 # shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/has.sh
 source /usr/libexec/helper-scripts/has.sh
 # shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/package_installed_check.sh
