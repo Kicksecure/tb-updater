@@ -3,6 +3,9 @@
 ## Copyright (C) 2012 - 2025 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
 ## See the file COPYING for copying conditions.
 
+# shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/check_runtime.bsh
+source /usr/libexec/helper-scripts/check_runtime.bsh
+
 : "${tpo_downloader_debug:=""}"
 if [ ! "$tpo_downloader_debug" = "" ] && [[ "$tpo_downloader_debug" =~ ^[0-9]+$ ]]; then
    if [ "$tpo_downloader_debug" -ge "1" ]; then
@@ -10,13 +13,8 @@ if [ ! "$tpo_downloader_debug" = "" ] && [[ "$tpo_downloader_debug" =~ ^[0-9]+$ 
    fi
 fi
 
-: "${BASH_SOURCE:=""}"
-
-if [ "${BASH_SOURCE}" = "${0}" ]; then
+if was_executed "${BASH_SOURCE[0]}"; then
   ## Script was executed.
-  tb_updater_was_sourced="false"
-elif [ "${BASH_SOURCE}" = "$(command -v "${0}")" ]; then
-  ## Script was executed probably with 'bash -x'.
   tb_updater_was_sourced="false"
 else
   ## Script was sourced.
