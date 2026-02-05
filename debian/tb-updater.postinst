@@ -102,9 +102,15 @@ download() {
          fi
       fi
 
-      $tool_item \
-         $chroot_maybe \
-         --postinst
+      if ! log_run info $tool_item $chroot_maybe --postinst; then
+         if [ "${in_chroot}" = 'true' ] \
+            && [ "${anon_shared_inst_tb}" = 'closed' ]; then
+            log error "update-torbrowser failed! Running in chroot and anon_shared_inst_tb is 'closed', therefore failing closed."
+            exit 1
+         else
+            log warn 'update-torbrowser-failed. Consider running update-torbrowser manually.'
+         fi
+      fi
 
       if [ "${in_chroot}" = 'true' ]; then
          tb_chroot_pre_exit
