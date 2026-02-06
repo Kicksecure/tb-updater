@@ -1,3 +1,52 @@
+commit b4eacdb59735382f32131db50b6139221e9cfb83
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Feb 6 05:06:07 2026 -0500
+
+    loglevel
+
+commit fcb43f3c99f0659801f3cf04a1c74ac77414fd68
+Merge: cf438de a685910
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Feb 6 04:57:53 2026 -0500
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit a685910e7ecf84eaadf9172c490a10d40189d251
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Thu Feb 5 00:07:02 2026 -0600
+
+    Handle browser update failure during package upgrades more gracefully
+
+commit 1055ba16880f7f6005ec32d30ef888b5d63ca9ea
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Thu Feb 5 00:05:29 2026 -0600
+
+    Use log_run_die.sh in postinst
+
+commit f5eb6063d869a7e28856863d1d71b7758ae74e85
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Wed Feb 4 23:53:08 2026 -0600
+
+    Always source pre.bsh in postinst, since helper-scripts is now a hard dependency
+
+commit 31864174fed5d0a5be2bf65dc6b0cb8472c28cbe
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Wed Feb 4 23:11:41 2026 -0600
+
+    Promote helper-scripts to Depends because it provides log_run_die.sh, which is used in update-torbrowser, which is called by the postinst script
+
+commit 63d884766dddf72c676e0bfd92409d954d2dd0ab
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Wed Feb 4 20:34:50 2026 -0600
+
+    Refactor script sourced checks
+
+commit cf438dea30ecc20ecd2b02d1785a82c5dccf942d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Feb 1 19:15:47 2026 +0000
+
+    bumped changelog version
+
 commit d26d396afcdeaa8f6c523cef8d53cacc1adcaab1
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Feb 1 14:15:30 2026 -0500
