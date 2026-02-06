@@ -3,9 +3,12 @@
 ## Copyright (C) 2012 - 2025 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
 ## See the file COPYING for copying conditions.
 
-if [ -f /usr/libexec/helper-scripts/pre.bsh ]; then
-   source /usr/libexec/helper-scripts/pre.bsh
-fi
+# shellcheck source=../../helper-scripts/usr/libexec/helper-scripts/pre.bsh
+source /usr/libexec/helper-scripts/pre.bsh
+
+# shellcheck source=../../helper-scripts/usr/libexec/helper-scripts/log_run_die.sh
+source /usr/libexec/helper-scripts/log_run_die.sh
+log_level='debug'
 
 set -e
 
@@ -20,37 +23,30 @@ create_tb_updater_user_account() {
 }
 
 tb_resolv_conf_debugging() {
-   printf '%s\n' "INFO: tb_resolv_conf_debugging: start"
+   log info "tb_resolv_conf_debugging: start"
 
-   printf '%s\n' "ls -la /etc/resolv.conf"
-   ls -la -- /etc/resolv.conf || true
+   log_run debug ls -la -- /etc/resolv.conf || true
+   log_run debug cat -- /etc/resolv.conf || true
+   log_run debug cat -- /etc/resolv.whonix || true
+   log_run debug cat -- /etc/resolv.conf.whonix-orig || true
 
-   printf '%s\n' "cat -- /etc/resolv.conf"
-   cat -- /etc/resolv.conf || true
-
-   printf '%s\n' "cat -- /etc/resolv.whonix"
-   cat -- /etc/resolv.whonix || true
-
-   printf '%s\n' "cat -- /etc/resolv.conf.whonix-orig"
-   cat -- /etc/resolv.conf.whonix-orig || true
-
-   printf '%s\n' "INFO: tb_resolv_conf_debugging: end"
+   log info "tb_resolv_conf_debugging: end"
 }
 
 tb_anon_ws_dns_conf() {
     tb_resolv_conf_debugging
 
-    printf '%s\n' "INFO: Checking if /etc/resolv.conf is a symlink..."
+    log info "Checking if /etc/resolv.conf is a symlink..."
     if test -h /etc/resolv.conf ; then
        ## This is only the case when whonix-ws-network-conf is already installed.
-       printf '%s\n' "INFO: Yes, /etc/resolv.conf is a symlink..."
-       printf '%s\n' "INFO: Checking if /var/lib/dpkg/info/whonix-ws-network-conf.prerm is an executable..."
+       log info "Yes, /etc/resolv.conf is a symlink..."
+       log info "Checking if /var/lib/dpkg/info/whonix-ws-network-conf.prerm is an executable..."
        if test -x /var/lib/dpkg/info/whonix-ws-network-conf.prerm ; then
-          printf '%s\n' "INFO: Yes, /var/lib/dpkg/info/whonix-ws-network-conf.prerm is an executable."
+          log info "Yes, /var/lib/dpkg/info/whonix-ws-network-conf.prerm is an executable."
           [ -n "$tb_reenable_anon_ws_dns_conf" ] || tb_reenable_anon_ws_dns_conf=true
           tb_resolv_conf_debugging
 
-          printf '%s\n' "INFO: tb_anon_ws_dns_conf: Restore original /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-pre ..."
+          log info "tb_anon_ws_dns_conf: Restore original /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-pre ..."
           /usr/libexec/tb-updater/chroot-pre
 
           tb_resolv_conf_debugging
@@ -60,9 +56,9 @@ tb_anon_ws_dns_conf() {
 
 tb_chroot_pre_exit() {
    if [ "$tb_reenable_anon_ws_dns_conf" = "true" ]; then
-      printf '%s\n' "INFO: tb_chroot_pre_exit: tb_reenable_anon_ws_dns_conf=true"
+      log info "tb_chroot_pre_exit: tb_reenable_anon_ws_dns_conf=true"
 
-      printf '%s\n' "INFO: tb_chroot_pre_exit: Restore whonix-ws-network-conf /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-post ..."
+      log info "tb_chroot_pre_exit: Restore whonix-ws-network-conf /etc/resolv.conf by running /usr/libexec/tb-updater/chroot-post ..."
 
       /usr/libexec/tb-updater/chroot-post
 
@@ -106,9 +102,15 @@ download() {
          fi
       fi
 
-      $tool_item \
-         $chroot_maybe \
-         --postinst
+      if ! log_run info $tool_item $chroot_maybe --postinst; then
+         if [ "${in_chroot}" = 'true' ] \
+            && [ "${anon_shared_inst_tb}" = 'closed' ]; then
+            log error "update-torbrowser failed! Running in chroot and anon_shared_inst_tb is 'closed', therefore failing closed."
+            exit 1
+         else
+            log warn 'update-torbrowser-failed. Consider running update-torbrowser manually.'
+         fi
+      fi
 
       if [ "${in_chroot}" = 'true' ]; then
          tb_chroot_pre_exit
@@ -130,7 +132,7 @@ case "$1" in
    ;;
 
    *)
-      printf '%s\n' "${DPKG_MAINTSCRIPT_NAME} called with unknown argument \`$1'" >&2
+      log error "${DPKG_MAINTSCRIPT_NAME} called with unknown argument \`$1'" >&2
       exit 1
    ;;
 esac
