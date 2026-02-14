@@ -1,5 +1,4 @@
-update-torbrowser(1) -- Tor Browser Updater by Whonix developers
-================================================================
+# update-torbrowser(1) -- Tor Browser Updater by Whonix developers
 
 <!--
 # Copyright (C) 2012 - 2025 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
@@ -7,95 +6,92 @@ update-torbrowser(1) -- Tor Browser Updater by Whonix developers
 -->
 
 ## SYNOPSIS
+
 `update-torbrowser` [option(s)]
 
 ## DESCRIPTION
+
 Lets you safely download the Tor Browser Bundle (TBB)
 from The Tor Project's (TPO) website. It enforces TLS encryption (https) for
 TPO's website, downloads TBB from the TPO's website,
 and uses OpenPGP verification.
 
-Default action when no options are given is to performs an update check and ask
+Default action when no options are given is to perform an update check and ask
 how you want to proceed.
 
 ## OPTIONS
-  * `--alpha`
 
-    Download alpha version instead.
+* `--alpha`
 
-  * `--onion`
+  Download alpha version instead.
 
-    Download from Tor Project's onion rather than clearnet domain.
+* `--onion`
 
-  * `--ordinary`
+  Download from Tor Project's onion rather than clearnet domain.
 
-    Uses curl's ordinary progress bar. Only affects run in terminal.
+* `--ordinary`
 
-    When using this option, the GUI progress bar will be stuck but downloading
-    will still work. Note, when using this option, it wouldn't notice if the
-    download server were to run an endless data attack, for example the server
-    claiming to provide a 500.000 GB big file.
+  Uses curl's ordinary progress bar. Only affects run in terminal.
 
-    (It does not use `/usr/libexec/helper-scripts/curl-prgrs`s
-    `CURL_PRGRS_MAX_FILE_SIZE_BYTES`.)
+  When using this option, the GUI progress bar will be stuck but downloading
+  will still work. Note, when using this option, it wouldn't notice if the
+  download server were to run an endless data attack, for example the server
+  claiming to provide a 500.000 GB big file.
 
-    However, it can be compensated by either manually terminating
-    `update-torbrowser` or by using the timeout utility as in the example
-    below.
+  (It does not use `/usr/libexec/helper-scripts/curl-prgrs`s
+  `CURL_PRGRS_MAX_FILE_SIZE_BYTES`.)
 
-  * `--only-if-newer`
+  However, it can be compensated by either manually terminating
+  `update-torbrowser` or by using the timeout utility as in the example
+  below.
 
-    Do not download the Tor Browser when it is already up-to-date.
+* `--only-if-newer`
 
-  * `--noask`
+  Do not download the Tor Browser when it is already up-to-date.
 
-    Installs whatever the remote version file is claiming to be the lowest
-    version without user interaction.
+* `--noask`
 
-  * `--noaskstart`
+  Do not ask for download confirmation. Proceed without user interaction.
 
-    Do not ask if Tor Browser should be started after update was completed.
+* `--noaskstart`
 
-  * `--nokilltb`
+  Do not ask if Tor Browser should be started after update was completed.
 
-    Advanced users only. Do not kill all eventually still running instances of
-    Tor Browser. Useful in case you want to update
-    `~/.tb/tor-browser`, while still using
-    `~/tor-browser_something_else`.
+* `--nokilltb`
 
-  * `--language lang`
+  Advanced users only. Do not kill all eventually still running instances of
+  Tor Browser. Useful in case you want to update
+  `~/.tb/tor-browser`, while still using
+  `~/tor-browser_something_else`.
 
-    Specify which language specific version of Tor Browser you want to start or
-    update.
+* `--no-tor-con-check`
 
-  * `--no-tor-con-check`
+  Skip Tor bootstrap connectivity check. (Only relevant in anonymity
+  distributions.)
 
-    Skip Tor bootstrap connectivity check. (Only relevant in anonymity
-    distributions.)
+* `--input input`
 
-  * `--input`
+  What to use as input method.
 
-    What to use as input method.
+  `--input stdin`
+  or
+  `--input gui`
 
-    `--input stdin`
-    or
-    `--input gui`
+  When run in command line, by default, standard input
+  (`--input stdin`) will be used. When using (`--input gui`), questions would be
+  asked in the graphical user environment.
 
-    When run in command line, by default, standard input
-    (`--input stdin`) will be used. When using (`--input gui`), questions would be
-    asked in the graphical user environment.
+* `--resume`
 
-  * `--resume`
+  Resume previous download.
 
-    Resume previous download.
+* `--reset`
 
-  * `--reset`
-
-    Advanced users only. Hard reset. Do not re-download Tor Browser but only
-    overwrite (delete and re-install) Tor Browser.
-    This feature is not designed to fix Tor Browser issues. When running this
-    program normally without `--reset` it does download and overwrite
-    Tor Browser. There is no additional benefit from using `--reset`.
+  Advanced users only. Hard reset. Do not re-download Tor Browser but only
+  overwrite (delete and re-install) Tor Browser.
+  This feature is not designed to fix Tor Browser issues. When running this
+  program normally without `--reset` it does download and overwrite
+  Tor Browser. There is no additional benefit from using `--reset`.
 
 ## AVAILABLE LANGUAGES
 
@@ -127,15 +123,16 @@ https://www.torproject.org/dist/torbrowser/linux/
 /etc/torbrowser.d/30_default.conf
 
 ## ENVIRONMENT VARIABLES
+
 ### Version
-`tbb_version=version.number update-torbrowser`
+
+`tbb_version_stripped=version.number update-torbrowser`
 
 See also EXAMPLES below.
 
 ## EXIT CODES
-0 Success.
 
-0 When using --devbuildpassthrough $tb_home_folder/tor-browser already exists.
+0 Success.
 
 1 Internal Error.
 
@@ -157,32 +154,38 @@ See also EXAMPLES below.
 
 10 User aborted update confirmation.
 
-11 Download failed.
-
 12 OpenPGP verification error.
-
-13 Hash verification error.
 
 14 User aborted installation confirmation.
 
 15 Extraction failed.
+
+16 `--reset` used but required archive file not yet downloaded.
+
+17 Download failed.
+
+18 No network access.
 
 130 Signal sigint received.
 
 143 Signal sigterm received.
 
 ## EXAMPLES
+
 `update-torbrowser`
 
 `update-torbrowser --update --lang="vi"`
 
+`update-torbrowser --update --input="gui"`
+
 `timeout 600 update-torbrowser --ordinary`
 
-`tbb_version=10.5 update-torbrowser`
+`tbb_version_stripped=10.5 update-torbrowser`
 
-`tbb_version=11.1a2 update-torbrowser`
+`tbb_version_stripped=11.1a2 update-torbrowser`
 
 ## BUGS
+
 This script may break when the file name or RecommendedTBBVersions format
 changes or when upstream makes other changes to the start process or proxy
 settings detection method.
@@ -195,11 +198,14 @@ in Whonix:
 https://www.whonix.org/wiki/Tor_Browser/Manual_Download
 
 ## PORTING
+
 This script is currently only tested in Whonix. It could be easily made to work
 in Tails or on any Linux.
 
 ## WWW
+
 https://www.whonix.org/wiki/Tor_Browser
 
 ## AUTHOR
+
 This man page has been written by Patrick Schleizer (adrelanos@whonix.org).
