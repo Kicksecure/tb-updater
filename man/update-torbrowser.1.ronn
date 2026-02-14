@@ -76,10 +76,13 @@ how you want to proceed.
   `--input stdin`
   or
   `--input gui`
+  or
+  `--input none`
 
   When run in command line, by default, standard input
   (`--input stdin`) will be used. When using (`--input gui`), questions would be
-  asked in the graphical user environment.
+  asked in the graphical user environment. When using (`--input none`), no
+  questions will be asked.
 
 * `--resume`
 
