@@ -31,7 +31,7 @@ how you want to proceed.
 
 * `--ordinary`
 
-  Uses curl's ordinary progress bar. Only affects run in terminal.
+  Uses curl's ordinary progress bar. Only affects progress reporting.
 
   When using this option, the GUI progress bar will be stuck but downloading
   will still work. Note, when using this option, it wouldn't notice if the
@@ -51,7 +51,7 @@ how you want to proceed.
 
 * `--noask`
 
-  Do not ask for download confirmation. Proceed without user interaction.
+  Do not ask any questions. Proceed without user interaction.
 
 * `--noaskstart`
 
@@ -173,8 +173,6 @@ See also EXAMPLES below.
 ## EXAMPLES
 
 `update-torbrowser`
-
-`update-torbrowser --update --lang="vi"`
 
 `update-torbrowser --update --input="gui"`
 
