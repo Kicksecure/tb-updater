@@ -1,3 +1,63 @@
+commit ad31c0cedab5da7af09bbcdf4f975222ecf4fd72
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 14 07:43:59 2026 -0500
+
+    re-generate man pages (generated using "genmkfile manpages")
+
+commit 4fde65077f8c1eddf2bc6f936fba2f4dce7380b8
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 14 07:19:33 2026 -0500
+
+    port to sequonia-pgp
+
+commit fe6c8fb00b885a72ac57de46c3f7ff5b6a456770
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 14 06:11:21 2026 -0500
+
+    implement --help
+
+commit e705b3af7234237a50fbe7d26bba0cf0d6ec107f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 14 06:06:07 2026 -0500
+
+    man page
+
+commit 1e5352185df7cd9094b6492c87e13cb4a5aafe08
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 14 06:04:25 2026 -0500
+
+    man page
+
+commit fac8abee0c783524641b68b1b3ffc41d59d23174
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 14 06:01:42 2026 -0500
+
+    man page
+
+commit 282be20904252fc0113f4ccf68f499ccc87e0d6e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 14 05:59:51 2026 -0500
+
+    man page
+
+commit 3176decc9ff06b4483823a72f01bfe367cc27c10
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 14 05:57:03 2026 -0500
+
+    man page
+
+commit 3b29dd9f4606b28bd5b1f1971c1d1b78ffc810b0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 14 05:49:54 2026 -0500
+
+    man page
+
+commit 1da9698a2b06a8f3f7c79dcddb88232596184f37
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Feb 6 10:11:34 2026 +0000
+
+    bumped changelog version
+
 commit b4eacdb59735382f32131db50b6139221e9cfb83
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Feb 6 05:06:07 2026 -0500
