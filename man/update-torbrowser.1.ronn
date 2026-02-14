@@ -36,7 +36,7 @@ how you want to proceed.
   When using this option, the GUI progress bar will be stuck but downloading
   will still work. Note, when using this option, it wouldn't notice if the
   download server were to run an endless data attack, for example the server
-  claiming to provide a 500.000 GB big file.
+  claiming to provide a 500000 GB big file.
 
   (It does not use `/usr/libexec/helper-scripts/curl-prgrs`s
   `CURL_PRGRS_MAX_FILE_SIZE_BYTES`.)
@@ -81,7 +81,7 @@ how you want to proceed.
   `--input none`
 
   When run in command line, by default, standard input
-  (`--input stdin`) will be used. When using (`--input gui`), questions would be
+  (`--input stdin`) will be used. When using (`--input gui`), questions will be
   asked in the graphical user environment. When using (`--input none`), no
   questions will be asked.
 
@@ -195,7 +195,7 @@ settings detection method.
 In this case, Whonix developers will try to provide a fix as fast as possible.
 Please check Whonix News Blogs, Whonix Forum for a fix or workaround.
 
-In meanwhile you can also try the instructions for manually update Tor Browser
+In the meanwhile you can also try the instructions for manually updating Tor Browser
 in Whonix:
 https://www.whonix.org/wiki/Tor_Browser/Manual_Download
 
