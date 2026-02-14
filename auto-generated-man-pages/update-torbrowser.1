@@ -8,7 +8,7 @@
 .SH "DESCRIPTION"
 Lets you safely download the Tor Browser Bundle (TBB) from The Tor Project's (TPO) website\. It enforces TLS encryption (https) for TPO's website, downloads TBB from the TPO's website, and uses OpenPGP verification\.
 .P
-Default action when no options are given is to performs an update check and ask how you want to proceed\.
+Default action when no options are given is to perform an update check and ask how you want to proceed\.
 .SH "OPTIONS"
 .IP "\(bu" 4
 \fB\-\-alpha\fR
@@ -21,9 +21,9 @@ Download from Tor Project's onion rather than clearnet domain\.
 .IP "\(bu" 4
 \fB\-\-ordinary\fR
 .IP
-Uses curl's ordinary progress bar\. Only affects run in terminal\.
+Uses curl's ordinary progress bar\. Only affects progress reporting\.
 .IP
-When using this option, the GUI progress bar will be stuck but downloading will still work\. Note, when using this option, it wouldn't notice if the download server were to run an endless data attack, for example the server claiming to provide a 500\.000 GB big file\.
+When using this option, the GUI progress bar will be stuck but downloading will still work\. Note, when using this option, it wouldn't notice if the download server were to run an endless data attack, for example the server claiming to provide a 500000 GB big file\.
 .IP
 (It does not use \fB/usr/libexec/helper\-scripts/curl\-prgrs\fRs \fBCURL_PRGRS_MAX_FILE_SIZE_BYTES\fR\.)
 .IP
@@ -35,7 +35,7 @@ Do not download the Tor Browser when it is already up\-to\-date\.
 .IP "\(bu" 4
 \fB\-\-noask\fR
 .IP
-Installs whatever the remote version file is claiming to be the lowest version without user interaction\.
+Do not ask any questions\. Proceed without user interaction\. Also sets input method to \fB\-\-input none\fR\.
 .IP "\(bu" 4
 \fB\-\-noaskstart\fR
 .IP
@@ -45,21 +45,17 @@ Do not ask if Tor Browser should be started after update was completed\.
 .IP
 Advanced users only\. Do not kill all eventually still running instances of Tor Browser\. Useful in case you want to update \fB~/\.tb/tor\-browser\fR, while still using \fB~/tor\-browser_something_else\fR\.
 .IP "\(bu" 4
-\fB\-\-language lang\fR
-.IP
-Specify which language specific version of Tor Browser you want to start or update\.
-.IP "\(bu" 4
 \fB\-\-no\-tor\-con\-check\fR
 .IP
 Skip Tor bootstrap connectivity check\. (Only relevant in anonymity distributions\.)
 .IP "\(bu" 4
-\fB\-\-input\fR
+\fB\-\-input input\fR
 .IP
 What to use as input method\.
 .IP
-\fB\-\-input stdin\fR or \fB\-\-input gui\fR
+\fB\-\-input stdin\fR or \fB\-\-input gui\fR or \fB\-\-input none\fR
 .IP
-When run in command line, by default, standard input (\fB\-\-input stdin\fR) will be used\. When using (\fB\-\-input gui\fR), questions would be asked in the graphical user environment\.
+When run in command line, by default, standard input (\fB\-\-input stdin\fR) will be used\. When using (\fB\-\-input gui\fR), questions will be asked in the graphical user environment\. When using (\fB\-\-input none\fR), no questions will be asked\.
 .IP "\(bu" 4
 \fB\-\-resume\fR
 .IP
@@ -108,13 +104,11 @@ https://www\.torproject\.org/dist/torbrowser/linux/
 /etc/torbrowser\.d/30_default\.conf
 .SH "ENVIRONMENT VARIABLES"
 .SS "Version"
-\fBtbb_version=version\.number update\-torbrowser\fR
+\fBtbb_version_stripped=version\.number update\-torbrowser\fR
 .P
 See also EXAMPLES below\.
 .SH "EXIT CODES"
 0 Success\.
-.P
-0 When using \-\-devbuildpassthrough $tb_home_folder/tor\-browser already exists\.
 .P
 1 Internal Error\.
 .P
@@ -136,15 +130,17 @@ See also EXAMPLES below\.
 .P
 10 User aborted update confirmation\.
 .P
-11 Download failed\.
-.P
-12 Gpg verification error\.
-.P
-13 Hash verification error\.
+12 OpenPGP verification error\.
 .P
 14 User aborted installation confirmation\.
 .P
 15 Extraction failed\.
+.P
+16 \fB\-\-reset\fR used but required archive file not yet downloaded\.
+.P
+17 Download failed\.
+.P
+18 No network access\.
 .P
 130 Signal sigint received\.
 .P
@@ -152,19 +148,19 @@ See also EXAMPLES below\.
 .SH "EXAMPLES"
 \fBupdate\-torbrowser\fR
 .P
-\fBupdate\-torbrowser \-\-update \-\-lang="vi"\fR
+\fBupdate\-torbrowser \-\-input="gui"\fR
 .P
 \fBtimeout 600 update\-torbrowser \-\-ordinary\fR
 .P
-\fBtbb_version=10\.5 update\-torbrowser\fR
+\fBtbb_version_stripped=10\.5 update\-torbrowser\fR
 .P
-\fBtbb_version=11\.1a2 update\-torbrowser\fR
+\fBtbb_version_stripped=11\.1a2 update\-torbrowser\fR
 .SH "BUGS"
 This script may break when the file name or RecommendedTBBVersions format changes or when upstream makes other changes to the start process or proxy settings detection method\.
 .P
 In this case, Whonix developers will try to provide a fix as fast as possible\. Please check Whonix News Blogs, Whonix Forum for a fix or workaround\.
 .P
-In meanwhile you can also try the instructions for manually update Tor Browser in Whonix: https://www\.whonix\.org/wiki/Manually_Updating_Tor_Browser
+In the meanwhile you can also try the instructions for manually updating Tor Browser in Whonix: https://www\.whonix\.org/wiki/Tor_Browser/Manual_Download
 .SH "PORTING"
 This script is currently only tested in Whonix\. It could be easily made to work in Tails or on any Linux\.
 .SH "WWW"
