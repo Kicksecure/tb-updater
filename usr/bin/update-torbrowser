@@ -724,7 +724,6 @@ tb_preparation() {
    [ -n "$tb_cache_folder" ] || tb_cache_folder="$tb_user_home/.cache/$tb_install_folder"
    [ -n "$tb_temp_folder" ] || tb_temp_folder="$tb_cache_folder/temp"
    [ -n "$tb_downloaded_files_folder" ] || tb_downloaded_files_folder="$tb_cache_folder/files"
-   [ -n "$tb_gpg_tmp_dir" ] || tb_gpg_tmp_dir="$tb_cache_folder/gpgtmpdir"
    [ -n "$tb_extract_temp_folder" ] || tb_extract_temp_folder="$tb_cache_folder/$tb_browser_name"
 
    [ -n "$tb_local_version_filename" ] || tb_local_version_filename="tbb_version.json"
@@ -1487,6 +1486,19 @@ tb_reset() {
 
       tb_exit_function 16
    fi
+
+   if ! test -f "$TBB_SIG_FULL_PATH" ; then
+      local MSG="\
+<p><b>Tor Browser digital (OpenPGP) signature <code>$TBB_SIG_FULL_PATH</code> not yet downloaded. Run without <code>--reset</code> is required.</b>
+<br/>
+<br/>See:
+<br/><a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset</a></p>"
+      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+
+      output_cli error "$MSG"
+
+      tb_exit_function 16
+   fi
 }
 
 tb_kill_already_running_tb_maybe() {
@@ -1582,8 +1594,8 @@ $tb_notify_details"
 tb_download_files() {
    ### signature ###
 
-   tb_notify_details="Downloading $tb_title digital signature (GPG)... Will take a moment..."
-   log notice "Digital signature (GPG) download... Will take a moment..."
+   tb_notify_details="Downloading $tb_title digital signature (OpenPGP)... Will take a moment..."
+   log notice "Digital signature (OpenPGP) download... Will take a moment..."
    log notice "Downloading...: '$TBB_SIG_LINK'"
 
    [ -n "$timeout_signature_file_download" ] || timeout_signature_file_download=300
@@ -1622,51 +1634,35 @@ tb_download_files() {
    tb_download_attempt_success="true"
 }
 
-tb_gpg_verify() {
-   log notice "Digital signature (GPG) verification... This will take a moment..."
-
-   log notice "Using digital signature signing key by The Tor Project."
-   gpg_bash_lib_input_key_import_dir="/usr/share/torbrowser-updater-keys.d"
-
-   gpg_bash_lib_input_verify_timeout_after="60"
-   gpg_bash_lib_input_verify_kill_after="10"
-   gpg_bash_lib_input_temp_folder="$tb_gpg_tmp_dir"
-   gpg_bash_lib_input_data_file="$TBB_PACKAGE_FULL_PATH"
-   gpg_bash_lib_input_sig_file="$TBB_SIG_FULL_PATH"
-   gpg_bash_lib_input_file_name_enforce="false"
-   gpg_bash_lib_input_cleanup="false"
-   gpg_bash_lib_input_error_handler_extra='tb_error_handler "$gpg_bash_lib_output_error_handler_message"'
+tb_openpgp_verify() {
    ## One month has 2592000 seconds.
    ## (60 [seconds] * 60 [minutes] * 24 [hours] * 30 [days])
    ## Setting this to 3 months. (777600 seconds)
    ## (2592000 * 3 [months])
    [ -n "$gpg_bash_lib_input_maximum_age_in_seconds" ] || gpg_bash_lib_input_maximum_age_in_seconds="2592000"
 
-   gpg_bash_lib_function_main_verify
+   local signing_key sqop_output MSG
+   signing_key="/usr/share/torbrowser-updater-keys.d/tbb-team.asc"
 
-   gpg_bash_lib_output_diagnostic_message="$(/usr/libexec/msgcollector/br_add "$gpg_bash_lib_output_diagnostic_message")"
+   log notice "Digital signature (OpenPGP) verification using Sequoia-PGP... This will take a moment..."
+   log notice "Using digital signature signing key by The Tor Project."
 
-   ## Not checking for gpg_bash_lib_output_alright_status, because then there
-   ## would be no way to accept outdated signatures. It is not clear if it is
-   ## guaranteed to have a new stable TBB release every three months.
-   if [ ! "$gpg_bash_lib_output_validsig_status" = "true" ] || [ "$gpg_bash_lib_output_failure" = "true" ] ; then
-      local MSG="<p><b>Digital signature (GPG) could NOT be verified.</b>
+   sq cert lint --cert-file "$signing_key" &>/dev/null
+
+   log notice "sqop verify '$TBB_SIG_FULL_PATH' '$signing_key' < '$TBB_PACKAGE_FULL_PATH'"
+
+   ## TODO: consider sqop --not-after
+   if ! sqop_output="$(timeout --kill-after="60" "10" sqop verify "$TBB_SIG_FULL_PATH" "$signing_key" < "$TBB_PACKAGE_FULL_PATH" 2>&1)"; then
+      MSG="<p><b>Digital signature (OpenPGP) could NOT be verified.</b>
 <br></br>$tb_title update failed! Try again later.</p>
 
-<p>gpg_bash_lib_output_alright_status: <code>$gpg_bash_lib_output_alright_status</code>
-<br></br>gpg_bash_lib_output_failure: <code>$gpg_bash_lib_output_failure</code></p>
-
-<p>gpg_bash_lib_output_diagnostic_message:</p>
-
-<p>$gpg_bash_lib_output_diagnostic_message</p>"
+<p>sqop_output: <code>$sqop_output</code></p>"
       output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
-
       output_cli error "$MSG"
-
       tb_exit_function 12
    fi
 
-   log notice "Digital signature (GPG) verification ok."
+   log notice "Digital signature (OpenPGP) verification ok."
 }
 
 tb_confirm_install() {
@@ -2015,8 +2011,9 @@ tb_cleanup() {
       return 0
    fi
 
-   log notice "Deleting no longer required file '$TBB_PACKAGE_FULL_PATH' to save space."
+   log notice "Deleting no longer required files '$TBB_PACKAGE_FULL_PATH' and '$TBB_SIG_FULL_PATH' to save space."
    safe-rm --force -- "$TBB_PACKAGE_FULL_PATH"
+   safe-rm --force -- "$TBB_SIG_FULL_PATH"
 }
 
 tb_hardcoded_version_last_downloaded_save() {
@@ -2119,7 +2116,7 @@ main_function() {
       tb_run_function tb_kill_already_running_tb_maybe
       tb_run_function tb_version_processing
       tb_run_function tb_reset
-      tb_run_function tb_gpg_verify
+      tb_run_function tb_openpgp_verify
       tb_run_function tb_extract
       tb_run_function tb_patch
       tb_run_function tb_install
@@ -2140,8 +2137,8 @@ main_function() {
    tb_run_function tb_version_processing
    tb_run_function tb_kill_already_running_tb_maybe
    tb_run_function tb_download_files
-   tb_run_function tb_gpg_verify
-   tb_run_function tb_confirm_install
+   tb_run_function tb_openpgp_verify
+   #tb_run_function tb_confirm_install
    tb_run_function tb_extract
    tb_run_function tb_patch
    tb_run_function tb_install
