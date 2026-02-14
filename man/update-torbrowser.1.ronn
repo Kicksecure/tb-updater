@@ -159,7 +159,7 @@ See also EXAMPLES below.
 
 11 Download failed.
 
-12 Gpg verification error.
+12 OpenPGP verification error.
 
 13 Hash verification error.
 
@@ -192,7 +192,7 @@ Please check Whonix News Blogs, Whonix Forum for a fix or workaround.
 
 In meanwhile you can also try the instructions for manually update Tor Browser
 in Whonix:
-https://www.whonix.org/wiki/Manually_Updating_Tor_Browser
+https://www.whonix.org/wiki/Tor_Browser/Manual_Download
 
 ## PORTING
 This script is currently only tested in Whonix. It could be easily made to work
