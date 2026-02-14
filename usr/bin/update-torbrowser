@@ -79,6 +79,35 @@ log info "Start."
 ## - Using torbrowser-launcher instead of tb-updater in Whonix
 ##   https://forums.whonix.org/t/using-torbrowser-launcher-instead-of-tb-updater-in-whonix/385
 
+tb_print_help() {
+cat <<'EOF'
+usage: update-torbrowser [options]
+
+Tor Browser Downloader (by Whonix developers)
+
+Options:
+  --help,              Show this help and exit.
+  --debug              Enable shell tracing (set -x).
+  --ordinary           Use curl's ordinary progress bar (disables curl-prgrs).
+  --onion              Use Tor Project onion endpoints where applicable.
+  --alpha              Use alpha release channel.
+  --resume             Resume previous download.
+  --reset              Hard reset using already downloaded archive (no re-download).
+  --only-if-newer      Do not download if already up-to-date.
+  --noask              Non-interactive mode (skip questions; sets input to none).
+  --noaskstart         Do not ask to start Tor Browser after completion.
+  --nokilltb           Do not kill running Tor Browser instances.
+  --no-tor-con-check   Skip Tor connectivity checks (where applicable).
+  --input METHOD       Input method: stdin | gui | none
+  --no-install         Download only; do not install.
+  --is-chroot          Running inside chroot.
+  --postinst           Post-install mode (used by packaging); may drop privileges.
+
+Notes:
+  - For details, see: man update-torbrowser
+EOF
+}
+
 tb_exit_function() {
    local exit_code="$1"
    trap "" ERR
@@ -348,6 +377,10 @@ tb_parse_cmd_options() {
    while :
    do
        case $1 in
+           --help|-h)
+               tb_print_help
+               tb_exit_function 0
+               ;;
            --debug)
                set -x
                shift
