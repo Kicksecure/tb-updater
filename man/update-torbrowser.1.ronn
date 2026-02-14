@@ -51,7 +51,8 @@ how you want to proceed.
 
 * `--noask`
 
-  Do not ask any questions. Proceed without user interaction.
+  Do not ask any questions. Proceed without user interaction. Also sets input
+  method to `--input none`.
 
 * `--noaskstart`
 
@@ -177,7 +178,7 @@ See also EXAMPLES below.
 
 `update-torbrowser`
 
-`update-torbrowser --update --input="gui"`
+`update-torbrowser --input="gui"`
 
 `timeout 600 update-torbrowser --ordinary`
 
