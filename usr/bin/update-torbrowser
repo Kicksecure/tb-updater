@@ -1694,6 +1694,10 @@ tb_openpgp_verify() {
 }
 
 tb_confirm_install() {
+   ## TODO: Not implemented. Useful to implement?
+   true "INFO: Not implemented."
+   return 0
+
    if [ "$tb_confirm_installation_skip" = "true" ]; then
       return 0
    fi
@@ -1749,6 +1753,7 @@ Unless you are re-installing the same version, you should abort now and try agai
       else
          error "last_used_gpg_bash_lib_output_signed_on_unixtime $last_used_gpg_bash_lib_output_signed_on_unixtime \
 neither -lt, -gt nor equals gpg_bash_lib_output_signed_on_unixtime $gpg_bash_lib_output_signed_on_unixtime"
+         signature_freshness_msg="Signature freshness comparison unavailable."
          type="error"
       fi
    else
@@ -1786,8 +1791,12 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
       "current")
          signature_creation_msg="According to your system clock, the signature was created $gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty ago."
          ;;
+      "unavailable" | "")
+         signature_creation_msg="Signature creation age details are unavailable in the current verification path."
+         ;;
       *)
-         error "gpg_bash_lib_output_freshness_detail is neither lenient, nor slow, nor outdated, nor current, it is: $gpg_bash_lib_output_freshness_detail"
+         signature_creation_msg="Signature creation age details are unavailable."
+         error "gpg_bash_lib_output_freshness_detail is neither lenient, nor slow, nor outdated, nor current, nor unavailable, it is: $gpg_bash_lib_output_freshness_detail"
          return 0
          ;;
    esac
@@ -2154,6 +2163,7 @@ main_function() {
       tb_run_function tb_version_processing
       tb_run_function tb_reset
       tb_run_function tb_openpgp_verify
+      tb_run_function tb_confirm_install
       tb_run_function tb_extract
       tb_run_function tb_patch
       tb_run_function tb_install
@@ -2175,7 +2185,7 @@ main_function() {
    tb_run_function tb_kill_already_running_tb_maybe
    tb_run_function tb_download_files
    tb_run_function tb_openpgp_verify
-   #tb_run_function tb_confirm_install
+   tb_run_function tb_confirm_install
    tb_run_function tb_extract
    tb_run_function tb_patch
    tb_run_function tb_install
