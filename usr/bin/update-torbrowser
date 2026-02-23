@@ -1681,7 +1681,7 @@ tb_confirm_install() {
    fi
 
    if [ -f "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_date" ]; then
-      last_used_gpg_bash_lib_output_signed_on_date="$(cat "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_date")" || true
+      last_used_gpg_bash_lib_output_signed_on_date="$(cat -- "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_date")" || true
    fi
    if [ "$last_used_gpg_bash_lib_output_signed_on_date" = "" ]; then
       last_used_gpg_bash_lib_output_signed_on_date="Unknown. Probably never downloaded a signature before."
