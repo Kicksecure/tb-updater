@@ -1470,7 +1470,7 @@ tb_reset() {
       return 0
    fi
 
-   log notice "--reset. Performing hard reset rather than download. See: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset"
+   log notice "Using '--reset' option.. Performing hard reset rather than download. See: $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset"
 
    if ! test -f "$TBB_PACKAGE_FULL_PATH" ; then
       local MSG="\
@@ -1503,7 +1503,7 @@ tb_kill_already_running_tb_maybe() {
    if [ ! "$NOKILLTB" = "1" ]; then
       [ -n "$tb_process_name" ] || tb_process_name="firefox.real"
 
-      log notice "Because you are not using --nokilltb, now killing potentially still running instances of '$tb_title'..."
+      log notice "Because you are not using the '--nokilltb' option, now killing potentially still running instances of '$tb_title'..."
       killall "$tb_process_name" || true
    fi
 }
