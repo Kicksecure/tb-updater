@@ -1,3 +1,51 @@
+commit 0617d147b2691b680eafb7ef7734754a9679d689
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Feb 23 08:28:21 2026 -0500
+
+    port to sequonia-pgp
+
+commit 4ddad096f1f0fa645c352a5b2a3a579d114c56a3
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Feb 23 08:06:02 2026 -0500
+
+    output
+
+commit ef8abd23cd5ee2af52c42fb43bed2aaa7f357d7f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Feb 23 08:03:52 2026 -0500
+
+    port to sequonia-pgp
+
+commit b27205cd91a5be7b84f7a1b511e17b0b90fffbf2
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Feb 23 06:48:34 2026 -0500
+
+    end-of-options
+
+commit 6e2fe70afd0228f27a483d94411ddf90f4d60713
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Feb 23 06:41:49 2026 -0500
+
+    port to sequonia-pgp
+
+commit 303ac0cd029a8e5107d544fc8c7cf048168c1673
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Feb 23 06:41:12 2026 -0500
+
+    port to sequonia-pgp
+
+commit 22ba813853486b8be7ba0cecf594c8e64296e898
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Feb 23 06:40:26 2026 -0500
+
+    tbb_hardcoded_version update
+
+commit 6993ae1d0cd9f76c01784a8bdec476f53162a565
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Feb 14 12:44:01 2026 +0000
+
+    bumped changelog version
+
 commit ad31c0cedab5da7af09bbcdf4f975222ecf4fd72
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Feb 14 07:43:59 2026 -0500
