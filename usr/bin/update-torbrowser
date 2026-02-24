@@ -1641,7 +1641,7 @@ tb_openpgp_verify() {
 
    local signing_key sqop_output MSG
    local now_epoch not_before_epoch not_after_epoch
-   local sqop_not_before sqop_not_after
+   local sqop_not_before sqop_not_after sig_creation_time
    signing_key="/usr/share/torbrowser-updater-keys.d/tbb-team.asc"
 
    log notice "Digital signature (OpenPGP) verification using Sequoia-PGP... This will take a moment..."
@@ -1695,6 +1695,29 @@ tb_openpgp_verify() {
    fi
 
    log notice "sqop_output: '$sqop_output'"
+
+   sig_creation_time="${sqop_output%% *}"
+   log notice "sig_creation_time: '$sig_creation_time'"
+
+   if [[ $sig_creation_time =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$ ]]; then
+      log notice "Valid 'sqop' timestamp format."
+   else
+      MSG="Unexpected 'sqop' timestamp format."
+      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_cli error "$MSG"
+      tb_exit_function 12
+   fi
+
+   sig_unix_time="$(date --utc --date "$sig_creation_time" +%s)"
+   log notice "sig_unix_time: '$sig_unix_time'"
+
+   if ! is_whole_number "$sig_unix_time"; then
+      MSG="Unexpected 'date' output."
+      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_cli error "$MSG"
+      tb_exit_function 12
+      tb_exit_function 12
+   fi
 
    log notice "Digital signature (OpenPGP) verification ok."
 }
