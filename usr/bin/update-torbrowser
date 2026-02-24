@@ -1690,6 +1690,8 @@ tb_openpgp_verify() {
       tb_exit_function 12
    fi
 
+   log notice "sqop_output: '$sqop_output'"
+
    log notice "Digital signature (OpenPGP) verification ok."
 }
 
