@@ -1710,6 +1710,10 @@ tb_openpgp_verify() {
    fi
 
    sig_unix_time="$(date --utc --date "$sig_creation_time" +%s)"
+
+   ## Debugging: Outdated signature.
+   #sig_unix_time=$(( sig_unix_time - 100000000 ))
+
    log notice "sig_unix_time: '$sig_unix_time'"
 
    if ! is_whole_number "$sig_unix_time"; then
@@ -1721,6 +1725,28 @@ tb_openpgp_verify() {
 
    declare -g gpg_bash_lib_output_signed_on_unixtime
    gpg_bash_lib_output_signed_on_unixtime="$sig_unix_time"
+
+   declare -g gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty
+   declare -g gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty
+
+   local current_unixtime signed_minus_current current_minus_signed
+   current_unixtime="$(date --utc +%s)"
+
+   signed_minus_current="$(( gpg_bash_lib_output_signed_on_unixtime - current_unixtime ))"
+   current_minus_signed="$(( current_unixtime - gpg_bash_lib_output_signed_on_unixtime ))"
+
+   if [ "$signed_minus_current" -lt 0 ]; then
+      signed_minus_current=0
+   fi
+   if [ "$current_minus_signed" -lt 0 ]; then
+      current_minus_signed=0
+   fi
+
+   gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty="$(gpg_bash_lib_function_displaytime "$signed_minus_current")"
+   [ -n "$gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty" ] || gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty="0 seconds"
+
+   gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty="$(gpg_bash_lib_function_displaytime "$current_minus_signed")"
+   [ -n "$gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty" ] || gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty="0 seconds"
 
    log notice "Digital signature (OpenPGP) verification ok."
 }
@@ -1804,8 +1830,8 @@ neither -lt, -gt nor equals gpg_bash_lib_output_signed_on_unixtime $gpg_bash_lib
          signature_creation_msg="<b>The signature looks quite old already.</b>
 <br></br>
 <br></br>Either,
-<br></br>- your clock might be fast (at least $gpg_bash_lib_output_in_future_pretty_output fast). $clock_hint
-<br></br>- there is really no newer signature yet. The signature is really older than $gpg_bash_lib_output_maximum_age_pretty_output already. (Older than $gpg_bash_lib_output_in_future_pretty_output already.)
+<br></br>- your clock might be fast. $clock_hint
+<br></br>- there is really no newer signature yet.
 <br></br>- this is a $SCRIPTNAME bug
 <br></br>- this is an attack"
          ;;
