@@ -1656,7 +1656,11 @@ tb_openpgp_verify() {
    not_after_epoch="$now_epoch"
    not_before_epoch="$(( now_epoch - gpg_bash_lib_input_maximum_age_in_seconds ))"
 
-   ## sqop expects a timestamp; RFC3339/ISO8601 UTC is a safe choice.
+   ## 'sqop' expects a timestamp in RFC3339/ISO8601 format. UTC is a safe
+   ## choice. 'date' has an '--iso-8601' option, however we do not use it here
+   ## since 'sqop' uses a 'Z' at the end to indicate a UTC timezone in its
+   ## output. It is therefore reasonable to assume that it will take
+   ## timestamps in that same format with the least chances of malfunctioning.
    if ! sqop_not_before="$(date --utc --date "@$not_before_epoch" '+%Y-%m-%dT%H:%M:%SZ')"; then
       MSG="<p><b>Could NOT compute signature age lower bound.</b></p>"
       output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
@@ -1730,10 +1734,9 @@ tb_confirm_install() {
    fi
 
    strict_numeric=""
-   if is_whole_number "$last_used_gpg_bash_lib_output_signed_on_unixtime"; then
+   if ! is_whole_number "$last_used_gpg_bash_lib_output_signed_on_unixtime"; then
       strict_numeric=false
-   fi
-   if is_whole_number "$gpg_bash_lib_output_signed_on_unixtime"; then
+   elif ! is_whole_number "$gpg_bash_lib_output_signed_on_unixtime"; then
       strict_numeric=false
    fi
 
