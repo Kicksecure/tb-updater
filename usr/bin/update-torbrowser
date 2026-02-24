@@ -1716,7 +1716,6 @@ tb_openpgp_verify() {
       output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
       output_cli error "$MSG"
       tb_exit_function 12
-      tb_exit_function 12
    fi
 
    log notice "Digital signature (OpenPGP) verification ok."
