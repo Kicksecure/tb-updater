@@ -1639,7 +1639,7 @@ tb_openpgp_verify() {
    ## (2592000 * 3 [months])
    [ -n "$gpg_bash_lib_input_maximum_age_in_seconds" ] || gpg_bash_lib_input_maximum_age_in_seconds="7776000"
 
-   local signing_key sqop_output MSG
+   local signing_key MSG
    local now_epoch not_before_epoch not_after_epoch
    local sqop_not_before sqop_not_after sig_creation_time
    signing_key="/usr/share/torbrowser-updater-keys.d/tbb-team.asc"
@@ -1677,6 +1677,7 @@ tb_openpgp_verify() {
 
    log notice "sqop verify --not-before '$sqop_not_before' --not-after '$sqop_not_after' '$TBB_SIG_FULL_PATH' '$signing_key' < '$TBB_PACKAGE_FULL_PATH'"
 
+   declare -g sqop_output
    if ! sqop_output="$(
       timeout --kill-after="60" "10" \
          sqop verify \
@@ -1718,14 +1719,13 @@ tb_openpgp_verify() {
       tb_exit_function 12
    fi
 
+   declare -g gpg_bash_lib_output_signed_on_unixtime
+   gpg_bash_lib_output_signed_on_unixtime="$sig_unix_time"
+
    log notice "Digital signature (OpenPGP) verification ok."
 }
 
 tb_confirm_install() {
-   ## TODO: Not implemented. Useful to implement?
-   true "INFO: Not implemented."
-   return 0
-
    if [ "$tb_confirm_installation_skip" = "true" ]; then
       return 0
    fi
@@ -1760,20 +1760,27 @@ tb_confirm_install() {
    strict_numeric=""
    if ! is_whole_number "$last_used_gpg_bash_lib_output_signed_on_unixtime"; then
       strict_numeric=false
-   elif ! is_whole_number "$gpg_bash_lib_output_signed_on_unixtime"; then
-      strict_numeric=false
    fi
+   ## Already sanity checked in function 'tb_openpgp_verify.
+   is_whole_number "$gpg_bash_lib_output_signed_on_unixtime"
 
-   if ! [ "$strict_numeric" = "false" ]; then
+   if [ "$strict_numeric" = "false" ]; then
+      signature_freshness_msg="We have not previously accepted a signature yet (or signature timestamps are unavailable). Therefore assisted check for downgrade \
+or indefinite freeze attacks skipped. Please check if the Current Signature Creation Date looks sane."
+      type="info"
+   else
       true "'$last_used_gpg_bash_lib_output_signed_on_unixtime' and '$gpg_bash_lib_output_signed_on_unixtime' are strictly numeric."
       if [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" -lt "$gpg_bash_lib_output_signed_on_unixtime" ]; then
+         gpg_bash_lib_output_freshness_detail="current"
          signature_freshness_msg="The downloaded signature is newer than the last known signature as expected."
          type="info"
       elif [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" -gt "$gpg_bash_lib_output_signed_on_unixtime" ]; then
+         gpg_bash_lib_output_freshness_detail="slow"
          signature_freshness_msg="<b>You are likely target of a downgrade attack</b>, SAY NO NOW! The downloaded signature is older than the last known signature. \
 Unless you are downgrading, you should abort now and try again later!"
          type="warning"
       elif [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" = "$gpg_bash_lib_output_signed_on_unixtime" ]; then
+         gpg_bash_lib_output_freshness_detail="current"
          signature_freshness_msg="<b>You could be target of an indefinite freeze attack!</b> The downloaded signature has the same creation date as the last known signature. \
 Unless you are re-installing the same version, you should abort now and try again later!"
          type="warning"
@@ -1783,10 +1790,6 @@ neither -lt, -gt nor equals gpg_bash_lib_output_signed_on_unixtime $gpg_bash_lib
          signature_freshness_msg="Signature freshness comparison unavailable."
          type="error"
       fi
-   else
-      signature_freshness_msg="We have not previously accepted a signature yet (or signature timestamps are unavailable). Therefore assisted check for downgrade \
-or indefinite freeze attacks skipped. Please check the Current Signature Creation Date looks sane."
-      type="info"
    fi
 
    clock_hint=""
@@ -1818,12 +1821,9 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
       "current")
          signature_creation_msg="According to your system clock, the signature was created $gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty ago."
          ;;
-      "unavailable" | "")
-         signature_creation_msg="Signature creation age details are unavailable in the current verification path."
-         ;;
       *)
          signature_creation_msg="Signature creation age details are unavailable."
-         error "gpg_bash_lib_output_freshness_detail is neither lenient, nor slow, nor outdated, nor current, nor unavailable, it is: $gpg_bash_lib_output_freshness_detail"
+         error "gpg_bash_lib_output_freshness_detail is neither lenient, nor slow, nor outdated, nor current, it is: $gpg_bash_lib_output_freshness_detail"
          return 0
          ;;
    esac
@@ -1837,8 +1837,8 @@ You can probably ignore this, because it still is within range. (Okay up to $gpg
 <td>Previous Signature Creation Date:</td> <td><tt> <code>$last_used_gpg_bash_lib_output_signed_on_date</code></tt></td></tr><tr>
 <td>Last Signature Creation Date    :</td> <td><tt> <code>$gpg_bash_lib_output_signed_on_date</code></tt></td></tr></table></p>
 <p>$signature_creation_msg</p>
-<p><u>gpg reports</u>:<br></br>
-$gpg_bash_lib_output_gpg_verify_output_br_added</p>
+<p><u>'sqop' reports</u>:<br></br>
+$sqop_output</p>
 <p><a href=\"$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Installation_Confirmation_Notification\">Learn more about this Installation Confirmation Notification.</a></p>"
 
    output_cli notice "$MSG"
