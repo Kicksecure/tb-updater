@@ -1641,7 +1641,7 @@ tb_openpgp_verify() {
 
    local signing_key MSG
    local now_epoch not_before_epoch not_after_epoch
-   local sqop_not_before sqop_not_after sig_creation_time
+   local sqop_not_before sqop_not_after sig_creation_time sig_unix_time
    signing_key="/usr/share/torbrowser-updater-keys.d/tbb-team.asc"
 
    log notice "Digital signature (OpenPGP) verification using Sequoia-PGP... This will take a moment..."
@@ -1726,24 +1726,25 @@ tb_openpgp_verify() {
    declare -g gpg_bash_lib_output_signed_on_unixtime
    gpg_bash_lib_output_signed_on_unixtime="$sig_unix_time"
 
-   declare -g gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty
+   #declare -g gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty
    declare -g gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty
 
-   local current_unixtime signed_minus_current current_minus_signed
-   current_unixtime="$(date --utc +%s)"
+   # Unused.
+   #local signed_minus_current
+   #signed_minus_current="$(( gpg_bash_lib_output_signed_on_unixtime - now_epoch ))"
+   #if [ "$signed_minus_current" -lt 0 ]; then
+   #   signed_minus_current=0
+   #fi
 
-   signed_minus_current="$(( gpg_bash_lib_output_signed_on_unixtime - current_unixtime ))"
-   current_minus_signed="$(( current_unixtime - gpg_bash_lib_output_signed_on_unixtime ))"
-
-   if [ "$signed_minus_current" -lt 0 ]; then
-      signed_minus_current=0
-   fi
+   local current_minus_signed
+   current_minus_signed="$(( now_epoch - gpg_bash_lib_output_signed_on_unixtime ))"
    if [ "$current_minus_signed" -lt 0 ]; then
       current_minus_signed=0
    fi
 
-   gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty="$(gpg_bash_lib_function_displaytime "$signed_minus_current")"
-   [ -n "$gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty" ] || gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty="0 seconds"
+   # Unused.
+   #gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty="$(gpg_bash_lib_function_displaytime "$signed_minus_current")"
+   #[ -n "$gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty" ] || gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty="0 seconds"
 
    gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty="$(gpg_bash_lib_function_displaytime "$current_minus_signed")"
    [ -n "$gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty" ] || gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty="0 seconds"
@@ -1840,7 +1841,7 @@ neither -lt, -gt nor equals gpg_bash_lib_output_signed_on_unixtime $gpg_bash_lib
          ;;
       *)
          signature_creation_msg="Signature creation age details are unavailable."
-         error "gpg_bash_lib_output_freshness_detail is neither lenient, nor slow, nor outdated, nor current, it is: $gpg_bash_lib_output_freshness_detail"
+         error "gpg_bash_lib_output_freshness_detail is neither slow, nor current, it is: $gpg_bash_lib_output_freshness_detail"
          return 1
          ;;
    esac
