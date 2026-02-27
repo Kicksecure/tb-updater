@@ -1,3 +1,71 @@
+commit f5f5d242f40735fd9e74084719b9c3089b2d9004
+Merge: be34d7f 4b95963
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Feb 27 05:27:43 2026 -0500
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit 4b9596364c144b3360afa26ee5dab1c0a3992089
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Tue Feb 24 20:59:05 2026 -0500
+
+    Comment out unused-but-potentially-useful code, cleanup strings and variables
+
+commit be34d7fe6d519269094dd90c308b7741d8d174c1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Feb 24 05:25:15 2026 -0500
+
+    port to sequoia-pgp
+
+commit c0525ff0c515ceb5996d98c2d8bf004556755bbd
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Feb 24 05:12:15 2026 -0500
+
+    port to sequoia-pgp
+
+commit db0ca49bcac1afefba3fe25903a88a2910c29803
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Feb 24 04:39:13 2026 -0500
+
+    port to sequoia-pgp
+
+commit 29d6cab6d538344d1fd074f7a1bde8e89ef732e0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Feb 24 04:21:15 2026 -0500
+
+    port to sequoia-pgp
+
+commit e0a7badf6ac0721a921c93cbaeda5b8837fbb2c5
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Feb 24 04:20:55 2026 -0500
+
+    port to sequoia-pgp
+
+commit a216f20b8f89c1a7a228ec178a1e4db506210f59
+Merge: 2904df6 fdd1289
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Feb 24 04:11:31 2026 -0500
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit 2904df69b41f7c2aa27d098c4c5a30d90659f7f6
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Feb 24 04:10:03 2026 -0500
+
+    debugging
+
+commit fdd1289cdb854390ce3fb1fc29b756c134c03542
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Mon Feb 23 20:39:04 2026 -0500
+
+    Fix inverted logic in tb_confirm_install, comment on timestamp generation mechanism in tb_openpgp_verify
+
+commit 8465f5e8c91eb585df52a2597edfd549aad3a08c
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Feb 23 13:36:20 2026 +0000
+
+    bumped changelog version
+
 commit 0617d147b2691b680eafb7ef7734754a9679d689
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Mon Feb 23 08:28:21 2026 -0500
