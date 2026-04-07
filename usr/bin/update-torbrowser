@@ -1841,7 +1841,7 @@ neither -lt, -gt nor equals gpg_bash_lib_output_signed_on_unixtime $gpg_bash_lib
          ;;
       *)
          signature_creation_msg="Signature creation age details are unavailable."
-         error "gpg_bash_lib_output_freshness_detail is neither slow, nor current, it is: $gpg_bash_lib_output_freshness_detail"
+         echo "Error gpg_bash_lib_output_freshness_detail is neither slow, nor current, it is: $gpg_bash_lib_output_freshness_detail"
          return 1
          ;;
    esac
