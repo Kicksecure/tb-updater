@@ -16,7 +16,7 @@ After=tb-updater-dispvm.service
 ## https://phabricator.whonix.org/T424
 Before=qubes-gui-agent.service
 
-## This service is intentionally a no-op (/bin/true). Its purpose is to
+## This service is intentionally a no-op (/usr/bin/true). Its purpose is to
 ## act as a synchronization point: other services (e.g. qubes-gui-agent)
 ## can depend on it to ensure the DispVM permission fixup
 ## (tb-updater-dispvm.service) has completed before the user session
@@ -26,7 +26,7 @@ Before=qubes-gui-agent.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/bin/true
+ExecStart=/usr/bin/true
 
 [Install]
 WantedBy=multi-user.target
