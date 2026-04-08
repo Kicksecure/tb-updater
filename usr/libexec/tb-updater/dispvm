@@ -51,14 +51,14 @@ fi
 
 ## Mount point must be existing to be able to use mount.
 mkdir --parents -- "/home/$user_name/.tb"
-chown "$user_name:$user_name" "/home/$user_name/.tb"
+chown -- "$user_name:$user_name" "/home/$user_name/.tb"
 mkdir --parents -- "/home/$user_name/.cache/tb"
-chown "$user_name:$user_name" "/home/$user_name/.cache/tb"
+chown -- "$user_name:$user_name" "/home/$user_name/.cache/tb"
 ## .cache will end up owned by root if it doesn't already exist.
 ## https://forums.whonix.org/t/home-user-cache-permission-issue-in-recent-updates/21427
-chown "$user_name:$user_name" "/home/$user_name/.cache"
+chown -- "$user_name:$user_name" "/home/$user_name/.cache"
 
-chown --recursive "$user_name:$user_name" /var/cache/tb-binary
+chown --recursive -- "$user_name:$user_name" /var/cache/tb-binary
 ## Could alternatively do after mounting:
 #chown --recursive "$user_name:$user_name" "/home/$user_name/.tb"
 #chown --recursive "$user_name:$user_name" "/home/$user_name/.cache/tb"
@@ -67,10 +67,10 @@ chown --recursive "$user_name:$user_name" /var/cache/tb-binary
 ## permissions.
 
 if [ -d "/var/cache/tb-binary/.tb" ]; then
-   mount --bind -o nosuid,nodev "/var/cache/tb-binary/.tb" "/home/$user_name/.tb"
+   mount --bind -o nosuid,nodev -- "/var/cache/tb-binary/.tb" "/home/$user_name/.tb"
 fi
 if [ -d "/var/cache/tb-binary/.cache/tb" ]; then
-   mount --bind -o nosuid,nodev "/var/cache/tb-binary/.cache/tb" "/home/$user_name/.cache/tb"
+   mount --bind -o nosuid,nodev -- "/var/cache/tb-binary/.cache/tb" "/home/$user_name/.cache/tb"
 fi
 
 ## results in:
@@ -83,10 +83,10 @@ fi
 
 ## Remount with nosuid,nodev.
 if [ -d "/rw/home/$user_name/.tb" ]; then
-   mount -o remount,nosuid,nodev "/rw/home/$user_name/.tb"
+   mount -o remount,nosuid,nodev -- "/rw/home/$user_name/.tb"
 fi
 if [ -d "/rw/home/$user_name/.cache/tb" ]; then
-   mount -o remount,nosuid,nodev "/rw/home/$user_name/.cache/tb"
+   mount -o remount,nosuid,nodev -- "/rw/home/$user_name/.cache/tb"
 fi
 
 ## results in:
