@@ -16,6 +16,13 @@ After=tb-updater-dispvm.service
 ## https://phabricator.whonix.org/T424
 Before=qubes-gui-agent.service
 
+## This service is intentionally a no-op (/bin/true). Its purpose is to
+## act as a synchronization point: other services (e.g. qubes-gui-agent)
+## can depend on it to ensure the DispVM permission fixup
+## (tb-updater-dispvm.service) has completed before the user session
+## starts. The actual browser copy/mount is handled by the dispvm script
+## for DispVMs, or by the user manually running update-torbrowser for
+## AppVMs and StandaloneVMs.
 [Service]
 Type=oneshot
 RemainAfterExit=yes
