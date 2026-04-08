@@ -1690,12 +1690,25 @@ tb_openpgp_verify() {
    log notice "sqop verify --not-before '$sqop_not_before' --not-after '$sqop_not_after' '$TBB_SIG_FULL_PATH' '$signing_key' < '$TBB_PACKAGE_FULL_PATH'"
 
    ## stderr is merged into stdout with '2>&1' deliberately.
-   ## 'sqop' (sequoia-sop) does not write to stderr on success (exit 0)
-   ## unless '--verbose' is used (which is not the case here). On failure
-   ## (exit non-zero), stderr may contain diagnostics, but those are
-   ## captured for the error message (sqop_output shown to user) and the
-   ## sig_creation_time parsing code is never reached because
-   ## verification_success remains false.
+   ##
+   ## The SOP specification guarantees no stderr on success:
+   ##   "When sop succeeds, it will return 0 (OK) and emit nothing to
+   ##   Standard Error."
+   ##   "When sop fails, it fails with a non-zero return code, and emits
+   ##   one or more warning messages on Standard Error."
+   ## https://gitlab.com/dkg/openpgp-stateless-cli/-/blob/main/sop.md
+   ##
+   ## The sqop (sequoia-sop) implementation enforces this: the verify
+   ## helper routes diagnostic output to io::sink() (discarded) unless
+   ## '--verbose' is passed (which is not the case here).
+   ## https://gitlab.com/sequoia-pgp/sequoia-sop/-/blob/main/src/lib.rs
+   ##
+   ## Therefore, on success (exit 0), sqop_output contains only stdout
+   ## (the "TIMESTAMP FINGERPRINT ..." line), safe for parsing.
+   ## On failure (exit non-zero), stderr diagnostics are captured for the
+   ## error message shown to the user, and the sig_creation_time parsing
+   ## code is never reached because verification_success remains false.
+   ##
    ## Separating stdout/stderr would add complexity without security benefit.
    if sqop_output="$(
       timeout --kill-after="60" "10" \
