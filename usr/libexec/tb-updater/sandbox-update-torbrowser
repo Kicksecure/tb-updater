@@ -104,7 +104,7 @@ frozen 0"
     log warn "Cannot remove ACL on '${wl_sock}' to revoke account 'tb-updater' access!"
   fi
 
-  if mountpoint "${wl_sock}" >/dev/null 2>&1 && ! umount "${wl_sock}"; then
+  if mountpoint -- "${wl_sock}" >/dev/null 2>&1 && ! umount -- "${wl_sock}"; then
     log warn "Cannot unmount '${wl_sock}'!"
   fi
 
