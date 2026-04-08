@@ -1,3 +1,153 @@
+commit 8b43a14d68bf35ac5cfe078a83b2cca522162d9e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 07:51:54 2026 -0400
+
+    Depends: sq, sqop
+
+commit a1a4e7a2d3d8c9e8c72498222eeb80041da68429
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 07:28:28 2026 -0400
+
+    refactoring
+
+commit 45bf08dd147428e809541c55828ccef28949fc2e
+Merge: 469f686 51e8575
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 07:01:26 2026 -0400
+
+    Merge remote-tracking branch 'github-kicksecure/master'
+
+commit 51e857575c89d788bade599ed5ee5e3c74cb4127
+Merge: 0acb3dd 2a66968
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 06:57:19 2026 -0400
+
+    Merge pull request #34 from assisted-by-ai/claude/security-review-sqop-changes
+    
+    security review: document sq/sqop design, remove dead code, fix end-of-options
+
+commit 2a66968063651cd84bae465df6c7f6ff787916b6
+Author: Claude <noreply@anthropic.com>
+Date:   Wed Apr 8 10:52:52 2026 +0000
+
+    security review: document sq/sqop design, remove dead code, fix end-of-options
+    
+    From security review of the Sequoia-PGP port:
+    
+    - Document that 'sq verify' is intentionally informational only, with
+      no --not-before/--not-after time window (sqop enforces freshness).
+      Link to relevant forum thread and Kicksecure wiki.
+    - Document 'sq cert lint' as an errexit-guarded sanity test.
+    - Document that gpg_bash_lib_function_displaytime and is_whole_number
+      are provided by helper-scripts, rename pending refactoring.
+    - Remove dead gpg_bash_lib_output_gpg_verify_output reference left
+      over from gpg-bash-lib removal (variable was never set).
+    - Add missing end-of-options (--) to mountpoint/umount in
+      sandbox-update-torbrowser cleanup function.
+    
+    https://claude.ai/code/session_01BruSyLEH8z5s9u7xrgDzDE
+
+commit 469f68646b1bf7ddb0896d291062a945c1227cbb
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 06:27:37 2026 -0400
+
+    sanity test
+
+commit 0acb3dd0b9e66eb3650669ce9dd1febeb881abff
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 05:28:11 2026 -0400
+
+    comment
+
+commit ed7801d6a19bdbdd351843e04d02d37d32ab691b
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 05:27:47 2026 -0400
+
+    end-of-options
+
+commit b9feb07d5144af4b497799e9f98b97ca8d5c802c
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 05:25:03 2026 -0400
+
+    comments
+
+commit 74e9dd017317c55f31c883808a6f1b59f0fe67af
+Merge: 65ab906 718c512
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 05:21:15 2026 -0400
+
+    Merge remote-tracking branch 'github-kicksecure/master'
+
+commit 718c512870acc9f985cb6751b488415bf6700e1c
+Merge: 65ab906 da1559d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 05:19:46 2026 -0400
+
+    Merge pull request #33 from assisted-by-ai/claude/analyze-tor-browser-bug-54xNF
+    
+    Add documentation and improve code consistency in tb-updater
+
+commit 65ab9064da9924f3849ad80a591a3262df9398ef
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 05:15:15 2026 -0400
+
+    tbb_hardcoded_version update
+
+commit 3445ef5d651e3266e1d4697711d4e781d4924f85
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 05:14:38 2026 -0400
+
+    fix
+
+commit da1559d0d6341fbe8148f330e7b8df179ccab02d
+Author: Claude <noreply@anthropic.com>
+Date:   Wed Apr 8 08:43:08 2026 +0000
+
+    use /usr/bin/true instead of /bin/true for usrmerge compatibility
+    
+    https://claude.ai/code/session_01BruSyLEH8z5s9u7xrgDzDE
+
+commit 9b59bb56dded44fba22a433257014589d56c17cd
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 04:41:28 2026 -0400
+
+    fix in case last known signature date is unavailable
+
+commit 816bb1e05a82ae96b6b780b5ad2c124a6de998d4
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 04:37:36 2026 -0400
+
+    also show output by `sq` not only `sqop`
+    
+    https://forums.whonix.org/t/tor-browser-downloader-confirmation-has-changed-with-less-info/23146
+
+commit 0ac4be7fef791ed9ac5335071af27822fa10bac4
+Author: Claude <noreply@anthropic.com>
+Date:   Wed Apr 8 08:28:31 2026 +0000
+
+    fix version detection success flag and add documentation comments
+    
+    Fix tbb_locally_installed_version_detect_success being set to "1"
+    instead of "true" in tbbversion_checks_installed(), causing the
+    success path in tbbversion_installed() to never be taken (line 223
+    compares against "true"). This resulted in the version string always
+    being sanitized with the 200-char failure limit instead of the
+    20-char success limit.
+    
+    Also add clarifying comments to:
+    - dispvm: document that the hardcoded "user" fallback is intentional
+      since sysmaint sessions do not run Tor Browser
+    - tb-updater-first-boot.service: document that the /bin/true no-op
+      is by design as a synchronization point for service ordering
+    
+    https://claude.ai/code/session_01BruSyLEH8z5s9u7xrgDzDE
+
+commit 53087cea46896361ff7e9c4d7215c1f9c6848432
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun Apr 5 10:41:33 2026 +0000
+
+    bumped changelog version
+
 commit 067efbb5d8049093b35654e8416e40a9de306a32
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Apr 5 06:40:58 2026 -0400
