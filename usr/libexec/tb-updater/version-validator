@@ -252,5 +252,5 @@ tbbversion_checks_installed() {
       { tbb_locally_installed_version="Parsing version file (part 2) <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
    tbb_locally_installed_version="$parsed_version_temp"
-   tbb_locally_installed_version_detect_success="1"
+   tbb_locally_installed_version_detect_success="true"
 }
