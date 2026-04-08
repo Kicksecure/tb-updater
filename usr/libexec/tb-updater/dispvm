@@ -27,7 +27,7 @@ else
 fi
 
 ## Avoid running in Qubes DVM Template.
-## https://phabricator.whonix.org/T726
+## https://forums.whonix.org/t/if-tb-updater-storage-path-for-qubes-r4-dispvms/18684
 if printf '%s\n' "$qubes_vm_name" | grep -- "-dvm" >/dev/null 2>/dev/null ; then
    exit 0
 fi
