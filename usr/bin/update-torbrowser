@@ -1633,6 +1633,11 @@ tb_download_files() {
 }
 
 tb_openpgp_verify() {
+   local verification_success
+
+   declare -g sqop_output
+   declare -g sq_output
+
    ## One month has 2592000 seconds.
    ## (60 [seconds] * 60 [minutes] * 24 [hours] * 30 [days])
    ## Setting this to 3 months. (7776000 seconds)
@@ -1675,9 +1680,10 @@ tb_openpgp_verify() {
       tb_exit_function 12
    fi
 
+   verification_success=""
+
    log notice "sqop verify --not-before '$sqop_not_before' --not-after '$sqop_not_after' '$TBB_SIG_FULL_PATH' '$signing_key' < '$TBB_PACKAGE_FULL_PATH'"
 
-   declare -g sqop_output
    if ! sqop_output="$(
       timeout --kill-after="60" "10" \
          sqop verify \
@@ -1686,6 +1692,23 @@ tb_openpgp_verify() {
            "$TBB_SIG_FULL_PATH" "$signing_key" \
            < "$TBB_PACKAGE_FULL_PATH" 2>&1
    )"; then
+      verification_success=false
+   fi
+
+   log notice "sq verify --signer-file '$signing_key' --signature-file '$TBB_SIG_FULL_PATH' '$TBB_PACKAGE_FULL_PATH'"
+
+   if ! sq_output="$(
+      timeout --kill-after="60" "10" \
+         sq verify \
+         --signer-file "$signing_key" \
+         --signature-file "$TBB_SIG_FULL_PATH" \
+         -- \
+         "$TBB_PACKAGE_FULL_PATH" 2>&1
+   )"; then
+      verification_success=false
+   fi
+
+   if [ "$verification_success" = "false" ]; then
       MSG="<p><b>Digital signature (OpenPGP) could NOT be verified.</b>
 <br></br>$tb_title update failed! Try again later.</p>
 
@@ -1696,6 +1719,7 @@ tb_openpgp_verify() {
    fi
 
    log notice "sqop_output: '$sqop_output'"
+   log notice "sq_output: '$sq_output'"
 
    sig_creation_time="${sqop_output%% *}"
    log notice "sig_creation_time: '$sig_creation_time'"
@@ -1798,6 +1822,7 @@ tb_confirm_install() {
 or indefinite freeze attacks skipped. Please check if the Current Signature Creation Date looks sane."
       type="info"
    else
+      ## strict_numeric is not 'false'
       true "'$last_used_gpg_bash_lib_output_signed_on_unixtime' and '$gpg_bash_lib_output_signed_on_unixtime' are strictly numeric."
       if [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" -lt "$gpg_bash_lib_output_signed_on_unixtime" ]; then
          gpg_bash_lib_output_freshness_detail="current"
@@ -1841,7 +1866,7 @@ neither -lt, -gt nor equals gpg_bash_lib_output_signed_on_unixtime $gpg_bash_lib
          ;;
       *)
          signature_creation_msg="Signature creation age details are unavailable."
-         error "gpg_bash_lib_output_freshness_detail is neither slow, nor current, it is: $gpg_bash_lib_output_freshness_detail"
+         error "gpg_bash_lib_output_freshness_detail is neither slow, nor current, it is: '$gpg_bash_lib_output_freshness_detail'"
          return 1
          ;;
    esac
@@ -1857,6 +1882,8 @@ neither -lt, -gt nor equals gpg_bash_lib_output_signed_on_unixtime $gpg_bash_lib
 <p>$signature_creation_msg</p>
 <p><u>'sqop' reports</u>:<br></br>
 $sqop_output</p>
+<p><u>'sq' reports</u>:<br></br>
+$sq_output</p>
 <p><a href=\"$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Installation_Confirmation_Notification\">Learn more about this Installation Confirmation Notification.</a></p>"
 
    output_cli notice "$MSG"
