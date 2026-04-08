@@ -1689,7 +1689,7 @@ tb_openpgp_verify() {
 
    log notice "sqop verify --not-before '$sqop_not_before' --not-after '$sqop_not_after' '$TBB_SIG_FULL_PATH' '$signing_key' < '$TBB_PACKAGE_FULL_PATH'"
 
-   if ! sqop_output="$(
+   if sqop_output="$(
       timeout --kill-after="60" "10" \
          sqop verify \
            --not-before "$sqop_not_before" \
@@ -1697,6 +1697,9 @@ tb_openpgp_verify() {
            "$TBB_SIG_FULL_PATH" "$signing_key" \
            < "$TBB_PACKAGE_FULL_PATH" 2>&1
    )"; then
+      true "INFO: sqop success. Setting: verification_success=true"
+      verification_success=true
+   else
       verification_success=false
    fi
 
@@ -1710,7 +1713,7 @@ tb_openpgp_verify() {
    ## https://forums.whonix.org/t/tor-browser-downloader-confirmation-has-changed-with-less-info/23146
    log notice "sq verify --signer-file '$signing_key' --signature-file '$TBB_SIG_FULL_PATH' '$TBB_PACKAGE_FULL_PATH'"
 
-   if ! sq_output="$(
+   if sq_output="$(
       timeout --kill-after="60" "10" \
          sq verify \
          --signer-file "$signing_key" \
@@ -1718,10 +1721,14 @@ tb_openpgp_verify() {
          -- \
          "$TBB_PACKAGE_FULL_PATH" 2>&1
    )"; then
+      true "INFO: sq success. Not setting verification_success by design. That is up to sqop only."
+      #verification_success=false
+   else
       verification_success=false
    fi
 
-   if [ "$verification_success" = "false" ]; then
+   if ! [ "$verification_success" = "true" ]; then
+      ## Both, verification_success="" and 'verification_success="false"' will trigger this.
       MSG="<p><b>Digital signature (OpenPGP) could NOT be verified.</b>
 <br></br>$tb_title update failed! Try again later.</p>
 
