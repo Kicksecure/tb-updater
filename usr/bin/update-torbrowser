@@ -1691,6 +1691,12 @@ tb_openpgp_verify() {
 
    ## stderr is merged into stdout with '2>&1' deliberately.
    ##
+   ## sqop implements the Stateless OpenPGP (SOP) specification.
+   ## Sequoia-PGP's own sop-rs trait library confirms this:
+   ##   "This crate defines an interface that is the Rust equivalent of
+   ##   [...] the Stateless OpenPGP Command Line Interface."
+   ## https://gitlab.com/sequoia-pgp/sop-rs/-/blob/main/src/lib.rs
+   ##
    ## The SOP specification guarantees no stderr on success:
    ##   "When sop succeeds, it will return 0 (OK) and emit nothing to
    ##   Standard Error."
@@ -1700,8 +1706,10 @@ tb_openpgp_verify() {
    ##
    ## The sqop (sequoia-sop) implementation enforces this: the verify
    ## helper routes diagnostic output to io::sink() (discarded) unless
-   ## '--verbose' is passed (which is not the case here).
+   ## '--verbose' is passed (which is not the case here). The CLI layer
+   ## (sop-rs) only writes to stderr via print_error_chain on error.
    ## https://gitlab.com/sequoia-pgp/sequoia-sop/-/blob/main/src/lib.rs
+   ## https://gitlab.com/sequoia-pgp/sop-rs/-/blob/main/src/cli.rs
    ##
    ## Therefore, on success (exit 0), sqop_output contains only stdout
    ## (the "TIMESTAMP FINGERPRINT ..." line), safe for parsing.
