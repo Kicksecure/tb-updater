@@ -1689,6 +1689,14 @@ tb_openpgp_verify() {
 
    log notice "sqop verify --not-before '$sqop_not_before' --not-after '$sqop_not_after' '$TBB_SIG_FULL_PATH' '$signing_key' < '$TBB_PACKAGE_FULL_PATH'"
 
+   ## stderr is merged into stdout with '2>&1' deliberately.
+   ## 'sqop' (sequoia-sop) does not write to stderr on success (exit 0)
+   ## unless '--verbose' is used (which is not the case here). On failure
+   ## (exit non-zero), stderr may contain diagnostics, but those are
+   ## captured for the error message (sqop_output shown to user) and the
+   ## sig_creation_time parsing code is never reached because
+   ## verification_success remains false.
+   ## Separating stdout/stderr would add complexity without security benefit.
    if sqop_output="$(
       timeout --kill-after="60" "10" \
          sqop verify \
@@ -1703,12 +1711,20 @@ tb_openpgp_verify() {
       verification_success=false
    fi
 
-   ## 'sq verify' is used for informational output only (shown in the
+   ## 'sq verify' output is used for informational display (shown in the
    ## installation confirmation screen). It intentionally has no
    ## --not-before/--not-after time window because 'sqop verify' above
    ## already enforces signature freshness constraints. Signature creation
    ## timestamps are extracted from 'sqop' output only, since 'sq verify'
    ## does not expose them in a machine-parseable way.
+   ##
+   ## Verification decision logic:
+   ## - Only 'sqop verify' can set verification_success=true (above).
+   ## - Both 'sqop verify' and 'sq verify' can set verification_success=false.
+   ## - 'sq verify' failure therefore overrides a successful 'sqop verify'.
+   ## This is by design: both tools must agree for verification to pass,
+   ## providing defense in depth via two independent verification paths.
+   ##
    ## https://www.kicksecure.com/wiki/OpenPGP#Sequoia-PGP_automation
    ## https://forums.whonix.org/t/tor-browser-downloader-confirmation-has-changed-with-less-info/23146
    log notice "sq verify --signer-file '$signing_key' --signature-file '$TBB_SIG_FULL_PATH' '$TBB_PACKAGE_FULL_PATH'"
@@ -1721,7 +1737,7 @@ tb_openpgp_verify() {
          -- \
          "$TBB_PACKAGE_FULL_PATH" 2>&1
    )"; then
-      true "INFO: sq success. Not setting verification_success by design. That is up to sqop only."
+      true "INFO: sq success. Not setting verification_success=true by design. Only sqop can set true."
       #verification_success=false
    else
       verification_success=false
