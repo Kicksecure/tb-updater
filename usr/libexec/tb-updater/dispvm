@@ -6,11 +6,8 @@
 set -x
 set -e
 
-## For Non-Qubes.
-## NOTE: The "user" fallback is intentional. The sysmaint session is not
-## supposed to run Tor Browser. In Qubes, the default user is read from
-## qubesdb below; this fallback only applies to non-Qubes environments
-## where "user" is the expected unprivileged account.
+## The account "user" fallback is intentional.
+## The sysmaint session is not supposed to run Tor Browser.
 user_name="user"
 
 if ischroot --default-false ; then
