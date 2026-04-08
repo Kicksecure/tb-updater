@@ -309,6 +309,8 @@ tb_sanity_tests() {
    has mkfifo
    has jq
    has sanitize-string
+   has sq
+   has sqop
 }
 
 tb_ex_funct() {
