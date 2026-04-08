@@ -102,7 +102,7 @@ if not input_path.is_file():
     sys.exit(2)
 else:
     try:
-        output_path.touch(mode=0o644, exist_ok=True)
+        output_path.touch(mode=0o600, exist_ok=True)
     except Exception:
         print_noisy("ERROR: Cannot access output file.")
         sys.exit(2)
