@@ -1855,6 +1855,7 @@ neither -lt, -gt nor equals gpg_bash_lib_output_signed_on_unixtime $gpg_bash_lib
    case "$gpg_bash_lib_output_freshness_detail" in
       "skip")
          signature_creation_msg="Signature creation age details are unavailable."
+         ;;
       "slow")
          signature_creation_msg="<b>The signature looks quite old already.</b>
 <br></br>
