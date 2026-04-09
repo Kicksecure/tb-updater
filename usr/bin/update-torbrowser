@@ -1690,13 +1690,11 @@ tb_openpgp_verify() {
    log notice "sqop verify --not-before '$sqop_not_before' --not-after '$sqop_not_after' '$TBB_SIG_FULL_PATH' '$signing_key' < '$TBB_PACKAGE_FULL_PATH'"
 
    ## stderr is merged into stdout with '2>&1' deliberately.
-   ## Safe because the SOP spec guarantees no stderr on exit 0 (unless
-   ## --debug, which is not used here), and sqop's verify helper always
-   ## routes diagnostics to io::sink(). On failure (exit non-zero), stderr
-   ## is captured for the error message and sig_creation_time parsing is
-   ## never reached. Separating stdout/stderr would add complexity without
-   ## security benefit.
-   ## Details: https://www.kicksecure.com/wiki/OpenPGP#Sequoia-PGP_automation
+   ## Per the SOP spec, successful runs (exit 0) emit nothing to stderr
+   ## (--debug not used here). On failure (exit non-zero), stderr
+   ## diagnostics are captured for the error message and sig_creation_time
+   ## parsing is never reached.
+   ## https://www.kicksecure.com/wiki/OpenPGP#Sequoia-PGP_automation
    if sqop_output="$(
       timeout --kill-after="60" "10" \
          sqop verify \
