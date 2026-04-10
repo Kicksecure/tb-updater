@@ -1,5 +1,5 @@
 'sq verify' output is for informational display only (shown in the
-installation confirmation screen). Do not parse it — sq output is
+installation confirmation screen). Do not parse it. `sq` output is
 not machine-readable.
 
 Details: https://www.kicksecure.com/wiki/OpenPGP#sqop_vs_sq_for_automations
