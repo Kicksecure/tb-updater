@@ -1,3 +1,28 @@
+commit 74db43b7326358fc26456b072f35d208d57854fc
+Merge: 852c148 2630933
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Apr 10 04:23:33 2026 -0400
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit 26309338f21931bac32f190b851df32c95551a4e
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Fri Apr 10 00:06:20 2026 -0400
+
+    Document "sqop verify" stderr handling in update-torbrowser, fix links (mostly from Claude Code)
+
+commit 8b2832a205c45ca36703c2f8eeaae18a47d08c04
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Thu Apr 9 23:49:04 2026 -0400
+
+    Add a comment, fix a variable check
+
+commit 852c148d660a9a172eea4af9bcd35426812d2326
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 8 12:36:32 2026 +0000
+
+    bumped changelog version
+
 commit 8b43a14d68bf35ac5cfe078a83b2cca522162d9e
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Apr 8 07:51:54 2026 -0400
