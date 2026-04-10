@@ -204,7 +204,7 @@ download_fail_help_set() {
 }
 
 tb_run_function() {
-   [[ -v "${tb_skip_functions}" ]] || tb_skip_functions=''
+   [ -v tb_skip_functions ] || tb_skip_functions=''
    case $tb_skip_functions in
    *"$@"*) log notice "Skipping '$*', because tb_skip_functions includes it."
                   return 0
@@ -1689,6 +1689,11 @@ tb_openpgp_verify() {
 
    log notice "sqop verify --not-before '$sqop_not_before' --not-after '$sqop_not_after' '$TBB_SIG_FULL_PATH' '$signing_key' < '$TBB_PACKAGE_FULL_PATH'"
 
+   ## stderr is merged into stdout with '2>&1' deliberately.
+   ## Per the SOP spec, successful runs emit nothing to stderr (--debug not
+   ## used here). On failure, stderr diagnostics are captured for the error
+   ## message and sig_creation_time parsing is never reached.
+   ## https://www.kicksecure.com/wiki/OpenPGP#sqop_parsing
    if sqop_output="$(
       timeout --kill-after="60" "10" \
          sqop verify \
@@ -1709,7 +1714,7 @@ tb_openpgp_verify() {
    ## already enforces signature freshness constraints. Signature creation
    ## timestamps are extracted from 'sqop' output only, since 'sq verify'
    ## does not expose them in a machine-parseable way.
-   ## https://www.kicksecure.com/wiki/OpenPGP#Sequoia-PGP_automation
+   ## https://www.kicksecure.com/wiki/OpenPGP#sqop_vs_sq_for_automations
    ## https://forums.whonix.org/t/tor-browser-downloader-confirmation-has-changed-with-less-info/23146
    log notice "sq verify --signer-file '$signing_key' --signature-file '$TBB_SIG_FULL_PATH' '$TBB_PACKAGE_FULL_PATH'"
 
@@ -1721,7 +1726,7 @@ tb_openpgp_verify() {
          -- \
          "$TBB_PACKAGE_FULL_PATH" 2>&1
    )"; then
-      true "INFO: sq success. Not setting verification_success by design. That is up to sqop only."
+      true "INFO: sq success. Not setting verification_success=true by design. That is up to sqop only."
       #verification_success=false
    else
       verification_success=false
