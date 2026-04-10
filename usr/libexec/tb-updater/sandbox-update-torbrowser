@@ -67,35 +67,33 @@ cleanup_dir_as_tb_updater() {
 }
 
 cleanup() {
-  local xhost_output cgroup_empty_str inotifywait_subshell_pid \
-    inotifywait_fd
+  local xhost_output cgroup_empty_str cgroup_drained poll_count
 
   if [ -n "${tb_updater_cgroup}" ] && validate_uuid "${tb_updater_cgroup_name}"; then
     cgroup_empty_str="populated 0
 frozen 0"
-    (
-      true "exec {inotifywait_fd}<"
-      exec {inotifywait_fd}< <(inotifywait --quiet --monitor --event modify "${tb_updater_cgroup}/cgroup.events")
-      # shellcheck disable=SC2064
-      trap "kill -s KILL $!" EXIT INT TERM
-      while IFS=$'\n' read -r _; do
+    if printf '%s\n' '1' > "${tb_updater_cgroup}/cgroup.kill"; then
+      ## Poll cgroup.events until the cgroup is empty, rather than using
+      ## inotifywait which consumes an inotify watch from the kernel's
+      ## limited pool and can cause ENOSPC on watch-constrained systems.
+      ## cgroup.kill sends SIGKILL, so draining should be near-instant.
+      cgroup_drained='false'
+      poll_count=0
+      while [ "${poll_count}" -lt 50 ]; do
         if [ "$(cat "${tb_updater_cgroup}/cgroup.events")" = "${cgroup_empty_str}" ]; then
           rmdir "${tb_updater_cgroup}" \
             || log warn "Cannot remove tb-updater cgroup at '${tb_updater_cgroup}'!"
+          cgroup_drained='true'
           break
         fi
-      done <&"${inotifywait_fd}"
-    ) &
-    inotifywait_subshell_pid="$!"
-    ## inotifywait itself requires some time to initialize. 1/20th of a second
-    ## seems to be enough on rather slow hardware. so use 1/10th of a second
-    ## for good measure.
-    light_sleep 0.1
-    if printf '%s\n' '1' > "${tb_updater_cgroup}/cgroup.kill"; then
-      wait "${inotifywait_subshell_pid}"
+        light_sleep 0.1
+        poll_count=$((poll_count + 1))
+      done
+      if [ "${cgroup_drained}" != 'true' ]; then
+        log warn "Timed out waiting for tb-updater cgroup at '${tb_updater_cgroup}' to drain!"
+      fi
     else
       log warn "Cannot kill tb-updater cgroup at '${tb_updater_cgroup}'!"
-      kill "${inotifywait_subshell_pid}"
     fi
   fi
 
