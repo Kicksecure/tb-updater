@@ -204,7 +204,7 @@ download_fail_help_set() {
 }
 
 tb_run_function() {
-   [[ -v "${tb_skip_functions}" ]] || tb_skip_functions=''
+   [[ -v tb_skip_functions ]] || tb_skip_functions=''
    case $tb_skip_functions in
    *"$@"*) log notice "Skipping '$*', because tb_skip_functions includes it."
                   return 0
