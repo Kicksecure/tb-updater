@@ -102,6 +102,10 @@ if not input_path.is_file():
     sys.exit(2)
 else:
     try:
+        ## This does not actually set the file mode in most instances,
+        ## version-validator (which calls this) will have already created the
+        ## output file with `mktemp`. There is no security benefit to locking
+        ## down the file's permissions tigher than 644.
         output_path.touch(mode=0o644, exist_ok=True)
     except Exception:
         print_noisy("ERROR: Cannot access output file.")
