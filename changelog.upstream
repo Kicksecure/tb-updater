@@ -1,3 +1,34 @@
+commit ef5b864c206d5bfb330eea2984c1f3f938c46574
+Merge: 383614f 36e9838
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Apr 11 03:43:10 2026 -0400
+
+    Merge remote-tracking branch 'ArrayBolt3/arraybolt3/trixie'
+
+commit 36e983807ff6c34f92634cb46f05fa94b058a6e7
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Fri Apr 10 16:25:37 2026 -0400
+
+    Replace inotifywait with polling in cgroup cleanup (from Claude Code)
+
+commit 383614f700cd650baf0960a5b889b1ad750c7ccc
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Apr 10 13:14:40 2026 -0400
+
+    unicode
+
+commit a5c1d55eb6d6925445d9c0e32677d656495af152
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Apr 10 08:07:15 2026 -0400
+
+    add docs for agents
+
+commit 625f4e179e1cb069d177d9eaa501196494d52463
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Apr 10 09:22:32 2026 +0000
+
+    bumped changelog version
+
 commit 74db43b7326358fc26456b072f35d208d57854fc
 Merge: 852c148 2630933
 Author: Patrick Schleizer <adrelanos@whonix.org>
