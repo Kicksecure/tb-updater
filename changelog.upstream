@@ -1,3 +1,15 @@
+commit 22f96a0fa8939087971b9e3d79bd70403bd50870
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 22 06:20:22 2026 -0400
+
+    tbb_hardcoded_version update
+
+commit fb612083679099d0500b83ddab64d80bb569f428
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Apr 11 08:37:32 2026 +0000
+
+    bumped changelog version
+
 commit ef5b864c206d5bfb330eea2984c1f3f938c46574
 Merge: 383614f 36e9838
 Author: Patrick Schleizer <adrelanos@whonix.org>
@@ -79,7 +91,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Apr 8 06:57:19 2026 -0400
 
     Merge pull request #34 from assisted-by-ai/claude/security-review-sqop-changes
-    
+
     security review: document sq/sqop design, remove dead code, fix end-of-options
 
 commit 2a66968063651cd84bae465df6c7f6ff787916b6
@@ -87,9 +99,9 @@ Author: Claude <noreply@anthropic.com>
 Date:   Wed Apr 8 10:52:52 2026 +0000
 
     security review: document sq/sqop design, remove dead code, fix end-of-options
-    
+
     From security review of the Sequoia-PGP port:
-    
+
     - Document that 'sq verify' is intentionally informational only, with
       no --not-before/--not-after time window (sqop enforces freshness).
       Link to relevant forum thread and Kicksecure wiki.
@@ -100,7 +112,7 @@ Date:   Wed Apr 8 10:52:52 2026 +0000
       over from gpg-bash-lib removal (variable was never set).
     - Add missing end-of-options (--) to mountpoint/umount in
       sandbox-update-torbrowser cleanup function.
-    
+
     https://claude.ai/code/session_01BruSyLEH8z5s9u7xrgDzDE
 
 commit 469f68646b1bf7ddb0896d291062a945c1227cbb
@@ -140,7 +152,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Apr 8 05:19:46 2026 -0400
 
     Merge pull request #33 from assisted-by-ai/claude/analyze-tor-browser-bug-54xNF
-    
+
     Add documentation and improve code consistency in tb-updater
 
 commit 65ab9064da9924f3849ad80a591a3262df9398ef
@@ -160,7 +172,7 @@ Author: Claude <noreply@anthropic.com>
 Date:   Wed Apr 8 08:43:08 2026 +0000
 
     use /usr/bin/true instead of /bin/true for usrmerge compatibility
-    
+
     https://claude.ai/code/session_01BruSyLEH8z5s9u7xrgDzDE
 
 commit 9b59bb56dded44fba22a433257014589d56c17cd
@@ -174,7 +186,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Apr 8 04:37:36 2026 -0400
 
     also show output by `sq` not only `sqop`
-    
+
     https://forums.whonix.org/t/tor-browser-downloader-confirmation-has-changed-with-less-info/23146
 
 commit 0ac4be7fef791ed9ac5335071af27822fa10bac4
@@ -182,20 +194,20 @@ Author: Claude <noreply@anthropic.com>
 Date:   Wed Apr 8 08:28:31 2026 +0000
 
     fix version detection success flag and add documentation comments
-    
+
     Fix tbb_locally_installed_version_detect_success being set to "1"
     instead of "true" in tbbversion_checks_installed(), causing the
     success path in tbbversion_installed() to never be taken (line 223
     compares against "true"). This resulted in the version string always
     being sanitized with the 200-char failure limit instead of the
     20-char success limit.
-    
+
     Also add clarifying comments to:
     - dispvm: document that the hardcoded "user" fallback is intentional
       since sysmaint sessions do not run Tor Browser
     - tb-updater-first-boot.service: document that the /bin/true no-op
       is by design as a synchronization point for service ordering
-    
+
     https://claude.ai/code/session_01BruSyLEH8z5s9u7xrgDzDE
 
 commit 53087cea46896361ff7e9c4d7215c1f9c6848432
@@ -513,7 +525,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Feb 1 13:06:32 2026 -0500
 
     fix `/var/cache/tb-binary` folder permissions
-    
+
     https://forums.whonix.org/t/tor-browser-error-in-whonix-18-appvm-user-home-folder-permission-issue/22800
 
 commit b3fe2fb38d6ca93fc81117d9cd54cae703438e1a
@@ -864,7 +876,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Jan 7 06:03:38 2026 -0500
 
     implement `torS0X` stream isolation
-    
+
     https://spec.torproject.org/socks-extensions.html
 
 commit e447e607340d452563fb493ec5ced559f4130981
@@ -886,7 +898,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Mon Jan 5 03:17:04 2026 -0500
 
     Merge pull request #31 from Nurmagoz/patch-1
-    
+
     Updated the URLs and fixed some text
 
 commit 51bf453d9248672c572298cf2074277a33cbfde8
@@ -1051,7 +1063,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Dec 10 08:58:03 2025 -0500
 
     revert tbb version issues detection show code to fix build issue
-    
+
     https://github.com/QubesOS/updates-status/issues/6255#issuecomment-3627460001
 
 commit 874f0ea529c7f9372904da079b3e4297255d720a
@@ -1077,7 +1089,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Dec 9 02:47:40 2025 -0500
 
     fix desktop icon by adding `StartupWMClass=Tor Browser Downloader (AnonDist)`
-    
+
     https://forums.whonix.org/t/whonix-18-0-7-5-major-release-upgrade-testers-wanted/22469/11
 
 commit f59d8c51b8589a639abe8f792df036514b1ccc49
@@ -1846,7 +1858,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Mar 28 12:14:00 2025 -0400
 
     Revert "tbb_hardcoded_version update"
-    
+
     This reverts commit b2f1942cb7a57eabcb640171efbb0a96e10750d7.
 
 commit 4b9b38d1f9a5eab00249113a143dd38a4eee2730
@@ -1977,7 +1989,7 @@ Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
 Date:   Mon Feb 10 18:32:49 2025 -0600
 
     Reapply "Port to privleap"
-    
+
     This reverts commit 814438e9f8a68da3ae3545f028e3850cac91e474.
 
 commit 9d8a80dd4fd3c50aedc8ab5b63d02d62dea3c56f
@@ -1985,7 +1997,7 @@ Author: Aaron Rainbolt <arraybolt3@ubuntu.com>
 Date:   Mon Feb 10 18:32:37 2025 -0600
 
     Revert "Revert "Revert "remove privleap from depends as long as privleap is only in the testers repository"""
-    
+
     This reverts commit cf995c1d666fe3142f368afb243bd8be5be30734.
 
 commit e4cdd582ed7209d321c4e5497f0fac170ba864f8
@@ -1999,7 +2011,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Mon Feb 10 06:21:53 2025 -0500
 
     Revert "Port to privleap"
-    
+
     This reverts commit 442319448a346a55d699df8d0ad708b5512ce388.
 
 commit cf995c1d666fe3142f368afb243bd8be5be30734
@@ -2007,7 +2019,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Mon Feb 10 06:20:54 2025 -0500
 
     Revert "Revert "remove privleap from depends as long as privleap is only in the testers repository""
-    
+
     This reverts commit c6486abe35a812012ea8ee7c547028988fe8fa6b.
 
 commit bf3350d88ad8e1b9e9470096f7ce8356259670b2
@@ -2021,7 +2033,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Feb 9 16:11:23 2025 -0500
 
     Revert "remove privleap from depends as long as privleap is only in the testers repository"
-    
+
     This reverts commit a64f7bdc0cafa78538d87d6bc99453bc6982298d.
 
 commit a64f7bdc0cafa78538d87d6bc99453bc6982298d
@@ -2150,7 +2162,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Dec 29 07:57:01 2024 -0500
 
     No longer supporting Heikki Lindholm sourceforge Tor Browser ARM64 version.
-    
+
     https://forums.whonix.org/t/arm64-tor-browser/11806/21
 
 commit 1a060101036b51dc903263edb1d7b8911e8691af
@@ -2327,13 +2339,13 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Oct 12 01:10:15 2024 -0400
 
     add dependency on `libdbus-glib-1-2`
-    
+
     to fix error:
-    
+
     > XPCOMGlueLoad error for file /home/user/.tb/tor-browser/Browser/libxul.so:
     > libdbus-glib-1.so.2: cannot open shared object file: No such file or directory
     > Couldn't load XPCOM.
-    
+
     https://forums.whonix.org/t/tor-browser-integration/11912/116
 
 commit fa4d1876a11f681f35505d9a777e521570eaea8b
@@ -2449,7 +2461,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Aug 4 13:59:19 2024 -0400
 
     update signing key
-    
+
     gpg --auto-key-locate nodefault,wkd --locate-keys torbrowser@torproject.org
     gpg: key 0x4E2C6E8793298290: "Tor Browser Developers (signing key) <torbrowser@torproject.org>" 3 new signatures
     gpg: key 0x4E2C6E8793298290: "Tor Browser Developers (signing key) <torbrowser@torproject.org>" 1 new subkey
@@ -2461,7 +2473,7 @@ Date:   Sun Aug 4 13:59:19 2024 -0400
     uid                   [  undef ] Tor Browser Developers (signing key) <torbrowser@torproject.org>
     sub   rsa4096/0xE53D989A9E2D47BF 2021-09-17 [S] [expires: 2024-09-13]
     sub   rsa4096/0x157432CF78A65729 2024-07-15 [S] [expires: 2026-10-26]
-    
+
     fixes https://github.com/Kicksecure/tb-updater/issues/29
 
 commit 8ca07d9ace74e388c48bd489b80a21ddaf2e58db
@@ -2511,7 +2523,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Jun 2 08:04:18 2024 -0400
 
     Nowadays Qubes UpdatesProxy over qrexec only. Not over network.
-    
+
     https://github.com/QubesOS/qubes-issues/issues/8398#issuecomment-2143573830
 
 commit adcc8acb2d0c50716c6e528817f4f43487078c2c
@@ -2591,7 +2603,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Apr 18 09:00:35 2024 -0400
 
     towards support for automatically updating Mullvad Browser in Qubes Template
-    
+
     so newly created App Qubes or Disposables start with up-to-date Mullvad Browser
 
 commit 00753faa5c2a6239ed1f0f83c96d37d624d4a720
@@ -2857,7 +2869,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Feb 22 13:01:24 2024 -0500
 
     run /usr/libexec/tb-updater/tb-permission-fix in Qubes Template and App Qube
-    
+
     to fix potential race condition
 
 commit 8ef96b866cf482f930374f133218aba8af81a740
@@ -2865,7 +2877,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Feb 22 12:59:46 2024 -0500
 
     Tor Browser permission fix: downgrade to warning if user `user` does not exist
-    
+
     https://forums.whonix.org/t/tor-browser-permission-issue/17222/3
 
 commit 68424750fd12b7c06902406636cf15398cf31a4b
@@ -2881,7 +2893,7 @@ Date:   Wed Feb 21 06:53:50 2024 -0500
     ```
     gpg --auto-key-locate nodefault,wkd --locate-keys torbrowser@torproject.org
     ```
-    
+
     ```
     gpg: key 0x4E2C6E8793298290: "Tor Browser Developers (signing key) <torbrowser@torproject.org>" 1 new signature
     gpg: Total number processed: 1
@@ -2891,7 +2903,7 @@ Date:   Wed Feb 21 06:53:50 2024 -0500
     uid                   [  undef ] Tor Browser Developers (signing key) <torbrowser@torproject.org>
     sub   rsa4096/0xE53D989A9E2D47BF 2021-09-17 [S] [expires: 2024-08-23]
     ```
-    
+
     https://forums.whonix.org/t/tb-updater-gpg-download-signature-could-not-be-verified-this-key-expired/10161/13
 
 commit 64b0f793a4a125d651b7a3b17a1c95c216d5b0ea
@@ -2937,7 +2949,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Feb 3 13:31:59 2024 -0500
 
     Merge pull request #28 from GavinPacini/feat/improved-arm64-support
-    
+
     Improved arm64 support
 
 commit 6cbb0ae84987b047343a8ed35199b874a4e8fc04
@@ -3104,7 +3116,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Dec 15 07:30:19 2023 -0500
 
     Merge pull request #26 from fyqwbdzsfjh/master
-    
+
     Add support for Mullvad Browser
 
 commit 269a6b4123090c2f2846a9ad94da43e5d10466ba
@@ -3172,7 +3184,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Nov 25 00:46:43 2023 -0500
 
     fix detection of script being executed versus being sourced
-    
+
     in case the script was run with bash -x
 
 commit 24e643a95c38740bed14c95a778fb5e28af8128b
@@ -3228,7 +3240,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Nov 11 13:41:28 2023 -0500
 
     change license to AGPL-3+
-    
+
     https://forums.whonix.org/t/license-change-to-agplv3/17455
 
 commit a930ca161e11c8a870fd87c7804beeb1f82da661
@@ -3236,7 +3248,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Nov 11 10:01:18 2023 -0500
 
     Revert "stop using fancy curl progress bar"
-    
+
     This reverts commit fa063d02ca2e02fdb5dc0350ffb00f32e7617595.
 
 commit a436a9d3402f68a0a78319396e7efde85430ede7
@@ -3244,7 +3256,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Nov 11 10:01:02 2023 -0500
 
     Revert "fix sigterm handling"
-    
+
     This reverts commit f7db2b4929ae6a8c9d7b06b416b0ff4b7b95acde.
 
 commit d4b0bc0a9e74ff565dc30296ef2b05d3f56aa6f1
@@ -3252,7 +3264,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Nov 11 10:00:44 2023 -0500
 
     Revert "deprecate GUI"
-    
+
     This reverts commit 0eee7a0be719a2f19d48ba4d738d7266fb235287.
 
 commit 0eee7a0be719a2f19d48ba4d738d7266fb235287
@@ -3260,7 +3272,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Nov 10 06:38:40 2023 -0500
 
     deprecate GUI
-    
+
     run CLI version inside terminal-emulator when using desktop shortcut
 
 commit f7db2b4929ae6a8c9d7b06b416b0ff4b7b95acde
@@ -3694,7 +3706,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Oct 5 00:23:19 2023 -0400
 
     debug download issue
-    
+
     https://github.com/QubesOS/updates-status/issues/4083
 
 commit 6b9574be8aaaf9833917229e52d8a7503409baa1
@@ -3756,13 +3768,13 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Sep 24 11:15:59 2023 -0400
 
     update expired Tor Browser upstream signing key
-    
+
     https://forums.whonix.org/t/tb-updater-gpg-download-signature-could-not-be-verified-this-key-expired/10161/4
-    
+
     https://web.archive.org/web/20230924151659/https://gitlab.torproject.org/tpo/tpa/team/-/issues/41333
-    
+
     https://web.archive.org/web/20230924151649/https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/issues/40957
-    
+
     https://web.archive.org/web/20230924151820/https://people.torproject.org/~boklm/tmp/_torbrowser_extended_2023.asc
 
 commit 1692737df232cb950cf46c18da67d0a812fffe3c
@@ -3812,9 +3824,9 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Aug 24 08:17:42 2023 -0400
 
     upstream link changes for Tor Browser alpha fix part 2/2
-    
+
     Thanks for @pgerber for the report and helping with this!
-    
+
     https://github.com/Kicksecure/tb-updater/pull/22
 
 commit b980d00215664d14f0fbd4246a489ef56aa54f66
@@ -3846,7 +3858,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Aug 24 08:11:36 2023 -0400
 
     remove `--language` because no longer needed
-    
+
     since all Tor Browser downloads support all languages for a while now
 
 commit 24e13eae678798b43289972de10f2cb97e553469
@@ -3854,9 +3866,9 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Aug 24 08:08:22 2023 -0400
 
     upstream link changes for Tor Browser alpha fix part 1/2
-    
+
     Thanks for @pgerber for the report and helping with this!
-    
+
     https://github.com/Kicksecure/tb-updater/pull/22
 
 commit b8c36342d953a9cfb1932c1c3e1df548913a53d1
@@ -3864,7 +3876,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Aug 24 08:01:41 2023 -0400
 
     comments to prepare for upstream link changes
-    
+
     https://github.com/Kicksecure/tb-updater/pull/22
 
 commit 1151dc456f99e7a86649914bc03639ecf3bd5589
@@ -3872,7 +3884,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Aug 24 08:00:35 2023 -0400
 
     refactoring
-    
+
     https://github.com/Kicksecure/tb-updater/pull/22
 
 commit 46a7d6c21488c5aa808e25862a00e9b6cba5f645
@@ -3892,9 +3904,9 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Aug 16 05:27:33 2023 -0400
 
     skip connectivity test for arm64
-    
+
     due to unreported sourceforge blocking Tor issue
-    
+
     https://github.com/Kicksecure/tb-updater/issues/21
 
 commit 7a53c2fcbae3fb01d2036034fcb541c7fe58fa4f
@@ -4217,7 +4229,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Dec 8 10:17:52 2022 -0500
 
     Merge pull request #20 from andrea-varesio/patch-1
-    
+
     Change min $tbb_version for TB_LANG="ALL"
 
 commit d68336f6d3e989f664eda928981338d2afc4aa76
@@ -4225,7 +4237,7 @@ Author: Andrea Varesio <75442907+andrea-varesio@users.noreply.github.com>
 Date:   Thu Dec 8 08:53:22 2022 +0000
 
     Change min $tbb_version for TB_LANG="ALL"
-    
+
     This resolves curl not finding packages ending with "en-US" since new packages use "ALL" instead (and versions < 12.0a4 no longer seem to be available): https://dist.torproject.org/torbrowser/12.0/
 
 commit 5e441214d7806bcd67bf2904fa30b9f1f272f637
@@ -4283,7 +4295,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Thu Nov 3 14:16:53 2022 -0400
 
     Merge pull request #19 from pgerber/multi-lang
-    
+
     Make update-torbrowser work with new multi-lang builds
 
 commit 4bde4ef450859ece8e7375af178bb902440303db
@@ -4303,12 +4315,12 @@ Author: Peter Gerber <peter@arbitrary.ch>
 Date:   Mon Oct 31 21:53:57 2022 +0000
 
     Make update-torbrowser work with new multi-lang builds
-    
+
     As of v12.0a4 Tor Browser is shipped as a multi-language archive
     and language-specific archives are no longer available. This
     patch makes this new multi-lang version install properly but does
     not handle starting Tor Browser with the correct locale.
-    
+
     I'm not entirely sure how the locale should be handled. Is it
     good enough to just use the system language (which Tor Browser
     now does by default) or should some other solution be used? If
@@ -4563,7 +4575,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Jul 16 07:44:32 2022 -0400
 
     Merge pull request #18 from irykoon/master
-    
+
     Support --update-only flag.
 
 commit 8b9408ea24b945e926c070a0f82f992536fa8a49
@@ -4571,7 +4583,7 @@ Author: irykoon <iry@riseup.net>
 Date:   Sat Jul 16 11:43:07 2022 +0000
 
     Rename --update-only to --only-if-newer.
-    
+
     As suggested by @adrelanos in https://github.com/Kicksecure/tb-updater/pull/18#issuecomment-1186157912
 
 commit c1bcf0dccec8b19ae583d3cd061a806b82a74745
@@ -4579,11 +4591,11 @@ Author: irykoon <iry@riseup.net>
 Date:   Sat Jul 16 10:43:57 2022 +0000
 
     Support --update-only flag.
-    
+
     When the Tor Browser is already up-to-date, the current tb-updater will still ask users if they want to download and reinstall it.
-    
+
     With this `--update-only` flag turned on, the tb-updater will exit with a message like "Skip downloading: current Tor Browser 11.5 is already up-to-date".
-    
+
     This flag is especially useful when tb-updater is run regularly to keep the Tor Browser up-to-date because it saves user from spending time and resources downloading an already up-to-date Tor Browser.
 
 commit 4c9cc6a899cd9d5befaf1d0a7f7c6d34e6ebac2f
@@ -4597,11 +4609,11 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Jul 12 19:23:05 2022 -0400
 
     implement `--reset` to allow a hard reset of Tor Browser
-    
+
     https://www.whonix.org/wiki/Tor_Browser/Advanced_Users#Tor_Browser_Hard_Reset
-    
+
     https://forums.whonix.org/t/tor-browser-downloader-anondist-suggestion/14151
-    
+
     Thanks to @anonhelp for the suggestion!
 
 commit c645704b0b33185196840fe7527e97fb99067af1
@@ -4651,7 +4663,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Jul 5 11:15:43 2022 -0400
 
     update Tor Browser arm64 maintainer signing key
-    
+
     https://forums.whonix.org/t/arm64-tor-browser-maintainer/11786/7
 
 commit 816d4dfbe4ed8f895dbdc3c55a7844fadfed0c58
@@ -4685,7 +4697,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Jul 2 14:20:40 2022 -0400
 
     Merge pull request #17 from pgerber/200
-    
+
     Increase Tor Browser size limit to 200 MiB
 
 commit 17ef6a6919922b23ae883a41e8a863a8dcabd76d
@@ -4693,7 +4705,7 @@ Author: Peter Gerber <peter@arbitrary.ch>
 Date:   Sat Jul 2 09:14:56 2022 +0000
 
     Increase Tor Browser size limit to 200 MiB
-    
+
     About to be released 11.5a13 exceeded this limit.
     See https://dist.torproject.org/torbrowser/11.5a13/
 
@@ -4876,19 +4888,19 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Dec 24 07:12:50 2021 -0500
 
     switch to "direct" digital signature verification
-    
+
     - no longer download and verify sha256 hash file as this is no longer required
     - use only `gpg` to verify digital signature of Tor Browser
     - higher security
     - code simplification
-    
+
     This is also a workaround for upstream issue `sha256sums-unsigned-build.incrementals.txt and sha256sums-unsigned-build.txt are not signed with torbrowser key`.
-    
+
     - https://forums.whonix.org/t/tor-browser-downloader-needs-to-update-its-pgp-keys/13077
     - https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/40759
-    
+
     Unfortunately this breaks arm64 downloads.
-    
+
     - https://forums.whonix.org/t/arm64-tor-browser/11806
 
 commit b77d669cbaaffbf428f48d4ab83c935a760ef216
@@ -4920,12 +4932,12 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Dec 15 06:26:25 2021 -0500
 
     add updated signing key
-    
+
     as annoucned here:
     https://blog.torproject.org/new-release-tor-browser-115a1/
-    
+
     Thanks to @pgerber for the bug report!
-    
+
     fixes https://github.com/Whonix/tb-updater/issues/16
 
 commit fc9d4d224c067ecf0eab1e301d4480a9efdf64de
@@ -4939,9 +4951,9 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Dec 4 16:02:53 2021 -0500
 
     use `curl` with `--cert-status`
-    
+
     Thanks for @yodawins for the suggestion!
-    
+
     https://forums.whonix.org/t/scurl-secure-curl-wrapper/7125/8
 
 commit fff9cb730bd9dd6b7b68778b02fd95fff190e334
@@ -4981,7 +4993,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Nov 12 03:24:26 2021 -0500
 
     Merge pull request #15 from FrankGusto/fix-man
-    
+
     remove passage about removed backup functionality from man page
 
 commit d9a5d7d11d4caf198f21a2f32b9aaa733a4ad17d
@@ -5301,9 +5313,9 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Jun 15 15:19:20 2021 -0400
 
     use Heikki Lindholm gpg signing key for digital signature verification of arm64 builds
-    
+
     from sourceforge.net created by Heikki Lindholm
-    
+
     https://forums.whonix.org/t/arm64-tor-browser-maintainer/11786
 
 commit 129ee59b2768b902b6ad6f8ff58fc738ab3b3c02
@@ -5311,7 +5323,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Jun 15 15:15:42 2021 -0400
 
     add Heikki Lindholm gpg signing key for arm64 builds
-    
+
     https://forums.whonix.org/t/arm64-tor-browser-maintainer/11786
 
 commit 19a07f8dd6617dd7c21801dde4924b8488e67168
@@ -5391,9 +5403,9 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Jun 15 14:29:04 2021 -0400
 
     arm64 platform support
-    
+
     https://forums.whonix.org/t/arm64-tor-browser/11806
-    
+
     https://forums.whonix.org/t/arm64-tor-browser-maintainer/11786
 
 commit 927527245bd94960f0f5656f691ea727fde35602
@@ -5407,7 +5419,7 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Jun 15 13:07:32 2021 -0400
 
     update signing key
-    
+
     https://forums.whonix.org/t/tor-browser-downloader-gpg-download-signature-could-not-be-verified/11794
 
 commit 750438e364d164fe7fe4e6071a0e9162458e4353
@@ -5421,9 +5433,9 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat Jun 5 09:45:30 2021 -0400
 
     fix DispVM mounting
-    
+
     Thanks to @froalker for the bug report!
-    
+
     https://github.com/Whonix/tb-updater/commit/ab0143d84c018563d553a124ca05adac9e79419a#r51740265
 
 commit f602e1fe130ef7141a7e342f318b59505f467672
@@ -5497,9 +5509,9 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Mon Apr 5 09:34:59 2021 -0400
 
     Depends: replace bsdtar with libarchive-tools
-    
+
     Thanks to @JeremyRand!
-    
+
     https://github.com/Whonix/whonixcheck/pull/15
 
 commit 353995f9a09e4fc51bdee0124f397f8ed81aedc1
@@ -5729,9 +5741,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Dec 23 07:05:59 2020 -0500
 
     update signing key
-    
+
     https://web.archive.org/web/20201223120236/https://support.torproject.org/tbb/how-to-verify-signature/
-    
+
     https://web.archive.org/web/20201223120229/https://openpgpkey.torproject.org/.well-known/openpgpkey/torproject.org/hu/kounek7zrdx745qydx6p59t9mqjpuhdf
 
 commit e4c872d83e58f6b3682cb195dba360218549ca7b
@@ -5794,9 +5806,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Dec 15 06:36:26 2020 -0500
 
     re-add support for downloading alpha versions
-    
+
     `tbb_download_alpha_version=true`
-    
+
     https://www.whonix.org/wiki/Tor_Browser#Alpha
 
 commit ef254974247cfef7bbd93e9bc54664f0500e3a88
@@ -5804,7 +5816,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Dec 15 06:30:06 2020 -0500
 
     add tip to console output on how to download alpha versions
-    
+
     https://www.whonix.org/wiki/Tor_Browser#Alpha
 
 commit 11cd8841a27d74394bb41c881719ece1b36ad179
@@ -5818,22 +5830,22 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Dec 15 06:12:05 2020 -0500
 
     * port to new version file location and format
-    
+
     since RecommendedTBBVersions file was abolished by upstream
-    
+
     https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/33521
-    
+
     https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/
     https://web.archive.org/web/20201210123314/https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/
-    
+
     * Show only 1 online detected version instead of multiple online detected versions.
-    
+
     This is to keep the implementation simple since the new version file by
     upstream shows only one version per release channel.
-    
+
     * code simplification
     * refactoring
-    
+
     https://forums.whonix.org/t/update-torbrowser-does-not-see-version-10-0-6/10711
 
 commit 373c5dd757952ad7cb4bdf829a4aadd612610a2b
@@ -5907,9 +5919,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Oct 29 16:16:39 2020 -0400
 
     move from pushd to popd
-    
+
     to fix sandbox-app-launcher issue
-    
+
     /usr/bin/update-torbrowser: line 1533: popd: /home/user: Permission denied
 
 commit 5339f6b1fff85189fdfb04455a2121dc47154a3d
@@ -5966,7 +5978,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Oct 26 07:07:47 2020 -0400
 
     update link
-    
+
     https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions
     ->
     https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/
@@ -6036,7 +6048,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Sep 15 05:48:04 2020 -0400
 
     update man page
-    
+
     https://forums.whonix.org/t/suggestion-update-torbrowser-shouldnt-downgrade-by-default/10279
 
 commit 8a3782679607006c0b5a201457a157c459748930
@@ -6436,7 +6448,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Dec 6 12:23:35 2019 -0500
 
     remove After=qubes-mount-dirs.service After=qubes-mount-home.service
-    
+
     since already using After=local-fs.target
 
 commit 51d31f6361f10ed51167cdb49e8ed65652405fa8
@@ -6570,7 +6582,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun Sep 15 06:27:51 2019 -0400
 
     fix permissions on manual run as root
-    
+
     https://forums.whonix.org/t/secbrowser-in-qubes-templatevm-issues/8116/7
 
 commit d00539d5d5976d4f985b8cf0530d852622c5cbfd
@@ -6602,11 +6614,11 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Sep 9 10:27:43 2019 +0000
 
     fix "update-torbrowser tb_onion config setting ignored."
-    
+
     run tb_config_folder_parser before tb_parse_cmd_options and before tb_preparation
-    
+
     https://forums.whonix.org/t/update-torbrowser-tb-onion-config-setting-ignored/8049
-    
+
     Thanks to anon3567998 for the bug report!
 
 commit e926b87e06fed76a892b30b01fcc378cc1850c84
@@ -6662,7 +6674,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Sep 6 11:58:41 2019 +0000
 
     fix, delete old folder
-    
+
     this was broken in https://github.com/Whonix/tb-updater/commit/f9440c7066bc08e6725c85c92b1db9f7ceba8740
 
 commit 4fec175d3a2503ceb6fed54aa0a01e74fc8e8c93
@@ -6864,9 +6876,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Jul 29 12:55:02 2019 +0000
 
     TODO AUDIT: see comment in debian/tb-updater.postinst
-    
+
     suppress lintian warning
-    
+
     --suppress-tags maintainer-script-should-not-use-recursive-chown-or-chmod
 
 commit 52fd47103317ab561786869713b858fa2513a647
@@ -6916,7 +6928,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Jul 19 10:25:16 2019 +0000
 
     Revert "usr/lib/tb-updater/dispvm: add SecBrowser support skeleton"
-    
+
     This reverts commit 6b18ce9579d98d95176b5f229dd812c35f9d5a58.
 
 commit 6b18ce9579d98d95176b5f229dd812c35f9d5a58
@@ -6954,7 +6966,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jul 18 12:13:44 2019 -0400
 
     move code to copy Tor Browser from /var/cache/tb-binary to user home
-    
+
     to tb-starter package /usr/bin/torbrowser
 
 commit 243f446d4d38226062de3431b4481e53aa47e9d3
@@ -6968,7 +6980,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jul 18 12:04:47 2019 -0400
 
     use bind mount rather then executing directly in /var/cache/tb-binary
-    
+
     https://github.com/QubesOS/qubes-issues/issues/4918#issuecomment-512860113
 
 commit 6a36f77dc741402dde0e081ac1c050ec6ad3b2ef
@@ -7006,7 +7018,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Jul 17 23:16:00 2019 +0000
 
     permissions fix for DispVM
-    
+
     to run directly from /var/cache/tb-binary
 
 commit 4d67ed7303c2497a56c60d7628d47e43c422eef6
@@ -7014,7 +7026,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Jul 17 23:08:29 2019 +0000
 
     Revert "permissions fix for DispVM"
-    
+
     This reverts commit 09e4de069a222ac7586c1c92061a270a73163dc8.
 
 commit 09e4de069a222ac7586c1c92061a270a73163dc8
@@ -7022,7 +7034,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Jul 17 23:07:03 2019 +0000
 
     permissions fix for DispVM
-    
+
     to run directly from /var/cache/tb-binary
 
 commit a337946488ef4978ece8402c110ca3b7f0f838e5
@@ -7031,7 +7043,7 @@ Date:   Wed Jul 17 22:49:42 2019 +0000
 
     no longer run tb-updater during postinst as user "user", run as root
     since existence is not guaranteed
-    
+
     permission hardening:
     no longer set /var/cache/tb-binary to user "user" unconditionally
 
@@ -7041,7 +7053,7 @@ Date:   Wed Jul 17 22:49:11 2019 +0000
 
     no longer run tb-updater during postinst as user "user", run as root
     since existence is not guaranteed
-    
+
     permission hardening:
     no longer set /var/cache/tb-binary to user "user" unconditionally
 
@@ -7056,7 +7068,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat Jul 13 15:35:38 2019 +0000
 
     Debian support
-    
+
     do not break if user 'user' does not exist
 
 commit ff33e22a76931100c41bdcf293a0db69a05aa837
@@ -7064,7 +7076,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat Jul 13 15:31:32 2019 +0000
 
     support download SecBrowser in Qubes TemplateVM
-    
+
     by creating either file:
     - /etc/secbrowser-qubes
     - /usr/local/etc/secbrowser-qubes
@@ -7094,7 +7106,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Jul 12 16:20:45 2019 +0000
 
     Merge pull request #10 from 0brand/master
-    
+
     Set security slider to safest.
 
 commit 91bf98e9e1baedf0c048a4ccbefb8a74c55f3c5c
@@ -7134,7 +7146,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat Jun 29 20:45:24 2019 +0000
 
     Merge pull request #9 from adrelanos/master
-    
+
     do not copy Tor Browser by default to user home at first boot
 
 commit 2104d8b4bfaaf597e0b38d8316b4f4ae1cf8e38f
@@ -7155,7 +7167,7 @@ Author: 0brand <0brand@mailbox.org>
 Date:   Fri Jun 28 23:24:42 2019 +0000
 
     Merge pull request #2 from Whonix/master
-    
+
     Sync with upstream
 
 commit 1bb2c1917ff68ca1b9293d26d61da6c64dc5bb77
@@ -7169,11 +7181,11 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 27 12:33:30 2019 +0000
 
     do not copy Tor Browser by default to user home at first boot
-    
+
     because that wastes space in VMs that will never use Tor Browser
-    
+
     do it at actual first start of Tor Browser instead
-    
+
     https://github.com/QubesOS/qubes-issues/issues/4918
 
 commit 55ef9c596b8d97319ef1bffce3035a4b4df79605
@@ -7181,11 +7193,11 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 27 12:33:30 2019 +0000
 
     do not copy Tor Browser by default to user home at first boot
-    
+
     because that wastes space in VMs that will never use Tor Browser
-    
+
     do it at actual first start of Tor Browser instead
-    
+
     /usr/lib/tb-updater/first-boot-home-population
 
 commit 072a2b8851bf01a254acc4a51e917153ee74fe97
@@ -7199,7 +7211,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 27 12:21:00 2019 +0000
 
     output
-    
+
     https://github.com/QubesOS/qubes-issues/issues/4918#issuecomment-505838582
 
 commit 2b6209fa4c1bac8e84d676a0aec36628bdf5f3c0
@@ -7207,9 +7219,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 27 12:18:08 2019 +0000
 
     reduce old versions being kept to 0
-    
+
     TB_KEEP_OLD_VERSIONS_COUNT="0"
-    
+
     https://github.com/QubesOS/qubes-issues/issues/4918
 
 commit 8163b06f7c9084888ea0d97c932761a1cf2963e7
@@ -7271,9 +7283,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Jun 21 09:10:49 2019 +0000
 
     Revert "SecBrowser: Set security slider to 'safest' by default."
-    
+
     Since doe not work.
-    
+
     This reverts commit 88bd9ac4e9c4bb1e441432923ade2a6d980b30ac.
 
 commit 88bd9ac4e9c4bb1e441432923ade2a6d980b30ac
@@ -7389,7 +7401,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 20 23:04:33 2019 -0400
 
     re-implement Tor Browser local version number detection
-    
+
     https://phabricator.whonix.org/T400
 
 commit 3bd352a4c3da2c0c196388d42a6ea462176da668
@@ -7512,7 +7524,7 @@ Author: 0brand <0brand@mailbox.org>
 Date:   Wed Jun 19 03:17:06 2019 +0000
 
     Merge pull request #1 from Whonix/master
-    
+
     Merge Whonix with 0brand
 
 commit 4f62bfc361603fcb80eff928bac07cd0686406fc
@@ -7568,7 +7580,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu May 23 06:45:26 2019 -0400
 
     save passwords by default for Non-Whonix ™ Tor Browser
-    
+
     https://www.whonix.org/wiki/Install_Tor_Browser_Outside_of_Whonix
 
 commit c047a66b4fe61ceee63e4ab72e097e8997e3fa78
@@ -7666,7 +7678,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Apr 5 09:45:56 2019 -0400
 
     user runuser instead since we no longer can use chown --recursive
-    
+
     to avoid file permission issues
 
 commit 25c2a7a3ef9a21b126c254b690e7e2916808ecda
@@ -7674,7 +7686,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Apr 5 09:32:25 2019 -0400
 
     fix lintian warnings
-    
+
     maintainer-script-should-not-use-recursive-chown-or-chmod
 
 commit 49d09ba41c7b80c0b40b43a56aca2edc6d208bc9
@@ -7706,9 +7718,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun Mar 31 10:55:14 2019 +0000
 
     support version format using &#34;
-    
+
     https://trac.torproject.org/projects/tor/ticket/29936#comment:5
-    
+
     https://forums.whonix.org/t/tor-browser-downloader-by-whonix-error-could-not-find-out-latest-tor-browser-version-excessive-version-string-length-323-characters/7063
 
 commit a4c80e4aec6a9d2378d070878f86b9ef2b985cfa
@@ -7716,7 +7728,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun Mar 31 10:44:21 2019 +0000
 
     follow redirects
-    
+
     https://forums.whonix.org/t/tor-browser-downloader-by-whonix-error-could-not-find-out-latest-tor-browser-version-excessive-version-string-length-323-characters/7063/8
 
 commit 5112520eb6b89b4124f859b6760e96b1c64d0676
@@ -7754,18 +7766,18 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Mar 1 14:32:42 2019 +0000
 
     add improved legal protections clauses
-    
+
     The license for software created by Whonix is the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version with additional terms applicable per GNU GPL version 3 section 7.
-    
+
     The additional terms are based on the Doom 3 license which is Debian refers to as `GPL-3+-with-id-software-additional-terms`, which is Debian DFSG [1] (The Debian Free Software Guidelines) approved and which is therefore suitable for Debian `main`. Whonix made applied minimal changes to it:
-    
+
     * Rewrite `The Doom 3 BFG Edition GPL Source Code` to the more common `this program` which is used throughout the GPL.
     * Added a "trump clause" [2], in other words, any conflicts or disputes between the additional terms and the GPLv3 shall be resolved in favor of the GPLv3 by adding `Notwithstanding any other provision of this License` (as mentioned in GPL FAQ [3]) at the beginning of the additional terms.
-    
+
     [1] https://www.debian.org/social_contract#guidelines
     [2] https://www.fsf.org/news/canonical-updated-licensing-terms
     [3] https://www.gnu.org/licenses/gpl-faq.html#v3Notwithstanding
-    
+
     For more considerations, see also:
     https://www.whonix.org/wiki/Dev/Licensing
 
@@ -7812,7 +7824,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Feb 28 05:21:53 2019 -0500
 
     Merge pull request #8 from 0brand/master
-    
+
     Tor Browser without Tor with normal browser settings.
 
 commit 8da835d900783d5a3472d6aa7ac2c3a3ee70a85d
@@ -7856,9 +7868,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Feb 1 08:41:46 2019 +0000
 
     fix, run anon-ws-dns-conf handling at appropriate time
-    
+
     after parsing all variables, config and command line input
-    
+
     thereby fix an issue breaking the build process
 
 commit 4898edaef8f3e4ad4871c3ea97f7c5f4396b03aa
@@ -7980,7 +7992,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Aug 27 21:17:20 2018 +0000
 
     fix
-    
+
     https://forums.whonix.org/t/bug-tor-browser-missing-in-dispvm-tor-browser-missing-in-whonix-ws-14-templatevm
 
 commit 8897c582ef3796f494a92c6608593a35e8b6c70e
@@ -8030,9 +8042,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 28 07:57:13 2018 +0800
 
     update tbb signing key with new sub keys
-    
+
     Thanks to @pgerber for the heads up!
-    
+
     closes https://github.com/Whonix/tb-updater/pull/6
 
 commit 0a2367f093752c09b4c8a77359b36324cfa25b8d
@@ -8046,7 +8058,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Jun 19 07:58:11 2018 +0000
 
     store last downloaded version during postinst to not needlessly redownload it
-    
+
     if hardcoded tbb version number has not been bumped
 
 commit 1a39b6b5a5e15544aa4e037c1ef98f163616ac9b
@@ -8080,7 +8092,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 14 08:58:01 2018 +0200
 
     Merge pull request #5 from eyedeekay/master
-    
+
     Show different strings when downloading with --i2p, add update-i2pbrowser script
 
 commit 44cf7d33cc7b3c101791eb7ad25cadf771e2e127
@@ -8088,7 +8100,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 14 06:45:16 2018 +0000
 
     refuse running inside Qubes DVM Template
-    
+
     https://forums.whonix.org/t/qubes-dispvm-technical-discussion/3232/60
 
 commit 779620caf8f177c6bb5c80c0082b567f209d0883
@@ -8189,7 +8201,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Jun 12 13:43:11 2018 +0200
 
     Merge pull request #4 from eyedeekay/master
-    
+
     Make sure variables are available to tb_preparation
 
 commit 9dbd79093ac5901016f39b54f7780f0a8dc84575
@@ -8235,7 +8247,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun Jun 10 21:10:04 2018 +0200
 
     Merge pull request #3 from eyedeekay/master
-    
+
     Add support for downloading to a separate path for an i2p-specific Tor Browser
 
 commit f88aba58039898a6514be247a3916f50b8cf4302
@@ -8273,7 +8285,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Mar 28 14:01:17 2018 +0200
 
     move done_file to home folder
-    
+
     https://github.com/Whonix/tb-updater/issues/2
 
 commit 436307b6ceeb71d1ed017037aff105fc1e6a1c04
@@ -8407,7 +8419,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Dec 15 18:13:59 2017 +0000
 
     first-boot-home-population: avoid running in Qubes DVM Template
-    
+
     https://phabricator.whonix.org/T726
 
 commit ba25d76e8b52fb370a30dfad72222e92f88abd99
@@ -8459,7 +8471,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Oct 20 15:35:08 2017 +0200
 
     tb-updater Qubes R4 qrexec based updates proxy compatibility fix
-    
+
     https://phabricator.whonix.org/T491
 
 commit b999e652e1897835699840b33cc366ebd0e2c866
@@ -8517,7 +8529,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Aug 15 15:06:27 2017 +0200
 
     Merge pull request #1 from marmarek/update-cleanup
-    
+
     Remove old versions of tor-browser
 
 commit 63639829065b52f20880f027f75aa298d0174f8f
@@ -8525,13 +8537,13 @@ Author: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
 Date:   Sat Aug 12 12:29:40 2017 +0200
 
     Remove old versions of tor-browser
-    
+
     Do not accumulate them indefinitely. By default keep last 3 versions -
     when user have made some customization, he/she will be able to migrate
     them to newer version. This limit is customizable with
     TB_KEEP_OLD_VERSIONS_COUNT - set it either to a number of previous
     versions to keep, or "all" to keep them all (previous behaviour).
-    
+
     Fixes https://phabricator.whonix.org/T671
 
 commit 29bdd1750ea9e9017a3f174697f37ee54253e5f6
@@ -8617,7 +8629,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Feb 10 15:47:52 2017 +0000
 
     remove faketime from Build-Depends:
-    
+
     since no longer used for reproducible builds
 
 commit ee73790f36c6f960ebee240e798ad6c1ebc4a48d
@@ -8661,14 +8673,14 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Feb 3 21:09:59 2017 +0100
 
     fix permission issue resulting from requirement to run tb-updater as root
-    
+
     from postinst since Debian stretch
-    
+
     refactor settings detection code to make it more understandable
-    
+
     This also prevents /home/user/.cache being owned by root, which causes various
     follow up issues such as a broken KDE kickoff (start menu).
-    
+
     https://forums.whonix.org/t/whonix-13-0-0-1-4-developers-only
 
 commit 8cd410bc93ef9d859dc22340804ff864a21d39e1
@@ -8682,7 +8694,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Jan 18 14:26:37 2017 +0000
 
     no longer run under user 'user' in postinst, run as root
-    
+
     because running as user 'user' is broken in Debian stretch
 
 commit e5e05f5aaeeb001e2563002a716d37f824e73108
@@ -8708,7 +8720,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Dec 19 05:13:09 2016 +0100
 
     fix, if is_chroot=true, set qubes_vm_type="TemplateVM"
-    
+
     https://github.com/QubesOS/qubes-issues/issues/2520#issuecomment-267877209
 
 commit 200cccd35d19a2a2eaf22ebc48295f3301754a41
@@ -8764,7 +8776,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Dec 14 18:48:46 2016 +0000
 
     ischroot --default-false
-    
+
     https://github.com/QubesOS/qubes-issues/issues/2497
 
 commit 570ec9cab89353eacbf457e819e416831949e5e3
@@ -8772,7 +8784,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Dec 14 18:07:00 2016 +0000
 
     prefer Qubes VM type detection without using qubes-db to fix upgrade issue
-    
+
     https://github.com/QubesOS/qubes-issues/issues/2497
 
 commit be4e762d0cc2a7bd9b2ad5efbc7031476c42f4a6
@@ -8780,7 +8792,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Dec 14 18:46:19 2016 +0100
 
     fix set tb_user_home="/var/cache/tb-binary" only when running in Qubes TemplateVM
-    
+
     same for tb_auto_set_user_home_msg
 
 commit 7fa1306cfce6a415cd2dc5bf3eb956d58ed0f2d4
@@ -8794,9 +8806,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Dec 9 22:14:40 2016 +0000
 
     always show all available release channels versions
-    
+
     (remove --alpha, --beta, --rc, --hardened, --sandboxed switches)
-    
+
     For reasoning, see:
     https://forums.whonix.org/t/tb-updater-experimental-alpha-beta-rc-hardened-options
 
@@ -8806,7 +8818,7 @@ Date:   Sun Dec 4 00:18:50 2016 +0000
 
     fix --alpha, --beta, --rc
     add --hardened, --sandboxed
-    
+
     https://forums.whonix.org/t/tb-updater-experimental-alpha-beta-rc-option
 
 commit 099d7604b174ca4acb217b8d044a92e6bd73df97
@@ -8838,7 +8850,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Oct 7 22:43:31 2016 +0000
 
     delete no longer used signing keys
-    
+
     - erinn.asc
     - sebastian.asc
 
@@ -8847,7 +8859,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat Oct 8 00:37:42 2016 +0200
 
     update signing key tbb-team.asc
-    
+
     (same fingerprint, new subkeys)
 
 commit 54f37aabea5150472b8714141755747a34bbb2a8
@@ -8861,7 +8873,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Aug 30 21:14:24 2016 +0000
 
     sudo --non-interactive
-    
+
     https://phabricator.whonix.org/T549
 
 commit ee670a1bd3edb25451e1a1ee352deb187b09b5a3
@@ -8881,9 +8893,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Aug 15 22:51:53 2016 +0000
 
     update to new shasums file location
-    
+
     sha256sums-unsigned-build.txt(.asc)
-    
+
     torproject.org's redirects are still functional, but long term better to
     update to new location.
 
@@ -8904,11 +8916,11 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Jun 29 15:53:16 2016 +0000
 
     implicitly set --ordinary when using --resume
-    
+
     XXX: Looks like curl-prgrs does not support '-C -'.
     Therefore also implying '--ordinary' progress bar when
     using --resume.
-    
+
     https://forums.whonix.org/t/tor-browser-download-issues-due-to-connection-interruption
 
 commit 803cf41d88f3101d87ee0aa36f96125aad652541
@@ -8928,9 +8940,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Jun 24 11:45:20 2016 +0000
 
     fix position of CURL_OPTS
-    
+
     it may not occur after --output
-    
+
     http://forums.whonix.org/t/tor-browser-download-issues-due-to-connection-interruption
 
 commit 4ea87fc2e8e6ea37a160e1a779c517d113217ffa
@@ -8938,9 +8950,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 23 12:20:25 2016 +0000
 
     use random socks auth for better stream isolation
-    
+
     on repeated run of tb-updater
-    
+
     https://phabricator.whonix.org/T127
 
 commit 93987f1c9e38f3678a6e5a7d3805af1000521364
@@ -8960,7 +8972,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Jun 23 11:00:35 2016 +0000
 
     add preparation for download resume support
-    
+
     https://forums.whonix.org/t/tor-browser-download-issues-due-to-connection-interruption
 
 commit 1d264b44c6452428c5cafa1d07f343c46fe58ec4
@@ -8968,9 +8980,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Jun 21 10:45:58 2016 +0000
 
     fix lintian warning for previous commit
-    
+
     tb-updater: file-in-unusual-dir var/cache/tb-updater/placeholder
-    
+
     https://forums.whonix.org/t/tb-updater-in-qubes
 
 commit de83d94a16b4554d08e70ad9e868f2aeadeabde9
@@ -8978,9 +8990,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Jun 21 12:38:27 2016 +0200
 
     fix tb-updater first boot population service done / lock file mechanism
-    
+
     Thanks to entr0py for the bug report!
-    
+
     https://forums.whonix.org/t/tb-updater-in-qubes
 
 commit 42891a0460c825b923e64187f8900471f4a91355
@@ -9012,11 +9024,11 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed May 4 21:47:44 2016 +0000
 
     advice users who upgraded to delete folders ~/.tb and ~/cache/tb
-    
+
     so the feature
     'up to date versions of Tor Browsers in newly created AppVMs inherited from updated TemplateVMs'
     works
-    
+
     https://phabricator.whonix.org/T417
 
 commit a7d5e57884ced88f9dc7a733638312e94d135870
@@ -9056,10 +9068,10 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Apr 29 23:14:36 2016 +0000
 
     On manual run in TempalteVM also store in /var/cache/tb-binary folder.
-    
+
     So up to date versions of Tor Browsers in newly created AppVMs inherited
     from updated TemplateVMs.
-    
+
     https://phabricator.whonix.org/T417
 
 commit 0f116907a9911161e4ae9837a2f1766c674313c4
@@ -9067,7 +9079,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat Apr 30 00:28:45 2016 +0200
 
     INFO: Hardcoded version $tbb_version chosen.
-    
+
     https://phabricator.whonix.org/T417
 
 commit 113504cdb78d225cd20bbdff28ec545395111e9b
@@ -9087,7 +9099,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Apr 26 05:19:51 2016 +0000
 
     Preventing race condition with user start through start menu.
-    
+
     https://phabricator.whonix.org/T417
 
 commit 9f630039340503a0d7814f1a5d7754a6167d4c47
@@ -9125,7 +9137,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Apr 20 01:34:53 2016 +0000
 
     Fix: `export` variable TB_USE_MSGCOLLECTOR so it can be read by CURL_PRGRS.
-    
+
     This is required, because inside chroot, msgdispatcher will not be running.
 
 commit f68c9c5953a15bf4360ecd1409b4a83a71f4f876
@@ -9187,9 +9199,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Apr 8 21:03:55 2016 +0000
 
     moved hardcoded version for postinst into its own file for easier maintenance
-    
+
     /usr/share/tb-updater/tbb_hardcoded_version
-    
+
     https://phabricator.whonix.org/T417
 
 commit 6b1f9b3e08e6d4d8e113161f5f42f74330b3c0da
@@ -9203,11 +9215,11 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Apr 5 15:28:59 2016 +0000
 
     skip Tor connectivity check if variable CURL_PROXY is empty
-    
+
     (which would mean Tor would not be used anyhow, hence no need to test it)
-    
+
     aids running update-torbrowser outside of Whonix
-    
+
     (so --no-tor-con-check does not have to be used)
 
 commit 26172f8d132cb059fa5fb7584fb99feabcbfb7fb
@@ -9215,7 +9227,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu Mar 31 20:56:40 2016 +0000
 
     upgrade from curl usage from --tlsv1 to --tlsv1.2
-    
+
     https://phabricator.whonix.org/T489
 
 commit d894a7b2ef5ba1d13b673bbb216b237be9b127b9
@@ -9241,7 +9253,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sat Mar 19 19:26:27 2016 +0100
 
     use Qubes updates proxy in Qubes TemplateVMs
-    
+
     https://phabricator.whonix.org/T477
 
 commit cb534ab67a31a681ce9e7b1e96dee7e3181c743e
@@ -9303,7 +9315,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Jan 8 02:40:03 2016 +0000
 
     systemd packaging
-    
+
     https://phabricator.whonix.org/T417
 
 commit b51d4580dc2f056e78ea7d83a65d0dd2f763c492
@@ -9311,7 +9323,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Fri Jan 8 02:22:32 2016 +0000
 
     work on up to date versions of Tor Browser in newly created AppVMs
-    
+
     https://phabricator.whonix.org/T417
 
 commit 87dd3d3b092053861c3f054fe5d03a9ece9f79cd
@@ -9326,7 +9338,7 @@ Date:   Wed Jan 6 22:37:39 2016 +0000
 
     avoid requirement for sudoers exception thanks to suggestion by @marmarek ;
     work on up to date versions of Tor Browser in newly created AppVMs
-    
+
     https://phabricator.whonix.org/T417
 
 commit b2b79121d7149d09ce7d5d20dec766e231db4223
@@ -9334,7 +9346,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Wed Jan 6 16:27:10 2016 +0000
 
     work on up to date versions of Tor Browser in newly created AppVMs
-    
+
     https://phabricator.whonix.org/T417
 
 commit b74b62f5a70d335629d4913b49ea220369f32ddb
@@ -9348,7 +9360,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Jan 5 23:19:46 2016 +0000
 
     work on up to date versions of Tor Browser in newly created AppVMs
-    
+
     https://phabricator.whonix.org/T417
 
 commit 8b164c8326e609e339a32020770ccecd599f9384
@@ -9356,7 +9368,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Jan 5 15:22:02 2016 +0000
 
     added --postinst switch
-    
+
     https://phabricator.whonix.org/T461
 
 commit ece21b70f9d8c7ff100befaae76431bd045f96ce
@@ -9364,7 +9376,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Jan 5 15:20:04 2016 +0000
 
     removed deprecated option --clearnet
-    
+
     (can be configured through environment variables)
 
 commit 9ec1b0d130154f8cc1abee865dc72c872c2d4fb1
@@ -9372,7 +9384,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Jan 5 15:18:04 2016 +0000
 
     added postinst script so chroot-script anon-shared-build-inst-tb can be removed
-    
+
     https://phabricator.whonix.org/T461
 
 commit 3e5ba19798382dec216463400e224ad4cac79756
@@ -9386,7 +9398,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Jan 5 15:09:12 2016 +0000
 
     refactoring
-    
+
     https://phabricator.whonix.org/T461
 
 commit e2416098b64083e7079d40486a6769f309f82523
@@ -9400,7 +9412,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Tue Dec 15 23:24:33 2015 +0000
 
     allow storing downloaded archives in arbitrary folders
-    
+
     https://phabricator.whonix.org/T417
 
 commit c2fae47447c81ed441b1402eaa024b59c7dc8a9c
@@ -9427,9 +9439,9 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Mon Nov 30 19:38:23 2015 +0000
 
     Only source configuration files that end with the '.conf' extension.
-    
+
     Thanks to @nrgaway for the suggestion!
-    
+
     https://phabricator.whonix.org/T286
 
 commit ab3d60d58ab1e2ae87b1ecbe68d2b2e9a4147177
@@ -9437,7 +9449,7 @@ Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun Nov 22 22:12:12 2015 +0000
 
     no longer depend on /var/run/qubes-service/whonix-template
-    
+
     https://phabricator.whonix.org/T432
 
 commit 85769bee93ce9f41955feb8c86ef15f68a72d2ba
