@@ -3,11 +3,21 @@
 ## Copyright (C) 2012 - 2025 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
 ## See the file COPYING for copying conditions.
 
+## SC1091: shellcheck cannot follow runtime-dynamic 'source' targets in
+##   this file (helper-scripts, boot-session-detection variants,
+##   /usr/share/tb-updater/tbb_hardcoded_version*,
+##   /usr/libexec/tb-updater/version-validator, per-browser config
+##   snippets). The sourced scripts are covered by their own lint pass.
+## SC2154: the same sourced scripts set tbb_hardcoded_version,
+##   tbb_locally_installed_version_stripped, output_opts and friends.
+##   shellcheck flags them as unset from its static view.
+# shellcheck disable=SC1091,SC2154
+
 # shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/check_runtime.bsh
 source /usr/libexec/helper-scripts/check_runtime.bsh
 
 : "${tpo_downloader_debug:=""}"
-if [ ! "$tpo_downloader_debug" = "" ] && [[ "$tpo_downloader_debug" =~ ^[0-9]+$ ]]; then
+if [ ! "${tpo_downloader_debug:-}" = "" ] && [[ "${tpo_downloader_debug:-}" =~ ^[0-9]+$ ]]; then
    if [ "$tpo_downloader_debug" -ge "1" ]; then
       set -x
    fi
@@ -23,14 +33,31 @@ else
   tb_updater_was_sourced="true"
 fi
 
-if [ "$tb_updater_was_sourced" = "false" ]; then
+if [ "${tb_updater_was_sourced}" = "false" ]; then
   set -o errexit
+  set -o nounset
   # shellcheck disable=SC2317
   set -o pipefail
   set -o errtrace
 fi
 
 who_ami="$(whoami)"
+
+## Variable naming convention used throughout this script:
+##   *_raw        -- untrusted input from files, env, network, or tool
+##                   output. Never interpolate directly into MSG bodies or
+##                   into paths/commands.
+##   *_stripped   -- has been passed through sanitize-string from
+##                   helper-scripts (strip markup, cap length); safe for
+##                   MSG HTML interpolation. Use when a corresponding _raw
+##                   counterpart also exists.
+##   *_unixtime   -- numeric epoch seconds. Validated via read_integer_file
+##                   or is_whole_number at the read boundary before use in
+##                   arithmetic comparisons.
+##   *_pretty     -- human-formatted from already-validated input.
+##   (unsuffixed) -- locally-derived, string-literal, or a single-form
+##                   sanitised/validated value with no separate _raw
+##                   counterpart worth distinguishing.
 
 # shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/strings.bsh
 source /usr/libexec/helper-scripts/strings.bsh
@@ -54,7 +81,7 @@ source /usr/libexec/helper-scripts/log_run_die.sh
 
 log info "Start."
 
-[[ -v SCRIPTNAME ]] || SCRIPTNAME="$(basename "$BASH_SOURCE")"
+[[ -v SCRIPTNAME ]] || SCRIPTNAME="$(basename -- "${BASH_SOURCE[0]}")"
 [[ -v ICON ]] || ICON="/usr/share/icons/icon-pack-dist/tbupdate.ico"
 
 ## Developer comment on this script:
@@ -110,20 +137,20 @@ tb_exit_function() {
    local exit_code="$1"
    trap "" ERR
 
-   if [ "$exit_code" = "0" ]; then
+   if [ "${exit_code:-}" = "0" ]; then
       log notice "END: Success."
       exit 0
    fi
 
-   if [ "$anon_shared_inst_tb" = "open" ]; then
-      if [ "$tb_postinst" = "true" ]; then
+   if [ "${anon_shared_inst_tb:-}" = "open" ]; then
+      if [ "${tb_postinst:-}" = "true" ]; then
          log notice "END: Failing open.
 More info:
 $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Update:_Technical_Details"
       fi
       exit 0
    else
-      if [ "$tb_postinst" = "true" ]; then
+      if [ "${tb_postinst:-}" = "true" ]; then
          log error "END: Failing closed.
 More info:
 $tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Update:_Technical_Details"
@@ -156,8 +183,8 @@ tb_error_handler() {
 <br></br>## <code>$SCRIPTNAME</code> --debug
 <br></br>###########################################################</p>"
 
-   [ -n "$tb_user_home" ] || tb_user_home=~
-   [ -n "$tb_install_folder" ] || tb_install_folder="tb"
+   [ -n "${tb_user_home:-}" ] || tb_user_home=~
+   [ -n "${tb_install_folder:-}" ] || tb_install_folder="tb"
 
    if test -w "$tb_user_home/.cache/$tb_install_folder" ; then
       mkdir --parents -- "$tb_user_home/.cache/$tb_install_folder"
@@ -173,15 +200,15 @@ tb_error_handler() {
       }
    fi
 
-   if [ "$progressbaridx" = "" ]; then
+   if [ "${progressbaridx:-}" = "" ]; then
       true
    else
-      output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      output_gui "${output_opts[@]}" --progressbaridx "$progressbaridx" --progressx "100" || true
       progressbaridx=""
    fi
 
-   output_gui ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
-   output_gui ${output_opts[@]} --messagecli --titlecli "$TITLE" --typecli "error" --message "$MSG" --done
+   output_gui "${output_opts[@]}" --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
+   output_gui "${output_opts[@]}" --messagecli --titlecli "$TITLE" --typecli "error" --message "$MSG" --done
    tb_exit_function 1
 }
 
@@ -256,9 +283,9 @@ qubes_template_check() {
 }
 
 sysmaint_check() {
-   if ! [ "$boot_session" = "sysmaint_session" ]; then
+   if ! [ "${boot_session:-}" = "sysmaint_session" ]; then
       true "INFO: sysmaint_session: no"
-      if [ "$who_ami" != "sysmaint" ]; then
+      if ! [ "${who_ami}" = "sysmaint" ]; then
          true "INFO: sysmaint_session: no and not running as sysmaint, ok."
          return 0
       fi
@@ -269,13 +296,13 @@ sysmaint_check() {
    fi
 
    true "INFO: sysmaint_session: yes"
-   if [ "$who_ami" = "sysmaint" ]; then
+   if [ "${who_ami}" = "sysmaint" ]; then
       true "INFO: sysmaint_session: yes and running as account 'sysmaint', ok."
       return 0
    fi
    ## We do need to check for account tb-updater here because we're
    ## whitelisting accounts in this scenario.
-   if [ "$who_ami" = "tb-updater" ]; then
+   if [ "${who_ami}" = "tb-updater" ]; then
       true "INFO: sysmaint_session: yes and running as account 'tb-updater', ok."
       return 0
    fi
@@ -317,7 +344,7 @@ tb_ex_funct() {
    local MSG
    MSG="$0: INFO: ${FUNCNAME[0]}: Signal '$SIGNAL_TYPE' received. Cleaning up..."
 
-   if [ "$last_pid_list" = "" ]; then
+   if [ "${last_pid_list:-}" = "" ]; then
       true
    else
       local childpids_list childpid_item
@@ -329,21 +356,21 @@ tb_ex_funct() {
       done
    fi
 
-   if [ "$progressbaridx" = "" ]; then
+   if [ "${progressbaridx:-}" = "" ]; then
       true
    else
-      output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      output_gui "${output_opts[@]}" --progressbaridx "$progressbaridx" --progressx "100" || true
       progressbaridx=""
    fi
 
-   output_gui ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+   output_gui "${output_opts[@]}" --messagecli --typecli "info" --message "$MSG" --done
 
    #MSG="Aborted."
-   #output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+   #output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
    #log error "$MSG"
 
    MSG="$0: INFO: ${FUNCNAME[0]}: Signal '$SIGNAL_TYPE' received. Exiting."
-   output_gui ${output_opts[@]} --messagecli --typecli "info" --message "$MSG" --done
+   output_gui "${output_opts[@]}" --messagecli --typecli "info" --message "$MSG" --done
 }
 
 tb_signal_sigterm() {
@@ -374,7 +401,7 @@ tb_parse_cmd_options() {
    ## Thanks to:
    ## https://mywiki.wooledge.org/BashFAQ/035
 
-   while :
+   while [ $# -gt 0 ]
    do
        case $1 in
            --help|-h)
@@ -439,13 +466,56 @@ tb_parse_cmd_options() {
                shift
                ;;
            --onion)
-               [ -n "$tb_onion" ] || tb_onion="true"
+               [ -n "${tb_onion:-}" ] || tb_onion="true"
                shift
                ;;
            --reset)
-               [ -n "$tb_hard_reset" ] || tb_hard_reset="true"
-               [ -n "$TB_NO_CLEANUP" ] || TB_NO_CLEANUP="true"
+               [ -n "${tb_hard_reset:-}" ] || tb_hard_reset="true"
+               [ -n "${TB_NO_CLEANUP:-}" ] || TB_NO_CLEANUP="true"
                shift
+               ;;
+           --danger-insecure-self-test)
+               ## Deliberately obscure flag name. Enables a self-test mode
+               ## that replaces the real signing key and download URLs with
+               ## file:// fixtures in the supplied directory. In this mode
+               ## the real $tb_title installation will be overwritten just
+               ## as in a normal run; do NOT use on production systems.
+               if [ -z "${2:-}" ] || [ ! -d "$2" ]; then
+                  log error "--danger-insecure-self-test requires a fixture directory that exists."
+                  tb_exit_function 4
+               fi
+               log warn "=============================================================================="
+               log warn " DANGER: --danger-insecure-self-test enabled."
+               log warn "   Fixtures under '$2' replace the signing key, download URLs and"
+               log warn "   recommended-versions feed. The real '$SCRIPTNAME' installation on this"
+               log warn "   system WILL be overwritten with fixture content. Do NOT run on a"
+               log warn "   production install."
+               log warn "=============================================================================="
+               export signing_key="$2/test-key.asc"
+               export TBB_REMOTE_FOLDER="file://$2"
+               export tbb_versions_base_url="file://$2"
+               ## tb_connectivity_checks_curl curls $tbb_download_base_url
+               ## and fails on zero-byte output, so point it at an actual
+               ## file rather than the fixture directory.
+               export tbb_download_base_url="file://$2/recommended-versions.json"
+               export TBB_VERSIONS_FILE_LINK="file://$2/recommended-versions.json"
+               ## The default CURL_FORCE_SSL pins '--proto =https'; widen
+               ## it to allow the file:// fixtures.
+               export CURL_FORCE_SSL="--proto =https,file"
+               export TB_NO_TOR_CON_CHECK="1"
+               export TB_SKIP_CONNECTIVITY_CHECK="1"
+               ## 'sq cert lint' only exists from sq 1.x and 'sq verify'
+               ## has moved argument names between versions. The self-test
+               ## runs against whatever sq the host has; pointing both at
+               ## 'echo' skips those two calls without losing the real
+               ## sqop verify in the middle -- which is what actually
+               ## decides verification_success.
+               export sq_cert_lint_binary="echo"
+               export sq_verify_binary="echo"
+               ## curl-prgrs assumes an HTTP-like transport; use plain
+               ## curl for file:// fixtures.
+               ordinary="true"
+               shift 2
                ;;
            --)
                shift
@@ -465,15 +535,15 @@ tb_parse_cmd_options() {
 
    ## If there are input files (for example) that follow the options, they
    ## will remain in the "$@" positional parameters.
-   true "$BASH_SOURCE \$*: $*"
+   true "${BASH_SOURCE[0]} \$*: $*"
 }
 
 tb_stdin() {
-   if [ ! "$TB_INPUT" = "" ]; then
+   if [ ! "${TB_INPUT:-}" = "" ]; then
       true "INFO: TB_INPUT is already set to '$TB_INPUT', skipping auto detection, ok."
       return 0
    fi
-   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+   if [ "${TB_FORCE_INSTALL:-}" = "1" ]; then
       log notice "TB_FORCE_INSTALL is set to '1', therefore setting TB_INPUT to 'none'."
       TB_INPUT="none"
       export TB_USE_MSGCOLLECTOR="false"
@@ -493,7 +563,7 @@ tb_stdin() {
 }
 
 tb_qubes_dvm_template() {
-   if printf '%s\n' "$qubes_vm_name" | grep --invert-match -- "-dvm" >/dev/null 2>/dev/null ; then
+   if printf '%s\n' "${qubes_vm_name:-}" | grep --invert-match -- "-dvm" >/dev/null 2>/dev/null ; then
       log notice "Not running inside Qubes Disposable Template, ok."
       return 0
    fi
@@ -503,7 +573,7 @@ tb_qubes_dvm_template() {
 <br></br>
 More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Running_Tor_Browser_in_Qubes_Template_or_Disposable_Template</a></p>"
 
-   output_gui ${output_opts[@]} --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
+   output_gui "${output_opts[@]}" --messagex --titlex "$TITLE" --typex "error" --message "$MSG" --done
 
    output_cli error "$MSG"
 
@@ -526,7 +596,7 @@ output_gui() {
    ## Variable initialization required because 'curl-prgrs' uses "set -o nounset".
    [[ -v TB_USE_MSGCOLLECTOR ]] || TB_USE_MSGCOLLECTOR=""
    [[ -v outputfunc_verbose ]] || outputfunc_verbose=""
-   if [ "$TB_USE_MSGCOLLECTOR" = "false" ]; then
+   if [ "${TB_USE_MSGCOLLECTOR:-}" = "false" ]; then
       while true; do
          case $1 in
             --messagex)
@@ -546,11 +616,11 @@ output_gui() {
       done
       ## MSG will be unset for '--progressx'.
       [[ -v MSG ]] || MSG=""
-      if [ ! "$MSG" = "" ]; then
+      if [ ! "${MSG:-}" = "" ]; then
          MSG="$(sanitize-string -- nolimit "$MSG")"
          log notice "$MSG"
       fi
-   elif [ "$outputfunc_verbose" = "true" ]; then
+   elif [ "${outputfunc_verbose:-}" = "true" ]; then
       printf '%s\n' "RUNNING: bash -x $output_tool --identifier $IDENTIFIER ${1+$@}"
       bash -x $output_tool --identifier "$IDENTIFIER" "$@"
    else
@@ -560,8 +630,18 @@ output_gui() {
 }
 
 tb_config_folder_parser() {
+   [ -n "${tb_settings_folder:-}" ] || tb_settings_folder="torbrowser.d"
    true "tb_settings_folder: $tb_settings_folder"
-   [ -n "$tb_settings_folder" ] || tb_settings_folder="torbrowser.d"
+   ## $tb_settings_folder is an environment variable used to build paths
+   ## that get 'source'd, so an unvalidated value could traverse out of
+   ## /etc or /usr/local/etc into arbitrary .conf files. Restrict to the
+   ## shape the wrappers actually use: lowercase letters, digits, dot,
+   ## hyphen, underscore. Anything else falls back to the Tor Browser
+   ## default.
+   if ! [[ "${tb_settings_folder:-}" =~ ^[a-z0-9._-]+$ ]]; then
+      log warn "Ignoring unsafe tb_settings_folder='$tb_settings_folder', falling back to 'torbrowser.d'."
+      tb_settings_folder="torbrowser.d"
+   fi
    shopt -s nullglob
    local i
    for i in \
@@ -575,23 +655,23 @@ tb_config_folder_parser() {
 
 tb_settings_chroot_common() {
    ## Do not run in chroot if tb_install_in_chroot=false.
-   if [ ! "$tb_install_in_chroot" = "false" ]; then
-      [ -n "$tb_updater_run" ] || tb_updater_run=true
+   if [ ! "${tb_install_in_chroot:-}" = "false" ]; then
+      [ -n "${tb_updater_run:-}" ] || tb_updater_run=true
    fi
    ## Fail open, if there was an error.
-   [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=open
+   [ -n "${anon_shared_inst_tb:-}" ] || anon_shared_inst_tb=open
    ## Skip Tor connectivity check when running inside chroot.
-   [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
+   [ -n "${TB_NO_TOR_CON_CHECK:-}" ] || TB_NO_TOR_CON_CHECK="1"
    ## Hack to disable using proxy settings when running inside chroot.
    ## We are using --fail anyhow. No problem to duplicate it.
-   [ -n "$CURL_PROXY" ] || CURL_PROXY=( "--fail" )
+   [ -n "${CURL_PROXY:-}" ] || CURL_PROXY=( "--fail" )
 
    ## Careful as it would leak information to logs:
    ## Connection #0 to host 10.137.0.82 left intact
-   #[ -n "$CURL_OPTS" ] || CURL_OPTS="--verbose"
+   #[ -n "${CURL_OPTS:-}" ] || CURL_OPTS="--verbose"
 
    ## Debugging.
-   [ -n "$pv_wrapper_debug" ] || pv_wrapper_debug=true
+   [ -n "${pv_wrapper_debug:-}" ] || pv_wrapper_debug=true
 }
 
 tb_settings_postinst_common() {
@@ -600,29 +680,29 @@ tb_settings_postinst_common() {
    ## upstream's version info.
    ## Downgrade / freeze attacks should not be possible, because file names
    ## that include the version number will be verified using gpg.
-   [ -n "$tb_confirm_installation_skip" ] || tb_confirm_installation_skip=true
+   [ -n "${tb_confirm_installation_skip:-}" ] || tb_confirm_installation_skip=true
 
-   [ -n "$NOKILLTB" ] || NOKILLTB="1"
-   [ -n "$noaskstart" ] || noaskstart="true"
-   [ -n "$TB_INPUT" ] || TB_INPUT="none"
+   [ -n "${NOKILLTB:-}" ] || NOKILLTB="1"
+   [ -n "${noaskstart:-}" ] || noaskstart="true"
+   [ -n "${TB_INPUT:-}" ] || TB_INPUT="none"
    export TB_USE_MSGCOLLECTOR="false"
 
    ## Fail open, if there was an error.
-   [ -n "$anon_shared_inst_tb" ] || anon_shared_inst_tb=open
+   [ -n "${anon_shared_inst_tb:-}" ] || anon_shared_inst_tb=open
 
    ## Using curl instead of curl-prgrs to debug server issue.
    ## --ordinary
-   #[ -n "$ordinary" ] || ordinary="true"
+   #[ -n "${ordinary:-}" ] || ordinary="true"
 
    ## Careful as it would like information to logs:
    ## Connection #0 to host 10.137.0.82 left intact
-   #[ -n "$CURL_OPTS" ] || CURL_OPTS="--verbose"
+   #[ -n "${CURL_OPTS:-}" ] || CURL_OPTS="--verbose"
 }
 
 tb_settings_qubes_common_templatevm() {
    ## Skip Tor connectivity check when running inside Qubes Template,
    ## because since Qubes R4 Templates are non-networked by default.
-   [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
+   [ -n "${TB_NO_TOR_CON_CHECK:-}" ] || TB_NO_TOR_CON_CHECK="1"
 }
 
 tb_settings_not_templatevm() {
@@ -632,39 +712,39 @@ tb_settings_not_templatevm() {
 
 tb_settings_qubes_postinst_templatevm() {
    ## Do not run during Qubes Template postinst if tb_install_follow=false.
-   if [ ! "$tb_install_follow" = "false" ]; then
-      [ -n "$tb_updater_run" ] || tb_updater_run=true
+   if [ ! "${tb_install_follow:-}" = "false" ]; then
+      [ -n "${tb_updater_run:-}" ] || tb_updater_run=true
    fi
 }
 
 tb_settings_qubes_manual_run_templatevm() {
-   [ -n "$tb_updater_run" ] || tb_updater_run=true
+   [ -n "${tb_updater_run:-}" ] || tb_updater_run=true
 }
 
 tb_settings_manual_run_common() {
-   [ -n "$tb_updater_run" ] || tb_updater_run=true
+   [ -n "${tb_updater_run:-}" ] || tb_updater_run=true
 }
 
 tb_preparation() {
-   [ -n "$tb_wiki" ] || tb_wiki="Tor_Browser"
-   [ -n "$tb_title" ] || tb_title="Tor Browser"
-   [ -n "$IDENTIFIER" ] || IDENTIFIER="torbrowser-downloader"
-   [ -n "$tb_install_folder" ] || tb_install_folder="tb"
-   [ -n "$tb_install_folder_dot" ] || tb_install_folder_dot=".tb"
-   [ -n "$tb_browser_name" ] || tb_browser_name="tor-browser"
-   [ -n "$tb_bin" ] || tb_bin="torbrowser"
-   [ -n "$tb_downloader_developers" ] || tb_downloader_developers="Whonix"
-   [ -n "$tb_documentation_base_url_clearnet" ] || tb_documentation_base_url_clearnet="https://www.whonix.org"
-   [ -n "$tb_global_binary_dir" ] || tb_global_binary_dir='/var/cache/tb-binary'
+   [ -n "${tb_wiki:-}" ] || tb_wiki="Tor_Browser"
+   [ -n "${tb_title:-}" ] || tb_title="Tor Browser"
+   [ -n "${IDENTIFIER:-}" ] || IDENTIFIER="torbrowser-downloader"
+   [ -n "${tb_install_folder:-}" ] || tb_install_folder="tb"
+   [ -n "${tb_install_folder_dot:-}" ] || tb_install_folder_dot=".tb"
+   [ -n "${tb_browser_name:-}" ] || tb_browser_name="tor-browser"
+   [ -n "${tb_bin:-}" ] || tb_bin="torbrowser"
+   [ -n "${tb_downloader_developers:-}" ] || tb_downloader_developers="Whonix"
+   [ -n "${tb_documentation_base_url_clearnet:-}" ] || tb_documentation_base_url_clearnet="https://www.whonix.org"
+   [ -n "${tb_global_binary_dir:-}" ] || tb_global_binary_dir='/var/cache/tb-binary'
 
-   if [ "$tb_postinst" = "true" ]; then
-      [ -n "$tb_manual_run" ] || tb_manual_run=false
+   if [ "${tb_postinst:-}" = "true" ]; then
+      [ -n "${tb_manual_run:-}" ] || tb_manual_run=false
    else
-      [ -n "$tb_manual_run" ] || tb_manual_run=true
+      [ -n "${tb_manual_run:-}" ] || tb_manual_run=true
    fi
 
    if has qubesdb-read; then
-      [ -n "$is_qubes" ] || is_qubes=true
+      [ -n "${is_qubes:-}" ] || is_qubes=true
 
       ## qubesdb-read fails
       ## - inside chroot,
@@ -672,12 +752,12 @@ tb_preparation() {
       ##   - https://github.com/QubesOS/qubes-issues/issues/2497
       ##   - https://github.com/QubesOS/qubes-issues/issues/2509
       ## therefore overwriting with '|| true'.
-      [ -n "$qubes_vm_name" ] || qubes_vm_name="$(qubesdb-read /name)" || true
+      [ -n "${qubes_vm_name:-}" ] || qubes_vm_name="$(qubesdb-read /name)" || true
    else
-      [ -n "$is_qubes" ] || is_qubes=false
+      [ -n "${is_qubes:-}" ] || is_qubes=false
    fi
 
-   if [ "$is_chroot" = "true" ]; then
+   if [ "${is_chroot:-}" = "true" ]; then
       log notice "chroot: is_chroot=true"
       tb_settings_chroot_common
    else
@@ -685,54 +765,54 @@ tb_preparation() {
    fi
 
    if test -f /run/qubes/this-is-templatevm ; then
-      [ -n "$running_inside_qubes_template_vm" ] || running_inside_qubes_template_vm=true
+      [ -n "${running_inside_qubes_template_vm:-}" ] || running_inside_qubes_template_vm=true
    else
-      [ -n "$running_inside_qubes_template_vm" ] || running_inside_qubes_template_vm=false
+      [ -n "${running_inside_qubes_template_vm:-}" ] || running_inside_qubes_template_vm=false
    fi
 
-   if [ "$running_inside_qubes_template_vm" = "true" ] ; then
+   if [ "${running_inside_qubes_template_vm:-}" = "true" ] ; then
       tb_settings_qubes_common_templatevm
    else
       tb_settings_not_templatevm
    fi
 
-   if [ "$tb_postinst" = "true" ]; then
+   if [ "${tb_postinst:-}" = "true" ]; then
       tb_settings_postinst_common
-      if [ "$running_inside_qubes_template_vm" = "true" ] ; then
+      if [ "${running_inside_qubes_template_vm:-}" = "true" ] ; then
          tb_settings_qubes_postinst_templatevm
       fi
    fi
 
    true "tb_manual_run: $tb_manual_run"
-   if [ "$tb_manual_run" = "true" ]; then
+   if [ "${tb_manual_run:-}" = "true" ]; then
       tb_settings_manual_run_common
-      if [ "$running_inside_qubes_template_vm" = "true" ]; then
+      if [ "${running_inside_qubes_template_vm:-}" = "true" ]; then
          tb_settings_qubes_manual_run_templatevm
       fi
    fi
 
-   if [ "$tb_user_home" = "" ]; then
+   if [ "${tb_user_home:-}" = "" ]; then
       tb_user_home=~
-      if [ "${tb_user_home}" = '/root' ] || [ "${tb_running_as_root}" = 'true' ]; then
+      if [ "${tb_user_home:-}" = '/root' ] || [ "${tb_running_as_root}" = 'true' ]; then
          tb_user_home="$tb_global_binary_dir"
          tb_auto_set_user_home_msg="Automatically setting download folder to '$tb_user_home', because running as root."
       fi
    fi
 
-   [ -n "$tb_home_folder" ] || tb_home_folder="$tb_user_home/$tb_install_folder_dot"
-   [ -n "$tb_browser_folder" ] || tb_browser_folder="$tb_home_folder/$tb_browser_name"
-   [ -n "$tb_cache_folder" ] || tb_cache_folder="$tb_user_home/.cache/$tb_install_folder"
-   [ -n "$tb_temp_folder" ] || tb_temp_folder="$tb_cache_folder/temp"
-   [ -n "$tb_downloaded_files_folder" ] || tb_downloaded_files_folder="$tb_cache_folder/files"
-   [ -n "$tb_extract_temp_folder" ] || tb_extract_temp_folder="$tb_cache_folder/$tb_browser_name"
+   [ -n "${tb_home_folder:-}" ] || tb_home_folder="$tb_user_home/$tb_install_folder_dot"
+   [ -n "${tb_browser_folder:-}" ] || tb_browser_folder="$tb_home_folder/$tb_browser_name"
+   [ -n "${tb_cache_folder:-}" ] || tb_cache_folder="$tb_user_home/.cache/$tb_install_folder"
+   [ -n "${tb_temp_folder:-}" ] || tb_temp_folder="$tb_cache_folder/temp"
+   [ -n "${tb_downloaded_files_folder:-}" ] || tb_downloaded_files_folder="$tb_cache_folder/files"
+   [ -n "${tb_extract_temp_folder:-}" ] || tb_extract_temp_folder="$tb_cache_folder/$tb_browser_name"
 
-   [ -n "$tb_local_version_filename" ] || tb_local_version_filename="tbb_version.json"
-   [ -n "$tb_local_version_file" ] || tb_local_version_file="$tb_browser_folder/Browser/$tb_local_version_filename"
-   [ -n "$tbb_download_alpha_version" ] || tbb_download_alpha_version="false"
+   [ -n "${tb_local_version_filename:-}" ] || tb_local_version_filename="tbb_version.json"
+   [ -n "${tb_local_version_file:-}" ] || tb_local_version_file="$tb_browser_folder/Browser/$tb_local_version_filename"
+   [ -n "${tbb_download_alpha_version:-}" ] || tbb_download_alpha_version="false"
 
-   [ -n "$TB_KEEP_OLD_VERSIONS_COUNT" ] || TB_KEEP_OLD_VERSIONS_COUNT="0"
+   [ -n "${TB_KEEP_OLD_VERSIONS_COUNT:-}" ] || TB_KEEP_OLD_VERSIONS_COUNT="0"
 
-   if [ ! "$tb_updater_run" = "true" ]; then
+   if [ ! "${tb_updater_run:-}" = "true" ]; then
       true "tb_updater_run is set to: '$tb_updater_run'"
       log notice "Using '--postinst' option but outside of Qubes Template, skipping, ok."
       tb_exit_function 0
@@ -744,7 +824,7 @@ tb_preparation() {
    ## (There are no 486 downloads for Tor Browser.)
    ##ARCH="x86_64"
    ##ARCH="i686"
-   if [ "$ARCH" = "" ]; then
+   if [ "${ARCH:-}" = "" ]; then
       true "INFO: Auto detecting ARCH..."
       ARCH="$(uname --machine)"
       log notice "ARCH '$ARCH' detected."
@@ -753,23 +833,23 @@ tb_preparation() {
       log notice "ARCH is set to '$ARCH'."
    fi
 
-   if [ "$ARCH_DOWNLOAD" = "" ]; then
+   if [ "${ARCH_DOWNLOAD:-}" = "" ]; then
       true "INFO: Auto detecting ARCH_DOWNLOAD..."
-      if [ "$ARCH" = "i386" ]; then
+      if [ "${ARCH:-}" = "i386" ]; then
          ARCH="i686"
       fi
       if printf '%s\n' "$ARCH" | grep -- "aarch64" >/dev/null 2>/dev/null ; then
          ARCH="arm64"
       fi
 
-      if [ "$ARCH" = "x86_64" ]; then
-         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-x86_64"
-      elif [ "$ARCH" = "i686" ]; then
-         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-i686"
-      elif [ "$ARCH" = "arm64" ]; then
-         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-arm64"
+      if [ "${ARCH:-}" = "x86_64" ]; then
+         [ -n "${ARCH_DOWNLOAD:-}" ] || ARCH_DOWNLOAD="linux-x86_64"
+      elif [ "${ARCH:-}" = "i686" ]; then
+         [ -n "${ARCH_DOWNLOAD:-}" ] || ARCH_DOWNLOAD="linux-i686"
+      elif [ "${ARCH:-}" = "arm64" ]; then
+         [ -n "${ARCH_DOWNLOAD:-}" ] || ARCH_DOWNLOAD="linux-arm64"
       else
-         [ -n "$ARCH_DOWNLOAD" ] || ARCH_DOWNLOAD="linux-$ARCH"
+         [ -n "${ARCH_DOWNLOAD:-}" ] || ARCH_DOWNLOAD="linux-$ARCH"
          log warning "Guessing. Setting ARCH_DOWNLOAD to '$ARCH_DOWNLOAD'. If functional, this is probably OK."
       fi
 
@@ -782,15 +862,15 @@ tb_preparation() {
    ## provides tbbversion function
    source /usr/libexec/tb-updater/version-validator
 
-   if [ "$my_tty" = "" ]; then
+   if [ "${my_tty:-}" = "" ]; then
       local my_tty_exit_code
       my_tty_exit_code="0"
       my_tty="$(tty)" || { my_tty_exit_code="$?" ; true; };
-      if [ ! "$my_tty_exit_code" = "0" ]; then
+      if [ ! "${my_tty_exit_code:-}" = "0" ]; then
          my_tty="none"
       fi
       ## Just in case.
-      if [ "$my_tty" = "" ]; then
+      if [ "${my_tty:-}" = "" ]; then
          my_tty="none"
       fi
    fi
@@ -813,27 +893,26 @@ tb_preparation() {
    ret="0"
    has curl.anondist-orig || { ret="$?" ; true; };
 
-   if [ "$ret" = "0" ]; then
+   if [ "${ret:-}" = "0" ]; then
       ## using the non-uwt-wrapped version, if the uwt wrapper is installed,
       ## which is the case on a default Whonix installation
       CURL=curl.anondist-orig
    else
       ret="0"
       has curl || { ret="$?" ; true; };
-      if [ "$ret" = "0" ]; then
+      if [ "${ret:-}" = "0" ]; then
          ## falling back to real curl, if the uwt wrapper has been uninstalled
          CURL=curl
       else
          local MSG="uwt_tool: Can not find curl. Please report this bug!"
-         output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG"
+         output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG"
          log error "$MSG"
-         EXIT_CODE="1"
          return 0
       fi
    fi
 
-   if [ "$CURL_PRGRS" = "" ]; then
-      if [ "$ordinary" = "true" ]; then
+   if [ "${CURL_PRGRS:-}" = "" ]; then
+      if [ "${ordinary:-}" = "true" ]; then
          CURL_PRGRS="$CURL"
       elif [ -x /usr/libexec/helper-scripts/curl-prgrs ]; then
          ## Curl progress wrapper.
@@ -854,15 +933,15 @@ tb_preparation() {
    ## Export CURL variable, so it can be read by $CURL_PRGRS.
    export CURL
 
-   if [ "$tbb_download_alpha_version" = "true" ]; then
-      [ -n "$TBB_RELEASE_CHANNEL" ] || TBB_RELEASE_CHANNEL="alpha"
+   if [ "${tbb_download_alpha_version:-}" = "true" ]; then
+      [ -n "${TBB_RELEASE_CHANNEL:-}" ] || TBB_RELEASE_CHANNEL="alpha"
    else
-      [ -n "$TBB_RELEASE_CHANNEL" ] || TBB_RELEASE_CHANNEL="release"
+      [ -n "${TBB_RELEASE_CHANNEL:-}" ] || TBB_RELEASE_CHANNEL="release"
    fi
 
    ## https://web.archive.org/web/20210603225307/https://dist.torproject.org/torbrowser/10.0.17/tor-browser-linux64-10.0.17_en-US.tar.xz
-   [ -n "$TBB_DOWNLOAD_APPENDIX" ] || TBB_DOWNLOAD_APPENDIX=""
-   [ -n "$tbb_versions_base_folder" ] || tbb_versions_base_folder="torbrowser/update_3"
+   [ -n "${TBB_DOWNLOAD_APPENDIX:-}" ] || TBB_DOWNLOAD_APPENDIX=""
+   [ -n "${tbb_versions_base_folder:-}" ] || tbb_versions_base_folder="torbrowser/update_3"
 
    ## https://web.archive.org/web/20141004085451/https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions file was later abolished by upstream
    ## https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/33521
@@ -872,7 +951,7 @@ tb_preparation() {
    ## example:
    ## http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/dist/torbrowser/10.0.6/tor-browser-linux64-10.0.6_en-US.tar.xz
 
-   if [ "$tb_onion" = "true" ]; then
+   if [ "${tb_onion:-}" = "true" ]; then
       ## dist.torproject.org has no corresponding onion address at time of writing.
       ## https://web.archive.org/web/20210424113513/https://securityheaders.com/?q=https%3A%2F%2Fdist.torproject.org%2F&followRedirects=on
       ##
@@ -881,87 +960,87 @@ tb_preparation() {
       ##
       ## https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
       ## https://web.archive.org/web/20210424113646/https://securityheaders.com/?q=https%3A%2F%2Fwww.torproject.org&followRedirects=on
-      [ -n "$tbb_download_base_url" ] || tbb_download_base_url="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion"
-      [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/dist/torbrowser"
+      [ -n "${tbb_download_base_url:-}" ] || tbb_download_base_url="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion"
+      [ -n "${TBB_REMOTE_FOLDER:-}" ] || TBB_REMOTE_FOLDER="http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/dist/torbrowser"
 
       ## https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
       ## https://web.archive.org/web/20210424113759/https://securityheaders.com/?q=https%3A%2F%2Faus1.torproject.org%2Ftorbrowser%2Fupdate_3%2Frelease%2Fdownloads.json&followRedirects=off
       ## Onion-Location	http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion/torbrowser/update_3/release/downloads.json
-      [ -n "$tbb_versions_base_url" ] || tbb_versions_base_url="http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion"
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/download-${ARCH_DOWNLOAD}.json"
+      [ -n "${tbb_versions_base_url:-}" ] || tbb_versions_base_url="http://ot3ivcdxmalbsbponeeq5222hftpf3pqil24q3s5ejwo5t52l65qusid.onion"
+      [ -n "${TBB_VERSIONS_FILE_LINK:-}" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/download-${ARCH_DOWNLOAD}.json"
    else
       ## Download from the torproject.org clearnet by default.
-      [ -n "$tbb_download_base_url" ] || tbb_download_base_url="https://www.torproject.org"
-      [ -n "$TBB_REMOTE_FOLDER" ] || TBB_REMOTE_FOLDER="https://www.torproject.org/dist/torbrowser"
-      [ -n "$CURL_FORCE_SSL" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https"
+      [ -n "${tbb_download_base_url:-}" ] || tbb_download_base_url="https://www.torproject.org"
+      [ -n "${TBB_REMOTE_FOLDER:-}" ] || TBB_REMOTE_FOLDER="https://www.torproject.org/dist/torbrowser"
+      [ -n "${CURL_FORCE_SSL:-}" ] || CURL_FORCE_SSL="--tlsv1.3 --proto =https"
 
-      [ -n "$tbb_versions_base_url" ] || tbb_versions_base_url="https://aus1.torproject.org"
-      [ -n "$TBB_VERSIONS_FILE_LINK" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/download-${ARCH_DOWNLOAD}.json"
+      [ -n "${tbb_versions_base_url:-}" ] || tbb_versions_base_url="https://aus1.torproject.org"
+      [ -n "${TBB_VERSIONS_FILE_LINK:-}" ] || TBB_VERSIONS_FILE_LINK="${tbb_versions_base_url}/${tbb_versions_base_folder}/${TBB_RELEASE_CHANNEL}/download-${ARCH_DOWNLOAD}.json"
    fi
 
-   if [ "$DEV_PASSTHROUGH" = "1" ]; then
-      [ -n "$CURL_PROXY" ] || CURL_PROXY=()
-   elif [ "$running_inside_qubes_template_vm" = "true" ] ; then
+   if [ "${DEV_PASSTHROUGH:-}" = "1" ]; then
+      [ -n "${CURL_PROXY:-}" ] || CURL_PROXY=()
+   elif [ "${running_inside_qubes_template_vm:-}" = "true" ] ; then
       ## Use Qubes updates proxy.
-      if [ "$CURL_PROXY" = "" ]; then
+      if [ "${CURL_PROXY:-}" = "" ]; then
          PROXY_SERVER='http://127.0.0.1:8082/'
          CURL_PROXY=( "--proxy" "$PROXY_SERVER" )
       fi
    elif [ -f /usr/share/whonix/marker ]; then
       ## sets: GATEWAY_IP
       eval "$(/usr/libexec/helper-scripts/settings_echo)"
-      [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
+      [ -n "${SOCKS_PORT_TBB_DOWNLOAD:-}" ] || SOCKS_PORT_TBB_DOWNLOAD="9115"
       local random_socks_password
       ## https://spec.torproject.org/socks-extensions.html
       random_socks_password="$(random_alpha_numeric 43)"
-      [ -n "$CURL_PROXY" ] || CURL_PROXY=(
+      [ -n "${CURL_PROXY:-}" ] || CURL_PROXY=(
          '--proxy' "socks5h://$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD"
          '--proxy-user' "<torS0X>0:tb-updater_${random_socks_password}"
       )
-   elif [ "${tb_onion}" = 'true' ]; then
+   elif [ "${tb_onion:-}" = 'true' ]; then
       ## Onion download on non-Whonix.
       ##
       ## sets: GATEWAY_IP
       eval "$(/usr/libexec/helper-scripts/settings_echo)"
       ## Using port 9050 rather than 9115 here since Tor is likely not
       ## configured with a separate port for downloading Tor Browser.
-      [ -n "$SOCKS_PORT_TBB_DOWNLOAD" ] || SOCKS_PORT_TBB_DOWNLOAD="9050"
+      [ -n "${SOCKS_PORT_TBB_DOWNLOAD:-}" ] || SOCKS_PORT_TBB_DOWNLOAD="9050"
       local random_socks_password
       ## https://spec.torproject.org/socks-extensions.html
       random_socks_password="$(random_alpha_numeric 43)"
-      [ -n "$CURL_PROXY" ] || CURL_PROXY=(
+      [ -n "${CURL_PROXY:-}" ] || CURL_PROXY=(
          '--proxy' "socks5h://$GATEWAY_IP:$SOCKS_PORT_TBB_DOWNLOAD"
          '--proxy-user' "<torS0X>0:tb-updater_${random_socks_password}"
       )
    else
-      [ -n "$CURL_PROXY" ] || CURL_PROXY=()
+      [ -n "${CURL_PROXY:-}" ] || CURL_PROXY=()
    fi
 
    log notice "CURL_PROXY: '${CURL_PROXY[*]}'"
 
    ## Also used by function tbbversion.
-   [ -n "$RecommendedTBBVersions" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
+   [ -n "${RecommendedTBBVersions:-}" ] || RecommendedTBBVersions="$tb_cache_folder/RecommendedTBBVersions"
 
-   if [ -z "$tbb_version_last_downloaded_save_file" ]; then
+   if [ -z "${tbb_version_last_downloaded_save_file:-}" ]; then
       tbb_version_last_downloaded_save_file="$tb_cache_folder/tbb_version_last_downloaded_save_file"
-      if [ "$who_ami" = 'tb-updater' ]; then
+      if [ "${who_ami}" = 'tb-updater' ]; then
          ## Read the existing version from the system-wide location.
          tbb_version_last_downloaded_save_read_file="$tb_global_binary_dir/.cache/$tb_install_folder/tbb_version_last_downloaded_save_file"
       fi
    fi
-   [ -n "$tbb_version_last_downloaded_save_read_file" ] || tbb_version_last_downloaded_save_read_file="$tbb_version_last_downloaded_save_file"
+   [ -n "${tbb_version_last_downloaded_save_read_file:-}" ] || tbb_version_last_downloaded_save_read_file="$tbb_version_last_downloaded_save_file"
 
    if [ -f "$tbb_version_last_downloaded_save_read_file" ]; then
-      [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="$(stcat "$tbb_version_last_downloaded_save_read_file")"
+      [ -n "${tbb_version_previous_downloaded_version:-}" ] || tbb_version_previous_downloaded_version="$(stcat "$tbb_version_last_downloaded_save_read_file")"
    fi
-   [ -n "$tbb_version_previous_downloaded_version" ] || tbb_version_previous_downloaded_version="none"
+   [ -n "${tbb_version_previous_downloaded_version:-}" ] || tbb_version_previous_downloaded_version="none"
    tbb_version_previous_downloaded_version_stripped="$(sanitize-string -- 20 "$tbb_version_previous_downloaded_version")"
 
    if ! test -f /usr/share/whonix/marker ; then
-      [ -n "$TB_NO_TOR_CON_CHECK" ] || TB_NO_TOR_CON_CHECK="1"
+      [ -n "${TB_NO_TOR_CON_CHECK:-}" ] || TB_NO_TOR_CON_CHECK="1"
    fi
 
-   if [ ! "$tb_auto_set_user_home_msg" = "" ]; then
+   if [ ! "${tb_auto_set_user_home_msg:-}" = "" ]; then
       log notice "$tb_auto_set_user_home_msg"
    fi
 }
@@ -980,15 +1059,15 @@ tb_create_folders() {
 
 # tb_skip_if_higher_or_equal_version_already_downloaded() {
 #    ## Do this only when using --postinst.
-#    if [ ! "$tb_postinst" = "true" ]; then
+#    if [ ! "${tb_postinst:-}" = "true" ]; then
 #       true "INFO: Not using --postinst, therefore skipping ${FUNCNAME[0]}."
 #       return 0
 #    fi
-#    if [ "$tbb_version_previous_downloaded_version_stripped" = "none" ]; then
+#    if [ "${tbb_version_previous_downloaded_version_stripped:-}" = "none" ]; then
 #       true "INFO: Could not determine tbb_version_previous_downloaded_version_stripped (set to 'none'), therefore skipping ${FUNCNAME[0]}."
 #       return 0
 #    fi
-#    if [ "$tbb_hardcoded_version" = "" ]; then
+#    if [ "${tbb_hardcoded_version:-}" = "" ]; then
 #       true "INFO: tbb_hardcoded_version is empty, therefore skipping ${FUNCNAME[0]}."
 #       return 0
 #    fi
@@ -999,7 +1078,7 @@ tb_create_folders() {
 #
 #    ## TODO: Does not belong here?
 #    ## Being careful with deletion.
-# #    if [ "$tb_downloaded_files_folder" = "$tb_global_binary_dir/.cache/$tb_install_folder/files" ]; then
+# #    if [ "${tb_downloaded_files_folder:-}" = "$tb_global_binary_dir/.cache/$tb_install_folder/files" ]; then
 # #       log notice "No need to keep older versions in Qubes root image. Saving disk space. Therefore deleting..."
 # #       printf '%s\n' "safe-rm -r -f -- '$tb_downloaded_files_folder'"
 # #       safe-rm -r -f -- "$tb_downloaded_files_folder"
@@ -1008,7 +1087,8 @@ tb_create_folders() {
 # }
 
 tb_connectivity_checks_interfaces() {
-   if [ "$running_inside_qubes_template_vm" = "true" ] ; then
+   local MSG
+   if [ "${running_inside_qubes_template_vm:-}" = "true" ] ; then
       ## Qubes Templates are non-networked as per Qubes default.
       return 0
    fi
@@ -1032,7 +1112,7 @@ tb_connectivity_checks_interfaces() {
 <p>Debugging information:<br/>
 /usr/libexec/helper-scripts/check-network-access non-zero exit code.</p>"
 
-   output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+   output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
 
    output_cli error "$MSG"
 
@@ -1040,11 +1120,12 @@ tb_connectivity_checks_interfaces() {
 }
 
 tb_connectivity_checks_tor() {
-   if [ "$TB_NO_TOR_CON_CHECK" = "1" ]; then
+   local MSG
+   if [ "${TB_NO_TOR_CON_CHECK:-}" = "1" ]; then
       return 0
    fi
 
-   if [ "$CURL_PROXY" = "" ]; then
+   if [ "${CURL_PROXY:-}" = "" ]; then
       return 0
    fi
 
@@ -1055,7 +1136,7 @@ tb_connectivity_checks_tor() {
       ## sets: TOR_ENABLED
       check_tor_enabled_do
 
-      if [ "$TOR_ENABLED" = "0" ]; then
+      if [ "${TOR_ENABLED:-}" = "0" ]; then
          MSG="<p><b>Tor not enabled yet.</b></p>
 
 <p>Please check: <blockquote>Start menu -> System -> systemcheck
@@ -1069,7 +1150,7 @@ tb_connectivity_checks_tor() {
 <p>Debugging information:<br />
 You could use <code>--no-tor-con-check</code> if you think function <code>${FUNCNAME[0]}</code> should be skipped.</p>"
 
-         output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+         output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
 
          output_cli error "$MSG"
 
@@ -1086,7 +1167,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>${FUNC
       ## sets: tor_bootstrap_percent
       tb_run_function check_tor_circuit_established
 
-      if [ ! "$tor_circuit_established" = "1" ]; then
+      if [ ! "${tor_circuit_established:-}" = "1" ]; then
          MSG="<p></b>Tor not fully bootstrapped.</b></p>
 
 <p>Possible reasons:
@@ -1100,7 +1181,7 @@ You could use <code>--no-tor-con-check</code> if you think function <code>${FUNC
 
 <p>If systemcheck reports no problems with internet activity and downloading $tb_title still fails, please report a bug!</p>"
 
-         output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+         output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
 
          output_cli error "$MSG"
 
@@ -1115,6 +1196,11 @@ You could use <code>--no-tor-con-check</code> if you think function <code>${FUNC
 }
 
 tb_connectivity_checks_curl() {
+   local MSG
+   if [ "${TB_SKIP_CONNECTIVITY_CHECK:-}" = "1" ]; then
+      log notice "TB_SKIP_CONNECTIVITY_CHECK is set, skipping HTTP connectivity probe."
+      return 0
+   fi
    ## TODO: Maybe we should split the actual curl operation into a yet
    ## different user account? That would prevent a compromised curl from
    ## being able to affect later signature checks. Or maybe we need a
@@ -1122,7 +1208,7 @@ tb_connectivity_checks_curl() {
    tb_notify_details="Checking connectivity... Will take a moment..."
    log notice "Running connectivity check...  Downloading...: '$tbb_download_base_url'"
 
-   [ -n "$timeout_connectivity_checks_curl" ] || timeout_connectivity_checks_curl=180
+   [ -n "${timeout_connectivity_checks_curl:-}" ] || timeout_connectivity_checks_curl=180
    ## 1 MB = 1048576 bytes
    ## 2 MB = 2097152 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
@@ -1136,7 +1222,7 @@ tb_connectivity_checks_curl() {
    tb_download_common
 
    ## Check if curl failed.
-   if [ ! "$curl_exit_code" = "0" ]; then
+   if [ ! "${curl_exit_code:-}" = "0" ]; then
       MSG="<p>$curl_download_target_url could not be reached.</p>
 
 <p>Possible reasons:
@@ -1150,7 +1236,7 @@ tb_connectivity_checks_curl() {
 <p>If systemcheck reports no problems with internet activity and downloading $tb_title keeps failing, please report a bug!</p>
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
-      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
 
       output_cli error "$MSG"
 
@@ -1161,7 +1247,7 @@ tb_connectivity_checks_curl() {
 }
 
 tb_update_check() {
-   if [ ! "$tbb_version_stripped" = "" ]; then
+   if [ ! "${tbb_version_stripped:-}" = "" ]; then
       true "INFO: tbb_version already set to '$tbb_version_stripped'. Skipping ${FUNCNAME[0]}, ok."
       return 0
    fi
@@ -1169,7 +1255,7 @@ tb_update_check() {
    tb_notify_details="Checking $tb_title version... Will take a moment..."
    log notice "Find out latest version... Downloading...: '$TBB_VERSIONS_FILE_LINK'"
 
-   [ -n "$timeout_version_file_download" ] || timeout_version_file_download=300
+   [ -n "${timeout_version_file_download:-}" ] || timeout_version_file_download=300
    ## 1 MB = 1048576 bytes
    ## 2 MB = 2097152 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
@@ -1186,9 +1272,9 @@ tb_update_check() {
 }
 
 tb_remote_version_parser() {
-   if [ ! "$tbb_version_stripped" = "" ]; then
+   if [ ! "${tbb_version_stripped:-}" = "" ]; then
       true "INFO: tbb_version_stripped already set to '$tbb_version_stripped'. Simplified ${FUNCNAME[0]}, ok."
-      [ -n "$tbb_recommended_versions_error" ] || tbb_recommended_versions_error=""
+      [ -n "${tbb_recommended_versions_error:-}" ] || tbb_recommended_versions_error=""
       return 0
    fi
 
@@ -1200,7 +1286,7 @@ tb_remote_version_parser() {
 }
 
 tb_remote_version_sanity_test() {
-   if [ "$tbb_version_stripped" = "UNKNOWN" ]; then
+   if [ "${tbb_version_stripped:-}" = "UNKNOWN" ]; then
       download_fail_help_set
       local MSG="<p>$installed_or_not_text</p>
 
@@ -1209,7 +1295,7 @@ tb_remote_version_sanity_test() {
 <p>Either <code>$TBB_VERSIONS_FILE_LINK</code> is invalid or this is a <code>$SCRIPTNAME</code> (by <code>$tb_downloader_developers</code> developers) bug.</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
-      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
 
       output_cli error "$MSG"
 
@@ -1225,7 +1311,7 @@ tb_remote_version_sanity_test() {
 <p>Either <code>$TBB_VERSIONS_FILE_LINK</code> is invalid or this is a <code>$SCRIPTNAME</code> (by <code>$tb_downloader_developers</code> developers) bug.</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
-      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
 
       output_cli error "$MSG"
 
@@ -1245,7 +1331,7 @@ dpkg --compare-versions failed!</p>
 <p>Either <code>$TBB_VERSIONS_FILE_LINK</code> is invalid or this is a <code>$SCRIPTNAME</code> (by <code>$tb_downloader_developers</code> developers) bug.</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>"
-      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
 
       output_cli error "$MSG"
 
@@ -1256,7 +1342,7 @@ dpkg --compare-versions failed!</p>
 tb_local_version_detection() {
    ## sets: tbb_hardcoded_version
    true "INFO: tbb_download_alpha_version: $tbb_download_alpha_version"
-   if [ "$tbb_download_alpha_version" = "true" ]; then
+   if [ "${tbb_download_alpha_version:-}" = "true" ]; then
       ## sets: tbb_hardcoded_version
       source /usr/share/tb-updater/tbb_hardcoded_version_alpha
       log notice "Using alpha version. See:
@@ -1268,8 +1354,8 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
    fi
 
    ## Used by function tbbversion_installed
-   if [ -z "$tbb_folder" ]; then
-      if [ "$who_ami" = 'tb-updater' ]; then
+   if [ -z "${tbb_folder:-}" ]; then
+      if [ "${who_ami}" = 'tb-updater' ]; then
          ## We install the browser into the tb-updater home folder, but it will
          ## be moved into a system-wide location later. Thus we need to check
          ## the system-wide location to see if the browser is already
@@ -1297,7 +1383,7 @@ $tb_documentation_base_url_clearnet/wiki/$tb_wiki#Alpha"
 }
 
 tb_confirm_update() {
-   if [ "$running_inside_qubes_template_vm" = "true" ] ; then
+   if [ "${running_inside_qubes_template_vm:-}" = "true" ] ; then
       local folder_name found
       for folder_name in "/home/$who_ami/$tb_install_folder_dot" "/home/$who_ami/.cache/${tb_install_folder}" ; do
          if [ -d "$folder_name" ]; then
@@ -1305,7 +1391,7 @@ tb_confirm_update() {
             break
          fi
       done
-      if [ "$found" = "true" ]; then
+      if [ "${found:-}" = "true" ]; then
          local MSG="\
 <p>Obsolete folders exist. It is recommended to delete them. \
 Otherwise updating <code>$tb_title</code> in this Template will not result in newly created App Qubes to inherit the updated version of <code>$tb_title</code>.
@@ -1318,7 +1404,7 @@ Otherwise updating <code>$tb_title</code> in this Template will not result in ne
 <br />(Or delete them using a file manager.)
 <br />
 <br />More info: <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Qubes-specific</a></p>"
-         output_gui ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
+         output_gui "${output_opts[@]}" --messagex --typex "info" --message "$MSG" --done
 
          output_cli notice "$MSG"
       fi
@@ -1350,7 +1436,7 @@ YOUR OLD BROWSER PROFILE INCLUDING BOOKMARKS AND PASSWORDS WILL GET DELETED."
    confirmation_screen_learn_more_link="\
 <a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Download_Confirmation_Notification>Learn more about this Download Confirmation Notification.</a>"
 
-   if [ "$running_inside_qubes_template_vm" = "true" ] ; then
+   if [ "${running_inside_qubes_template_vm:-}" = "true" ] ; then
       qubes_running_inside_template_vm_msg="\
 <u>Qubes specific notice</u>: Currently running inside a Template.
 Due to <a href=$tb_documentation_base_url_clearnet/wiki/Dev/Qubes#tb-updater_vs_Template>technical limitations</a>,
@@ -1359,9 +1445,9 @@ Only newly created App Qubes, which are based on this Template will benefit from
 To update $tb_title inside existing App Qubes, please update $tb_title inside App Qubes."
    fi
 
-   if [ "$installed_or_not_result" = "true" ]; then
+   if [ "${installed_or_not_result:-}" = "true" ]; then
       type="warning"
-      if [ "$tbb_locally_installed_version_detect_success" = "false" ]; then
+      if [ "${tbb_locally_installed_version_detect_success:-}" = "false" ]; then
          ## installed, but local version number unknown
          MSG="\
 <p>$updater_vs_downloader_msg</p>
@@ -1372,7 +1458,7 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
          if dpkg --compare-versions -- "$tbb_version_stripped" eq "$tbb_locally_installed_version_stripped"; then
             up_to_date_or_not_text="Looks like $tb_title is already up to date."
             re_install_or_install_text="Please close $tb_title if you want to (re-)install!"
-	          if [ "$UPDATE_ONLY_IF_NEWER" = "1" ]; then
+	          if [ "${UPDATE_ONLY_IF_NEWER:-}" = "1" ]; then
                true "INFO: UPDATE_ONLY_IF_NEWER is set 1."
                log notice "Skip downloading: current '$tb_title' '$tbb_locally_installed_version_stripped' is already up-to-date."
                tb_exit_function 0
@@ -1410,24 +1496,24 @@ To update $tb_title inside existing App Qubes, please update $tb_title inside Ap
       MSG="\
 <p>$confirmation_screen_learn_more_link</p>"
 
-      if ! [ "$tb_postinst" = "true" ]; then
+      if ! [ "${tb_postinst:-}" = "true" ]; then
          output_cli notice "$MSG"
       fi
    fi
 
-   if ! [ "$tb_postinst" = "true" ]; then
+   if ! [ "${tb_postinst:-}" = "true" ]; then
       printf '%s\n' "$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Download_Confirmation_Notification"
    fi
 
-   if [ "$TB_INPUT" = "none" ]; then
+   if [ "${TB_INPUT:-}" = "none" ]; then
       true "INFO: TB_INPUT set to none, ok."
    else
       local answer
-      if [ "$TB_INPUT" = "stdin" ]; then
+      if [ "${TB_INPUT:-}" = "stdin" ]; then
          log question "$question
 y/n?"
          read -r answer
-         if [ ! "$answer" = "y" ]; then
+         if [ ! "${answer:-}" = "y" ]; then
             log notice "Canceled. Exit."
             tb_exit_function 10
          fi
@@ -1435,7 +1521,7 @@ y/n?"
          #printf '%s\n' "/usr/libexec/msgcollector/tb_updater_gui \"$type\" \"$TITLE\" \"$tbb_locally_installed_version_stripped\" \"$tbb_recommended_versions_comma_separated\" \"$MSG\" \"$question\" \"$button\")"
 
          answer="$("/usr/libexec/msgcollector/tb_updater_gui" "$type" "$TITLE" "$tbb_locally_installed_version_stripped" "$tbb_version_stripped" "$MSG" "$question" "$button")"
-         if [ "$answer" = "65536" ]; then ## Button 'Yes' has not been pressed.
+         if [ "${answer:-}" = "65536" ]; then ## Button 'Yes' has not been pressed.
             log notice "Canceled. Exit."
             tb_exit_function 10
          fi
@@ -1444,31 +1530,31 @@ y/n?"
 }
 
 tb_version_processing() {
-   if [ "$tb_hard_reset" == "true" ]; then
+   if [ "${tb_hard_reset:-}" == "true" ]; then
       tbb_version_stripped="$tbb_version_previous_downloaded_version_stripped"
    fi
 
-   if [ "$tbb_version_stripped" = "" ]; then
+   if [ "${tbb_version_stripped:-}" = "" ]; then
       log error "in function tb_version_processing: variable $tbb_version_stripped not set!"
       tb_exit_function 17
    fi
 
-   [ -n "$tbb_version_folder" ] || tbb_version_folder="$tbb_version_stripped"
-   [ -n "$tb_browser_download_name" ] || tb_browser_download_name="tor-browser"
-   [ -n "$TBB_EXTRA_FOLDER" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
+   [ -n "${tbb_version_folder:-}" ] || tbb_version_folder="$tbb_version_stripped"
+   [ -n "${tb_browser_download_name:-}" ] || tb_browser_download_name="tor-browser"
+   [ -n "${TBB_EXTRA_FOLDER:-}" ] || TBB_EXTRA_FOLDER="${tbb_version_folder}"
 
-   [ -n "$TBB_SIG_FILENAME" ] || TBB_SIG_FILENAME="${tb_browser_download_name}-${ARCH_DOWNLOAD}-${tbb_version_stripped}.tar.xz.asc"
-   [ -n "$TBB_PACKAGE_FILENAME" ] || TBB_PACKAGE_FILENAME="${tb_browser_download_name}-${ARCH_DOWNLOAD}-${tbb_version_stripped}.tar.xz"
+   [ -n "${TBB_SIG_FILENAME:-}" ] || TBB_SIG_FILENAME="${tb_browser_download_name}-${ARCH_DOWNLOAD}-${tbb_version_stripped}.tar.xz.asc"
+   [ -n "${TBB_PACKAGE_FILENAME:-}" ] || TBB_PACKAGE_FILENAME="${tb_browser_download_name}-${ARCH_DOWNLOAD}-${tbb_version_stripped}.tar.xz"
 
-   [ -n "$TBB_SIG_LINK" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}${TBB_DOWNLOAD_APPENDIX}"
-   [ -n "$TBB_SIG_FULL_PATH" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
+   [ -n "${TBB_SIG_LINK:-}" ] || TBB_SIG_LINK="${TBB_REMOTE_FOLDER}/${TBB_EXTRA_FOLDER}/${TBB_SIG_FILENAME}${TBB_DOWNLOAD_APPENDIX}"
+   [ -n "${TBB_SIG_FULL_PATH:-}" ] || TBB_SIG_FULL_PATH="$tb_downloaded_files_folder/$TBB_SIG_FILENAME"
 
-   [ -n "$TBB_PACKAGE_LINK" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME${TBB_DOWNLOAD_APPENDIX}"
-   [ -n "$TBB_PACKAGE_FULL_PATH" ] || TBB_PACKAGE_FULL_PATH="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
+   [ -n "${TBB_PACKAGE_LINK:-}" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME${TBB_DOWNLOAD_APPENDIX}"
+   [ -n "${TBB_PACKAGE_FULL_PATH:-}" ] || TBB_PACKAGE_FULL_PATH="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
 }
 
 tb_reset() {
-   if [ ! "$tb_hard_reset" == "true" ]; then
+   if [ ! "${tb_hard_reset:-}" == "true" ]; then
       return 0
    fi
 
@@ -1480,7 +1566,7 @@ tb_reset() {
 <br/>
 <br/>See:
 <br/><a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset</a></p>"
-      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
 
       output_cli error "$MSG"
 
@@ -1493,7 +1579,7 @@ tb_reset() {
 <br/>
 <br/>See:
 <br/><a href=$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset>$tb_documentation_base_url_clearnet/wiki/$tb_wiki/Advanced_Users#Tor_Browser_Hard_Reset</a></p>"
-      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
 
       output_cli error "$MSG"
 
@@ -1502,8 +1588,8 @@ tb_reset() {
 }
 
 tb_kill_already_running_tb_maybe() {
-   if [ ! "$NOKILLTB" = "1" ]; then
-      [ -n "$tb_process_name" ] || tb_process_name="firefox.real"
+   if [ ! "${NOKILLTB:-}" = "1" ]; then
+      [ -n "${tb_process_name:-}" ] || tb_process_name="firefox.real"
 
       log notice "Because you are not using the '--nokilltb' option, now killing potentially still running instances of '$tb_title'..."
       killall "$tb_process_name" || true
@@ -1511,15 +1597,19 @@ tb_kill_already_running_tb_maybe() {
 }
 
 tb_download_common() {
-   if [ "$TB_FORCE_INSTALL" = "1" ]; then
-      true
+   local MSG
+   if [ "${TB_FORCE_INSTALL:-}" = "1" ]; then
+      ## No progress bar: explicitly clear the cross-function global so
+      ## a previous call's UUID does not leak into the close-progress
+      ## logic further down in this function or into tb_error_handler.
+      progressbaridx=""
    else
       progressbaridx="$(cat -- "/proc/sys/kernel/random/uuid")"
       tb_notify_msg="Download
 ----------------------------------------------------------------------
 $tb_notify_details"
-      if [ "$TB_INPUT" = "" ] || [ "$TB_INPUT" = "gui" ]; then
-         output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
+      if [ "${TB_INPUT:-}" = "" ] || [ "${TB_INPUT:-}" = "gui" ]; then
+         output_gui "${output_opts[@]}" --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
          ## $CURL_PRGRS honors the $CURL and the $CURL_PRGRS_EXEC environment
          ## variables. (See above.)
          ## Define what CURL_PRGRS is supposed to eval.
@@ -1536,17 +1626,23 @@ $tb_notify_details"
    #export CURL_PRGRS_MAX_FILE_SIZE_BYTES="1048576"
 
    curl_exit_code="0"
+   ## CURL_RESUME, CURL_FORCE_SSL and CURL_OPTS carry multi-word curl
+   ## flag strings (e.g. '--tlsv1.3 --proto =https') that are meant to
+   ## be word-split into separate argv entries. Quoting them would
+   ## pass the whole string as a single argument and curl would
+   ## reject it.
+   # shellcheck disable=SC2086
    $CURL_PRGRS \
-      $CURL_RESUME \
+      ${CURL_RESUME:-} \
       --fail \
       "${CURL_PROXY[@]}" \
-      $CURL_FORCE_SSL \
+      ${CURL_FORCE_SSL:-} \
       --retry-connrefused \
       --retry 10 \
       --retry-delay 60 \
       --max-time "$curl_download_max_time" \
       --location \
-      $CURL_OPTS \
+      ${CURL_OPTS:-} \
       --output "$CURL_OUT_FILE" \
       "$curl_download_target_url" \
       &
@@ -1555,10 +1651,8 @@ $tb_notify_details"
    wait "$last_pid_list" || { curl_exit_code="$?" ; true; };
    last_pid_list=""
 
-   if [ "$progressbaridx" = "" ]; then
-      true
-   else
-      output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+   if [ -n "$progressbaridx" ]; then
+      output_gui "${output_opts[@]}" --progressbaridx "$progressbaridx" --progressx "100" || true
       progressbaridx=""
    fi
 
@@ -1568,20 +1662,20 @@ $tb_notify_details"
       curl_status_message="$curl_exit_code"
    fi
 
-   if [ "$tb_download_common_exit_on_fail" = "false" ]; then
+   if [ "${tb_download_common_exit_on_fail:-}" = "false" ]; then
       true "${FUNCNAME[0]} is not supposed to exit, because tb_download_common_exit_on_fail is set to $tb_download_common_exit_on_fail."
       return 0
    fi
 
    ## Check if curl failed.
-   if [ ! "$curl_exit_code" = "0" ]; then
+   if [ ! "${curl_exit_code:-}" = "0" ]; then
       download_fail_help_set
       MSG="<p>Failed to download: $curl_download_target_url</p>
 
 <p>$DOWNLOAD_FAIL_HELP</p>
 
 <p>(Debugging information: curl_status_message: $curl_status_message)</p>"
-      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
 
       output_cli error "$MSG"
 
@@ -1598,7 +1692,7 @@ tb_download_files() {
    log notice "Digital signature (OpenPGP) download... Will take a moment..."
    log notice "Downloading...: '$TBB_SIG_LINK'"
 
-   [ -n "$timeout_signature_file_download" ] || timeout_signature_file_download=300
+   [ -n "${timeout_signature_file_download:-}" ] || timeout_signature_file_download=300
    ## 1 MB = 1048576 bytes
    ## 2 MB = 2097152 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
@@ -1617,7 +1711,7 @@ tb_download_files() {
    log notice "Downloading '$tb_title'..."
    log notice "Downloading...: '$TBB_PACKAGE_LINK'"
 
-   [ -n "$timeout_archive_file_download" ] || timeout_archive_file_download=3600
+   [ -n "${timeout_archive_file_download:-}" ] || timeout_archive_file_download=3600
    ## 1 MB = 1048576 bytes
    ## 200 MB = 209715200 bytes
    ## Export CURL_PRGRS_MAX_FILE_SIZE_BYTES, so $CURL_PRGRS can read it.
@@ -1630,26 +1724,28 @@ tb_download_files() {
    curl_download_target_url="$TBB_PACKAGE_LINK"
    tb_download_common_exit_on_fail="17"
    tb_download_common
-
-   tb_download_attempt_success="true"
 }
 
 tb_openpgp_verify() {
    local verification_success
+   local sig_max_age_seconds
 
-   declare -g sqop_output
-   declare -g sq_output
+   declare -g sqop_output sqop_output_stripped
+   declare -g sq_output sq_output_stripped
 
    ## One month has 2592000 seconds.
    ## (60 [seconds] * 60 [minutes] * 24 [hours] * 30 [days])
    ## Setting this to 3 months. (7776000 seconds)
    ## (2592000 * 3 [months])
-   [ -n "$gpg_bash_lib_input_maximum_age_in_seconds" ] || gpg_bash_lib_input_maximum_age_in_seconds="7776000"
+   sig_max_age_seconds="${sig_max_age_seconds:-7776000}"
 
-   local signing_key MSG
+   local MSG
    local now_epoch not_before_epoch not_after_epoch
    local sqop_not_before sqop_not_after sig_creation_time sig_unix_time
-   signing_key="/usr/share/torbrowser-updater-keys.d/tbb-team.asc"
+   ## Overridable via environment or the '--danger-insecure-self-test' flag
+   ## so the self-test fixtures can supply their own signing certificate.
+   ## Not declared 'local' so the env-exported value is visible here.
+   [ -n "${signing_key:-}" ] || signing_key="/usr/share/torbrowser-updater-keys.d/tbb-team.asc"
 
    log notice "Digital signature (OpenPGP) verification using Sequoia-PGP... This will take a moment..."
    log notice "Using digital signature signing key by The Tor Project."
@@ -1657,14 +1753,17 @@ tb_openpgp_verify() {
    ## Sanity test: verify the signing key is well-formed. Output is
    ## suppressed since it is not useful to the user. If this fails, the
    ## non-zero exit code will trigger 'set -o errexit' and stop the script.
-   sq cert lint --cert-file "$signing_key" &>/dev/null
+   ## Overridable so the self-test can point the lint binary at something
+   ## harmless (e.g. 'echo') when the host sq predates 'cert lint'.
+   [ -n "${sq_cert_lint_binary:-}" ] || sq_cert_lint_binary="sq"
+   "$sq_cert_lint_binary" cert lint --cert-file "$signing_key" &>/dev/null
 
    ## Build signature-time validity window for sqop verify:
    ## - not-before: reject signatures older than max age
    ## - not-after : reject signatures from the future
    now_epoch="$(date --utc +%s)"
    not_after_epoch="$now_epoch"
-   not_before_epoch="$(( now_epoch - gpg_bash_lib_input_maximum_age_in_seconds ))"
+   not_before_epoch="$(( now_epoch - sig_max_age_seconds ))"
 
    ## 'sqop' expects a timestamp in RFC3339/ISO8601 format. UTC is a safe
    ## choice. 'date' has an '--iso-8601' option, however we do not use it here
@@ -1673,19 +1772,17 @@ tb_openpgp_verify() {
    ## timestamps in that same format with the least chances of malfunctioning.
    if ! sqop_not_before="$(date --utc --date "@$not_before_epoch" '+%Y-%m-%dT%H:%M:%SZ')"; then
       MSG="<p><b>Could NOT compute signature age lower bound.</b></p>"
-      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
       output_cli error "$MSG"
       tb_exit_function 12
    fi
 
    if ! sqop_not_after="$(date --utc --date "@$not_after_epoch" '+%Y-%m-%dT%H:%M:%SZ')"; then
       MSG="<p><b>Could NOT compute signature age upper bound.</b></p>"
-      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
       output_cli error "$MSG"
       tb_exit_function 12
    fi
-
-   verification_success=""
 
    log notice "sqop verify --not-before '$sqop_not_before' --not-after '$sqop_not_after' '$TBB_SIG_FULL_PATH' '$signing_key' < '$TBB_PACKAGE_FULL_PATH'"
 
@@ -1716,11 +1813,15 @@ tb_openpgp_verify() {
    ## does not expose them in a machine-parseable way.
    ## https://www.kicksecure.com/wiki/OpenPGP#sqop_vs_sq_for_automations
    ## https://forums.whonix.org/t/tor-browser-downloader-confirmation-has-changed-with-less-info/23146
+   ## Overridable for the same reason as sq_cert_lint_binary above: the
+   ## 'sq verify' CLI has moved argument names between versions, and the
+   ## self-test runs against whatever sq the host has.
+   [ -n "${sq_verify_binary:-}" ] || sq_verify_binary="sq"
    log notice "sq verify --signer-file '$signing_key' --signature-file '$TBB_SIG_FULL_PATH' '$TBB_PACKAGE_FULL_PATH'"
 
    if sq_output="$(
       timeout --kill-after="60" "10" \
-         sq verify \
+         "$sq_verify_binary" verify \
          --signer-file "$signing_key" \
          --signature-file "$TBB_SIG_FULL_PATH" \
          -- \
@@ -1732,13 +1833,28 @@ tb_openpgp_verify() {
       verification_success=false
    fi
 
+   ## Bound-checked, markup-stripped copies for any interpolation into the
+   ## MSG dialog body. sqop verification lines come from an OpenPGP tool
+   ## whose output is generally safe, but sq also surfaces UID strings from
+   ## the keyring which are arbitrary UTF-8 and could carry rich-text
+   ## metadata; and both commands are invoked with '2>&1', so stderr
+   ## diagnostics end up in the same buffer. 1024 chars is ample for a
+   ## couple of verification lines.
+   sqop_output_stripped="$(sanitize-string -- 1024 "$sqop_output")"
+   sq_output_stripped="$(sanitize-string -- 1024 "$sq_output")"
+
    if ! [ "$verification_success" = "true" ]; then
-      ## Both, verification_success="" and 'verification_success="false"' will trigger this.
+      ## Trust classes of the values interpolated below, so the MSG body
+      ## stays safe against future regressions:
+      ##   $tb_title              -- wrapper-supplied; constant per front-end.
+      ##   $sqop_output_stripped   -- tool output, already passed through
+      ##                             sanitize-string above. Never interpolate
+      ##                             the raw $sqop_output here.
       MSG="<p><b>Digital signature (OpenPGP) could NOT be verified.</b>
 <br></br>$tb_title update failed! Try again later.</p>
 
-<p>sqop_output: <code>$sqop_output</code></p>"
-      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+<p>sqop_output: <code>$sqop_output_stripped</code></p>"
+      output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
       output_cli error "$MSG"
       tb_exit_function 12
    fi
@@ -1753,7 +1869,7 @@ tb_openpgp_verify() {
       log notice "Valid 'sqop' timestamp format."
    else
       MSG="Unexpected 'sqop' timestamp format."
-      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
       output_cli error "$MSG"
       tb_exit_function 12
    fi
@@ -1767,54 +1883,70 @@ tb_openpgp_verify() {
 
    if ! is_whole_number "$sig_unix_time"; then
       MSG="Unexpected 'date' output."
-      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
       output_cli error "$MSG"
       tb_exit_function 12
    fi
 
-   declare -g gpg_bash_lib_output_signed_on_unixtime
-   gpg_bash_lib_output_signed_on_unixtime="$sig_unix_time"
+   declare -g sig_creation_unixtime
+   sig_creation_unixtime="$sig_unix_time"
 
-   #declare -g gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty
-   declare -g gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty
+   #declare -g sig_creation_unixtime_minus_current_unixtime_pretty
+   declare -g sig_age_pretty
 
    # Unused.
    #local signed_minus_current
-   #signed_minus_current="$(( gpg_bash_lib_output_signed_on_unixtime - now_epoch ))"
+   #signed_minus_current="$(( sig_creation_unixtime - now_epoch ))"
    #if [ "$signed_minus_current" -lt 0 ]; then
    #   signed_minus_current=0
    #fi
 
    local current_minus_signed
-   current_minus_signed="$(( now_epoch - gpg_bash_lib_output_signed_on_unixtime ))"
+   current_minus_signed="$(( now_epoch - sig_creation_unixtime ))"
    if [ "$current_minus_signed" -lt 0 ]; then
       current_minus_signed=0
    fi
 
    # Unused.
-   #gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty="$(gpg_bash_lib_function_displaytime "$signed_minus_current")"
-   #[ -n "$gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty" ] || gpg_bash_lib_output_signed_on_unixtime_minus_current_unixtime_pretty="0 seconds"
+   #sig_creation_unixtime_minus_current_unixtime_pretty="$(gpg_bash_lib_function_displaytime "$signed_minus_current")"
+   #[ -n "${sig_creation_unixtime_minus_current_unixtime_pretty:-}" ] || sig_creation_unixtime_minus_current_unixtime_pretty="0 seconds"
 
-   ## 'gpg_bash_lib_function_displaytime' and 'is_whole_number' are
-   ## provided by helper-scripts (strings.bsh). 'gpg_bash_lib_function_displaytime'
-   ## rename pending refactoring.
-   gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty="$(gpg_bash_lib_function_displaytime "$current_minus_signed")"
-   [ -n "$gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty" ] || gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty="0 seconds"
+   ## gpg_bash_lib_function_displaytime and is_whole_number are provided by
+   ## helper-scripts (strings.bsh). The 'gpg_bash_lib_' prefix is a legacy
+   ## name; the downloader itself no longer depends on gpg-bash-lib (ported
+   ## to sq/sqop) but the helper function retains the old name until
+   ## helper-scripts renames it upstream.
+   sig_age_pretty="$(gpg_bash_lib_function_displaytime "$current_minus_signed")"
+   [ -n "${sig_age_pretty:-}" ] || sig_age_pretty="0 seconds"
 
    log notice "Digital signature (OpenPGP) verification ok."
 }
 
+## Read the cached signature-creation timestamp from the given cache
+## folder. Output is either a validated integer within [1, 4294967295] or
+## the empty string. Never emits an error on a missing or invalid file --
+## those just degrade the candidate to "absent".
+tb_read_cached_unixtime() {
+   local cache_folder="$1" value=""
+   if [ -f "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime" ]; then
+      value="$(read_integer_file "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime" 1 4294967295)" || value=""
+   fi
+   printf '%s' "$value"
+}
+
 tb_confirm_install() {
-   if [ "$tb_confirm_installation_skip" = "true" ]; then
+   if [ "${tb_confirm_installation_skip:-}" = "true" ]; then
       return 0
    fi
 
    local MSG question button answer type clock_hint
    local signature_freshness_msg signature_creation_msg
-   local last_used_gpg_bash_lib_output_signed_on_date
-   local last_used_gpg_bash_lib_output_signed_on_unixtime
-   local real_cache_folder
+   local last_used_sig_creation_date
+   local last_used_sig_creation_unixtime
+   local real_cache_folder secondary_cache_folder
+   local primary_unixtime secondary_unixtime effective_unixtime
    local strict_numeric
+   local sig_creation_date sig_freshness_detail
 
    if [ "${who_ami}" = 'tb-updater' ]; then
       real_cache_folder="${tb_global_binary_dir}/.cache/$tb_install_folder"
@@ -1822,65 +1954,124 @@ tb_confirm_install() {
       real_cache_folder="${tb_cache_folder}"
    fi
 
-   if [ -f "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_date" ]; then
-      last_used_gpg_bash_lib_output_signed_on_date="$(cat -- "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_date")" || true
-   fi
-   if [ -z "$last_used_gpg_bash_lib_output_signed_on_date" ]; then
-      last_used_gpg_bash_lib_output_signed_on_date="Unknown. Probably never downloaded a signature before."
+   ## Freshness baseline sources. Primary is always $real_cache_folder.
+   ## Direct-as-user invocations additionally consult
+   ## $tb_global_binary_dir/.cache/$tb_install_folder, which the
+   ## sandbox/postinst path maintains and sandbox-update-torbrowser makes
+   ## world-readable. When both are readable use whichever timestamp is
+   ## newer: the most recent signature this machine has already accepted is
+   ## the correct baseline for the downgrade/freeze check, regardless of
+   ## which account or invocation path observed it. Writes still go to
+   ## $tb_cache_folder; the sandbox persists its own copy separately, so the
+   ## fallback is read-only.
+   ##
+   ## Each candidate is read through read_integer_file (strings.bsh), which
+   ## enforces non-empty, strictly-numeric contents and numeric bounds. The
+   ## upper bound is the unsigned 32-bit Unix epoch max (year 2106) --
+   ## deliberately loose enough not to need maintenance and tight enough
+   ## that a tampered cache with an absurd far-future timestamp cannot make
+   ## every real signature look like a downgrade attack. Validation failure
+   ## degrades that candidate to "absent".
+   primary_unixtime="$(tb_read_cached_unixtime "$real_cache_folder")"
+   if ! [ "${who_ami}" = 'tb-updater' ] \
+      && ! [ "${tb_global_binary_dir}/.cache/${tb_install_folder}" = "$real_cache_folder" ]; then
+      secondary_cache_folder="${tb_global_binary_dir}/.cache/${tb_install_folder}"
+      secondary_unixtime="$(tb_read_cached_unixtime "$secondary_cache_folder")"
+   else
+      secondary_cache_folder=""
+      secondary_unixtime=""
    fi
 
-   if [ -f "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime" ]; then
-      last_used_gpg_bash_lib_output_signed_on_unixtime="$(cat -- "$real_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime")" || true
-   fi
-   if [ -z "$last_used_gpg_bash_lib_output_signed_on_unixtime" ]; then
-      last_used_gpg_bash_lib_output_signed_on_unixtime="unknown"
+   if [ -n "$secondary_unixtime" ] \
+      && { [ -z "$primary_unixtime" ] || [ "$secondary_unixtime" -gt "$primary_unixtime" ]; }; then
+      effective_unixtime="$secondary_unixtime"
+      log notice "Using system-wide freshness cache '$secondary_cache_folder' (newer than per-user cache '$real_cache_folder')."
+   elif [ -n "$primary_unixtime" ] && [ -n "$secondary_unixtime" ]; then
+      effective_unixtime="$primary_unixtime"
+      log notice "Using per-user freshness cache '$real_cache_folder' (at least as recent as system-wide cache '$secondary_cache_folder')."
+   elif [ -n "$primary_unixtime" ]; then
+      effective_unixtime="$primary_unixtime"
+      log notice "Using freshness cache '$real_cache_folder'."
+   else
+      effective_unixtime=""
+      ## The inner '$secondary_cache_folder' sits inside a double-quoted
+      ## log string; the single quotes around it are literal. shellcheck
+      ## reads the nested single quotes as delimiters.
+      # shellcheck disable=SC2016
+      log notice "No previously accepted signature timestamp found at '$real_cache_folder'${secondary_cache_folder:+ or '$secondary_cache_folder'}."
    fi
 
-   strict_numeric=""
-   if ! is_whole_number "$last_used_gpg_bash_lib_output_signed_on_unixtime"; then
+   ## Derive the display string from the validated integer rather than
+   ## reading the on-disk *_date file. The write side still maintains that
+   ## file for backward compatibility, but its contents are never
+   ## interpolated into the MSG HTML here, eliminating it as an injection
+   ## vector into the confirmation dialog's 'Previous Signature Creation
+   ## Date' cell.
+   if [ -n "$effective_unixtime" ]; then
+      last_used_sig_creation_unixtime="$effective_unixtime"
+      last_used_sig_creation_date="$(date --utc --date "@$effective_unixtime" '+%B %d %H:%M:%S UTC %Y')"
+   else
+      last_used_sig_creation_unixtime="unknown"
+      last_used_sig_creation_date="Unknown. Probably never downloaded a signature before."
+   fi
+   ## Defence-in-depth: bound the display string before MSG interpolation
+   ## even though the branches above only produce known-safe values. Any
+   ## future regression that fed a cache read back in here would still be
+   ## capped and stripped.
+   last_used_sig_creation_date="$(sanitize-string -- 64 "$last_used_sig_creation_date")"
+
+   if is_whole_number "$last_used_sig_creation_unixtime"; then
+      strict_numeric=true
+   else
       strict_numeric=false
    fi
    ## Already sanity checked in function 'tb_openpgp_verify.
-   is_whole_number "$gpg_bash_lib_output_signed_on_unixtime"
+   is_whole_number "$sig_creation_unixtime"
 
-   gpg_bash_lib_output_signed_on_date="$(date --utc --date "@$gpg_bash_lib_output_signed_on_unixtime" '+%B %d %H:%M:%S UTC %Y')"
+   sig_creation_date="$(date --utc --date "@$sig_creation_unixtime" '+%B %d %H:%M:%S UTC %Y')"
+   ## Defence-in-depth cap to match the treatment of
+   ## $last_used_sig_creation_date above. The 'date' output
+   ## here is known-safe on a validated integer, but capping keeps MSG
+   ## interpolations symmetrical and guards against future regressions.
+   sig_creation_date="$(sanitize-string -- 64 "$sig_creation_date")"
 
    if [ "$strict_numeric" = "false" ]; then
-      gpg_bash_lib_output_freshness_detail="skip"
+      sig_freshness_detail="skip"
       signature_freshness_msg="We have not previously accepted a signature yet (or signature timestamps are unavailable). Therefore assisted check for downgrade \
 or indefinite freeze attacks skipped. Please check if the Current Signature Creation Date looks sane."
       type="info"
    else
       ## strict_numeric is not 'false'
-      true "'$last_used_gpg_bash_lib_output_signed_on_unixtime' and '$gpg_bash_lib_output_signed_on_unixtime' are strictly numeric."
-      if [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" -lt "$gpg_bash_lib_output_signed_on_unixtime" ]; then
-         gpg_bash_lib_output_freshness_detail="current"
+      true "'$last_used_sig_creation_unixtime' and '$sig_creation_unixtime' are strictly numeric."
+      if [ "$last_used_sig_creation_unixtime" -lt "$sig_creation_unixtime" ]; then
+         sig_freshness_detail="current"
          signature_freshness_msg="The downloaded signature is newer than the last known signature as expected."
          type="info"
-      elif [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" -gt "$gpg_bash_lib_output_signed_on_unixtime" ]; then
-         gpg_bash_lib_output_freshness_detail="slow"
+      elif [ "$last_used_sig_creation_unixtime" -gt "$sig_creation_unixtime" ]; then
+         sig_freshness_detail="slow"
          signature_freshness_msg="<b>You are likely target of a downgrade attack</b>, SAY NO NOW! The downloaded signature is older than the last known signature. \
 Unless you are downgrading, you should abort now and try again later!"
          type="warning"
-      elif [ "$last_used_gpg_bash_lib_output_signed_on_unixtime" = "$gpg_bash_lib_output_signed_on_unixtime" ]; then
-         gpg_bash_lib_output_freshness_detail="current"
+      elif [ "${last_used_sig_creation_unixtime:-}" = "$sig_creation_unixtime" ]; then
+         sig_freshness_detail="current"
          signature_freshness_msg="<b>You could be target of an indefinite freeze attack!</b> The downloaded signature has the same creation date as the last known signature. \
 Unless you are re-installing the same version, you should abort now and try again later!"
          type="warning"
       else
-         error "last_used_gpg_bash_lib_output_signed_on_unixtime $last_used_gpg_bash_lib_output_signed_on_unixtime \
-neither -lt, -gt nor equals gpg_bash_lib_output_signed_on_unixtime $gpg_bash_lib_output_signed_on_unixtime"
+         error "last_used_sig_creation_unixtime $last_used_sig_creation_unixtime \
+neither -lt, -gt nor equals sig_creation_unixtime $sig_creation_unixtime"
          signature_freshness_msg="Signature freshness comparison unavailable."
          type="error"
       fi
    fi
 
-   clock_hint=""
    if [ -f /usr/share/whonix/marker ]; then
       clock_hint="In that case, please check your clock is correct."
+   else
+      clock_hint=""
    fi
 
-   case "$gpg_bash_lib_output_freshness_detail" in
+   case "$sig_freshness_detail" in
       "skip")
          signature_creation_msg="Signature creation age details are unavailable."
          ;;
@@ -1894,26 +2085,48 @@ neither -lt, -gt nor equals gpg_bash_lib_output_signed_on_unixtime $gpg_bash_lib
 <br></br>- this is an attack"
          ;;
       "current")
-         signature_creation_msg="According to your system clock, the signature was created $gpg_bash_lib_output_current_unixtime_minus_signed_on_unixtime_pretty ago."
+         signature_creation_msg="According to your system clock, the signature was created $sig_age_pretty ago."
          ;;
       *)
          signature_creation_msg="Signature creation age details are unavailable."
-         error "gpg_bash_lib_output_freshness_detail is neither slow, nor current, it is: '$gpg_bash_lib_output_freshness_detail'"
+         error "sig_freshness_detail is neither slow, nor current, it is: '$sig_freshness_detail'"
          return 1
          ;;
    esac
 
+   ## Trust classes of the values interpolated into the installation
+   ## confirmation dialog. Keep this list current when adding new fields so
+   ## the MSG body stays safe against future regressions:
+   ##   *_stripped                    -- sanitize-string-capped elsewhere
+   ##                                    (version-validator / tbbversion).
+   ##   $signature_freshness_msg,
+   ##   $signature_creation_msg       -- built from string literals + the
+   ##                                    already-validated unixtime above.
+   ##   $last_used_sig_creation_date,
+   ##   $sig_creation_date
+   ##                                 -- derived from a validated unixtime
+   ##                                    via 'date' and passed through
+   ##                                    sanitize-string -- 64; never read
+   ##                                    the *_date cache file here.
+   ##   $sqop_output_stripped,
+   ##   $sq_output_stripped            -- sanitize-string -- 1024 copies of
+   ##                                    the tool output. Never interpolate
+   ##                                    the raw $sqop_output / $sq_output.
+   ##   $tb_documentation_base_url_clearnet,
+   ##   $tb_wiki                      -- wrapper-supplied; constant per
+   ##                                    front-end, validated by the
+   ##                                    wrapper/config layer.
    MSG="<p><b>Installation confirmation</b></p><p><table><tr>
 <td>Currently installed version:</td><td><tt> <code>$tbb_locally_installed_version_stripped</code></tt></td></tr><tr>
 <td>Downloaded version         :</td><td><tt> <code>$tbb_version_stripped</code></tt></td></tr></table></p>
 <p>$signature_freshness_msg</p><p><table><tr>
-<td>Previous Signature Creation Date:</td><td><tt> <code>$last_used_gpg_bash_lib_output_signed_on_date</code></tt></td></tr><tr>
-<td>Last Signature Creation Date    :</td><td><tt> <code>$gpg_bash_lib_output_signed_on_date</code></tt></td></tr></table></p>
+<td>Previous Signature Creation Date:</td><td><tt> <code>$last_used_sig_creation_date</code></tt></td></tr><tr>
+<td>Last Signature Creation Date    :</td><td><tt> <code>$sig_creation_date</code></tt></td></tr></table></p>
 <p>$signature_creation_msg</p>
 <p><u>'sqop' reports</u>:<br></br>
-$sqop_output</p>
+$sqop_output_stripped</p>
 <p><u>'sq' reports</u>:<br></br>
-$sq_output</p>
+$sq_output_stripped</p>
 <p><a href=\"$tb_documentation_base_url_clearnet/wiki/$tb_wiki#Installation_Confirmation_Notification\">Learn more about this Installation Confirmation Notification.</a></p>"
 
    output_cli notice "$MSG"
@@ -1923,20 +2136,20 @@ $sq_output</p>
    button="yesno"
    question="Install now?"
 
-   if [ "$TB_INPUT" = "none" ]; then
+   if [ "${TB_INPUT:-}" = "none" ]; then
       true "INFO: TB_INPUT is set to '$TB_INPUT', continuing without asking."
    else
-      if [ "$TB_INPUT" = "stdin" ]; then
+      if [ "${TB_INPUT:-}" = "stdin" ]; then
          log question "QUESTION: $question
 y/n?"
          read -r answer
-         if [ ! "$answer" = "y" ]; then
+         if [ ! "${answer:-}" = "y" ]; then
             log notice "Canceled. Exit."
             tb_exit_function 14
          fi
       else
          answer="$(/usr/libexec/msgcollector/generic_gui_message "$type" "$TITLE" "$MSG" "$question" "$button")"
-         if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
+         if [ ! "${answer:-}" = "16384" ]; then ## Button 'Yes' has not been pressed.
             log notice "Canceled. Exit."
             tb_exit_function 14
          fi
@@ -1947,27 +2160,33 @@ y/n?"
    ## running under sandbox-update-torbrowser, we will have no permission to
    ## write to real_cache_folder directly. sandbox-update-torbrowser will move
    ## these files into real_cache_folder later.
-   overwrite "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_date" "$gpg_bash_lib_output_signed_on_date"
-   overwrite "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime" "$gpg_bash_lib_output_signed_on_unixtime"
+   overwrite "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_date" "$sig_creation_date"
+   overwrite "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime" "$sig_creation_unixtime"
 }
 
 tb_extract() {
-   if [ "$TB_NO_EXTRACT" = "true" ]; then
+   if [ "${TB_NO_EXTRACT:-}" = "true" ]; then
       true "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_EXTRACT is 'true', ok."
       return 0
    fi
 
-   if [ "$TB_FORCE_INSTALL" != "1" ]; then
+   if ! [ "${TB_FORCE_INSTALL:-}" = "1" ]; then
       progressbaridx="$(cat -- "/proc/sys/kernel/random/uuid")"
       tb_notify_msg="Extraction
 ----------------------------------------------------------------------
 Extracting $tb_title... This could take a moment..."
-      if [ "$TB_INPUT" = "" ] || [ "$TB_INPUT" = "gui" ]; then
-         output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
+   else
+      ## Same reset as tb_download_common: clear cross-function state.
+      progressbaridx=""
+   fi
+   if [ -n "$progressbaridx" ]; then
+      if [ "${TB_INPUT:-}" = "" ] || [ "${TB_INPUT:-}" = "gui" ]; then
+         output_gui "${output_opts[@]}" --progressbaridx "$progressbaridx" --progressbarx --parentpid "$$" --typex "info" --progressbartitlex "$TITLE" --message "$tb_notify_msg" --parentpid "$$" --done
       fi
    fi
 
    local timeout_after kill_after file_name
+   local lastpid pv_pid pv_wrapper_pid pv_exit_code pv_wrapper_exit_code tb_tar_exit_code MSG
    timeout_after="180"
    kill_after="30"
    file_name="$TBB_PACKAGE_FULL_PATH"
@@ -1992,7 +2211,7 @@ Extracting $tb_title... This could take a moment..."
 
    tb_tar_exit_code="0"
 
-   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+   if [ "${TB_FORCE_INSTALL:-}" = "1" ]; then
       timeout \
          --kill-after="$kill_after" \
          "$timeout_after" \
@@ -2007,8 +2226,10 @@ Extracting $tb_title... This could take a moment..."
       true "INFO: wait bsdtar lastpid"
       wait "$lastpid" || { tb_tar_exit_code="$?" ; true; };
    else
-     ## pv_echo_command is parsed using `eval`.
-     # shellcheck disable=SC2089
+     ## pv_echo_command is parsed using `eval` later. The single-quoted
+     ## '$percent' is kept literal on purpose so the eval picks up the
+     ## percent value from its own scope.
+     # shellcheck disable=SC2016,SC2089
       pv_echo_command='echo "extraction percent done: "$percent" / 100" >&2'
       # shellcheck disable=SC2090
       export pv_echo_command
@@ -2078,13 +2299,13 @@ Extracting $tb_title... This could take a moment..."
       true "INFO: wait pv_wrapper_pid"
       wait "$pv_wrapper_pid" || { pv_wrapper_exit_code="$?" ; true; };
 
-      if [ ! "$pv_exit_code" = "0" ]; then
+      if [ ! "${pv_exit_code:-}" = "0" ]; then
          tb_tar_exit_code="1"
       fi
-      if [ ! "$tar_exit_code" = "0" ]; then
+      if [ ! "${tar_exit_code:-}" = "0" ]; then
          tb_tar_exit_code="1"
       fi
-      if [ ! "$pv_wrapper_exit_code" = "0" ]; then
+      if [ ! "${pv_wrapper_exit_code:-}" = "0" ]; then
          tb_tar_exit_code="1"
       fi
    fi
@@ -2093,14 +2314,14 @@ Extracting $tb_title... This could take a moment..."
    ## - 124 if sigterm was sufficient
    ## - 137 if needed to use kill.
 
-   if [ "$progressbaridx" = "" ]; then
+   if [ "${progressbaridx:-}" = "" ]; then
       true
    else
-      output_gui ${output_opts[@]} --progressbaridx "$progressbaridx" --progressx "100" || true
+      output_gui "${output_opts[@]}" --progressbaridx "$progressbaridx" --progressx "100" || true
       progressbaridx=""
    fi
 
-   if [ ! "$tb_tar_exit_code" = "0" ]; then
+   if [ ! "${tb_tar_exit_code:-}" = "0" ]; then
       ## Debugging.
       ls -la "$tb_extract_temp_folder" || true
 
@@ -2113,7 +2334,7 @@ Extracting $tb_title... This could take a moment..."
 <br></br>pv_wrapper_exit_code: <code>$pv_wrapper_exit_code</code>)
 <br></br>
 <br></br>Please report this bug!</p>"
-      output_gui ${output_opts[@]} --messagex --typex "error" --message "$MSG" --done
+      output_gui "${output_opts[@]}" --messagex --typex "error" --message "$MSG" --done
 
       output_cli error "$MSG"
 
@@ -2128,7 +2349,7 @@ tb_patch_download_folder_create() {
 }
 
 tb_patch() {
-   if [ "$TB_NO_PATCH" = "true" ]; then
+   if [ "${TB_NO_PATCH:-}" = "true" ]; then
       true "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_PATCH is 'true', ok."
       return 0
    fi
@@ -2137,7 +2358,7 @@ tb_patch() {
 }
 
 tb_install() {
-   if [ "$TB_NO_INSTALL" = "true" ]; then
+   if [ "${TB_NO_INSTALL:-}" = "true" ]; then
       true "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_INSTALL is 'true', ok."
       return 0
    fi
@@ -2150,11 +2371,11 @@ tb_install() {
 }
 
 tb_cleanup() {
-   if [ "$TB_NO_INSTALL" = "true" ]; then
+   if [ "${TB_NO_INSTALL:-}" = "true" ]; then
       true "INFO: Skipping ${FUNCNAME[0]}, because TB_NO_INSTALL is 'true', ok."
       return 0
    fi
-   if [ "$TB_NO_CLEANUP" = "true" ]; then
+   if [ "${TB_NO_CLEANUP:-}" = "true" ]; then
       log notice "Skipping ${FUNCNAME[0]}, because TB_NO_CLEANUP is 'true', ok."
       return 0
    fi
@@ -2170,12 +2391,12 @@ tb_hardcoded_version_last_downloaded_save() {
 }
 
 tb_start_ask() {
-   if [ "$noaskstart" = "true" ]; then
+   if [ "${noaskstart:-}" = "true" ]; then
       true "INFO: noaskstart is set to 'true'. Skipping question if '$tb_title' should be started."
       return 0
    fi
 
-   if [ "$TB_FORCE_INSTALL" = "1" ]; then
+   if [ "${TB_FORCE_INSTALL:-}" = "1" ]; then
       log notice "Finished installing '$tb_title'. Can be found in folder '$tb_browser_folder'."
       log notice "Not starting '$tb_title', because variable TB_FORCE_INSTALL is set to '1'."
       return 0
@@ -2184,23 +2405,23 @@ tb_start_ask() {
    local has_torbrowser_exit_code="0"
    has "$tb_bin" || { has_torbrowser_exit_code="$?" ; true; };
 
-   if [ ! "$has_torbrowser_exit_code" = "0" ]; then
+   if [ ! "${has_torbrowser_exit_code:-}" = "0" ]; then
       log notice "'$tb_bin' binary not found in path. tb-starter is probably not installed. \
 Skipping question to start '$tb_title'."
       return 0
    fi
 
-   if [ "$noaskstart" = "false" ]; then
+   if [ "${noaskstart:-}" = "false" ]; then
       true "noaskstart is 'false'"
    else
-      if [ "$running_inside_qubes_template_vm" = "true" ] ; then
+      if [ "${running_inside_qubes_template_vm:-}" = "true" ] ; then
          MSG="<p>Finished installing '$tb_title'. Can be found in '$tb_browser_folder'.</p>
 
 <p>Not asking to start $tb_title, because running in a Template.</p>
 
 <p>To run '$tb_title', start an App Qube, Standalone or Disposable, then run:<br />
 <code>$tb_bin</code></p>"
-         output_gui ${output_opts[@]} --messagex --typex "info" --message "$MSG" --done
+         output_gui "${output_opts[@]}" --messagex --typex "info" --message "$MSG" --done
 
          output_cli notice "$MSG"
 
@@ -2216,16 +2437,16 @@ Skipping question to start '$tb_title'."
    local button="yesno"
    local answer
 
-   if [ "$TB_INPUT" = "none" ]; then
+   if [ "${TB_INPUT:-}" = "none" ]; then
       true "INFO: TB_INPUT is set to '$TB_INPUT'. Skipping question if $tb_title should be started."
       return 0
    fi
 
-   if [ "$TB_INPUT" = "stdin" ]; then
+   if [ "${TB_INPUT:-}" = "stdin" ]; then
       log question "QUESTION: $question
 y/n?"
       read -r answer
-      if [ ! "$answer" = "y" ]; then
+      if [ ! "${answer:-}" = "y" ]; then
          log notice "Canceled starting '$tb_title', ok."
       else
          $tb_bin
@@ -2235,7 +2456,7 @@ y/n?"
 
    log notice "GUI is asking to start $tb_title."
    answer="$(/usr/libexec/msgcollector/generic_gui_message "info" "$TITLE" "$MSG" "$question" "$button")"
-   if [ ! "$answer" = "16384" ]; then ## Button 'Yes' has not been pressed.
+   if [ ! "${answer:-}" = "16384" ]; then ## Button 'Yes' has not been pressed.
       log notice "Canceled starting '$tb_title', ok."
       return 0
    else
@@ -2260,7 +2481,7 @@ main_function() {
    tb_run_function tb_create_folders
    tb_run_function tb_local_version_detection
 
-   if [ "$tb_hard_reset" == "true" ]; then
+   if [ "${tb_hard_reset:-}" == "true" ]; then
       tb_run_function tb_kill_already_running_tb_maybe
       tb_run_function tb_version_processing
       tb_run_function tb_reset
@@ -2296,7 +2517,7 @@ main_function() {
    tb_run_function tb_start_ask
 }
 
-if [ "$tb_updater_was_sourced" = "true" ]; then
+if [ "${tb_updater_was_sourced}" = "true" ]; then
   true "INFO: Not running because it was sourced by another script."
 else
   true "INFO: Running because it was executed."

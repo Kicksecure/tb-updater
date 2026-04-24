@@ -3,11 +3,21 @@
 ## Copyright (C) 2012 - 2025 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
 ## See the file COPYING for copying conditions.
 
+## This file is 'source'd by update-torbrowser. Variables like
+## tbb_version_stripped, tbb_locally_installed_version_stripped and
+## tbb_recommended_versions_error are set here and consumed by the
+## sourcer. Conversely RecommendedTBBVersions, tbb_folder and
+## tb_local_version_file are set by the sourcer before calling our
+## functions. Both directions confuse shellcheck, which only sees one
+## file at a time.
+# shellcheck disable=SC2034,SC2154
+
 source /usr/libexec/helper-scripts/strings.bsh
 
 set_stripped_tbb_version() {
-   tbb_version_raw="$@"
-   ## AUDIT: string limit?
+   ## Join all positional arguments into a single raw string. Using "$*"
+   ## (not "$@") so shellcheck can see this is a scalar assignment.
+   tbb_version_raw="$*"
    tbb_version_stripped="$(sanitize-string -- 20 "$tbb_version_raw")"
 }
 
@@ -22,7 +32,7 @@ hexdump_file() {
 
 tbbversion() {
    local tbb_version_remote_file tbb_version_output_file \
-      tbb_parser_exit_code tbb_version_max_length tbb_version_length parsed_version_temp
+      tbb_parser_exit_code tbb_version_max_length tbb_version_length parsed_version
 
    command -v printf >/dev/null
    command -v /usr/libexec/tb-updater/version-parser >/dev/null
@@ -113,16 +123,20 @@ tbbversion() {
          ## At this point we trust the version string enough to load it - if
          ## it's not ridiculously long, and it's entirely 7-bit ASCII, the
          ## worst it could be is an invalid version number.
-         parsed_version_temp="$(stcat "${tbb_version_output_file}")"
+         parsed_version="$(stcat "${tbb_version_output_file}")"
          ## Thanks to:
          ## https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable/3352015#3352015
          ## for the leading/trailing whitespace removal code
-         ## Using 'nolimit' here but 'update-torbrowser' will set a limit.
-         parsed_version_temp="$(sanitize-string -- nolimit "$parsed_version_temp")"
-         parsed_version_temp="${parsed_version_temp#"${parsed_version_temp%%[![:space:]]*}"}" ## remove leading whitespace characters
-         parsed_version_temp="${parsed_version_temp%"${parsed_version_temp##*[![:space:]]}"}" ## remove trailing whitespace characters
+         ## Keep the limit local even though the file-size check above already
+         ## caps at $tbb_version_max_length and update-torbrowser re-limits
+         ## on the consumer side. Passing the explicit cap here makes the
+         ## bound self-contained so a future refactor of either side cannot
+         ## silently drop it.
+         parsed_version="$(sanitize-string -- "$tbb_version_max_length" "$parsed_version")"
+         parsed_version="${parsed_version#"${parsed_version%%[![:space:]]*}"}" ## remove leading whitespace characters
+         parsed_version="${parsed_version%"${parsed_version##*[![:space:]]}"}" ## remove trailing whitespace characters
 
-         if [ -z "$parsed_version_temp" ]; then
+         if [ -z "$parsed_version" ]; then
             set_stripped_tbb_version "UNKNOWN"
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser output empty.)"
@@ -135,7 +149,7 @@ tbbversion() {
          true "INFO: version-parser output not empty, ok."
 
          ## Use '&>/dev/null' to avoid output.
-         if ! check_is_not_empty_and_only_one_line parsed_version_temp &>/dev/null; then
+         if ! check_is_not_empty_and_only_one_line parsed_version &>/dev/null; then
             set_stripped_tbb_version "UNKNOWN"
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser output failed check_is_not_empty_and_only_one_line test.)"
@@ -148,7 +162,7 @@ tbbversion() {
          ## Regex-validate version to be absolutely sure it's valid.
          ## Should match versions like 14.0.2, 14.0a9, and 13.0.9-arm64, but
          ## reject malformed versions like 14.5:8 or 1.2..3.
-         if ! [[ "$parsed_version_temp" =~ ^([0-9a-z]+\.)+[0-9a-z]+(-arm64|-armhf)?$ ]]; then
+         if ! [[ "$parsed_version" =~ ^([0-9a-z]+\.)+[0-9a-z]+(-arm64|-armhf)?$ ]]; then
             set_stripped_tbb_version "UNKNOWN"
             tbb_recommended_versions_error="Rejected invalid RecommendedTBBVersions versions file. \
 (version-parser output does not look like a valid version number.)"
@@ -158,7 +172,7 @@ tbbversion() {
             return 0
          fi
 
-         set_stripped_tbb_version "$parsed_version_temp"
+         set_stripped_tbb_version "$parsed_version"
 
          safe-rm -- "${tbb_version_remote_file}"
          safe-rm -- "${tbb_version_output_file}"
@@ -241,16 +255,16 @@ tbbversion_checks_installed() {
       return 0
    fi
 
-   local tb_local_version_contents parsed_version_temp
+   local tb_local_version_contents parsed_version
    tb_local_version_contents="$(stcat "$tb_local_version_file")" || \
       { tbb_locally_installed_version="Reading version file <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
-   parsed_version_temp="$(jq -r ".version" <<< "$tb_local_version_contents")" || \
+   parsed_version="$(jq -r ".version" <<< "$tb_local_version_contents")" || \
       { tbb_locally_installed_version="Parsing version file (part 1) <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
-   parsed_version_temp="$(stecho "$parsed_version_temp" | xargs -- printf '%s\n')" || \
+   parsed_version="$(stecho "$parsed_version" | xargs -- printf '%s\n')" || \
       { tbb_locally_installed_version="Parsing version file (part 2) <code>$tb_local_version_file</code> failed. Please report this tb-updater Bug!" ; return 0; };
 
-   tbb_locally_installed_version="$parsed_version_temp"
+   tbb_locally_installed_version="$parsed_version"
    tbb_locally_installed_version_detect_success="true"
 }
