@@ -20,7 +20,7 @@
 ## -v prints update-torbrowser's full output for every scenario instead
 ## of only on failure.
 
-set -x
+#set -x
 set -o errexit
 set -o nounset
 set -o errtrace
