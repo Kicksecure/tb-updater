@@ -23,6 +23,7 @@
 ##                           Default: 1 day before now (inside the
 ##                           downloader's 3-month not-before window).
 
+set -x
 set -o errexit
 set -o nounset
 set -o errtrace
