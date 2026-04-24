@@ -243,6 +243,105 @@ scenario_invalid_signature_rejected() {
    assert_grep "error message mentions verification" "could NOT be verified" "$out_file"
 }
 
+scenario_tampered_tarball_rejected() {
+   ## Sign a clean tarball, then modify the tarball contents after
+   ## signing. The signature's hash no longer matches. sqop verify
+   ## rejects; the downloader bails the same way as for a corrupted
+   ## signature.
+   local fix
+   fix="$(fixture_dir_for tb)"
+   printf 'attacker-appended\n' \
+      >> "$fix/99.0.0/tor-browser-linux-x86_64-99.0.0.tar.xz"
+
+   local ec=0
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check \
+      || ec="$?"
+
+   ! [ "$ec" = 0 ] || die "[tampered tarball] downloader returned 0; expected non-zero"
+   assert_grep "error message mentions verification" "could NOT be verified" "$out_file"
+}
+
+scenario_wrong_signer_rejected() {
+   ## make-fixture --wrong-signer generates a second unrelated key and
+   ## signs with that, while saving the first key's cert as
+   ## test-key.asc. update-torbrowser verifies against the first cert,
+   ## which never issued the signature, and rejects.
+   local fix
+   fix="$(fixture_dir_for tb --wrong-signer)"
+
+   local ec=0
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check \
+      || ec="$?"
+
+   ! [ "$ec" = 0 ] || die "[wrong signer] downloader returned 0; expected non-zero"
+   assert_grep "error message mentions verification" "could NOT be verified" "$out_file"
+}
+
+scenario_signature_too_old_rejected() {
+   ## tb_openpgp_verify invokes 'sqop verify --not-before $(now - 3
+   ## months)'. Sign the tarball 6 months ago via faketime; the
+   ## resulting signature falls outside the window and sqop refuses
+   ## verification.
+   local fix
+   local six_months_ago
+   six_months_ago="$(date --utc --date='6 months ago' '+%Y-%m-%d %H:%M:%S')"
+   fix="$(fixture_dir_for old --signed-at "$six_months_ago")"
+
+   local ec=0
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check \
+      || ec="$?"
+
+   ! [ "$ec" = 0 ] || die "[too old sig] downloader returned 0; expected non-zero"
+   assert_grep "error message mentions verification" "could NOT be verified" "$out_file"
+}
+
+scenario_downgrade_attack_warning() {
+   ## Seed the per-user cache with a timestamp far in the future.
+   ## The fresh signature sits at "now", so the freshness comparison
+   ## sees "cached > current" and prints the downgrade-attack warning
+   ## in the confirmation dialog. TB_INPUT=none auto-confirms, the
+   ## install still completes, but the warning text must appear in
+   ## the captured output.
+   local fix cache_folder future_epoch
+   fix="$(fixture_dir_for tb)"
+   cache_folder="$(cache_folder_for tb)"
+   mkdir --parents -- "$cache_folder"
+   future_epoch="$(($(date --utc +%s) + 365 * 24 * 3600))"
+   printf '%s\n' "$future_epoch" \
+      > "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime"
+
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check
+
+   assert_grep "downgrade attack warning shown" \
+      "target of a downgrade attack" "$out_file"
+}
+
+scenario_freeze_attack_warning() {
+   ## Cache the exact signature timestamp of the fresh fixture.
+   ## update-torbrowser sees 'cached == current' and prints the
+   ## indefinite-freeze warning. Again TB_INPUT=none auto-confirms.
+   local fix cache_folder sig_unixtime sig_iso
+   fix="$(fixture_dir_for tb)"
+   cache_folder="$(cache_folder_for tb)"
+   mkdir --parents -- "$cache_folder"
+   ## sqop verify on success prints '<creation-time> <fingerprints> mode:<mode>'
+   ## on one line per signature. The first whitespace-delimited token
+   ## is the ISO timestamp.
+   sig_iso="$(sqop verify \
+      "$fix/99.0.0/tor-browser-linux-x86_64-99.0.0.tar.xz.asc" \
+      "$fix/test-key.asc" \
+      < "$fix/99.0.0/tor-browser-linux-x86_64-99.0.0.tar.xz" \
+      | head -n1 | awk '{print $1}')"
+   sig_unixtime="$(date --utc --date "$sig_iso" +%s)"
+   printf '%s\n' "$sig_unixtime" \
+      > "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime"
+
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check
+
+   assert_grep "indefinite freeze warning shown" \
+      "indefinite freeze attack" "$out_file"
+}
+
 scenario_wrapper_mullvad() {
    local fix cache_folder browser_folder
    fix="$(fixture_dir_for mullvad \
@@ -301,6 +400,11 @@ all_scenarios=(
    scenario_tampered_cache_rejected
    scenario_out_of_bounds_cache_rejected
    scenario_invalid_signature_rejected
+   scenario_tampered_tarball_rejected
+   scenario_wrong_signer_rejected
+   scenario_signature_too_old_rejected
+   scenario_downgrade_attack_warning
+   scenario_freeze_attack_warning
    scenario_wrapper_mullvad
    scenario_wrapper_i2p
    scenario_second_run_mullvad_cache_hit

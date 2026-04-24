@@ -56,9 +56,12 @@ jobs:
         run: |
           set -eux
           export DEBIAN_FRONTEND=noninteractive
+          ## faketime is used by make-fixture --signed-at for the
+          ## "signature too old" negative scenario.
           apt-get install -y --no-install-recommends \
             sq sqop libarchive-tools safe-rm \
-            curl jq psmisc pv iproute2 python3
+            curl jq psmisc pv iproute2 python3 \
+            faketime
 
       - name: Checkout tb-updater
         uses: actions/checkout@v6
