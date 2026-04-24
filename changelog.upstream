@@ -1,3 +1,126 @@
+commit a90ce8653e181062f53dc067ffafec98aab86275
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Apr 24 08:46:31 2026 -0400
+
+    CI
+
+commit e0bc4025a122d168bd0e44362c8d00d07746d438
+Merge: fcc65c5 992275d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Apr 24 08:44:52 2026 -0400
+
+    Merge remote-tracking branch 'assisted-by-ai/claude/ci-sqop-fixture-jnxuE'
+
+commit fcc65c5e58be5809960881dcf1a6c158f26e2a6c
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Apr 24 12:41:57 2026 +0000
+
+    bumped changelog version
+
+commit 992275d0e095926baf709a3b63d813fe6fc58d00
+Author: Claude <noreply@anthropic.com>
+Date:   Fri Apr 24 12:41:52 2026 +0000
+
+    Add negative test scenarios covering expected verification failures
+
+    Previously the self-test matrix verified the happy path (install
+    completes, cache persists, cross-context fallback, per-user cache
+    migration) plus a single "bad signature" rejection. This commit
+    adds coverage for the cases where the downloader MUST fail or
+    MUST warn:
+
+      - scenario_tampered_tarball_rejected
+        Sign a clean tarball, then append bytes to it after signing.
+        sqop verify sees a hash mismatch and exits non-zero; the
+        downloader bails with "could NOT be verified".
+
+      - scenario_wrong_signer_rejected
+        make-fixture gains a --wrong-signer flag that generates a
+        second unrelated key, signs the tarball with that second key,
+        but saves the first key's cert as test-key.asc. The downloader
+        verifies against a cert that never issued the signature and
+        rejects.
+
+      - scenario_signature_too_old_rejected
+        make-fixture gains a --signed-at flag that wraps the sqop
+        sign call in faketime at the supplied ISO timestamp. The
+        self-test uses "6 months ago", which is outside
+        tb_openpgp_verify's 3-month not-before window; sqop refuses
+        verification.
+
+        sqop also refuses to sign with a key that does not yet exist
+        at the faked sign time, so when --signed-at is set the key
+        itself is also generated under faketime at that same past
+        time. Both sides end up chronologically consistent from
+        sqop's point of view.
+
+      - scenario_downgrade_attack_warning
+        Seed the per-user cache with a timestamp 1 year in the future.
+        tb_confirm_install sees "cached > current" and prints the
+        downgrade-attack warning in the installation-confirmation
+        dialog. TB_INPUT=none auto-confirms, the install completes,
+        and the warning text is asserted present in the captured MSG
+        output.
+
+      - scenario_freeze_attack_warning
+        Extract the exact signature creation timestamp from the
+        fixture via 'sqop verify | awk', seed the per-user cache with
+        that value. tb_confirm_install sees "cached == current" and
+        prints the indefinite-freeze warning. Assert present.
+
+    Workflow changes:
+
+      - Add 'faketime' to the Debian trixie apt install list
+        (needed by make-fixture --signed-at).
+
+    End-to-end result with the new scenarios added to the matrix:
+
+        == self-test: 14 passed, 0 failed ==
+
+    The five new negative scenarios cover the three hard-fail paths
+    (bad signature content, wrong signer, old signature) and the two
+    soft-warn paths (downgrade-attack detection, indefinite-freeze
+    detection) the downloader is designed to catch. All five go
+    through real sqop invocations and the real update-torbrowser flow,
+    not stubs.
+
+commit f66ae21e055e4a27452b3a93baee3c913515d74a
+Author: Claude <noreply@anthropic.com>
+Date:   Fri Apr 24 12:28:11 2026 +0000
+
+    CI: switch make-fixture key-gen and signing from sq to sqop
+
+    The self-test fixture generator used 'sq --time TIME key generate
+    --userid EMAIL --expiry never --output FILE' and 'sq --time TIME
+    sign --detached --signer-file ...'. The sq CLI is not stable
+    across versions (sq 0.x vs 1.x shipped by Ubuntu noble vs Debian
+    trixie respectively). Specifically, 'sq key generate' on sq 1.x
+    does not accept the same --userid/--expiry/--output combination
+    and exits with code 2, which is what broke the first CI run.
+
+    sqop follows the Stateless OpenPGP (SOP) command-line spec, which
+    is stable across Sequoia versions and provides exactly the three
+    primitives the fixture needs:
+
+      sqop generate-key USERID > secret.key
+      sqop extract-cert < secret.key > public.key
+      sqop sign --as=binary secret.key < data > signature
+
+    Rewrite make-fixture to use those. As a side effect:
+
+      - The --signed-at flag and the key_created_at calculation are
+        removed. sqop signs at the current time; the downloader's
+        3-month not-before window is wide enough that no time
+        offset is needed.
+      - sq is no longer a runtime dependency of make-fixture, only
+        sqop, tar and xz.
+
+    Verified locally end-to-end: sqop verify accepts the resulting
+    signature and the full 9-scenario self-test passes against the
+    regenerated fixtures.
+
+        == self-test: 9 passed, 0 failed ==
+
 commit bb0947639b2f6302a71998c1e987f3ffc7b17243
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Apr 24 08:21:32 2026 -0400
