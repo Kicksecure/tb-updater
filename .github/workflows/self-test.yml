@@ -1,13 +1,14 @@
 ## Comprehensive self-test for update-torbrowser's signature-freshness
 ## cache logic. Exercises every cache state transition the bug-fix series
-## on this branch introduced (fresh install, cache hit, cross-context
-## fallback, rejected tampered cache, rejected out-of-bounds cache,
-## rejected invalid signature) and every wrapper (update-torbrowser,
+## on the downstream branch introduced (fresh install, cache hit,
+## cross-context fallback, rejected tampered cache, rejected out-of-bounds
+## cache, rejected invalid signature) and every wrapper (update-torbrowser,
 ## update-mullvadbrowser, update-i2pbrowser).
 ##
-## Runs on Debian trixie with the Kicksecure apt repository enabled so
-## helper-scripts, msgcollector-gui and the rest of the tb-updater
-## runtime match what production systems ship.
+## Runs in a Debian trixie container. genmkfile and helper-scripts are
+## installed from their upstream Kicksecure git repositories using the
+## project's own genmkfile install flow. No deb.kicksecure.com apt repo
+## is added.
 
 name: self-test
 
@@ -30,28 +31,32 @@ jobs:
           export DEBIAN_FRONTEND=noninteractive
           apt-get update
           apt-get install -y --no-install-recommends \
-            ca-certificates curl gnupg sudo adduser git
+            ca-certificates curl git sudo adduser
 
-      - name: Enable deb.kicksecure.com trixie repository
+      - name: Install genmkfile
         run: |
-          set -eux
-          install -d /etc/apt/keyrings
-          curl -fsSL https://deb.kicksecure.com/keys/derivative.asc \
-            | gpg --dearmor -o /etc/apt/keyrings/derivative.gpg
-          printf 'deb [signed-by=/etc/apt/keyrings/derivative.gpg] https://deb.kicksecure.com trixie main contrib non-free\n' \
-            > /etc/apt/sources.list.d/derivative.list
-          apt-get update
+          git clone --depth=1 https://github.com/Kicksecure/genmkfile.git /tmp/genmkfile
+          cd /tmp/genmkfile
+          sudo ./usr/bin/genmkfile deb-all-dep
+          sudo ./usr/bin/genmkfile install
 
-      - name: Install tb-updater runtime dependencies from Debian + Kicksecure
+      - name: Install helper-scripts
+        run: |
+          git clone --depth=1 https://github.com/Kicksecure/helper-scripts.git /tmp/helper-scripts
+          cd /tmp/helper-scripts
+          sudo genmkfile install
+
+      - name: Install msgcollector
+        run: |
+          git clone --depth=1 https://github.com/Kicksecure/msgcollector.git /tmp/msgcollector
+          cd /tmp/msgcollector
+          sudo genmkfile install
+
+      - name: Install tb-updater runtime dependencies from Debian
         run: |
           set -eux
           export DEBIAN_FRONTEND=noninteractive
-          ## Tracks debian/control Depends of tb-updater. helper-scripts
-          ## and msgcollector-gui come from deb.kicksecure.com; sq/sqop,
-          ## libarchive-tools, safe-rm, jq, pv, psmisc, iproute2 come
-          ## from Debian trixie.
           apt-get install -y --no-install-recommends \
-            helper-scripts msgcollector-gui \
             sq sqop libarchive-tools safe-rm \
             curl jq psmisc pv iproute2 python3
 
@@ -78,10 +83,7 @@ jobs:
           set -eux
           adduser --disabled-password --gecos '' tbtest
           ## The test scripts live in the repo checkout. tbtest needs to
-          ## be able to reach them through the working tree and to create
-          ## fixtures alongside them. The checkout directory and its
-          ## parents are owned by root in the runner's container; relax
-          ## the 'other' read+traverse bits on just the path prefix.
+          ## be able to reach them through the working tree.
           repo_path="$(pwd)"
           while [ "$repo_path" != "/" ]; do
             chmod o+rx "$repo_path"
