@@ -37,20 +37,20 @@ jobs:
         run: |
           git clone --depth=1 https://github.com/Kicksecure/genmkfile.git /tmp/genmkfile
           cd /tmp/genmkfile
-          sudo ./usr/bin/genmkfile deb-all-dep
-          sudo ./usr/bin/genmkfile install
+          sudo GENMKFILE_DEBUG=1 ./usr/bin/genmkfile deb-all-dep
+          sudo GENMKFILE_DEBUG=1 ./usr/bin/genmkfile install
 
       - name: Install helper-scripts
         run: |
           git clone --depth=1 https://github.com/Kicksecure/helper-scripts.git /tmp/helper-scripts
           cd /tmp/helper-scripts
-          sudo genmkfile install
+          sudo GENMKFILE_DEBUG=1 genmkfile install
 
       - name: Install msgcollector
         run: |
           git clone --depth=1 https://github.com/Kicksecure/msgcollector.git /tmp/msgcollector
           cd /tmp/msgcollector
-          sudo genmkfile install
+          sudo GENMKFILE_DEBUG=1 genmkfile install
 
       - name: Install tb-updater runtime dependencies from Debian
         run: |
