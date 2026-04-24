@@ -19,9 +19,12 @@
 ##   --browser-name <str>    Top-level dir inside the tarball and the
 ##                           installed-dir name, default "tor-browser".
 ##   --arch <str>            Arch token, default "linux-x86_64".
-##   --signed-at <iso>       Reference time for the signature. ISO 8601.
-##                           Default: 1 day before now (inside the
-##                           downloader's 3-month not-before window).
+##
+## Key generation and signing go through sqop (Stateless OpenPGP). sqop's
+## CLI follows the SOP spec and is stable across Sequoia versions,
+## whereas the sq CLI changed between 0.x and 1.x. The signature is
+## created at the current time; update-torbrowser's 3-month not-before
+## window is wide enough that no --time offset is needed.
 
 set -x
 set -o errexit
@@ -41,7 +44,6 @@ version="99.0.0"
 download_name="tor-browser"
 browser_name="tor-browser"
 arch="linux-x86_64"
-signed_at=""
 
 while [ $# -gt 0 ]; do
    case "$1" in
@@ -49,8 +51,7 @@ while [ $# -gt 0 ]; do
       --download-name) download_name="$2"; shift 2 ;;
       --browser-name) browser_name="$2"; shift 2 ;;
       --arch) arch="$2"; shift 2 ;;
-      --signed-at) signed_at="$2"; shift 2 ;;
-      --help|-h) sed -n '/^## Usage/,/^## Default/p' "$0" | sed 's/^## //;s/^##//'; exit 0 ;;
+      --help|-h) sed -n '/^## Usage/,/^## --arch/p' "$0" | sed 's/^## //;s/^##//'; exit 0 ;;
       --) shift; break ;;
       -*) die "unknown flag '$1'" ;;
       *) [ -z "$out_dir" ] || die "unexpected positional '$1'"; out_dir="$1"; shift ;;
@@ -59,17 +60,9 @@ done
 
 [ -n "$out_dir" ] || die "missing <output_dir> argument"
 
-command -v sq >/dev/null || die "sq not installed (Debian: sq)"
+command -v sqop >/dev/null || die "sqop not installed (Debian: sqop)"
 command -v tar >/dev/null || die "tar not installed"
 command -v xz >/dev/null || die "xz not installed"
-command -v date >/dev/null || die "date not installed"
-
-if [ -z "$signed_at" ]; then
-   signed_at="$(date --utc --date='1 day ago' '+%Y%m%dT%H%M%SZ')"
-fi
-## Reference time for key generation: 1 year before $signed_at so the key
-## is alive at the signing time regardless of sq's default 3-year expiry.
-key_created_at="$(date --utc --date "${signed_at:0:4}-${signed_at:4:2}-${signed_at:6:2} -1 year" '+%Y%m%dT%H%M%SZ')"
 
 mkdir --parents -- "$out_dir"
 out_dir="$(cd -- "$out_dir" && pwd)"
@@ -77,7 +70,6 @@ out_dir="$(cd -- "$out_dir" && pwd)"
 printf 'make-fixture: out_dir=%s\n' "$out_dir"
 printf 'make-fixture: version=%s download_name=%s browser_name=%s arch=%s\n' \
    "$version" "$download_name" "$browser_name" "$arch"
-printf 'make-fixture: key_created_at=%s signed_at=%s\n' "$key_created_at" "$signed_at"
 
 secret_key="$out_dir/test-key.sec"
 public_key="$out_dir/test-key.asc"
@@ -87,12 +79,8 @@ tarball_name="${download_name}-${arch}-${version}.tar.xz"
 tarball_path="$tarball_dir/$tarball_name"
 signature_path="${tarball_path}.asc"
 
-sq --time "$key_created_at" key generate \
-   --userid "<tb-updater-self-test@invalid>" \
-   --expiry never \
-   --output "$secret_key" \
-   >/dev/null 2>&1
-sq key extract-cert --output "$public_key" "$secret_key"
+sqop generate-key "<tb-updater-self-test@invalid>" > "$secret_key"
+sqop extract-cert < "$secret_key" > "$public_key"
 
 ## Build the payload tarball with enough structure for tb_extract +
 ## tb_install + the post-install version check.
@@ -123,11 +111,7 @@ DESKTOP
 mkdir --parents -- "$tarball_dir"
 tar -C "$stage_dir" -cJf "$tarball_path" "$(basename "$root_inside")"
 
-sq --time "$signed_at" sign --detached \
-   --signer-file "$secret_key" \
-   --output "$signature_path" \
-   "$tarball_path" \
-   >/dev/null 2>&1
+sqop sign --as=binary "$secret_key" < "$tarball_path" > "$signature_path"
 
 cat > "$versions_json" <<JSON
 {
