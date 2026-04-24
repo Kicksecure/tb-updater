@@ -32,7 +32,7 @@
 ## CLI follows the SOP spec and is stable across Sequoia versions,
 ## whereas the sq CLI changed between 0.x and 1.x.
 
-set -x
+#set -x
 set -o errexit
 set -o nounset
 set -o errtrace
