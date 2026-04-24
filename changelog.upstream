@@ -1,3 +1,213 @@
+commit 1785612da19bda7c0d94cdab56f4ec0d2d15d152
+Merge: 4cc670b 63513d5
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Apr 24 07:12:23 2026 -0400
+
+    Merge remote-tracking branch 'assisted-by-ai/claude/ci-git-installs-jnxuE'
+
+commit 63513d5e5e9e4ad2d3fd3a8a19098f940bd63eb3
+Author: Claude <noreply@anthropic.com>
+Date:   Fri Apr 24 11:03:48 2026 +0000
+
+    CI: install genmkfile, helper-scripts and msgcollector from git
+
+    Replaces the deb.kicksecure.com trixie apt source (added when the
+    self-test workflow first landed via the freshness-cache fix merge)
+    with upstream git clones built through the projects' own genmkfile
+    install flow. The CI container no longer pulls packages signed by
+    the derivative archive.
+
+    New workflow layout:
+
+      - Install apt pre-reqs (ca-certificates, curl, git, sudo, adduser).
+      - Clone Kicksecure/genmkfile and install via
+        'sudo ./usr/bin/genmkfile deb-all-dep' then
+        'sudo ./usr/bin/genmkfile install'.
+      - Clone Kicksecure/helper-scripts and install via
+        'sudo genmkfile install'. genmkfile is on PATH by now so the
+        bare command works.
+      - Clone Kicksecure/msgcollector and install the same way. The
+        earlier workflow stubbed the /usr/libexec/msgcollector/
+        binaries; this uses the real upstream files instead.
+      - Install the tb-updater runtime tools (sq, sqop,
+        libarchive-tools, safe-rm, curl, jq, psmisc, pv, iproute2,
+        python3) from Debian trixie's own apt.
+      - Checkout the tb-updater source, install from the checkout,
+        create the tbtest account, run .github/ci/make-fixture and
+        .github/ci/self-test under 'sudo -u tbtest env CI=true'.
+
+commit 4cc670b8673eb5c70601ab950e5624173c04d067
+Merge: 1754a80 4b47cfb
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Apr 24 06:49:17 2026 -0400
+
+    Merge remote-tracking branch 'assisted-by-ai/claude/fix-downloader-signature-jnxuE'
+
+commit 4b47cfbb69340b92778f7ecf3db07f12c8e23169
+Author: Claude <noreply@anthropic.com>
+Date:   Fri Apr 24 10:04:43 2026 +0000
+
+    Fix downloader signature freshness cache for all wrappers; harden helpers
+
+    Fixes a user-visible regression that caused update-mullvadbrowser and
+    update-i2pbrowser to print "we have not previously accepted a
+    signature yet" on every run, even after a successful prior install.
+
+    Root cause and fix
+    ------------------
+
+    sandbox-update-torbrowser hardcoded the Tor-Browser-specific paths
+    when copying the installed browser and its freshness cache back to
+    the system-wide cache. For update-torbrowser through the sandbox
+    this worked; for update-mullvadbrowser / update-i2pbrowser the
+    copy-back was silently skipped because the .tb/tor-browser guard
+    could never match the mullvadbrowser/i2pb install layout. The
+    freshness timestamp therefore never persisted, so
+    tb_confirm_install on the next run could not find a previously
+    accepted signature and printed the "never accepted" message.
+
+    Read tb_install_folder, tb_install_folder_dot, tb_browser_name and
+    tb_global_binary_dir from the caller's environment in
+    sandbox-update-torbrowser and drive root_browser_dir plus the
+    copy-back paths off them. Re-exec the original wrapper inside the
+    sandbox (whitelisted via SCRIPTNAME) so the wrapper re-establishes
+    its exports after setpriv --reset-env.
+
+    Freshness cache, newer-wins
+    ---------------------------
+
+    tb_confirm_install now reads the per-user cache from $tb_cache_folder
+    and, when not running as the tb-updater user, also reads the
+    system-wide cache under $tb_global_binary_dir/.cache/$tb_install_folder
+    (world-readable via the sandbox chmod). Whichever side has the newer
+    validated timestamp becomes the baseline for the downgrade/freeze
+    check. The reverse direction is intentionally not added since a
+    sandbox run would have to pick a user and trust that user's cache
+    for a system-wide install. Writes still go to $tb_cache_folder only.
+
+    Cache-read hardening
+    --------------------
+
+    Introduced tb_read_cached_unixtime which passes each candidate
+    through strings.bsh's read_integer_file with bounds [1, 4294967295]
+    (Unix 32-bit epoch max, year 2106). Non-numeric, empty, or
+    out-of-range values are rejected so a tampered cache cannot make
+    every real signature look like a downgrade attack. The display
+    string is derived from the validated integer via 'date' rather than
+    from the on-disk *_date file, removing that file as an
+    HTML-injection vector into the confirmation dialog. The file is
+    still maintained for backward compatibility. On-disk file names are
+    unchanged (last_used_gpg_bash_lib_output_signed_on_{date,unixtime});
+    only the bash variable names were updated in code.
+
+    Dialog-body and env hardening
+    -----------------------------
+
+    - sqop verify and sq verify outputs are copied into *_stripped
+      variables via sanitize-string -- 1024 before any MSG
+      interpolation; the raw *_output is kept only for the
+      sig_creation_time parse that depends on its format.
+    - $tb_settings_folder is regex-validated before it can traverse
+      into /etc or /usr/local/etc .conf paths that get sourced.
+    - dispvm validates user_name from qubesdb against a POSIX-style
+      regex before pasting it into mkdir / chown / mount arguments.
+    - sandbox-update-torbrowser's SCRIPTNAME case statement now
+      defaults to /usr/bin/update-torbrowser first and overwrites only
+      on a whitelist hit.
+
+    Variable naming and shell-options pass
+    --------------------------------------
+
+    - Legacy 'gpg_bash_lib_*' variable names removed (downloader no
+      longer depends on gpg-bash-lib; ported to sq/sqop). Convention
+      documented at the top of update-torbrowser:
+      _raw / _stripped / _unixtime / _pretty / unsuffixed.
+    - parsed_version_temp -> parsed_version in version-validator.
+    - sqop_output_display -> sqop_output_stripped (and sq_output_*) so
+      the "sanitize-string output" suffix is consistent with
+      tbb_version_stripped.
+    - All executed bash scripts now set errexit, nounset, errtrace and
+      pipefail. version-validator and tb-extract keep their test/sourced
+      semantics where appropriate.
+    - Retrofitted nounset surfaced hazards in update-torbrowser and the
+      wrappers (argv loop, curl flag expansions, qubesdb read, a couple
+      of unset-var paths). Fixed at the expansion sites with the
+      '${VAR:-}' form rather than pre-initializing placeholders.
+    - Drop redundant empty-string inits where every code path already
+      assigns: effective_unixtime, strict_numeric, verification_success,
+      primary_unixtime, clock_hint. progressbaridx now always assigns
+      on both the TB_FORCE_INSTALL and !=1 branches in tb_download_common
+      and tb_extract; this also closes a latent bug where a UUID from a
+      previous non-force call leaked into a later force call.
+    - Localize function-scoped variables (MSG, signal-handler locals,
+      sig_creation_date, sig_freshness_detail, sig_max_age_seconds,
+      tb_extract's lastpid / pv_pid / pv_wrapper_pid / *_exit_code /
+      tb_tar_exit_code).
+    - Remove dead assignments (EXIT_CODE on curl-not-found branch,
+      tb_download_attempt_success, effective_cache_folder).
+    - Prefer 'if ! [ "$x" = "val" ]' over 'if [ "$x" != "val" ]' on
+      sites this branch touches (verification_success, who_ami,
+      TB_FORCE_INSTALL, cross-context fallback guard, self-test
+      invalid-sig assertion).
+
+    --danger-insecure-self-test and CI coverage
+    -------------------------------------------
+
+    New flag --danger-insecure-self-test <fixture_dir> points the
+    signing key, download URLs, recommended-versions feed and
+    connectivity probe at a local fixture directory via file://. The
+    flag name is deliberately obscure and prints a multi-line banner
+    because the mode overwrites the real browser install. Under the
+    flag, sq cert lint and sq verify can be swapped for the 'echo'
+    no-op via sq_cert_lint_binary / sq_verify_binary so the self-test
+    runs on hosts whose sq predates the 1.x CLI.
+
+    .github/ci/make-fixture generates an sq-signed tarball, matching
+    RecommendedTBBVersions JSON and test cert per wrapper. Supports
+    --download-name, --browser-name, --arch, --signed-at for the
+    scenarios. trap cleanup uses safe-rm --recursive --force --.
+
+    .github/ci/self-test runs each scenario in an isolated temp HOME.
+    Scenarios cover fresh install (all three wrappers), second-run
+    cache hit (including the regression test for the mullvad bug),
+    cross-context fallback, tampered cache rejection, out-of-bounds
+    cache rejection, and invalid signature rejection. Both scripts
+    refuse to run unless CI=true so they cannot be mis-invoked from a
+    shipping install. They live in .github/ci/ only and never ship in
+    the Debian package.
+
+    .github/workflows/self-test.yml runs on push and PR in a
+    debian:trixie container with the deb.kicksecure.com trixie repo
+    enabled, installs helper-scripts and msgcollector-gui from
+    Kicksecure apt and the remaining runtime deps from Debian trixie,
+    drops to an unprivileged tbtest account, and runs the self-test
+    with CI=true. actions/checkout@v6.
+
+    Shellcheck
+    ----------
+
+    All thirteen shell scripts in the repository now pass
+    'shellcheck -x' with zero findings. Suppressions used only for
+    unavoidable false positives (SC1091 for dynamically-sourced files;
+    SC2154 for variables set by sourced helpers; SC2086 at the curl
+    argv where word-splitting of multi-word flag strings is
+    intentional; SC2016 for a log line with literal nested single
+    quotes and for pv_echo_command's eval-later literal); each
+    suppression carries a comment explaining why.
+
+    Self-test result:
+
+        == self-test: 9 passed, 0 failed ==
+
+    Repository and full commit-message corpus on this branch are pure
+    ASCII.
+
+commit 1754a800b9d281c0d56d2efd3657cd97d8373a1f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Apr 22 13:17:38 2026 +0000
+
+    bumped changelog version
+
 commit 22f96a0fa8939087971b9e3d79bd70403bd50870
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Apr 22 06:20:22 2026 -0400
