@@ -1,0 +1,109 @@
+## Comprehensive self-test for update-torbrowser's signature-freshness
+## cache logic. Exercises every cache state transition the bug-fix series
+## on this branch introduced (fresh install, cache hit, cross-context
+## fallback, rejected tampered cache, rejected out-of-bounds cache,
+## rejected invalid signature) and every wrapper (update-torbrowser,
+## update-mullvadbrowser, update-i2pbrowser).
+##
+## Runs on Debian trixie with the Kicksecure apt repository enabled so
+## helper-scripts, msgcollector-gui and the rest of the tb-updater
+## runtime match what production systems ship.
+
+name: self-test
+
+on:
+  push:
+    branches: [master, 'claude/**']
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  self-test:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:trixie
+    steps:
+      - name: Install apt pre-reqs
+        run: |
+          set -eux
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            ca-certificates curl gnupg sudo adduser git
+
+      - name: Enable deb.kicksecure.com trixie repository
+        run: |
+          set -eux
+          install -d /etc/apt/keyrings
+          curl -fsSL https://deb.kicksecure.com/keys/derivative.asc \
+            | gpg --dearmor -o /etc/apt/keyrings/derivative.gpg
+          printf 'deb [signed-by=/etc/apt/keyrings/derivative.gpg] https://deb.kicksecure.com trixie main contrib non-free\n' \
+            > /etc/apt/sources.list.d/derivative.list
+          apt-get update
+
+      - name: Install tb-updater runtime dependencies from Debian + Kicksecure
+        run: |
+          set -eux
+          export DEBIAN_FRONTEND=noninteractive
+          ## Tracks debian/control Depends of tb-updater. helper-scripts
+          ## and msgcollector-gui come from deb.kicksecure.com; sq/sqop,
+          ## libarchive-tools, safe-rm, jq, pv, psmisc, iproute2 come
+          ## from Debian trixie.
+          apt-get install -y --no-install-recommends \
+            helper-scripts msgcollector-gui \
+            sq sqop libarchive-tools safe-rm \
+            curl jq psmisc pv iproute2 python3
+
+      - name: Checkout tb-updater
+        uses: actions/checkout@v6
+
+      - name: Install tb-updater from checkout
+        run: |
+          set -eux
+          install -m 0755 -t /usr/bin \
+            usr/bin/update-torbrowser \
+            usr/bin/update-mullvadbrowser \
+            usr/bin/update-i2pbrowser
+          install -d /usr/libexec/tb-updater
+          cp -r usr/libexec/tb-updater/. /usr/libexec/tb-updater/
+          install -d /usr/share/tb-updater
+          cp -r usr/share/tb-updater/. /usr/share/tb-updater/
+          install -d /usr/share/torbrowser-updater-keys.d
+          cp -r usr/share/torbrowser-updater-keys.d/. \
+                /usr/share/torbrowser-updater-keys.d/
+
+      - name: Create an unprivileged test account
+        run: |
+          set -eux
+          adduser --disabled-password --gecos '' tbtest
+          ## The test scripts live in the repo checkout. tbtest needs to
+          ## be able to reach them through the working tree and to create
+          ## fixtures alongside them. The checkout directory and its
+          ## parents are owned by root in the runner's container; relax
+          ## the 'other' read+traverse bits on just the path prefix.
+          repo_path="$(pwd)"
+          while [ "$repo_path" != "/" ]; do
+            chmod o+rx "$repo_path"
+            repo_path="$(dirname -- "$repo_path")"
+          done
+          chown -R tbtest:tbtest .github/ci
+
+      - name: Smoke-test make-fixture
+        run: |
+          set -eux
+          sudo -u tbtest env CI=true .github/ci/make-fixture /tmp/smoke-fix
+          sudo -u tbtest sqop verify \
+            /tmp/smoke-fix/99.0.0/tor-browser-linux-x86_64-99.0.0.tar.xz.asc \
+            /tmp/smoke-fix/test-key.asc \
+            < /tmp/smoke-fix/99.0.0/tor-browser-linux-x86_64-99.0.0.tar.xz
+
+      - name: Run self-test (all scenarios)
+        run: |
+          sudo -u tbtest env CI=true .github/ci/self-test -v
+
+      - name: Show generated caches on failure
+        if: failure()
+        run: |
+          set +e
+          find /tmp/tb-selftest.* 2>/dev/null | head -80 || true

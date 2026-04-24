@@ -5,15 +5,17 @@
 
 set -x
 true "$0: START"
-set -e
+set -o errexit
 set -o nounset
+set -o errtrace
 set -o pipefail
 
 source /usr/bin/update-torbrowser
 
-export who_ami="$(whoami)"
+who_ami="$(whoami)"
+export who_ami
 TEMP_DIR="$(mktemp --directory)"
-IDENTIFIER=test
+IDENTIFIER="test"
 export IDENTIFIER
 tb_extract_temp_folder=/tmp/test
 TBB_PACKAGE_FULL_PATH=/tmp/test/test.tar.xz

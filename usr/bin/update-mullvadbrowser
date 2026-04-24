@@ -3,7 +3,13 @@
 ## Copyright (C) 2012 - 2025 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
 ## See the file COPYING for copying conditions.
 
-export SCRIPTNAME="$(basename "$BASH_SOURCE")"
+set -o errexit
+set -o nounset
+set -o errtrace
+set -o pipefail
+
+SCRIPTNAME="$(basename -- "${BASH_SOURCE[0]}")"
+export SCRIPTNAME
 
 export ICON="/usr/share/icons/icon-pack-dist/tbupdate.ico"
 
