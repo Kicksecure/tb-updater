@@ -20,15 +20,17 @@ set -o pipefail
 export DEBIAN_FRONTEND=noninteractive
 
 ## Forward the host's TLS-inspection CAs, if any, so git/curl inside
-## the container trust the same egress proxy the host does.
+## the container trust the same egress proxy the host does. Copy the
+## whole tree so CAs nested in subdirectories (a common
+## update-ca-certificates layout) are preserved.
 mkdir -p /usr/local/share/ca-certificates
-if [ -d /host-ca ] && compgen -G '/host-ca/*.crt' >/dev/null; then
-   cp -f /host-ca/*.crt /usr/local/share/ca-certificates/
+if [ -d /host-ca ]; then
+   cp -a /host-ca/. /usr/local/share/ca-certificates/
 fi
 
 apt-get update >/dev/null
 apt-get install -y --no-install-recommends \
-   ca-certificates curl git sudo adduser build-essential >/dev/null
+   ca-certificates curl git sudo adduser build-essential dctrl-tools >/dev/null
 update-ca-certificates >/dev/null 2>&1 || true
 
 git clone --depth=1 https://github.com/Kicksecure/genmkfile.git /tmp/genmkfile
