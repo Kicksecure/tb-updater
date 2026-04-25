@@ -1,3 +1,67 @@
+commit 2834fb9ce659c84b35b0efad69ecb2b9f4f85911
+Merge: 013379a 74c2e8e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Apr 25 05:47:40 2026 -0400
+
+    Merge remote-tracking branch 'assisted-by-ai/claude/ci-sqop-tests-jnxuE'
+
+commit 74c2e8ed2749118557d6ed15126de7db6599d883
+Author: Claude <noreply@anthropic.com>
+Date:   Sat Apr 25 09:34:49 2026 +0000
+
+    ci: local rehearsal harness, install tb-updater via genmkfile
+
+    Adds a local docker-based rehearsal of the GitHub Actions
+    self-test workflow and switches the workflow's tb-updater install
+    step to use the project's own genmkfile install target instead of
+    open-coding install/cp commands.
+
+    New files:
+
+      .github/ci/ci-rehearsal
+        Wrapper that picks a base image, bind-mounts the checkout
+        plus any host TLS-inspection CAs, and hands off to the inner
+        script. Defaults to ubuntu:plucky which ships sq 1.2.x and
+        sqop 0.36.x, the same major version class Debian trixie uses
+        in the actual CI job. Override with 'debian:trixie' on a
+        workstation with the apt connectivity for it.
+
+      .github/ci/ci-rehearsal-inner
+        Standalone container-side script. Mirrors
+        .github/workflows/self-test.yml step-for-step: forwards host
+        /usr/local/share/ca-certificates into the container trust
+        store, installs genmkfile / helper-scripts / msgcollector
+        from their Kicksecure git repositories, installs sq / sqop /
+        libarchive-tools / safe-rm / curl / jq / psmisc / pv /
+        iproute2 / python3 / faketime from apt, runs 'genmkfile
+        install' on the tb-updater checkout, creates an unprivileged
+        tbtest account and runs .github/ci/self-test under CI=true.
+
+    Other changes:
+
+      .github/workflows/self-test.yml
+        The 'Install tb-updater from checkout' step is now just
+        'sudo genmkfile install', matching what the rehearsal does
+        and what the Debian packaging itself runs.
+
+      .github/ci/make-fixture and .github/ci/self-test
+        Re-enable 'set -x' for both so failures in CI logs show the
+        failing command line, not just the assertion message.
+
+    Verified end-to-end via the rehearsal:
+
+        == self-test: 14 passed, 0 failed ==
+
+    against sq 1.2.0 and sqop 0.36.1 in ubuntu:plucky, with
+    tb-updater installed through 'genmkfile install' rather than
+    hand-rolled install/cp.
+
+commit 013379a05abc7d9f50869992fa1b4caa56111e1e
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Apr 25 09:28:17 2026 +0000
+
+    bumped changelog version
+
 commit 225bebfd020d225912d75754098b3f0020f397ac
 Merge: b62b86f 131b41a
 Author: Patrick Schleizer <adrelanos@whonix.org>
