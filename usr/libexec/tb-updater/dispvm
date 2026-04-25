@@ -4,7 +4,10 @@
 ## See the file COPYING for copying conditions.
 
 set -x
-set -e
+set -o errexit
+set -o nounset
+set -o errtrace
+set -o pipefail
 
 ## The account "user" fallback is intentional.
 ## The sysmaint session is not supposed to run Tor Browser.
@@ -19,6 +22,15 @@ if command -v qubesdb-read &>/dev/null ; then
    qubes_vm_persistence="$(qubesdb-read /qubes-vm-persistence)"
    if ! user_name=$(qubesdb-read /default-user) ; then
       printf '%s\n' "$0: WARNING: failed to run 'qubesdb-read /default-user', falling back to user_name=user"
+      user_name=user
+   fi
+   ## qubesdb is trusted in the Qubes model but the returned value is
+   ## about to be pasted into mkdir/chown/mount path arguments. Reject
+   ## anything that is not a plain POSIX-style account name so a stray
+   ## value cannot traverse out of /home or create mount points at
+   ## attacker-chosen locations.
+   if ! [[ "$user_name" =~ ^[a-z_][a-z0-9_-]{0,31}$ ]]; then
+      printf '%s\n' "$0: WARNING: qubesdb '/default-user' returned unsafe value '$user_name', falling back to user_name=user"
       user_name=user
    fi
 else

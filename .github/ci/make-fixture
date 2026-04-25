@@ -1,0 +1,174 @@
+#!/bin/bash
+
+## Copyright (C) 2026 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
+## See the file COPYING for copying conditions.
+
+## Generates a self-test fixture directory for update-torbrowser's
+## --danger-insecure-self-test mode. Produces an OpenPGP signing keypair,
+## a minimal "Browser" tarball, a detached signature, and a JSON
+## recommended-versions file, all sized to exercise the real verification
+## and cache code paths without contacting any network.
+##
+## Usage:
+##   make-fixture <output_dir> [options]
+##
+## Options:
+##   --version <str>         Version string to embed, default "99.0.0".
+##   --download-name <str>   Tarball name prefix, default "tor-browser".
+##                           Mullvad uses "mullvad-browser".
+##   --browser-name <str>    Top-level dir inside the tarball and the
+##                           installed-dir name, default "tor-browser".
+##   --arch <str>            Arch token, default "linux-x86_64".
+##   --signed-at <iso>       Force the signature creation time via
+##                           faketime (e.g. '2024-01-01 00:00:00').
+##                           Default: signature at the current time.
+##   --wrong-signer          Generate two keys. Sign the tarball with
+##                           the second key but save the first key's
+##                           cert as test-key.asc. update-torbrowser
+##                           will then verify against a cert that did
+##                           not issue the signature and reject it.
+##
+## Key generation and signing go through sqop (Stateless OpenPGP). sqop's
+## CLI follows the SOP spec and is stable across Sequoia versions,
+## whereas the sq CLI changed between 0.x and 1.x.
+
+#set -x
+set -o errexit
+set -o nounset
+set -o errtrace
+set -o pipefail
+
+if ! [ "${CI:-}" = "true" ]; then
+  printf '%s\n' "$0: These tests are only supposed to run on CI." >&2
+  exit 1
+fi
+
+die() { printf 'make-fixture: ERROR: %s\n' "$*" >&2; exit 1; }
+
+out_dir=""
+version="99.0.0"
+download_name="tor-browser"
+browser_name="tor-browser"
+arch="linux-x86_64"
+signed_at=""
+wrong_signer="false"
+
+while [ $# -gt 0 ]; do
+   case "$1" in
+      --version) version="$2"; shift 2 ;;
+      --download-name) download_name="$2"; shift 2 ;;
+      --browser-name) browser_name="$2"; shift 2 ;;
+      --arch) arch="$2"; shift 2 ;;
+      --signed-at) signed_at="$2"; shift 2 ;;
+      --wrong-signer) wrong_signer="true"; shift ;;
+      --help|-h) sed -n '/^## Usage/,/^## whereas/p' "$0" | sed 's/^## //;s/^##//'; exit 0 ;;
+      --) shift; break ;;
+      -*) die "unknown flag '$1'" ;;
+      *) [ -z "$out_dir" ] || die "unexpected positional '$1'"; out_dir="$1"; shift ;;
+   esac
+done
+
+[ -n "$out_dir" ] || die "missing <output_dir> argument"
+
+command -v sqop >/dev/null || die "sqop not installed (Debian: sqop)"
+command -v tar >/dev/null || die "tar not installed"
+command -v xz >/dev/null || die "xz not installed"
+if [ -n "$signed_at" ]; then
+   command -v faketime >/dev/null || die "faketime not installed (Debian: faketime) but --signed-at was supplied"
+fi
+
+mkdir --parents -- "$out_dir"
+out_dir="$(cd -- "$out_dir" && pwd)"
+
+printf 'make-fixture: out_dir=%s\n' "$out_dir"
+printf 'make-fixture: version=%s download_name=%s browser_name=%s arch=%s\n' \
+   "$version" "$download_name" "$browser_name" "$arch"
+printf 'make-fixture: signed_at=%s wrong_signer=%s\n' \
+   "${signed_at:-<now>}" "$wrong_signer"
+
+secret_key="$out_dir/test-key.sec"
+public_key="$out_dir/test-key.asc"
+versions_json="$out_dir/recommended-versions.json"
+tarball_dir="$out_dir/$version"
+tarball_name="${download_name}-${arch}-${version}.tar.xz"
+tarball_path="$tarball_dir/$tarball_name"
+signature_path="${tarball_path}.asc"
+
+## If --signed-at pins the signature into the past, also generate the
+## key in the past so sqop sees the key as "already created" at the
+## faked signing time. Without this, sqop refuses the sign with "Key
+## not signing-capable".
+key_gen_prefix=()
+if [ -n "$signed_at" ]; then
+   key_gen_prefix=( faketime "$signed_at" )
+fi
+
+## Primary signing key. Always written so the trusted-cert file
+## (public_key -> test-key.asc) exists for update-torbrowser.
+"${key_gen_prefix[@]}" \
+   sqop generate-key "<tb-updater-self-test-primary@invalid>" > "$secret_key"
+sqop extract-cert < "$secret_key" > "$public_key"
+
+if [ "$wrong_signer" = "true" ]; then
+   ## Generate a second, unrelated key and sign with that. The trusted
+   ## cert on disk ($public_key) still comes from the primary, so the
+   ## downloader's verification looks up the signer's fingerprint
+   ## against a cert that never issued the signature and fails.
+   signing_key="$out_dir/wrong-signer.sec"
+   "${key_gen_prefix[@]}" \
+      sqop generate-key "<tb-updater-self-test-attacker@invalid>" > "$signing_key"
+else
+   signing_key="$secret_key"
+fi
+
+## Build the payload tarball with enough structure for tb_extract +
+## tb_install + the post-install version check.
+stage_dir="$(mktemp -d)"
+trap 'safe-rm --recursive --force -- "$stage_dir"' EXIT
+
+root_inside="$stage_dir/${browser_name}_self-test"
+mkdir --parents -- "$root_inside/Browser/Downloads"
+cat > "$root_inside/Browser/tbb_version.json" <<JSON
+{
+   "version": "$version"
+}
+JSON
+cat > "$root_inside/Browser/version.json" <<JSON
+{
+   "version": "$version"
+}
+JSON
+## Provide a fake entry point so scripts that poke at the tree do not
+## error out when it is missing.
+cat > "$root_inside/start-tor-browser.desktop" <<DESKTOP
+[Desktop Entry]
+Name=$browser_name self-test
+Exec=/bin/true
+Type=Application
+DESKTOP
+
+mkdir --parents -- "$tarball_dir"
+tar -C "$stage_dir" -cJf "$tarball_path" "$(basename "$root_inside")"
+
+if [ -n "$signed_at" ]; then
+   ## faketime's first positional is the timestamp; no end-of-options
+   ## marker is accepted between --switches and the timestamp.
+   faketime "$signed_at" \
+      sqop sign --as=binary "$signing_key" < "$tarball_path" > "$signature_path"
+else
+   sqop sign --as=binary "$signing_key" < "$tarball_path" > "$signature_path"
+fi
+
+cat > "$versions_json" <<JSON
+{
+   "version": "$version",
+   "binary": "file://$tarball_path",
+   "sig": "file://$signature_path"
+}
+JSON
+
+printf 'make-fixture: done\n'
+printf '  public key : %s\n' "$public_key"
+printf '  versions   : %s\n' "$versions_json"
+printf '  tarball    : %s\n' "$tarball_path"
+printf '  signature  : %s\n' "$signature_path"

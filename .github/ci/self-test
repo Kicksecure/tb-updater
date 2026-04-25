@@ -1,0 +1,446 @@
+#!/bin/bash
+
+## Copyright (C) 2026 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
+## See the file COPYING for copying conditions.
+
+## End-to-end self-test for update-torbrowser's signature-freshness cache
+## logic. Uses the --danger-insecure-self-test flag so the download path
+## reads from a local fixture directory (file://) instead of touching
+## dist.torproject.org. Each scenario runs in an isolated temp HOME so
+## nothing on the host is mutated.
+##
+## Requires: sq, sqop, safe-rm, bsdtar (libarchive-tools), curl, jq, and
+## an installed helper-scripts package. The make-fixture script next to
+## this one produces each fixture.
+##
+## Usage:
+##   self-test [-v]
+##   self-test [-v] <scenario_name> [scenario_name ...]
+##
+## -v prints update-torbrowser's full output for every scenario instead
+## of only on failure.
+
+#set -x
+set -o errexit
+set -o nounset
+set -o errtrace
+set -o pipefail
+
+if ! [ "${CI:-}" = "true" ]; then
+  printf '%s\n' "$0: These tests are only supposed to run on CI." >&2
+  exit 1
+fi
+
+self_dir="$(cd -- "$(dirname -- "$(readlink -f -- "$0")")" && pwd)"
+make_fixture="$self_dir/make-fixture"
+
+verbose='false'
+scenario_filter=()
+while [ $# -gt 0 ]; do
+   case "$1" in
+      -v|--verbose) verbose='true'; shift ;;
+      --) shift; scenario_filter+=( "$@" ); break ;;
+      -*) printf 'self-test: unknown flag %q\n' "$1" >&2; exit 2 ;;
+      *) scenario_filter+=( "$1" ); shift ;;
+   esac
+done
+
+test_root=""
+out_file=""
+pass_count=0
+fail_count=0
+failed_names=""
+
+die() { printf 'self-test: ERROR: %s\n' "$*" >&2; exit 2; }
+
+assert_eq() {
+   local label="$1" expected="$2" actual="$3"
+   [ "$expected" = "$actual" ] || die "[$label] expected '$expected' got '$actual'"
+}
+
+assert_file_exists() {
+   [ -f "$2" ] || die "[$1] expected file to exist: $2"
+}
+
+assert_file_absent() {
+   [ ! -e "$2" ] || die "[$1] expected file absent: $2"
+}
+
+assert_grep() {
+   local label="$1" pattern="$2" file="$3"
+   grep -E -- "$pattern" "$file" >/dev/null \
+      || die "[$label] expected pattern '$pattern' in output file $file"
+}
+
+assert_no_grep() {
+   local label="$1" pattern="$2" file="$3"
+   if grep -E -- "$pattern" "$file" >/dev/null; then
+      die "[$label] did not expect pattern '$pattern' in output file $file"
+   fi
+}
+
+setup() {
+   test_root="$(mktemp --directory --tmpdir tb-selftest.XXXXXXXX)"
+   out_file="$test_root/out.log"
+   export HOME="$test_root/home"
+   mkdir --parents -- "$HOME"
+   unset tb_user_home tb_cache_folder tb_home_folder tb_browser_folder \
+         tb_global_binary_dir
+   ## Non-interactive + bypass environment gates. These are already
+   ## set when update-torbrowser runs as the packaging postinst; here
+   ## they ensure the script does not try to open GUI dialogs, check
+   ## Tor bootstrap, or invoke msgcollector.
+   export TB_INPUT=none
+   export TB_USE_MSGCOLLECTOR=false
+   export TB_FORCE_INSTALL=1
+   export TB_NO_TOR_CON_CHECK=1
+   export NOKILLTB=1
+   export noaskstart=true
+   export anon_shared_inst_tb=closed
+   export ARCH_DOWNLOAD=linux-x86_64
+   export TBB_RELEASE_CHANNEL=release
+   export DEBIAN_FRONTEND=noninteractive
+}
+
+teardown() {
+   safe-rm --recursive --force -- "$test_root"
+   test_root=""
+}
+
+fixture_dir_for() {
+   local name="$1"; shift
+   local dir="$test_root/fixtures/$name"
+   mkdir --parents -- "$dir"
+   "$make_fixture" "$dir" "$@" >/dev/null
+   printf '%s\n' "$dir"
+}
+
+run_updater() {
+   local wrapper="$1"; shift
+   ## The wrapper is invoked directly (not via PATH) so the test works
+   ## even when the in-tree version differs from any installed copy.
+   local bin="/usr/bin/$wrapper"
+   [ -x "$bin" ] || die "wrapper $bin not executable; install tb-updater first"
+   "$bin" "$@" >"$out_file" 2>&1
+}
+
+cache_folder_for() {
+   ## Mirror the path update-torbrowser computes at
+   ## update-torbrowser:724 when running direct-as-user.
+   local install_folder="$1"
+   printf '%s/.cache/%s' "$HOME" "$install_folder"
+}
+
+browser_folder_for() {
+   ## Mirror tb_home_folder/tb_browser_name at update-torbrowser:722-723.
+   local install_folder_dot="$1" browser_name="$2"
+   printf '%s/%s/%s' "$HOME" "$install_folder_dot" "$browser_name"
+}
+
+## ---------------------------------------------------------------------------
+## scenarios
+## ---------------------------------------------------------------------------
+
+## Every scenario function accepts no arguments, uses setup/teardown state,
+## and returns 0 on pass / non-zero on failure. They call die() for fatal
+## assertions.
+
+scenario_fresh_install_tb() {
+   local fix cache_folder browser_folder
+   fix="$(fixture_dir_for tb)"
+   cache_folder="$(cache_folder_for tb)"
+   browser_folder="$(browser_folder_for .tb tor-browser)"
+
+   run_updater update-torbrowser \
+      --danger-insecure-self-test "$fix" \
+      --noask --input none --no-tor-con-check --input none
+
+   assert_file_exists "cache unixtime"  "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime"
+   assert_file_exists "cache date"      "$cache_folder/last_used_gpg_bash_lib_output_signed_on_date"
+   assert_file_exists "browser marker"  "$browser_folder/Browser/tbb_version.json"
+   assert_grep        "fresh install"   "[Ww]e have not previously accepted" "$out_file"
+}
+
+scenario_second_run_cache_hit_tb() {
+   local fix cache_folder
+   fix="$(fixture_dir_for tb)"
+   cache_folder="$(cache_folder_for tb)"
+
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check
+   assert_file_exists "first run: cache" "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime"
+
+   ## Second run uses the just-written cache.
+   :>"$out_file"
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check
+
+   assert_file_exists "second run: cache still there" "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime"
+   assert_no_grep    "no fresh-install message"       "[Ww]e have not previously accepted" "$out_file"
+}
+
+scenario_cross_context_fallback() {
+   ## Per-user cache absent, simulated system-wide cache present. The
+   ## fallback at update-torbrowser:tb_confirm_install reads from
+   ## $tb_global_binary_dir/.cache/$tb_install_folder.
+   local fix global_cache
+   fix="$(fixture_dir_for tb)"
+   export tb_global_binary_dir="$test_root/system-cache"
+   global_cache="$tb_global_binary_dir/.cache/tb"
+   mkdir --parents -- "$global_cache"
+   printf '%s\n' 1700000000 > "$global_cache/last_used_gpg_bash_lib_output_signed_on_unixtime"
+
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check
+
+   assert_no_grep    "fallback suppressed fresh message" "[Ww]e have not previously accepted" "$out_file"
+   assert_grep       "notice mentions system-wide cache" "system-wide freshness cache" "$out_file"
+   unset tb_global_binary_dir
+}
+
+scenario_tampered_cache_rejected() {
+   ## Tamper the per-user cache file with a non-numeric value. The
+   ## read_integer_file guard rejects it; the downloader proceeds
+   ## exactly as on a fresh install.
+   local fix cache_folder
+   fix="$(fixture_dir_for tb)"
+   cache_folder="$(cache_folder_for tb)"
+   mkdir --parents -- "$cache_folder"
+   printf 'not-a-number; rm -rf /\n' > "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime"
+
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check
+
+   assert_grep "fresh-install message shown" "[Ww]e have not previously accepted" "$out_file"
+   ## The successful run then replaces the tampered content with a
+   ## validated integer.
+   local final; final="$(cat -- "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime")"
+   [[ "$final" =~ ^[0-9]+$ ]] \
+      || die "[tamper] final cache is not numeric: '$final'"
+}
+
+scenario_out_of_bounds_cache_rejected() {
+   local fix cache_folder
+   fix="$(fixture_dir_for tb)"
+   cache_folder="$(cache_folder_for tb)"
+   mkdir --parents -- "$cache_folder"
+   ## Unix epoch year >> 2106, outside read_integer_file bounds.
+   printf '%s\n' 99999999999999999 > "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime"
+
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check
+
+   assert_grep "out-of-bounds falls through to fresh-install" "[Ww]e have not previously accepted" "$out_file"
+}
+
+scenario_invalid_signature_rejected() {
+   local fix
+   fix="$(fixture_dir_for tb)"
+   ## Corrupt the signature bytes. sqop verify will exit non-zero and
+   ## the downloader should bail with an OpenPGP verification error.
+   printf 'garbage\n' > "$fix/99.0.0/tor-browser-linux-x86_64-99.0.0.tar.xz.asc"
+
+   local ec=0
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check \
+      || ec="$?"
+
+   ! [ "$ec" = 0 ] || die "[invalid sig] downloader returned 0; expected non-zero"
+   assert_grep "error message mentions verification" "could NOT be verified" "$out_file"
+}
+
+scenario_tampered_tarball_rejected() {
+   ## Sign a clean tarball, then modify the tarball contents after
+   ## signing. The signature's hash no longer matches. sqop verify
+   ## rejects; the downloader bails the same way as for a corrupted
+   ## signature.
+   local fix
+   fix="$(fixture_dir_for tb)"
+   printf 'attacker-appended\n' \
+      >> "$fix/99.0.0/tor-browser-linux-x86_64-99.0.0.tar.xz"
+
+   local ec=0
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check \
+      || ec="$?"
+
+   ! [ "$ec" = 0 ] || die "[tampered tarball] downloader returned 0; expected non-zero"
+   assert_grep "error message mentions verification" "could NOT be verified" "$out_file"
+}
+
+scenario_wrong_signer_rejected() {
+   ## make-fixture --wrong-signer generates a second unrelated key and
+   ## signs with that, while saving the first key's cert as
+   ## test-key.asc. update-torbrowser verifies against the first cert,
+   ## which never issued the signature, and rejects.
+   local fix
+   fix="$(fixture_dir_for tb --wrong-signer)"
+
+   local ec=0
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check \
+      || ec="$?"
+
+   ! [ "$ec" = 0 ] || die "[wrong signer] downloader returned 0; expected non-zero"
+   assert_grep "error message mentions verification" "could NOT be verified" "$out_file"
+}
+
+scenario_signature_too_old_rejected() {
+   ## tb_openpgp_verify invokes 'sqop verify --not-before $(now - 3
+   ## months)'. Sign the tarball 6 months ago via faketime; the
+   ## resulting signature falls outside the window and sqop refuses
+   ## verification.
+   local fix
+   local six_months_ago
+   six_months_ago="$(date --utc --date='6 months ago' '+%Y-%m-%d %H:%M:%S')"
+   fix="$(fixture_dir_for old --signed-at "$six_months_ago")"
+
+   local ec=0
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check \
+      || ec="$?"
+
+   ! [ "$ec" = 0 ] || die "[too old sig] downloader returned 0; expected non-zero"
+   assert_grep "error message mentions verification" "could NOT be verified" "$out_file"
+}
+
+scenario_downgrade_attack_warning() {
+   ## Seed the per-user cache with a timestamp far in the future.
+   ## The fresh signature sits at "now", so the freshness comparison
+   ## sees "cached > current" and prints the downgrade-attack warning
+   ## in the confirmation dialog. TB_INPUT=none auto-confirms, the
+   ## install still completes, but the warning text must appear in
+   ## the captured output.
+   local fix cache_folder future_epoch
+   fix="$(fixture_dir_for tb)"
+   cache_folder="$(cache_folder_for tb)"
+   mkdir --parents -- "$cache_folder"
+   future_epoch="$(($(date --utc +%s) + 365 * 24 * 3600))"
+   printf '%s\n' "$future_epoch" \
+      > "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime"
+
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check
+
+   assert_grep "downgrade attack warning shown" \
+      "target of a downgrade attack" "$out_file"
+}
+
+scenario_freeze_attack_warning() {
+   ## Cache the exact signature timestamp of the fresh fixture.
+   ## update-torbrowser sees 'cached == current' and prints the
+   ## indefinite-freeze warning. Again TB_INPUT=none auto-confirms.
+   local fix cache_folder sig_unixtime sig_iso
+   fix="$(fixture_dir_for tb)"
+   cache_folder="$(cache_folder_for tb)"
+   mkdir --parents -- "$cache_folder"
+   ## sqop verify on success prints '<creation-time> <fingerprints> mode:<mode>'
+   ## on one line per signature. The first whitespace-delimited token
+   ## is the ISO timestamp.
+   sig_iso="$(sqop verify \
+      "$fix/99.0.0/tor-browser-linux-x86_64-99.0.0.tar.xz.asc" \
+      "$fix/test-key.asc" \
+      < "$fix/99.0.0/tor-browser-linux-x86_64-99.0.0.tar.xz" \
+      | head -n1 | awk '{print $1}')"
+   sig_unixtime="$(date --utc --date "$sig_iso" +%s)"
+   printf '%s\n' "$sig_unixtime" \
+      > "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime"
+
+   run_updater update-torbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check
+
+   assert_grep "indefinite freeze warning shown" \
+      "indefinite freeze attack" "$out_file"
+}
+
+scenario_wrapper_mullvad() {
+   local fix cache_folder browser_folder
+   fix="$(fixture_dir_for mullvad \
+       --download-name mullvad-browser \
+       --browser-name mullvad-browser)"
+   cache_folder="$(cache_folder_for mullvadbrowser)"
+   browser_folder="$(browser_folder_for .mullvadbrowser mullvad-browser)"
+
+   run_updater update-mullvadbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check
+
+   assert_file_exists "mullvad: cache unixtime" "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime"
+   assert_file_exists "mullvad: browser marker" "$browser_folder/Browser/tbb_version.json"
+}
+
+scenario_wrapper_i2p() {
+   local fix cache_folder browser_folder
+   fix="$(fixture_dir_for i2p \
+       --download-name tor-browser \
+       --browser-name i2p-browser)"
+   cache_folder="$(cache_folder_for i2pb)"
+   browser_folder="$(browser_folder_for .i2pb i2p-browser)"
+
+   run_updater update-i2pbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check
+
+   assert_file_exists "i2p: cache unixtime" "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime"
+   assert_file_exists "i2p: browser marker" "$browser_folder/Browser/tbb_version.json"
+}
+
+scenario_second_run_mullvad_cache_hit() {
+   local fix cache_folder
+   fix="$(fixture_dir_for mullvad \
+       --download-name mullvad-browser \
+       --browser-name mullvad-browser)"
+   cache_folder="$(cache_folder_for mullvadbrowser)"
+
+   run_updater update-mullvadbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check
+   assert_file_exists "mullvad first run: cache" "$cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime"
+
+   :>"$out_file"
+   run_updater update-mullvadbrowser --danger-insecure-self-test "$fix" --noask --input none --no-tor-con-check
+
+   ## This is the regression test for the original bug on this branch: a
+   ## second run through a mullvad/i2p wrapper must see the cache.
+   assert_no_grep "mullvad second run: no fresh-install message" \
+                  "[Ww]e have not previously accepted" "$out_file"
+}
+
+## ---------------------------------------------------------------------------
+## runner
+## ---------------------------------------------------------------------------
+
+all_scenarios=(
+   scenario_fresh_install_tb
+   scenario_second_run_cache_hit_tb
+   scenario_cross_context_fallback
+   scenario_tampered_cache_rejected
+   scenario_out_of_bounds_cache_rejected
+   scenario_invalid_signature_rejected
+   scenario_tampered_tarball_rejected
+   scenario_wrong_signer_rejected
+   scenario_signature_too_old_rejected
+   scenario_downgrade_attack_warning
+   scenario_freeze_attack_warning
+   scenario_wrapper_mullvad
+   scenario_wrapper_i2p
+   scenario_second_run_mullvad_cache_hit
+)
+
+should_run() {
+   local name="$1" needle
+   [ "${#scenario_filter[@]}" -eq 0 ] && return 0
+   for needle in "${scenario_filter[@]}"; do
+      [ "$needle" = "$name" ] && return 0
+   done
+   return 1
+}
+
+main() {
+   local scenario ec
+   printf '== self-test: start ==\n'
+   for scenario in "${all_scenarios[@]}"; do
+      should_run "$scenario" || { printf '  [SKIP] %s\n' "$scenario"; continue; }
+      setup
+      ec=0
+      ( set -o errexit; "$scenario" ) || ec="$?"
+      if [ "$ec" = 0 ]; then
+         printf '  [PASS] %s\n' "$scenario"
+         pass_count=$((pass_count + 1))
+         [ "$verbose" = 'true' ] && sed 's/^/    | /' "$out_file"
+      else
+         printf '  [FAIL] %s (exit=%s)\n' "$scenario" "$ec"
+         fail_count=$((fail_count + 1))
+         failed_names="$failed_names $scenario"
+         sed 's/^/    | /' "$out_file"
+      fi
+      teardown
+   done
+   printf '== self-test: %d passed, %d failed ==\n' "$pass_count" "$fail_count"
+   [ "$fail_count" -eq 0 ] || { printf 'Failed:%s\n' "$failed_names" >&2; exit 1; }
+}
+
+main "$@"
