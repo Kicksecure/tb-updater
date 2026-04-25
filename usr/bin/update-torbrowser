@@ -1644,7 +1644,7 @@ tb_openpgp_verify() {
    ## (60 [seconds] * 60 [minutes] * 24 [hours] * 30 [days])
    ## Setting this to 3 months. (7776000 seconds)
    ## (2592000 * 3 [months])
-   [ -n "$gpg_bash_lib_input_maximum_age_in_seconds" ] || gpg_bash_lib_input_maximum_age_in_seconds="7776000"
+   is_whole_number "$gpg_bash_lib_input_maximum_age_in_seconds" || gpg_bash_lib_input_maximum_age_in_seconds="7776000"
 
    local signing_key MSG
    local now_epoch not_before_epoch not_after_epoch
