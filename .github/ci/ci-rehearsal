@@ -1,0 +1,54 @@
+#!/bin/bash
+
+## Copyright (C) 2026 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
+## See the file COPYING for copying conditions.
+
+## Local rehearsal of the GitHub Actions self-test workflow.
+##
+## Runs a container that mirrors what .github/workflows/self-test.yml
+## does. The container-side install + test logic lives in the sibling
+## script .github/ci/ci-rehearsal-inner; this wrapper only chooses the
+## image, bind-mounts the checkout plus any host TLS-inspection CAs,
+## and hands off.
+##
+## Usage:
+##   .github/ci/ci-rehearsal
+##   .github/ci/ci-rehearsal <image>
+##
+## The default image is ubuntu:plucky, which ships sq 1.2.x and sqop
+## 0.36.x -- the same major version class Debian trixie uses in the
+## actual CI job. Override with 'debian:trixie' on a workstation whose
+## egress reaches deb.debian.org; ubuntu:plucky is picked as the
+## default because archive.ubuntu.com tends to be reachable from
+## sandboxed dev environments where deb.debian.org is not.
+
+set -o errexit
+set -o nounset
+set -o errtrace
+set -o pipefail
+
+image="${1:-ubuntu:plucky}"
+
+self_dir="$(cd -- "$(dirname -- "$(readlink -f -- "$0")")" && pwd)"
+repo_root="$(cd -- "$self_dir/../.." && pwd)"
+inner_script="$self_dir/ci-rehearsal-inner"
+
+[ -x "$inner_script" ] \
+   || { printf '%s\n' "$0: $inner_script not found or not executable." >&2; exit 1; }
+command -v docker >/dev/null \
+   || { printf '%s\n' "$0: docker is required." >&2; exit 1; }
+
+## If the host has custom CAs (e.g. a TLS-inspecting egress proxy),
+## forward them so 'git clone https://github.com/...' inside the
+## container works. No-op on hosts without the directory.
+ca_mount=()
+if [ -d /usr/local/share/ca-certificates ]; then
+   ca_mount=( -v /usr/local/share/ca-certificates:/host-ca:ro )
+fi
+
+docker run --rm \
+   -v "$repo_root:/repo:ro" \
+   -v "$inner_script:/ci.sh:ro" \
+   "${ca_mount[@]}" \
+   "$image" \
+   bash /ci.sh
