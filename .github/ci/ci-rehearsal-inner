@@ -1,0 +1,72 @@
+#!/bin/bash
+
+## Copyright (C) 2026 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
+## See the file COPYING for copying conditions.
+
+## Container-side half of .github/ci/ci-rehearsal. Intended to be run
+## inside a freshly-started Debian/Ubuntu container with the tb-updater
+## checkout bind-mounted at /repo (read-only is fine) and, optionally,
+## the host's /usr/local/share/ca-certificates bind-mounted at /host-ca
+## to carry any TLS-inspecting egress CAs.
+##
+## Mirrors .github/workflows/self-test.yml step-for-step so that a
+## successful local run gives the same confidence as a green CI job.
+
+set -o errexit
+set -o nounset
+set -o errtrace
+set -o pipefail
+
+export DEBIAN_FRONTEND=noninteractive
+
+## Forward the host's TLS-inspection CAs, if any, so git/curl inside
+## the container trust the same egress proxy the host does.
+mkdir -p /usr/local/share/ca-certificates
+if [ -d /host-ca ] && compgen -G '/host-ca/*.crt' >/dev/null; then
+   cp -f /host-ca/*.crt /usr/local/share/ca-certificates/
+fi
+
+apt-get update >/dev/null
+apt-get install -y --no-install-recommends \
+   ca-certificates curl git sudo adduser build-essential >/dev/null
+update-ca-certificates >/dev/null 2>&1 || true
+
+git clone --depth=1 https://github.com/Kicksecure/genmkfile.git /tmp/genmkfile
+cd /tmp/genmkfile
+./usr/bin/genmkfile deb-all-dep >/dev/null
+./usr/bin/genmkfile install
+
+git clone --depth=1 https://github.com/Kicksecure/helper-scripts.git /tmp/helper-scripts
+cd /tmp/helper-scripts
+genmkfile install
+
+git clone --depth=1 https://github.com/Kicksecure/msgcollector.git /tmp/msgcollector
+cd /tmp/msgcollector
+genmkfile install
+
+apt-get install -y --no-install-recommends \
+   sq sqop libarchive-tools safe-rm \
+   curl jq psmisc pv iproute2 python3 faketime >/dev/null
+
+## Install tb-updater itself via its own genmkfile install target.
+## The checkout is bind-mounted read-only, so copy to a writable path
+## first because genmkfile creates build artefacts next to the sources.
+cp -a /repo /tmp/tb-updater-src
+cd /tmp/tb-updater-src
+genmkfile install
+
+adduser --disabled-password --gecos '' tbtest >/dev/null
+install -d -o tbtest -g tbtest /home/tbtest/ci
+install -m 0755 -o tbtest -g tbtest \
+   /tmp/tb-updater-src/.github/ci/self-test \
+   /tmp/tb-updater-src/.github/ci/make-fixture \
+   /home/tbtest/ci/
+
+printf '\n===== tool versions =====\n'
+sq version 2>&1 | head -3 || sq --version 2>&1 | head -1
+sqop version 2>&1 | head -1
+faketime --version 2>&1 | head -1
+
+printf '\n===== self-test =====\n'
+sudo -u tbtest env CI=true /home/tbtest/ci/self-test -v 2>&1 \
+   | grep -E '\[(PASS|FAIL)\]|^=='

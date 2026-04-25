@@ -69,17 +69,7 @@ jobs:
       - name: Install tb-updater from checkout
         run: |
           set -eux
-          install -m 0755 -t /usr/bin \
-            usr/bin/update-torbrowser \
-            usr/bin/update-mullvadbrowser \
-            usr/bin/update-i2pbrowser
-          install -d /usr/libexec/tb-updater
-          cp -r usr/libexec/tb-updater/. /usr/libexec/tb-updater/
-          install -d /usr/share/tb-updater
-          cp -r usr/share/tb-updater/. /usr/share/tb-updater/
-          install -d /usr/share/torbrowser-updater-keys.d
-          cp -r usr/share/torbrowser-updater-keys.d/. \
-                /usr/share/torbrowser-updater-keys.d/
+          sudo genmkfile install
 
       - name: Create an unprivileged test account
         run: |
