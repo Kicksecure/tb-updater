@@ -30,8 +30,11 @@ jobs:
           set -eux
           export DEBIAN_FRONTEND=noninteractive
           apt-get update
+          ## dctrl-tools provides grep-dctrl, which genmkfile uses to
+          ## compute build dependencies from each package's
+          ## debian/control.
           apt-get install -y --no-install-recommends \
-            ca-certificates curl git sudo adduser build-essential
+            ca-certificates curl git sudo adduser build-essential dctrl-tools
 
       - name: Install genmkfile
         run: |
