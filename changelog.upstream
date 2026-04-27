@@ -1,3 +1,45 @@
+commit 83edbd64763a439babeb5f525c181d315a35b2f6
+Merge: 1dc8e0a 7adb37c
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Apr 27 04:33:25 2026 -0400
+
+    Merge remote-tracking branch 'assisted-by-ai/claude/ci-sqop-tests-jnxuE'
+
+commit 7adb37ce04696feb45cd79e4ccaac2aec74050dd
+Author: Claude <noreply@anthropic.com>
+Date:   Sat Apr 25 16:37:32 2026 +0000
+
+    Copy host CAs recursively in ci-rehearsal; pull dctrl-tools
+
+    Two follow-ups from PR review:
+
+    * The CA forwarding step in .github/ci/ci-rehearsal-inner copied
+      only top-level *.crt from /host-ca, so any CA stored in a
+      subdirectory of /usr/local/share/ca-certificates/ on the host
+      was missed. update-ca-certificates(8) recurses into subdirs by
+      design, so corp/derivative installs commonly nest CAs there.
+      Replace the glob copy with a recursive 'cp -a /host-ca/.
+      /usr/local/share/ca-certificates/'. Verified locally with a
+      nested fixture under /usr/local/share/ca-certificates/
+      nested-test/.
+
+    * Add dctrl-tools to the apt pre-reqs in both ci-rehearsal-inner
+      and the self-test workflow. dctrl-tools provides grep-dctrl,
+      which genmkfile uses internally to compute build deps from
+      debian/control. Without it, 'genmkfile install' on the
+      tb-updater checkout fails with 'required command grep-dctrl not
+      found in PATH'.
+
+    Self-test still green inside ubuntu:plucky:
+
+        == self-test: 14 passed, 0 failed ==
+
+commit 1dc8e0a76e674bab5206888533161824f8c04e32
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Apr 25 10:29:42 2026 +0000
+
+    bumped changelog version
+
 commit 2834fb9ce659c84b35b0efad69ecb2b9f4f85911
 Merge: 013379a 74c2e8e
 Author: Patrick Schleizer <adrelanos@whonix.org>
