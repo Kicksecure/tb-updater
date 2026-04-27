@@ -94,7 +94,7 @@ cleanup() {
     cgroup_empty_str="populated 0
 frozen 0"
     if printf '%s\n' '1' > "${tb_updater_cgroup}/cgroup.kill"; then
-      ## Poll cgroup.events until the cgropu is empty, rather than using
+      ## Poll cgroup.events until the cgroup is empty, rather than using
       ## inotifywait. This avoids consuming inotify watches, which are more
       ## resource-constrained than CPU power in this scenario.
       cgroup_drained='false'
@@ -108,7 +108,7 @@ frozen 0"
         fi
 
         light_sleep 0.1
-        (( poll_count += 1 )) || true
+        poll_count=$((poll_count + 1))
       done
 
       if [ "${cgroup_drained}" = 'false' ]; then
