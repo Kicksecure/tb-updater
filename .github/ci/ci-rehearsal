@@ -15,19 +15,17 @@
 ##   .github/ci/ci-rehearsal
 ##   .github/ci/ci-rehearsal <image>
 ##
-## The default image is ubuntu:plucky, which ships sq 1.2.x and sqop
-## 0.36.x -- the same major version class Debian trixie uses in the
-## actual CI job. Override with 'debian:trixie' on a workstation whose
-## egress reaches deb.debian.org; ubuntu:plucky is picked as the
-## default because archive.ubuntu.com tends to be reachable from
-## sandboxed dev environments where deb.debian.org is not.
+## The default image is debian:trixie, which is what we use in actual CI
+## jobs. ubuntu:plucky used to be used instead, but was switched away
+## from because Ubuntu 25.04 is end-of-life and a potential security
+## hazard.
 
 set -o errexit
 set -o nounset
 set -o errtrace
 set -o pipefail
 
-image="${1:-ubuntu:plucky}"
+image="${1:-debian:trixie}"
 
 self_dir="$(cd -- "$(dirname -- "$(readlink -f -- "$0")")" && pwd)"
 repo_root="$(cd -- "$self_dir/../.." && pwd)"

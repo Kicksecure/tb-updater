@@ -5,10 +5,10 @@
 ## cache, rejected invalid signature) and every wrapper (update-torbrowser,
 ## update-mullvadbrowser, update-i2pbrowser).
 ##
-## Runs in a Debian trixie container. genmkfile and helper-scripts are
-## installed from their upstream Kicksecure git repositories using the
-## project's own genmkfile install flow. No deb.kicksecure.com apt repo
-## is added.
+## Runs in a Debian trixie container. genmkfile, helper-scripts, and
+## msgcollector are installed from their upstream Kicksecure git repositories
+## using the project's own genmkfile install flow. No deb.kicksecure.com apt
+## repo is added.
 
 name: self-test
 

@@ -29,7 +29,9 @@ if command -v qubesdb-read &>/dev/null ; then
    ## anything that is not a plain POSIX-style account name so a stray
    ## value cannot traverse out of /home or create mount points at
    ## attacker-chosen locations.
-   if ! [[ "$user_name" =~ ^[a-z_][a-z0-9_-]{0,31}$ ]]; then
+   ##
+   ## Regex taken from /etc/adduser.conf's default SYS_NAME_REGEX.
+   if ! [[ "$user_name" =~ ^[a-zA-Z_][a-zA-Z0-9_-]*\$?$ ]]; then
       printf '%s\n' "$0: WARNING: qubesdb '/default-user' returned unsafe value '$user_name', falling back to user_name=user"
       user_name=user
    fi
