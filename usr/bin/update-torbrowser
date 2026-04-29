@@ -7,7 +7,7 @@
 ##   this file (helper-scripts, boot-session-detection variants,
 ##   /usr/share/tb-updater/tbb_hardcoded_version*,
 ##   /usr/libexec/tb-updater/version-validator, per-browser config
-##   snippets). The sourced scripts are covered by their own lint pass.
+##   snippets). The sourced scripts should be linted separately.
 ## SC2154: the same sourced scripts set tbb_hardcoded_version,
 ##   tbb_locally_installed_version_stripped, output_opts and friends.
 ##   shellcheck flags them as unset from its static view.
@@ -491,6 +491,7 @@ tb_parse_cmd_options() {
                log warn "   system WILL be overwritten with fixture content. Do NOT run on a"
                log warn "   production install."
                log warn "=============================================================================="
+               export danger_insecure_self_test_mode='yes'
                export signing_key="$2/test-key.asc"
                export TBB_REMOTE_FOLDER="file://$2"
                export tbb_versions_base_url="file://$2"
@@ -1817,7 +1818,7 @@ tb_openpgp_verify() {
    ## 'sq verify' CLI has moved argument names between versions, and the
    ## self-test runs against whatever sq the host has.
    [ -n "${sq_verify_binary:-}" ] || sq_verify_binary="sq"
-   log notice "sq verify --signer-file '$signing_key' --signature-file '$TBB_SIG_FULL_PATH' '$TBB_PACKAGE_FULL_PATH'"
+   log notice "sq verify --signer-file '$signing_key' --signature-file '$TBB_SIG_FULL_PATH' -- '$TBB_PACKAGE_FULL_PATH'"
 
    if sq_output="$(
       timeout --kill-after="60" "10" \
@@ -1949,7 +1950,7 @@ tb_confirm_install() {
    local sig_creation_date sig_freshness_detail
 
    if [ "${who_ami}" = 'tb-updater' ]; then
-      real_cache_folder="${tb_global_binary_dir}/.cache/$tb_install_folder"
+      real_cache_folder="${tb_global_binary_dir}/.cache/${tb_install_folder}"
    else
       real_cache_folder="${tb_cache_folder}"
    fi
@@ -2025,7 +2026,7 @@ tb_confirm_install() {
    else
       strict_numeric=false
    fi
-   ## Already sanity checked in function 'tb_openpgp_verify.
+   ## Already sanity checked in function 'tb_openpgp_verify'.
    is_whole_number "$sig_creation_unixtime"
 
    sig_creation_date="$(date --utc --date "@$sig_creation_unixtime" '+%B %d %H:%M:%S UTC %Y')"

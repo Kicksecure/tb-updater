@@ -23,8 +23,8 @@ export DEBIAN_FRONTEND=noninteractive
 ## the container trust the same egress proxy the host does. Copy the
 ## whole tree so CAs nested in subdirectories (a common
 ## update-ca-certificates layout) are preserved.
-mkdir -p /usr/local/share/ca-certificates
 if [ -d /host-ca ]; then
+   mkdir -p /usr/local/share/ca-certificates
    cp -a /host-ca/. /usr/local/share/ca-certificates/
 fi
 

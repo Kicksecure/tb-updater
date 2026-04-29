@@ -8,29 +8,32 @@
 ## a minimal "Browser" tarball, a detached signature, and a JSON
 ## recommended-versions file, all sized to exercise the real verification
 ## and cache code paths without contacting any network.
-##
-## Usage:
-##   make-fixture <output_dir> [options]
-##
-## Options:
-##   --version <str>         Version string to embed, default "99.0.0".
-##   --download-name <str>   Tarball name prefix, default "tor-browser".
-##                           Mullvad uses "mullvad-browser".
-##   --browser-name <str>    Top-level dir inside the tarball and the
-##                           installed-dir name, default "tor-browser".
-##   --arch <str>            Arch token, default "linux-x86_64".
-##   --signed-at <iso>       Force the signature creation time via
-##                           faketime (e.g. '2024-01-01 00:00:00').
-##                           Default: signature at the current time.
-##   --wrong-signer          Generate two keys. Sign the tarball with
-##                           the second key but save the first key's
-##                           cert as test-key.asc. update-torbrowser
-##                           will then verify against a cert that did
-##                           not issue the signature and reject it.
-##
-## Key generation and signing go through sqop (Stateless OpenPGP). sqop's
-## CLI follows the SOP spec and is stable across Sequoia versions,
-## whereas the sq CLI changed between 0.x and 1.x.
+
+print_usage() {
+  printf '%s\n' "\
+Usage:
+  make-fixture <output_dir> [options]
+
+Options:
+  --version <str>         Version string to embed, default \"99.0.0\".
+  --download-name <str>   Tarball name prefix, default \"tor-browser\".
+                          Mullvad uses \"mullvad-browser\".
+  --browser-name <str>    Top-level dir inside the tarball and the
+                          installed-dir name, default \"tor-browser\".
+  --arch <str>            Arch token, default \"linux-x86_64\".
+  --signed-at <iso>       Force the signature creation time via
+                          faketime (e.g. '2024-01-01 00:00:00').
+                          Default: signature at the current time.
+  --wrong-signer          Generate two keys. Sign the tarball with
+                          the second key but save the first key's
+                          cert as test-key.asc. update-torbrowser
+                          will then verify against a cert that did
+                          not issue the signature and reject it.
+
+Key generation and signing go through sqop (Stateless OpenPGP). sqop's
+CLI follows the SOP spec and is stable across Sequoia versions,
+whereas the sq CLI changed between 0.x and 1.x."
+}
 
 set -x
 set -o errexit
@@ -61,7 +64,7 @@ while [ $# -gt 0 ]; do
       --arch) arch="$2"; shift 2 ;;
       --signed-at) signed_at="$2"; shift 2 ;;
       --wrong-signer) wrong_signer="true"; shift ;;
-      --help|-h) sed -n '/^## Usage/,/^## whereas/p' "$0" | sed 's/^## //;s/^##//'; exit 0 ;;
+      --help|-h) print_usage; exit 0 ;;
       --) shift; break ;;
       -*) die "unknown flag '$1'" ;;
       *) [ -z "$out_dir" ] || die "unexpected positional '$1'"; out_dir="$1"; shift ;;

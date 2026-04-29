@@ -26,6 +26,10 @@ set -o nounset
 set -o errtrace
 set -o pipefail
 
+## Ensure locales don't cause problems.
+LC_ALL=C
+export LC_ALL
+
 if ! [ "${CI:-}" = "true" ]; then
   printf '%s\n' "$0: These tests are only supposed to run on CI." >&2
   exit 1
@@ -125,14 +129,14 @@ run_updater() {
 }
 
 cache_folder_for() {
-   ## Mirror the path update-torbrowser computes at
-   ## update-torbrowser:724 when running direct-as-user.
+   ## Mirror the path update-torbrowser would generate as tb_cache_folder when
+   ## running direct-as-user.
    local install_folder="$1"
    printf '%s/.cache/%s' "$HOME" "$install_folder"
 }
 
 browser_folder_for() {
-   ## Mirror tb_home_folder/tb_browser_name at update-torbrowser:722-723.
+   ## Mirror tb_browser_folder.
    local install_folder_dot="$1" browser_name="$2"
    printf '%s/%s/%s' "$HOME" "$install_folder_dot" "$browser_name"
 }

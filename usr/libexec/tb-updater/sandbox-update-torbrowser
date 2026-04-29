@@ -48,13 +48,18 @@ tb_browser_name="${tb_browser_name:-tor-browser}"
 tb_global_binary_dir="${tb_global_binary_dir:-/var/cache/tb-binary}"
 root_browser_dir="${tb_global_binary_dir}"
 
-## setpriv --reset-env clears the caller's environment, so SCRIPTNAME and the
-## other tb_* variables the wrapper exported are not visible to the command
-## invoked inside the sandbox. Re-exec the wrapper itself (not
-## /usr/bin/update-torbrowser) so that it re-establishes its exports for the
-## sandboxed update-torbrowser invocation. Accept only a whitelisted set of
-## names since the value is derived from an environment variable and is
-## about to be interpolated into an executable path.
+## Scripts like update-mullvadbrowser simply export some environment
+## variables, then call update-torbrowser. If sandbox-update-torbrowser is
+## called because one of these wrappers was executed, we can either re-execute
+## the wrapper, or we can pass through the necessary environment variables and
+## execute update-torbrowser instead. The former is both easier (since setpriv
+## --reset-env clears the environment before executing the target script) and
+## more reliable (since it means we don't have to keep multiple environment
+## variable lists in sync).
+##
+## Accept only a whitelisted set of names since the value is derived from an
+## environment variable and is about to be interpolated into an executable
+## path.
 updater_cmd='/usr/bin/update-torbrowser'
 case "${SCRIPTNAME:-}" in
   update-torbrowser|update-mullvadbrowser|update-i2pbrowser)
