@@ -42,41 +42,44 @@ jobs:
 
       - name: Install genmkfile
         run: |
-          ## Prefer same-org genmkfile (lets feature branches in genmkfile
-          ## self-test alongside their consumers and avoids waiting
-          ## on a Kicksecure-master sync). Fall back to Kicksecure
-          ## upstream when same-org has no genmkfile fork.
+          ## Clone genmkfile from the same org as the workflow.
+          ## Resolves to org-ai-assisted/genmkfile on org-ai-assisted runs,
+          ## Kicksecure/genmkfile on Kicksecure runs, etc. Hard error if the
+          ## org does not have genmkfile - no implicit upstream fallback (an
+          ## org choosing to host its own CI must explicitly fork genmkfile;
+          ## a silent cross-org clone would be a supply-chain footgun).
           git clone --depth=1 \
               "https://github.com/${{ github.repository_owner }}/genmkfile.git" \
-              /tmp/genmkfile 2>/dev/null \
-            || git clone --depth=1 https://github.com/Kicksecure/genmkfile.git /tmp/genmkfile
+              /tmp/genmkfile
           cd /tmp/genmkfile
           sudo ./usr/bin/genmkfile deb-all-dep
           sudo ./usr/bin/genmkfile install
 
       - name: Install helper-scripts
         run: |
-          ## Prefer same-org helper-scripts (lets feature branches in helper-scripts
-          ## self-test alongside their consumers and avoids waiting
-          ## on a Kicksecure-master sync). Fall back to Kicksecure
-          ## upstream when same-org has no helper-scripts fork.
+          ## Clone helper-scripts from the same org as the workflow.
+          ## Resolves to org-ai-assisted/helper-scripts on org-ai-assisted runs,
+          ## Kicksecure/helper-scripts on Kicksecure runs, etc. Hard error if the
+          ## org does not have helper-scripts - no implicit upstream fallback (an
+          ## org choosing to host its own CI must explicitly fork helper-scripts;
+          ## a silent cross-org clone would be a supply-chain footgun).
           git clone --depth=1 \
               "https://github.com/${{ github.repository_owner }}/helper-scripts.git" \
-              /tmp/helper-scripts 2>/dev/null \
-            || git clone --depth=1 https://github.com/Kicksecure/helper-scripts.git /tmp/helper-scripts
+              /tmp/helper-scripts
           cd /tmp/helper-scripts
           sudo genmkfile install
 
       - name: Install msgcollector
         run: |
-          ## Prefer same-org msgcollector (lets feature branches in msgcollector
-          ## self-test alongside their consumers and avoids waiting
-          ## on a Kicksecure-master sync). Fall back to Kicksecure
-          ## upstream when same-org has no msgcollector fork.
+          ## Clone msgcollector from the same org as the workflow.
+          ## Resolves to org-ai-assisted/msgcollector on org-ai-assisted runs,
+          ## Kicksecure/msgcollector on Kicksecure runs, etc. Hard error if the
+          ## org does not have msgcollector - no implicit upstream fallback (an
+          ## org choosing to host its own CI must explicitly fork msgcollector;
+          ## a silent cross-org clone would be a supply-chain footgun).
           git clone --depth=1 \
               "https://github.com/${{ github.repository_owner }}/msgcollector.git" \
-              /tmp/msgcollector 2>/dev/null \
-            || git clone --depth=1 https://github.com/Kicksecure/msgcollector.git /tmp/msgcollector
+              /tmp/msgcollector
           cd /tmp/msgcollector
           sudo genmkfile install
 
