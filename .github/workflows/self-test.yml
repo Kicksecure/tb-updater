@@ -42,20 +42,41 @@ jobs:
 
       - name: Install genmkfile
         run: |
-          git clone --depth=1 https://github.com/Kicksecure/genmkfile.git /tmp/genmkfile
+          ## Prefer same-org genmkfile (lets feature branches in genmkfile
+          ## self-test alongside their consumers and avoids waiting
+          ## on a Kicksecure-master sync). Fall back to Kicksecure
+          ## upstream when same-org has no genmkfile fork.
+          git clone --depth=1 \
+              "https://github.com/${{ github.repository_owner }}/genmkfile.git" \
+              /tmp/genmkfile 2>/dev/null \
+            || git clone --depth=1 https://github.com/Kicksecure/genmkfile.git /tmp/genmkfile
           cd /tmp/genmkfile
           sudo ./usr/bin/genmkfile deb-all-dep
           sudo ./usr/bin/genmkfile install
 
       - name: Install helper-scripts
         run: |
-          git clone --depth=1 https://github.com/Kicksecure/helper-scripts.git /tmp/helper-scripts
+          ## Prefer same-org helper-scripts (lets feature branches in helper-scripts
+          ## self-test alongside their consumers and avoids waiting
+          ## on a Kicksecure-master sync). Fall back to Kicksecure
+          ## upstream when same-org has no helper-scripts fork.
+          git clone --depth=1 \
+              "https://github.com/${{ github.repository_owner }}/helper-scripts.git" \
+              /tmp/helper-scripts 2>/dev/null \
+            || git clone --depth=1 https://github.com/Kicksecure/helper-scripts.git /tmp/helper-scripts
           cd /tmp/helper-scripts
           sudo genmkfile install
 
       - name: Install msgcollector
         run: |
-          git clone --depth=1 https://github.com/Kicksecure/msgcollector.git /tmp/msgcollector
+          ## Prefer same-org msgcollector (lets feature branches in msgcollector
+          ## self-test alongside their consumers and avoids waiting
+          ## on a Kicksecure-master sync). Fall back to Kicksecure
+          ## upstream when same-org has no msgcollector fork.
+          git clone --depth=1 \
+              "https://github.com/${{ github.repository_owner }}/msgcollector.git" \
+              /tmp/msgcollector 2>/dev/null \
+            || git clone --depth=1 https://github.com/Kicksecure/msgcollector.git /tmp/msgcollector
           cd /tmp/msgcollector
           sudo genmkfile install
 
