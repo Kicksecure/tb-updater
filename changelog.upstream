@@ -1,3 +1,92 @@
+commit f6fde9e933e9f5b9840c9bae782f17feaabd05bc
+Merge: ecc1634 9dce0a0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed May 6 13:52:32 2026 -0400
+
+    Merge remote-tracking branch 'org-ai-assisted/claude/read-agents-meta-file-uKeT9'
+
+commit 9dce0a0e9a7c4468727424a7013a86a2992ffc09
+Author: claude-code <claude-code@assisted-by-ai>
+Date:   Wed May 6 12:25:27 2026 +0000
+
+    ci: restore executable bit on shebanged scripts (lost via MCP push)
+
+    The GitHub MCP push_files / create_or_update_file API resets every
+    tree entry to mode 100644, even when the prior entry was 100755.
+    This commit re-flips the bit via 'git update-index --chmod=+x' on
+    the affected files (no content change). Resolves Codex P1 reviews
+    about EACCES at exec time + the rc=126 'Permission denied' failures
+    in CI.
+
+commit 8cb5b4b3aa8d018bc111ffe0d4f2d2a2c2df8119
+Author: assisted-by-ai (Bot Account) <server@kicksecure.com>
+Date:   Wed May 6 08:16:45 2026 -0400
+
+    ci: SHA-pin actions/checkout
+
+commit 8348de6b87194ce4e42050831fe8047c55a4bc68
+Author: assisted-by-ai (Bot Account) <server@kicksecure.com>
+Date:   Wed May 6 08:03:32 2026 -0400
+
+    ci: clone genmkfile/helper-scripts/msgcollector from same org, no fallback
+
+    Per maintainer feedback: drop the silent Kicksecure fallback - any
+    org choosing to host its own CI of tb-updater must explicitly fork
+    genmkfile, helper-scripts and msgcollector too. A silent cross-org
+    clone would be a supply-chain footgun. The workflow now hard-errors
+    on missing repos with a clear "repository not found" message.
+
+commit cbe87789c0b95274b4c0ef0cde468ff735250081
+Author: assisted-by-ai (Bot Account) <server@kicksecure.com>
+Date:   Wed May 6 07:37:38 2026 -0400
+
+    ci: clone genmkfile/helper-scripts/msgcollector from same org with Kicksecure fallback
+
+    Replace hardcoded `git clone https://github.com/Kicksecure/<pkg>.git`
+    with same-org-first + Kicksecure-fallback so feature branches in the
+    same org can self-test against each other and don't have to wait for
+    a Kicksecure-master sync. Resolves to:
+
+      - same-org `<pkg>` (e.g. org-ai-assisted/<pkg>) when present
+      - Kicksecure/<pkg> upstream when same-org fork is missing
+
+commit d03f5ef770e07f293d8c1bb2afe892a2769020e7
+Author: assisted-by-ai (Bot Account) <server@kicksecure.com>
+Date:   Tue May 5 19:07:38 2026 -0400
+
+    ci: cancel-in-progress on workflow re-run
+
+    Add (or enable) concurrency: cancel-in-progress: true on workflow yml
+    files that lacked it. Re-pushed runs of the same workflow on the same
+    ref (re-tagged release, force-push, etc.) now cancel the in-flight
+    run instead of stacking.
+
+commit f15e9ccfc824c17ee729c4f18b2c01fa2b7c79b6
+Author: assisted-by-ai (Bot Account) <server@kicksecure.com>
+Date:   Tue May 5 17:50:17 2026 -0400
+
+    ci: drop GENMKFILE_DEBUG=1, add persist-credentials: false
+
+    Strip GENMKFILE_DEBUG=1 from all CI install steps (genmkfile,
+    helper-scripts, msgcollector). Add persist-credentials: false to the
+    actions/checkout step.
+
+commit c3467537d8323f935b9bfa54fc989176cad04b11
+Author: assisted-by-ai (Bot Account) <server@kicksecure.com>
+Date:   Tue May 5 17:24:55 2026 -0400
+
+    dispvm: use shared check_valid_linux_user_account_name from helper-scripts/strings.bsh
+
+    Replace inline regex with the new helper so the
+    /etc/adduser.conf SYS_NAME_REGEX validation lives in one place.
+    Same allowlist (^[a-zA-Z_][a-zA-Z0-9_-]*\$?$); behavior unchanged.
+
+commit ecc16347edb34a71ee620ff17e53c5f5ffb53f31
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat May 2 08:49:24 2026 +0000
+
+    bumped changelog version
+
 commit e1a37457377408f6cac928f647e8572ea1886b7e
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri May 1 16:45:04 2026 -0400
