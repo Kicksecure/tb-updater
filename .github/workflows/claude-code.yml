@@ -1,0 +1,30 @@
+---
+## Copyright (C) 2026 - 2026 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
+## See the file COPYING for copying conditions.
+
+## AI-Assisted
+
+## Consumer wrapper. Docs live in the reusable:
+## https://github.com/org-ai-assisted/developer-meta-files/blob/master/.github/workflows/reusable-claude-code-review.yml
+
+name: Claude Code Review
+
+on:
+  pull_request:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    uses: org-ai-assisted/developer-meta-files/.github/workflows/reusable-claude-code-review.yml@master
+    secrets: inherit
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
