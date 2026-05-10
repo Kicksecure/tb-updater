@@ -29,6 +29,7 @@ concurrency:
 jobs:
   self-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     container:
       image: debian:trixie
     steps:
