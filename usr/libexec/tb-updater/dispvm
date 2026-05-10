@@ -9,6 +9,9 @@ set -o nounset
 set -o errtrace
 set -o pipefail
 
+# shellcheck source=../../../../helper-scripts/usr/libexec/helper-scripts/strings.bsh
+source /usr/libexec/helper-scripts/strings.bsh
+
 ## The account "user" fallback is intentional.
 ## The sysmaint session is not supposed to run Tor Browser.
 user_name="user"
@@ -29,9 +32,7 @@ if command -v qubesdb-read &>/dev/null ; then
    ## anything that is not a plain POSIX-style account name so a stray
    ## value cannot traverse out of /home or create mount points at
    ## attacker-chosen locations.
-   ##
-   ## Regex taken from /etc/adduser.conf's default SYS_NAME_REGEX.
-   if ! [[ "$user_name" =~ ^[a-zA-Z_][a-zA-Z0-9_-]*\$?$ ]]; then
+   if ! check_valid_linux_user_account_name "$user_name"; then
       printf '%s\n' "$0: WARNING: qubesdb '/default-user' returned unsafe value '$user_name', falling back to user_name=user"
       user_name=user
    fi
