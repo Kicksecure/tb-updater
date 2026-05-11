@@ -1,3 +1,148 @@
+commit e335049040b5c29c3840af7925819a6875f2aa40
+Merge: 36e4d47 5ec5de4
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon May 11 15:15:06 2026 -0400
+
+    Merge remote-tracking branch 'refs/remotes/org-ai-assisted/master'
+
+commit 5ec5de4aba930e2f1a5a741022cca56d5533e720
+Author: assisted-by-ai (Bot Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Sun May 10 20:18:48 2026 -0400
+
+    workflows: add concurrency blocks (#11)
+
+    3 cancellable.
+
+commit cb81ba10c4f971400b5543fab1ccf60606e265de
+Author: assisted-by-ai (Bot Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Sun May 10 19:40:25 2026 -0400
+
+    self-test.yml: add timeout-minutes: 30 (#10)
+
+    Hang protection.
+
+commit 2277262652ee667965d1ea79d64249d761ef3902
+Author: assisted-by-ai (Bot Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Sun May 10 19:21:21 2026 -0400
+
+    self-test.yml: use developer-meta-files install-deps composite action (#9)
+
+    3 inline blocks (apt + genmkfile + helper-scripts) -> 1 composite step.
+
+commit 786e460682e510364a57667e4ae25227a59c8410
+Author: assisted-by-ai (Bot Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Sun May 10 19:19:39 2026 -0400
+
+    agents/bash.md: redirect to org-wide style guide (#8)
+
+    Clean forward-only redirect to dmf style guide + pre-push checklist.
+
+commit 0c166a26416334d4188a735a3262ffcd8519cdbc
+Author: assisted-by-ai (Bot Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Sun May 10 17:59:33 2026 -0400
+
+    codex-review: forward only OPENAI_API_KEY explicitly (#7)
+
+    Replace secrets: inherit with explicit single-secret map.
+
+commit 36e4d47fb47ee41dd65ab5d2faa5d7eb359f2a29
+Merge: bba65a9 e47e5e2
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun May 10 14:48:19 2026 -0400
+
+    Merge remote-tracking branch 'refs/remotes/org-ai-assisted/master'
+
+commit e47e5e2d97f6dbcfab09feea155209a0723630f0
+Author: assisted-by-ai (Bot Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Sun May 10 14:11:33 2026 -0400
+
+    restore: re-apply session work (rebased away) (#6)
+
+    Re-applies session work lost during rebase: explicit ANTHROPIC_API_KEY
+    secret in .github/workflows/claude-code.yml (replacing secrets: inherit)
+    and adds a top-level 'permissions: contents: read' block to
+    .github/workflows/self-test.yml.
+
+    Co-authored-by: claude-code <claude-code@anthropic.com>
+
+commit bba65a94cfe054f16baddb9b1ae8975dad375a92
+Merge: cb0e4ca 7867b86
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun May 10 12:44:42 2026 -0400
+
+    Merge remote-tracking branch 'refs/remotes/ArrayBolt3/arraybolt3/trixie'
+
+commit 7867b86fa1c36ed7a9609ae5b085108a98a4832d
+Merge: d76d01b cb0e4ca
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Sat May 9 22:12:55 2026 -0400
+
+    Merge branch 'master' into arraybolt3/trixie
+
+commit cb0e4caf80802ab0f2b010760cb27ca5a71c4f20
+Merge: 330b34a 55fe68d
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat May 9 16:36:23 2026 -0400
+
+    Merge remote-tracking branch 'org-ai-assisted/master'
+
+commit 55fe68dd1b08ef42a417e027382c770a7b307d7b
+Author: Claude <noreply@anthropic.com>
+Date:   Fri May 8 15:49:08 2026 +0000
+
+    claude-code: restore id-token: write
+
+    Reverts the earlier 'drop id-token' commit. Verified against a live
+    workflow log that the action DOES use OIDC federation:
+
+      Requesting OIDC token...
+      OIDC token successfully obtained
+      Exchanging OIDC token for app token...
+      Using GITHUB_TOKEN from OIDC
+
+    The action federates the runner's id-token to an Anthropic-controlled
+    GitHub App which mints a higher-privilege GITHUB_TOKEN used to post
+    review comments. Without id-token: write the next run would have
+    failed with 'Could not fetch an OIDC token'.
+
+commit 272941cb107c64970b5f080b1e0a1ef2d99b94c8
+Author: Claude <noreply@anthropic.com>
+Date:   Fri May 8 15:24:07 2026 +0000
+
+    scorecard: drop inline cron allocation table
+
+    The org-wide allocation table is single-source-of-truth in
+    developer-meta-files/.github/workflows/reusable-scorecard.yml. Each
+    consumer should carry only its own cron line with no commentary.
+
+commit 878f1494080ac230cb4c8517755e99b849f48a82
+Author: Claude <noreply@anthropic.com>
+Date:   Fri May 8 15:21:18 2026 +0000
+
+    claude-code: drop id-token: write
+
+    The reusable workflow no longer needs id-token: write (the action
+    authenticates to api.anthropic.com via a static ANTHROPIC_API_KEY;
+    OIDC federation is unused). Drop the permission to honor
+    least-privilege - an OIDC token, if forged or leaked, can
+    authenticate to cloud-provider integrations.
+
+commit d96d0b45a4690a9e6818fd11ceb5085cd662a283
+Author: Claude <noreply@anthropic.com>
+Date:   Fri May 8 14:48:14 2026 +0000
+
+    ci: add scorecard, Claude Code Review, OpenAI Codex Review
+
+    Thin consumer wrappers around the reusables in
+    org-ai-assisted/developer-meta-files. Brings tb-updater in line with
+    the helper-scripts / kloak / security-misc baseline.
+
+commit 330b34a9c2e9bfe593c46135deecb54238edc5c4
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu May 7 18:44:33 2026 +0000
+
+    bumped changelog version
+
 commit f6fde9e933e9f5b9840c9bae782f17feaabd05bc
 Merge: ecc1634 9dce0a0
 Author: Patrick Schleizer <adrelanos@whonix.org>
@@ -81,6 +226,13 @@ Date:   Tue May 5 17:24:55 2026 -0400
     /etc/adduser.conf SYS_NAME_REGEX validation lives in one place.
     Same allowlist (^[a-zA-Z_][a-zA-Z0-9_-]*\$?$); behavior unchanged.
 
+commit d76d01b23213a1b0bafba96693767e6dfae52f73
+Merge: ac45d4f ecc1634
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Sun May 3 11:18:23 2026 -0400
+
+    Merge branch 'master' into arraybolt3/trixie
+
 commit ecc16347edb34a71ee620ff17e53c5f5ffb53f31
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sat May 2 08:49:24 2026 +0000
@@ -92,6 +244,28 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri May 1 16:45:04 2026 -0400
 
     add CLAUDE.md
+
+commit ac45d4f62995b6e341d09f65224fcc63f2f85fb7
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Thu Apr 30 21:28:18 2026 -0400
+
+    Squashed commit of the following:
+
+    commit b1b5807dda8caea97f2e5c94bbf32c4f024c5509
+    Author: Claude <noreply@anthropic.com>
+    Date:   Mon Apr 27 18:35:37 2026 +0000
+
+        add agent guidance for sandbox constraints and bash pitfalls
+
+        https://claude.ai/code/session_01V4XkxCqroKpfDZE2Jknmdx
+
+    commit 0263512f0a0c2c176d4f839b3b2d55ef593a4ecc
+    Author: Claude <noreply@anthropic.com>
+    Date:   Mon Apr 27 18:28:58 2026 +0000
+
+        fix typo in comment, simplify arithmetic to avoid set -e workaround
+
+        https://claude.ai/code/session_01V4XkxCqroKpfDZE2Jknmdx
 
 commit 0d742d7264473a5be5c33648fd78fbc11b32f009
 Author: Patrick Schleizer <adrelanos@whonix.org>
