@@ -14,7 +14,7 @@ name: self-test
 
 on:
   push:
-    branches: [master, 'claude/**']
+    branches: [master]
   pull_request:
     branches: [master]
   workflow_dispatch:
