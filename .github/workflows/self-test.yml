@@ -29,48 +29,17 @@ concurrency:
 jobs:
   self-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     container:
       image: debian:trixie
     steps:
-      - name: Install apt pre-reqs
-        run: |
-          set -eux
-          export DEBIAN_FRONTEND=noninteractive
-          apt-get update
+      - name: Install apt pre-reqs + genmkfile + helper-scripts
+        uses: org-ai-assisted/developer-meta-files/.github/actions/install-deps@master
+        with:
           ## dctrl-tools provides grep-dctrl, which genmkfile uses to
           ## compute build dependencies from each package's
           ## debian/control.
-          apt-get install -y --no-install-recommends \
-            ca-certificates curl git sudo adduser build-essential dctrl-tools
-
-      - name: Install genmkfile
-        run: |
-          ## Clone genmkfile from the same org as the workflow.
-          ## Resolves to org-ai-assisted/genmkfile on org-ai-assisted runs,
-          ## Kicksecure/genmkfile on Kicksecure runs, etc. Hard error if the
-          ## org does not have genmkfile - no implicit upstream fallback (an
-          ## org choosing to host its own CI must explicitly fork genmkfile;
-          ## a silent cross-org clone would be a supply-chain footgun).
-          git clone --depth=1 \
-              "https://github.com/${{ github.repository_owner }}/genmkfile.git" \
-              /tmp/genmkfile
-          cd /tmp/genmkfile
-          sudo ./usr/bin/genmkfile deb-all-dep
-          sudo ./usr/bin/genmkfile install
-
-      - name: Install helper-scripts
-        run: |
-          ## Clone helper-scripts from the same org as the workflow.
-          ## Resolves to org-ai-assisted/helper-scripts on org-ai-assisted runs,
-          ## Kicksecure/helper-scripts on Kicksecure runs, etc. Hard error if the
-          ## org does not have helper-scripts - no implicit upstream fallback (an
-          ## org choosing to host its own CI must explicitly fork helper-scripts;
-          ## a silent cross-org clone would be a supply-chain footgun).
-          git clone --depth=1 \
-              "https://github.com/${{ github.repository_owner }}/helper-scripts.git" \
-              /tmp/helper-scripts
-          cd /tmp/helper-scripts
-          sudo genmkfile install
+          apt-packages: ca-certificates curl git sudo adduser build-essential dctrl-tools
 
       - name: Install msgcollector
         run: |
