@@ -1,3 +1,262 @@
+commit 8254c6691ca3f4cc6bc36ba1893d29ecc07e927a
+Merge: 2836c82 20a34da
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri May 15 13:15:24 2026 -0400
+
+    Merge remote-tracking branch 'refs/remotes/org-ai-assisted/master'
+
+commit 20a34da0fac685ba21ea3db281ad60885ad44a7f
+Merge: 7f90131 524d62a
+Author: assisted-by-ai (Bot Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Tue May 12 15:28:48 2026 -0400
+
+    Merge pull request #20 from org-ai-assisted/claude/review-github-actions-IQwcy
+
+    workflow triggers: normalize pull_request to branches: [master]
+
+commit 524d62ac826d90e7e0c65b8f6a759946aa36a9ac
+Author: Claude <noreply@anthropic.com>
+Date:   Tue May 12 19:25:58 2026 +0000
+
+    workflow triggers: normalize pull_request to branches: [master]
+
+    Propagate dmf canonical updates for consumer-claude-code.yml and
+    consumer-codex-review.yml: bare `pull_request:` ->
+    `pull_request: branches: [master]`. Matches the byte-identical
+    canonical in
+    developer-meta-files/consumer-templates/.github/workflows/.
+
+    Practical impact: PRs targeting feature branches no longer fire
+    the AI reviews. The org's typical workflow (feature-branch ->
+    master PR) is unaffected.
+
+commit 7f901316cd6f2efc82493fe3e42aab230deca0ab
+Merge: 1b63fac 9d07a49
+Author: assisted-by-ai (Bot Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Tue May 12 13:48:23 2026 -0400
+
+    Merge pull request #19 from org-ai-assisted/claude/review-github-actions-IQwcy
+
+    scorecard: remove consumer-scorecard.yml (org-wide opt-out)
+
+commit 9d07a498f7b5cfa4b3fb06a58340cd40a1b84667
+Author: Claude <noreply@anthropic.com>
+Date:   Tue May 12 17:46:01 2026 +0000
+
+    scorecard: remove consumer-scorecard.yml (org-wide opt-out)
+
+    Per the consumer-template architecture's opt-in-by-file-presence
+    rule, deleting a consumer-*.yml is the opt-out signal:
+    pkg_update_consumer_workflows refreshes only files that already
+    exist on the consumer side; the next propagation pass will not
+    re-create this.
+
+    Org-wide policy: Scorecard's value-to-noise ratio is low (many
+    false positives, non-actionable signals). Keeping it only in
+    derivative-maker (the canonical baseline) where the org-wide
+    supply-chain signal is most useful.
+
+    Spec:
+    https://github.com/org-ai-assisted/developer-meta-files/blob/master/agents/github-actions-consumer-templates.md
+
+commit 1b63fac5f35f7623b59af8fee833256ed8845cb9
+Merge: c75a2a5 a8f6efe
+Author: assisted-by-ai (Bot Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Tue May 12 12:48:58 2026 -0400
+
+    Merge pull request #18 from org-ai-assisted/claude/review-github-actions-IQwcy
+
+    workflows: rename legacy unprefixed to consumer- prefix
+
+commit a8f6efe0501bc840997ce0c1603cbbc0145f8ae7
+Author: Claude <noreply@anthropic.com>
+Date:   Tue May 12 16:44:42 2026 +0000
+
+    workflows: align consumer-*.yml byte-identical to dmf canonicals
+
+    Follow-up to the rename commit: in addition to renaming the
+    files, content must be byte-identical to the canonical wrappers
+    in developer-meta-files/consumer-templates/.github/workflows/.
+
+    Differences absorbed by this commit:
+
+    - scorecard.yml cron slot: per-repo allocation -> uniform
+      org-wide '0 6 * * 0' (the canonical's slot).
+    - Header comments: switched to the standard "Managed by
+      pkg_update_consumer_workflows" template so contributors see
+      the propagation contract.
+
+    User-facing `name:` fields unchanged.
+
+    Spec:
+    https://github.com/org-ai-assisted/developer-meta-files/blob/master/agents/github-actions-consumer-templates.md
+
+commit c20c83164c10c6ffebd3bdef299e201c6eaaf649
+Author: Claude <noreply@anthropic.com>
+Date:   Tue May 12 16:42:54 2026 +0000
+
+    workflows: rename legacy unprefixed to consumer- prefix
+
+    Per consumer-template architecture (G-A-005, three-prefix
+    convention): wrappers around developer-meta-files reusables
+    carry the `consumer-` prefix. This is the bulk rollout of the
+    prefix to this repo's universal wrappers.
+
+    Each file is byte-identical to its corresponding canonical in
+    developer-meta-files/consumer-templates/.github/workflows/.
+
+    User-facing `name:` fields unchanged. cron slots converge on
+    the org-wide singleton (`0 6 * * 0` for Scorecard) per spec
+    "Scheduling in byte-identical templates" - GitHub queue
+    serializes; Scorecard's low value-to-noise ratio makes that
+    contention acceptable.
+
+    Spec:
+    https://github.com/org-ai-assisted/developer-meta-files/blob/master/agents/github-actions-consumer-templates.md
+
+commit c75a2a57f1d89b225521cc51eff06603bfd13fee
+Merge: 2836c82 0f58c1d
+Author: assisted-by-ai (Bot Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Tue May 12 12:22:37 2026 -0400
+
+    Merge pull request #17 from org-ai-assisted/claude/review-github-actions-IQwcy
+
+    self-test: rename to local-signature-cache-tests
+
+commit 0f58c1dca0c96014d03db22f0c55265a26832c11
+Author: Claude <noreply@anthropic.com>
+Date:   Tue May 12 16:17:23 2026 +0000
+
+    self-test: rename to local-signature-cache-tests
+
+    Per consumer-template architecture: workflows that live only in
+    one repo carry the `local-` prefix. The new name describes what
+    the workflow tests (the sig-freshness cache scenarios for
+    update-torbrowser) - 'self-test' was opaque.
+
+    No behavior change.
+
+    Spec:
+    https://github.com/org-ai-assisted/developer-meta-files/blob/master/agents/github-actions-consumer-templates.md
+
+commit 2836c8284c5416b2634b2da0a8875cacd09815df
+Merge: 069f813 e69670a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue May 12 08:14:13 2026 -0400
+
+    Merge remote-tracking branch 'refs/remotes/org-ai-assisted/master'
+
+commit e69670aad90a27dfb2facb9a8dd7c03667ca474d
+Author: assisted-by-ai (Bot Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Mon May 11 16:57:47 2026 -0400
+
+    workflows: workflow_dispatch + PR-keyed concurrency (#16)
+
+    ## Changes
+
+    1. **`workflow_dispatch:` added** to `claude-code.yml`.
+    2. **PR-number-keyed concurrency group** in `claude-code.yml`
+    (`pull_request.number || issue.number || ref`) and `codex-review.yml`
+    (`pull_request.number || ref`).
+
+    ## Why
+
+    - `workflow_dispatch:` consistency: lets admins manually re-run any
+    workflow without an empty commit.
+    - Concurrency fix is the CI-time lever (matches dmf #54): correctly
+    cancels older comment-triggered runs when a newer push arrives.
+
+    ## Mandatory Checklist
+
+    - [x] Legal agreements accepted. [Terms of
+    Service](https://www.kicksecure.com/wiki/Terms_of_Service), [Privacy
+    Policy](https://www.kicksecure.com/wiki/Privacy_Policy), [Cookie
+    Policy](https://www.kicksecure.com/wiki/Cookie_Policy), [E-Sign
+    Consent](https://www.kicksecure.com/wiki/E-Sign_Consent),
+    [DMCA](https://www.kicksecure.com/wiki/DMCA),
+    [Imprint](https://www.kicksecure.com/wiki/Imprint)
+
+    ## Optional Checklist
+
+    - [x] I have tested it locally (YAML parses).
+
+    Fixes #
+
+    https://claude.ai/code/session_018rti4CCm2SQ3PWKa7jRt7p
+
+    ---
+    _Generated by [Claude
+    Code](https://claude.ai/code/session_018rti4CCm2SQ3PWKa7jRt7p)_
+
+    Co-authored-by: Claude <noreply@anthropic.com>
+
+commit 069f8139934c9cbf5b6bc6bb19053f3c3df68573
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon May 11 20:29:47 2026 +0000
+
+    bumped changelog version
+
+commit bafe60d077ef706954c851f22e73eb17793fa055
+Author: assisted-by-ai (Bot Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Mon May 11 15:29:33 2026 -0400
+
+    self-test: drop 'claude/**' from push trigger (#15)
+
+    ## Changes
+
+    Removes `'claude/**'` from `.github/workflows/self-test.yml`'s `push:
+    branches:` filter. Aligns this workflow with the org-wide convention:
+    `push: branches: [master]` + `pull_request:` covers feature-branch
+    validation via the PR trigger once a PR opens.
+
+    ## Why
+
+    `tb-updater/self-test.yml` was the only workflow in the org's 11
+    surveyed repos with `push: branches: [master, 'claude/**']`. Every other
+    code-analysis workflow (codeql, cppcheck, bandit, scorecard, the new
+    pre-push-static gate from dmf#49) uses `push: branches: [master]` +
+    `pull_request:` and lets the `pull_request` trigger cover feature-branch
+    CI. The `claude/**` carve-out predates the org-wide convention
+    solidifying.
+
+    ## Net effect
+
+    - AI-session branches **without an open PR** no longer run self-test on
+    each push.
+    - AI-session branches **with an open PR** still run self-test on every
+    push (via the `pull_request` trigger), unchanged.
+    - Pushes to `master` (post-merge): unchanged.
+    - `workflow_dispatch:` for manual reruns: unchanged.
+
+    ## Mandatory Checklist
+
+    - [x] Legal agreements accepted. By contributing to this organisation,
+    you acknowledge you have read, understood, and agree to be bound by
+    these agreements: [Terms of
+    Service](https://www.kicksecure.com/wiki/Terms_of_Service), [Privacy
+    Policy](https://www.kicksecure.com/wiki/Privacy_Policy), [Cookie
+    Policy](https://www.kicksecure.com/wiki/Cookie_Policy), [E-Sign
+    Consent](https://www.kicksecure.com/wiki/E-Sign_Consent),
+    [DMCA](https://www.kicksecure.com/wiki/DMCA),
+    [Imprint](https://www.kicksecure.com/wiki/Imprint)
+
+    ## Optional Checklist
+
+    - [x] I have tested it locally (trigger block parses; net behavior
+    change confirmed against the matrix of cases above).
+    - [x] I have reviewed and updated any documentation if relevant (no doc
+    references the `claude/**` filter).
+
+    Fixes #
+
+    https://claude.ai/code/session_018rti4CCm2SQ3PWKa7jRt7p
+
+    ---
+    _Generated by [Claude
+    Code](https://claude.ai/code/session_018rti4CCm2SQ3PWKa7jRt7p)_
+
+    Co-authored-by: Claude <noreply@anthropic.com>
+
 commit e335049040b5c29c3840af7925819a6875f2aa40
 Merge: 36e4d47 5ec5de4
 Author: Patrick Schleizer <adrelanos@whonix.org>
