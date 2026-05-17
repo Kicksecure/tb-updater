@@ -5,36 +5,8 @@
 ## AI-Assisted
 
 ## Managed by pkg_update_consumer_workflows / pkg_install_dependabot_yml.
-## Byte-identical across consumers; this file is `cp`-ed from
-## developer-meta-files/consumer-templates/.github/dependabot.yml.
-## DO NOT hand-edit this file in the consumer repo - changes
-## will be overwritten on the next propagation pass.
-##
-## Architecture docs:
-## https://github.com/org-ai-assisted/developer-meta-files/blob/master/agents/github-actions-consumer-templates.md
-##
-## Canonical carries the github-actions package-ecosystem only.
-## The docker ecosystem was previously included on the
-## "harmless no-op in repos without Dockerfiles" theory; that
-## theory was wrong - the dependabot-action errors with
-## `dependency_file_not_found` and aborts the whole job
-## (including the github-actions run that shares it), so every
-## consumer without a `/Dockerfile` lost github-actions coverage
-## too. The docker block was removed for that reason.
-##
-## Repos that DO carry a Dockerfile (derivative-maker at
-## docker/Dockerfile, helper-scripts at .clusterfuzzlite/Dockerfile)
-## opt out of propagation via a `## propagation: manual` header
-## marker and hand-maintain their dependabot.yml with the docker
-## block at the correct per-repo `directory:`. See the "Per-repo
-## manual dependabot.yml" section of the architecture doc.
-##
-## Note: Dependabot does NOT auto-bump container digests inside
-## workflow 'image:' / 'container:' lines, only Dockerfile 'FROM'
-## lines. Workflow container pins
-## (e.g. debian:trixie@sha256:... in local-lint.yml) need manual
-## re-pinning; see each repo's agents/github-actions-security.md
-## for the procedure.
+## Byte-identical across consumers; do not hand-edit.
+## See agents/github-actions-consumer-templates.md.
 
 version: 2
 updates:
@@ -46,9 +18,6 @@ updates:
     commit-message:
       prefix: "ci(deps)"
       include: scope
-    ## Bundle every action update into a single PR per cycle.
-    ## Without this, dependabot opens one PR per action and
-    ## 'open-pull-requests-limit: 1' silently drops the rest.
     groups:
       github-actions:
         patterns:
