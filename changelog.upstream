@@ -1,3 +1,63 @@
+commit a452841522030088feaa7ac8f2cb89685e5d756e
+Merge: c2a74b5 de88278
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun May 17 16:23:04 2026 -0400
+
+    Merge remote-tracking branch 'refs/remotes/org-ai-assisted/master'
+
+commit de8827875b485192a9a76fede32031f318c78608
+Merge: c2a74b5 8a533b4
+Author: assisted-by-ai (Bot Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Sun May 17 14:02:56 2026 -0400
+
+    Merge pull request #21 from org-ai-assisted/claude/fix-dependabot-action-UnL7w
+
+    dependabot.yml: drop docker block (sync to new canonical)
+
+commit 8a533b49bccb2c85b4eefa8272c532a8faf7fcd6
+Author: Claude <noreply@anthropic.com>
+Date:   Sun May 17 17:59:45 2026 +0000
+
+    trim file commentary
+
+commit 37d5be7fc673a0a7bd1e49b4f343cb5d690cce82
+Author: Claude <noreply@anthropic.com>
+Date:   Sun May 17 17:43:21 2026 +0000
+
+    dependabot.yml: drop docker block (sync to new canonical)
+
+    The previous canonical at
+    developer-meta-files/consumer-templates/.github/dependabot.yml
+    carried a docker package-ecosystem block on the documented theory
+    that the block was a "harmless no-op" in repos without a
+    /Dockerfile. That theory was wrong: the dependabot-action errors
+    with `dependency_file_not_found` and aborts the whole job -
+    including the github-actions ecosystem run that shares it - so
+    this repo lost its github-actions Dependabot coverage too.
+
+    Sync to the new canonical, which carries github-actions only.
+
+    See org-ai-assisted/developer-meta-files PR #105 for the
+    canonical change and the docker-bearing-repo opt-out mechanism.
+
+commit c2a74b5108c34de6968cad779b21351a6ecf34f0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat May 16 06:08:35 2026 -0400
+
+    add .github/dependabot.yml
+
+commit c5142172f0f3ca83cf9cde23edd0a8b96a77e6c2
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat May 16 06:01:50 2026 -0400
+
+    update .github/workflows/consumer-claude-code.yml
+
+commit f427dea2a78fd89d5c37536539795f4ce193c49f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri May 15 18:41:49 2026 +0000
+
+    bumped changelog version
+
 commit 8254c6691ca3f4cc6bc36ba1893d29ecc07e927a
 Merge: 2836c82 20a34da
 Author: Patrick Schleizer <adrelanos@whonix.org>
