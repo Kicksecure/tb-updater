@@ -814,7 +814,7 @@ tb_preparation() {
    [ -n "${TB_KEEP_OLD_VERSIONS_COUNT:-}" ] || TB_KEEP_OLD_VERSIONS_COUNT="0"
 
    if [ ! "${tb_updater_run:-}" = "true" ]; then
-      true "tb_updater_run is set to: '$tb_updater_run'"
+      true "tb_updater_run is set to: '${tb_updater_run:-}'"
       log notice "Using '--postinst' option but outside of Qubes Template, skipping, ok."
       tb_exit_function 0
    fi
