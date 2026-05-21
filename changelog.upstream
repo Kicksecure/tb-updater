@@ -1,3 +1,58 @@
+commit f734081643dc004d8f2dee3f055a52da2c476e60
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed May 20 16:57:20 2026 -0400
+
+    genmkfile uch
+
+commit 0ec36c1ed6e335b18adf4b25e19ac00ae7fe1af3
+Merge: 4598040 d98c32f
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed May 20 12:58:02 2026 -0400
+
+    Merge remote-tracking branch 'refs/remotes/org-ai-assisted/master'
+
+commit d98c32f8268fde8589611b5651746cbfd900ff72
+Merge: 96cac06 ed8a86b
+Author: assisted-by-ai (Bot Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Wed May 20 12:30:12 2026 -0400
+
+    Merge pull request #22 from org-ai-assisted/claude/fix-tb-updater-bug-Txpdm
+
+    update-torbrowser: fix `tb_updater_run: unbound variable` on non-Qubes postinst
+
+commit ed8a86b63328f9ad7f066f5790538e20c5dc89e4
+Author: Claude <noreply@anthropic.com>
+Date:   Tue May 19 20:08:24 2026 +0000
+
+    update-torbrowser: fix unbound variable when --postinst runs outside Qubes Template
+
+    Postinst on a non-Qubes-Template system aborted with:
+
+      /usr/bin/update-torbrowser: line 817: tb_updater_run: unbound variable
+
+    In tb_preparation(), the guard on line 816 correctly uses the
+    ${var:-} default-expansion form so that nounset (set -u) does not
+    fire when tb_updater_run was never assigned. The debug 'true' on
+    line 817 referenced the bare $tb_updater_run, which triggers
+    nounset on exactly the code path the guard is meant to handle
+    (--postinst outside a Qubes TemplateVM, where none of the
+    tb_settings_* helpers that set tb_updater_run=true ran).
+
+    Use the same ${tb_updater_run:-} expansion in the log message so
+    the branch can run to its intended tb_exit_function 0.
+
+commit 45980409598864387621bac45ac0da3b6b8582a4
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue May 19 16:04:19 2026 -0400
+
+    tbb_hardcoded_version update
+
+commit 96cac06737ea5b41027d72471c77f90329a8b0ed
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon May 18 10:15:30 2026 +0000
+
+    bumped changelog version
+
 commit a452841522030088feaa7ac8f2cb89685e5d756e
 Merge: c2a74b5 de88278
 Author: Patrick Schleizer <adrelanos@whonix.org>
@@ -8699,7 +8754,7 @@ commit 063e32593b3ff34ee3528d16940f56300a9a8398
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Thu May 23 06:45:26 2019 -0400
 
-    save passwords by default for Non-Whonix ™ Tor Browser
+    save passwords by default for Non-Whonix _ Tor Browser
 
     https://www.whonix.org/wiki/Install_Tor_Browser_Outside_of_Whonix
 
@@ -9653,7 +9708,7 @@ Date:   Tue Aug 15 15:06:27 2017 +0200
     Remove old versions of tor-browser
 
 commit 63639829065b52f20880f027f75aa298d0174f8f
-Author: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+Author: Marek Marczykowski-G_recki <marmarek@invisiblethingslab.com>
 Date:   Sat Aug 12 12:29:40 2017 +0200
 
     Remove old versions of tor-browser
@@ -11879,7 +11934,7 @@ commit ed796e833e1886deb2e0f254af7aa99ef73d4055
 Author: Patrick Schleizer <adrelanos@riseup.net>
 Date:   Sun Dec 14 21:32:58 2014 +0000
 
-    Deactivating Tor Browser’s Internal Updater at least as long it does not support verification. See also:
+    Deactivating Tor Browser_s Internal Updater at least as long it does not support verification. See also:
     - https://www.whonix.org/blog/tor-browser-updater-warning
     - https://www.whonix.org/forum/index.php/topic,807
 
