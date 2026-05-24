@@ -1,3 +1,23 @@
+commit eb4140f2ca7f08b89b661f019fba3462cde41992
+Merge: 446e523 6ee5a42
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun May 24 14:51:26 2026 -0400
+
+    Merge remote-tracking branch 'refs/remotes/ArrayBolt3/arraybolt3/trixie'
+
+commit 6ee5a42d2fd3d331face85ea307cc35ac68eb020
+Merge: de2f937 446e523
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Wed May 20 20:04:42 2026 -0400
+
+    Merge branch 'master' into arraybolt3/trixie
+
+commit 446e52332c5be2d8c10357797e75de5b19022218
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed May 20 22:24:29 2026 +0000
+
+    bumped changelog version
+
 commit f734081643dc004d8f2dee3f055a52da2c476e60
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed May 20 16:57:20 2026 -0400
@@ -19,6 +39,12 @@ Date:   Wed May 20 12:30:12 2026 -0400
     Merge pull request #22 from org-ai-assisted/claude/fix-tb-updater-bug-Txpdm
 
     update-torbrowser: fix `tb_updater_run: unbound variable` on non-Qubes postinst
+
+commit de2f937d5c2a053983827dcea05a1bcfa48f9576
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Tue May 19 23:13:30 2026 -0400
+
+    minor
 
 commit ed8a86b63328f9ad7f066f5790538e20c5dc89e4
 Author: Claude <noreply@anthropic.com>
