@@ -42,6 +42,8 @@ jobs:
           apt-packages: ca-certificates curl git sudo adduser build-essential dctrl-tools
 
       - name: Install msgcollector
+        env:
+          GH_REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
           ## Clone msgcollector from the same org as the workflow.
           ## Resolves to org-ai-assisted/msgcollector on org-ai-assisted runs,
@@ -50,7 +52,7 @@ jobs:
           ## org choosing to host its own CI must explicitly fork msgcollector;
           ## a silent cross-org clone would be a supply-chain footgun).
           git clone --depth=1 \
-              "https://github.com/${{ github.repository_owner }}/msgcollector.git" \
+              "https://github.com/${GH_REPOSITORY_OWNER}/msgcollector.git" \
               /tmp/msgcollector
           cd /tmp/msgcollector
           sudo genmkfile install
