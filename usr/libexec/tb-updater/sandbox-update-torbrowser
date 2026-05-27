@@ -11,6 +11,8 @@ set -o errexit
 set -o nounset
 set -o errtrace
 set -o pipefail
+shopt -s inherit_errexit
+shopt -s shift_verbose
 
 who_ami="$(whoami)"
 
@@ -48,6 +50,18 @@ tb_browser_name="${tb_browser_name:-tor-browser}"
 tb_global_binary_dir="${tb_global_binary_dir:-/var/cache/tb-binary}"
 root_browser_dir="${tb_global_binary_dir}"
 
+## Resume-stash: holds the partial tarball + detached signature across
+## failed runs so '--resume' can pick up where curl left off without
+## leaving the rest of tb_updater_home populated with possibly-stale
+## state from the failed run. Lives outside tb_updater_home so the
+## full-wipe cleanup of tb_updater_home does not touch it. Per-browser
+## subdirectory so update-torbrowser, update-mullvadbrowser and
+## update-i2pbrowser do not stomp on each other.
+tb_updater_stash_root='/var/lib/tb-updater/resume-stash'
+tb_updater_stash="${tb_updater_stash_root}/${tb_install_folder}"
+
+tb_downloaded_files_subpath=".cache/${tb_install_folder}/files"
+
 ## Scripts like update-mullvadbrowser simply export some environment
 ## variables, then call update-torbrowser. If sandbox-update-torbrowser is
 ## called because one of these wrappers was executed, we can either re-execute
@@ -69,7 +83,7 @@ esac
 
 cleanup_dir_as_tb_updater() {
   local target_dir
-  target_dir="$1"
+  target_dir="${1}"
 
   if ! [ -d "${target_dir}" ]; then
     ## Non-existent directory, skip
@@ -90,6 +104,74 @@ cleanup_dir_as_tb_updater() {
     -- "${target_dir}"/*
   shopt -u dotglob
   shopt -u nullglob
+}
+
+ensure_stash_dir() {
+  ## Always re-apply ownership and mode, not just on create: an
+  ## earlier run that crashed between mkdir and chown would leave
+  ## a root-owned directory on disk, and the next stash/restore/purge
+  ## (which runs under setpriv-tb-updater) would then fail.
+  mkdir --parents -- "${tb_updater_stash}"
+  chown --recursive -- tb-updater:tb-updater "${tb_updater_stash_root}"
+  chmod 0700 -- "${tb_updater_stash_root}" "${tb_updater_stash}"
+}
+
+stash_tarball_to_stash() {
+  ## find + '-exec mv --target-directory=TARGET +' silently no-ops
+  ## when nothing matches the glob, which is the normal case if the
+  ## run failed before curl emitted any tarball bytes.
+  local source_dir
+
+  source_dir="${tb_updater_home}/${tb_downloaded_files_subpath}"
+
+  if ! [ -d "${source_dir}" ]; then
+    return 0
+  fi
+
+  ensure_stash_dir
+  log notice "Stashing partial archive from '${source_dir}' to '${tb_updater_stash}'."
+  /usr/libexec/tb-updater/setpriv-tb-updater \
+    find "${source_dir}" -maxdepth 1 -type f \
+      \( -name '*.tar.xz' -o -name '*.tar.xz.asc' \) \
+      -exec mv --target-directory="${tb_updater_stash}" -- '{}' +
+}
+
+restore_tarball_from_stash() {
+  ## Feeds curl's '--continue-at -' so a '--resume' run picks up
+  ## where the prior failed run stopped. mkdir runs under
+  ## setpriv-tb-updater so the cache hierarchy ends up owned by
+  ## tb-updater like the rest of tb_updater_home.
+  local target_dir
+
+  target_dir="${tb_updater_home}/${tb_downloaded_files_subpath}"
+
+  if ! [ -d "${tb_updater_stash}" ]; then
+    log notice "No stash at '${tb_updater_stash}'; nothing to restore for '--resume'."
+    return 0
+  fi
+  if [ "$(find -- "${tb_updater_stash}" -maxdepth 1 -type f | wc -l)" = '0' ]; then
+    log notice "Stash '${tb_updater_stash}' is empty; nothing to restore for '--resume'."
+    return 0
+  fi
+
+  log notice "Restoring stashed archive from '${tb_updater_stash}' to '${target_dir}'."
+  /usr/libexec/tb-updater/setpriv-tb-updater \
+    mkdir --parents -- "${target_dir}"
+  /usr/libexec/tb-updater/setpriv-tb-updater \
+    find "${tb_updater_stash}" -maxdepth 1 -type f \
+      \( -name '*.tar.xz' -o -name '*.tar.xz.asc' \) \
+      -exec mv --target-directory="${target_dir}" -- '{}' +
+}
+
+purge_stash() {
+  ## Called on startup of a non-'--resume' run (so the user is not
+  ## silently resumed against their wishes) and at the end of a
+  ## successful run (so a stale partial does not outlive the install
+  ## that consumed it).
+  if ! [ -d "${tb_updater_stash}" ]; then
+    return 0
+  fi
+  cleanup_dir_as_tb_updater "${tb_updater_stash}"
 }
 
 cleanup() {
@@ -150,8 +232,18 @@ frozen 0"
 
 # shellcheck disable=SC2317
 error_handler() {
-  local error_code="$?"
+  local error_code="${?}"
   trap '' EXIT INT TERM
+  ## Stash before cleanup so the partial archive survives the
+  ## full-wipe; the rest of tb_updater_home (half-extracted browser
+  ## trees etc.) is intentionally wiped so a failed run can't leak
+  ## state into the next one. Stash failures are non-fatal here so
+  ## that 'set -o errexit' inside the trap can't skip the cleanup
+  ## of tb_updater_home and leave the next run with a half-state
+  ## work directory.
+  if ! stash_tarball_to_stash; then
+    log warn "Could not stash partial archive; continuing with cleanup."
+  fi
   cleanup
   log error "END: Failed."
   exit "${error_code}"
@@ -174,10 +266,10 @@ exit_clean() {
 
 is_gui_enabled() {
   while [ -n "${1:-}" ]; do
-    case "$1" in
+    case "${1}" in
       --input)
         if [ -n "${2:-}" ]; then
-          TB_INPUT="$2"
+          TB_INPUT="${2}"
         fi
         shift 2
         ;;
@@ -197,8 +289,26 @@ is_gui_enabled() {
   printf '%s\n' 'false'
 }
 
+is_resume_enabled() {
+  while [ -n "${1:-}" ]; do
+    case "${1}" in
+      --resume)
+        printf '%s\n' 'true'
+        return
+        ;;
+      --)
+        break
+        ;;
+      *)
+        shift
+        ;;
+    esac
+  done
+  printf '%s\n' 'false'
+}
+
 validate_uuid() {
-  if [[ "$1" \
+  if [[ "${1}" \
     =~ ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$ ]]; then
     return 0
   fi
@@ -206,7 +316,7 @@ validate_uuid() {
 }
 
 sandbox_update_torbrowser() {
-  local _ gui_enabled orig_wl_sock gui_ready sock_owner xhost_output
+  local _ gui_enabled resume_enabled orig_wl_sock gui_ready sock_owner xhost_output
 
   log notice "Start."
 
@@ -221,13 +331,22 @@ sandbox_update_torbrowser() {
   fi
 
   orig_wl_sock=''
-  gui_enabled="$(is_gui_enabled "$@")"
+  gui_enabled="$(is_gui_enabled "${@}")"
+  resume_enabled="$(is_resume_enabled "${@}")"
   gui_ready='false'
   [ -n "${SUDO_USER:-}" ] || SUDO_USER=''
 
-  ## Run cleanup before starting, so that if there are any problematic
-  ## leftovers from a previous interrupted run, they are removed.
+  ## cleanup wipes tb_updater_home unconditionally so each run
+  ## starts known-good. The resume-stash lives OUTSIDE
+  ## tb_updater_home, so the prior run's stashed partial (written
+  ## by error_handler) survives and is either restored or purged
+  ## below based on '--resume'.
   cleanup
+  if [ "${resume_enabled}" = 'true' ]; then
+    restore_tarball_from_stash
+  else
+    purge_stash
+  fi
 
   mkdir --parents -- "${tb_updater_run_dir}"
   chown -R -- tb-updater:tb-updater "${tb_updater_run_dir}"
@@ -372,7 +491,7 @@ sandbox_update_torbrowser() {
         DISPLAY="${DISPLAY}" \
         QT_QPA_PLATFORM='xcb' \
         GDK_BACKEND='x11' \
-        "${updater_cmd}" "$@"
+        "${updater_cmd}" "${@}"
     else
       tb_updater_cgroup="$(/usr/libexec/helper-scripts/run-in-cgroup \
         --detach \
@@ -398,10 +517,10 @@ sandbox_update_torbrowser() {
         WAYLAND_DISPLAY='wayland-0' \
         QT_QPA_PLATFORM='wayland' \
         GDK_BACKEND='wayland' \
-        "${updater_cmd}" "$@"
+        "${updater_cmd}" "${@}"
     fi
   else
-    /usr/libexec/tb-updater/setpriv-tb-updater "${updater_cmd}" "$@"
+    /usr/libexec/tb-updater/setpriv-tb-updater "${updater_cmd}" "${@}"
   fi
 
   if [ -d "${tb_updater_home}/${tb_install_folder_dot}/${tb_browser_name}" ] \
@@ -431,10 +550,14 @@ sandbox_update_torbrowser() {
     chmod --recursive u+rwX -- "${root_browser_dir}"
   fi
 
+  ## Drop the stash on success so a later '--resume' run doesn't
+  ## try to resume against a download that's already been installed.
+  purge_stash
+
   log notice "Cleaning up '${tb_updater_home}'."
 
   cleanup
   exit_clean 0
 }
 
-sandbox_update_torbrowser "$@"
+sandbox_update_torbrowser "${@}"
