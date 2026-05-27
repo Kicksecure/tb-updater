@@ -148,9 +148,6 @@ STUB
 }
 
 run_sandbox() {
-  ## TB_INPUT=none keeps is_gui_enabled='false' so the script
-  ## bypasses the Wayland/X11 bind-mount + xhost setup, which CI
-  ## containers do not have.
   SCRIPTNAME=update-torbrowser "${sandbox_bin}" "${@}"
 }
 
@@ -233,7 +230,7 @@ printf '%s\n' '  [PASS] error_handler stashed tarball + signature on failure'
 ## reviewer flagged that the prior --preserve-work-dir design did not
 ## handle (the first run, without --resume, wiped the partial).
 ## ---------------------------------------------------------------------------
-printf '%s\n' '-- scenario 4: forgot --resume on first run, used --resume on retry --'
+printf '%s\n' '-- scenario 4: omitted --resume on first run, used --resume on retry --'
 reset_state
 install_failing_stub
 sandbox_rc=0
@@ -241,7 +238,7 @@ run_sandbox --input none || sandbox_rc="${?}"
 [ "${sandbox_rc}" -eq 23 ] \
   || die "scenario 4: first run expected rc=23 from failing updater stub, got '${sandbox_rc}' (sandbox likely aborted before reaching the updater handoff)"
 [ -f "${stash_dir}/${tarball_name}" ] \
-  || die "scenario 4: error_handler did not stash the tarball even though '--resume' was not on the first run"
+  || die "scenario 4: error_handler did not stash the tarball"
 install_observer_stub
 run_sandbox --resume --input none
 result="$(read_result)"

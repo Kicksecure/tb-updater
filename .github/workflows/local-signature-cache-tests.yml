@@ -113,6 +113,10 @@ jobs:
         ## default. sandbox-update-torbrowser hard-requires both. The
         ## adduser command below is taken verbatim from
         ## debian/tb-updater.postinst's create_tb_updater_user_account.
+        ##
+        ## TODO: Maybe instead, change how we install tb-updater so
+        ## that the postinst is run? That way we keep a single source
+        ## of truth for this.
         run: |
           set -eux
           adduser --home /var/lib/tb-updater/work --quiet --system --group tb-updater || true

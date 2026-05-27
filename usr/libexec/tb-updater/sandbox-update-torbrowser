@@ -53,14 +53,15 @@ root_browser_dir="${tb_global_binary_dir}"
 ## Resume-stash: holds the partial tarball + detached signature across
 ## failed runs so '--resume' can pick up where curl left off without
 ## leaving the rest of tb_updater_home populated with possibly-stale
-## state from the failed run. Lives outside tb_updater_home so the
-## full-wipe cleanup of tb_updater_home does not touch it. Per-browser
-## subdirectory so update-torbrowser, update-mullvadbrowser and
-## update-i2pbrowser do not stomp on each other.
+## state from a failed run. Lives outside tb_updater_home so the wipe
+## of tb_updater_home does not touch it. Per-browser subdirectory so
+## update-torbrowser, update-mullvadbrowser and update-i2pbrowser do
+## not stomp on each other.
 tb_updater_stash_root='/var/lib/tb-updater/resume-stash'
 tb_updater_stash="${tb_updater_stash_root}/${tb_install_folder}"
 
-tb_downloaded_files_subpath=".cache/${tb_install_folder}/files"
+tb_downloaded_files_folder="${tb_updater_home}/.cache/${tb_install_folder}/files"
+TBB_SANDBOX_RESUME_HINT_FILENAME="${tb_downloaded_files_folder}/resume_hint"
 
 ## Scripts like update-mullvadbrowser simply export some environment
 ## variables, then call update-torbrowser. If sandbox-update-torbrowser is
@@ -117,23 +118,53 @@ ensure_stash_dir() {
 }
 
 stash_tarball_to_stash() {
-  ## find + '-exec mv --target-directory=TARGET +' silently no-ops
-  ## when nothing matches the glob, which is the normal case if the
-  ## run failed before curl emitted any tarball bytes.
-  local source_dir
+  local untrusted_hint_line hint_key untrusted_hint_val TBB_SIG_FILENAME \
+    TBB_PACKAGE_FILENAME
 
-  source_dir="${tb_updater_home}/${tb_downloaded_files_subpath}"
-
-  if ! [ -d "${source_dir}" ]; then
+  if ! [ -d "${tb_downloaded_files_folder}" ]; then
+    return 0
+  fi
+  if ! [ -s "${TBB_SANDBOX_RESUME_HINT_FILENAME}" ]; then
     return 0
   fi
 
+  ## Carefully validate the hint file dropped by update-torbrowser before
+  ## trusting it to tell us what files to stash.
+  unicode-show "${TBB_SANDBOX_RESUME_HINT_FILENAME}" &>/dev/null || return 0
+  while read -r untrusted_hint_line; do
+    case "${untrusted_hint_line}" in
+      TBB_SIG_FILENAME=*) ;;
+      TBB_PACKAGE_FILENAME=*) ;;
+      *) return 0 ;;
+    esac
+    [[ "${untrusted_hint_line}" =~ ([^=]*)=(.*) ]] || return 0
+    hint_key="${BASH_REMATCH[1]:-}"
+    untrusted_hint_val="${BASH_REMATCH[2]:-}"
+    [ -n "${hint_key}" ] || return 0
+    [ -n "${untrusted_hint_val}" ] || return 0
+    [[ "${untrusted_hint_val}" =~ ^[-a-zA-Z0-9_.]+\.tar\.xz(\.asc)?$ ]] \
+      || return 0
+    ## At this point 'untrusted_hint_val' has been validated and is now
+    ## trusted.
+    [ "${hint_key}" = 'TBB_SIG_FILENAME' ] \
+      && TBB_SIG_FILENAME="${untrusted_hint_val}"
+    [ "${hint_key}" = 'TBB_PACKAGE_FILENAME' ] \
+      && TBB_PACKAGE_FILENAME="${untrusted_hint_val}"
+  done < "${TBB_SANDBOX_RESUME_HINT_FILENAME}"
+
   ensure_stash_dir
-  log notice "Stashing partial archive from '${source_dir}' to '${tb_updater_stash}'."
-  /usr/libexec/tb-updater/setpriv-tb-updater \
-    find "${source_dir}" -maxdepth 1 -type f \
-      \( -name '*.tar.xz' -o -name '*.tar.xz.asc' \) \
-      -exec mv --target-directory="${tb_updater_stash}" -- '{}' +
+  log notice "Stashing partial archive from '${tb_downloaded_files_folder}' to '${tb_updater_stash}'."
+
+  if [ -n "${TBB_SIG_FILENAME:-}" ]; then
+    /usr/libexec/tb-updater/setpriv-tb-updater \
+      mv --target-directory="${tb_updater_stash}" \
+      -- "${tb_downloaded_files_folder}/${TBB_SIG_FILENAME}"
+  fi
+  if [ -n "${TBB_PACKAGE_FILENAME:-}" ]; then
+    /usr/libexec/tb-updater/setpriv-tb-updater \
+      mv --target-directory="${tb_updater_stash}" \
+      -- "${tb_downloaded_files_folder}/${TBB_PACKAGE_FILENAME}"
+  fi
 }
 
 restore_tarball_from_stash() {
@@ -141,9 +172,6 @@ restore_tarball_from_stash() {
   ## where the prior failed run stopped. mkdir runs under
   ## setpriv-tb-updater so the cache hierarchy ends up owned by
   ## tb-updater like the rest of tb_updater_home.
-  local target_dir
-
-  target_dir="${tb_updater_home}/${tb_downloaded_files_subpath}"
 
   if ! [ -d "${tb_updater_stash}" ]; then
     log notice "No stash at '${tb_updater_stash}'; nothing to restore for '--resume'."
@@ -154,13 +182,20 @@ restore_tarball_from_stash() {
     return 0
   fi
 
-  log notice "Restoring stashed archive from '${tb_updater_stash}' to '${target_dir}'."
+  log notice "Restoring stashed archive from '${tb_updater_stash}' to '${tb_downloaded_files_folder}'."
   /usr/libexec/tb-updater/setpriv-tb-updater \
-    mkdir --parents -- "${target_dir}"
-  /usr/libexec/tb-updater/setpriv-tb-updater \
-    find "${tb_updater_stash}" -maxdepth 1 -type f \
-      \( -name '*.tar.xz' -o -name '*.tar.xz.asc' \) \
-      -exec mv --target-directory="${target_dir}" -- '{}' +
+    mkdir --parents -- "${tb_downloaded_files_folder}"
+
+  ## 'find' cannot operate as user 'tb-updater' when the cwd is /root.
+  ## Run this in a subshell that has been changed to some other
+  ## directory.
+  (
+    cd /
+    /usr/libexec/tb-updater/setpriv-tb-updater \
+      find "${tb_updater_stash}" -maxdepth 1 -type f \
+        \( -name '*.tar.xz' -o -name '*.tar.xz.asc' \) \
+        -exec mv --target-directory="${tb_downloaded_files_folder}" -- '{}' +
+  )
 }
 
 purge_stash() {
@@ -237,10 +272,7 @@ error_handler() {
   ## Stash before cleanup so the partial archive survives the
   ## full-wipe; the rest of tb_updater_home (half-extracted browser
   ## trees etc.) is intentionally wiped so a failed run can't leak
-  ## state into the next one. Stash failures are non-fatal here so
-  ## that 'set -o errexit' inside the trap can't skip the cleanup
-  ## of tb_updater_home and leave the next run with a half-state
-  ## work directory.
+  ## state into the next one.
   if ! stash_tarball_to_stash; then
     log warn "Could not stash partial archive; continuing with cleanup."
   fi
