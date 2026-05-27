@@ -63,10 +63,12 @@ jobs:
           export DEBIAN_FRONTEND=noninteractive
           ## faketime is used by make-fixture --signed-at for the
           ## "signature too old" negative scenario.
+          ## acl provides setfacl, which sandbox-update-torbrowser
+          ## requires at script-load time ('has setfacl').
           apt-get install -y --no-install-recommends \
             sq sqop libarchive-tools safe-rm \
             curl jq psmisc pv iproute2 python3 \
-            faketime
+            faketime acl
 
       - name: Checkout tb-updater
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
@@ -104,8 +106,36 @@ jobs:
         run: |
           sudo -u tbtest env CI=true .github/ci/self-test -v
 
+      - name: Create tb-updater system user (mirrors tb-updater postinst)
+        ## genmkfile install copies files but does not execute the
+        ## package postinst, so the 'tb-updater' system account and its
+        ## /var/lib/tb-updater/work home directory do not exist by
+        ## default. sandbox-update-torbrowser hard-requires both. The
+        ## adduser command below is taken verbatim from
+        ## debian/tb-updater.postinst's create_tb_updater_user_account.
+        ##
+        ## TODO: Maybe instead, change how we install tb-updater so
+        ## that the postinst is run? That way we keep a single source
+        ## of truth for this.
+        run: |
+          set -eux
+          adduser --home /var/lib/tb-updater/work --quiet --system --group tb-updater || true
+          id tb-updater
+          test -d /var/lib/tb-updater/work
+
+      - name: Run sandbox-resume regression test
+        ## sandbox-update-torbrowser is the postinst entry point and
+        ## must run as root, so this scenario does not go through the
+        ## unprivileged 'tbtest' account that the file://-fixture
+        ## tests use.
+        run: |
+          env CI=true .github/ci/test-sandbox-resume
+
       - name: Show generated caches on failure
         if: failure()
         run: |
           set +e
           find /tmp/tb-selftest.* 2>/dev/null | head -80 || true
+          find /var/lib/tb-updater/work -maxdepth 4 2>/dev/null || true
+          find /var/lib/tb-updater/resume-stash -maxdepth 3 2>/dev/null || true
+          ls -la /tmp/test-sandbox-resume-result 2>/dev/null || true

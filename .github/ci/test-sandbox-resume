@@ -1,0 +1,252 @@
+#!/bin/bash
+
+## Copyright (C) 2026 - 2026 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
+## See the file COPYING for copying conditions.
+
+## AI-Assisted
+
+## Regression test for Kicksecure/tb-updater#40: the resume-stash
+## design in sandbox-update-torbrowser. Each scenario carries its
+## own inline rationale.
+##
+## Must run as root: sandbox-update-torbrowser is the postinst entry
+## point and itself drops to the 'tb-updater' account via setpriv.
+##
+## Style-guide deviations (matches the existing .github/ci/self-test
+## and developer-meta-files/agents/pre-push-static.sh precedents):
+##   * R-040/R-110 (log/die from log_run_die.sh): self-contained,
+##     uses bare printf and a local die() so the script runs on a
+##     developer machine without sourcing helper-scripts.
+##   * R-090 (has from has.sh): same reason; uses '[ -x ... ]'.
+
+set -x
+set -o errexit
+set -o nounset
+set -o pipefail
+set -o errtrace
+shopt -s inherit_errexit
+shopt -s shift_verbose
+
+LC_ALL=C
+export LC_ALL
+
+if ! [ "${CI:-}" = 'true' ]; then
+  printf '%s\n' "${0}: These tests are only supposed to run on CI." >&2
+  exit 1
+fi
+
+if [ "$(id -u)" != '0' ]; then
+  printf '%s\n' "${0}: This test must run as root." >&2
+  exit 1
+fi
+
+sandbox_bin='/usr/libexec/tb-updater/sandbox-update-torbrowser'
+updater_bin='/usr/bin/update-torbrowser'
+work_dir='/var/lib/tb-updater/work'
+stash_root='/var/lib/tb-updater/resume-stash'
+stash_dir="${stash_root}/tb"
+tarball_name='tor-browser-linux-x86_64-test.tar.xz'
+signature_name="${tarball_name}.asc"
+cache_subpath='.cache/tb/files'
+cache_dir="${work_dir}/${cache_subpath}"
+result_file='/tmp/test-sandbox-resume-result'
+updater_backup="$(mktemp --tmpdir test-sandbox-resume.update-torbrowser.XXXXXX)"
+backup_made='false'
+
+[ -x "${sandbox_bin}" ] \
+  || { printf '%s\n' "${0}: '${sandbox_bin}' not found." >&2; exit 1; }
+[ -x "${updater_bin}" ] \
+  || { printf '%s\n' "${0}: '${updater_bin}' not found." >&2; exit 1; }
+id tb-updater >/dev/null 2>&1 \
+  || { printf '%s\n' "${0}: 'tb-updater' user missing." >&2; exit 1; }
+
+die() {
+  printf '%s\n' "${0}: ERROR: ${*}" >&2
+  exit 1
+}
+
+cleanup_test() {
+  ## Only restore from the backup if we know the backup actually
+  ## holds the real updater bytes. mktemp creates an empty file at
+  ## ${updater_backup} before the install below copies the real
+  ## binary into it; if that install fails (transient I/O,
+  ## permissions, disk full) and we restored on '-f' alone, we
+  ## would copy the empty mktemp placeholder back over
+  ## /usr/bin/update-torbrowser and brick the updater for the rest
+  ## of the CI job.
+  if [ "${backup_made}" = 'true' ]; then
+    install --mode=0755 --owner=root --group=root \
+      -- "${updater_backup}" "${updater_bin}"
+  fi
+  safe-rm --force -- "${updater_backup}" "${result_file}"
+}
+
+trap cleanup_test EXIT
+
+install --mode=0755 --owner=root --group=root \
+  -- "${updater_bin}" "${updater_backup}"
+backup_made='true'
+
+reset_state() {
+  ## Start each scenario from empty work_dir, empty stash. Wipe by
+  ## deleting children, not the directories themselves, so the
+  ## adduser-provided tb_updater_home stays in place (the sandbox
+  ## script aborts if it is missing).
+  safe-rm --recursive --force -- "${work_dir:?}"/* "${work_dir:?}"/.[!.]* \
+    2>/dev/null || true
+  if [ -d "${stash_root}" ]; then
+    safe-rm --recursive --force -- "${stash_root:?}"/* "${stash_root:?}"/.[!.]* \
+      2>/dev/null || true
+  fi
+  safe-rm --force -- "${result_file}"
+}
+
+prepare_stashed_tarball() {
+  ## Seed the stash with a tarball + signature pair as though a
+  ## previous run had failed and error_handler had stashed them.
+  install --directory --mode=0700 --owner=tb-updater --group=tb-updater \
+    -- "${stash_root}" "${stash_dir}"
+  install --mode=0600 --owner=tb-updater --group=tb-updater /dev/null \
+    -- "${stash_dir}/${tarball_name}"
+  install --mode=0600 --owner=tb-updater --group=tb-updater /dev/null \
+    -- "${stash_dir}/${signature_name}"
+  printf '%s\n' 'stashed-tarball-bytes' > "${stash_dir}/${tarball_name}"
+  printf '%s\n' 'stashed-signature-bytes' > "${stash_dir}/${signature_name}"
+}
+
+install_observer_stub() {
+  ## Stub that records whether the stashed tarball was restored
+  ## into the cache directory update-torbrowser would write to.
+  ## Always exits 0 so the sandbox proceeds to its end-of-run
+  ## purge_stash + cleanup.
+  cat > "${updater_bin}" <<STUB
+#!/bin/bash
+if [ -f '${cache_dir}/${tarball_name}' ]; then
+  printf '%s\n' 'present' > '${result_file}'
+else
+  printf '%s\n' 'absent' > '${result_file}'
+fi
+chmod 0644 -- '${result_file}'
+exit 0
+STUB
+  chmod 0755 -- "${updater_bin}"
+}
+
+install_failing_stub() {
+  ## Stub that drops a tarball-shaped file into the cache directory
+  ## then exits non-zero so the sandbox's set -o errexit triggers
+  ## the EXIT/ERR trap. error_handler should move the tarball into
+  ## the stash before wiping tb_updater_home.
+  cat > "${updater_bin}" <<STUB
+#!/bin/bash
+mkdir --parents -- '${cache_dir}'
+printf '%s\n' 'mid-download-bytes' > '${cache_dir}/${tarball_name}'
+printf '%s\n' 'mid-download-sig'   > '${cache_dir}/${signature_name}'
+exit 23
+STUB
+  chmod 0755 -- "${updater_bin}"
+}
+
+run_sandbox() {
+  SCRIPTNAME=update-torbrowser "${sandbox_bin}" "${@}"
+}
+
+read_result() {
+  [ -f "${result_file}" ] \
+    || die "stub did not write '${result_file}'; sandbox likely aborted before reaching the updater handoff"
+  cat -- "${result_file}"
+}
+
+printf '%s\n' '== test-sandbox-resume: start =='
+
+## ---------------------------------------------------------------------------
+## scenario 1: pre-populated stash + '--resume' restores the tarball into
+## the cache directory before the updater is invoked.
+## ---------------------------------------------------------------------------
+printf '%s\n' '-- scenario 1: --resume restores tarball from stash --'
+reset_state
+prepare_stashed_tarball
+install_observer_stub
+run_sandbox --resume --input none
+result="$(read_result)"
+[ "${result}" = 'present' ] \
+  || die "scenario 1: expected 'present', got '${result}' (--resume should restore '${tarball_name}' from '${stash_dir}')"
+## A successful run ends with a purge_stash; if that regresses,
+## stale partials would accumulate across runs without surfacing
+## elsewhere (the restore-path assertion above stays green).
+remaining="$(find "${stash_dir}" -maxdepth 1 -type f 2>/dev/null | wc -l || true)"
+[ "${remaining}" = '0' ] \
+  || die "scenario 1: '${stash_dir}' still has '${remaining}' file(s) after successful --resume; end-of-success purge_stash regressed"
+printf '%s\n' '  [PASS] --resume restored stashed tarball into cache and purged on success'
+
+## ---------------------------------------------------------------------------
+## scenario 2: pre-populated stash + no '--resume' purges the stash so the
+## updater sees no tarball.
+## ---------------------------------------------------------------------------
+printf '%s\n' '-- scenario 2: no --resume purges stash --'
+reset_state
+prepare_stashed_tarball
+install_observer_stub
+run_sandbox --input none
+result="$(read_result)"
+[ "${result}" = 'absent' ] \
+  || die "scenario 2: expected 'absent', got '${result}' (no --resume should purge '${stash_dir}')"
+## Independently of what the stub saw, the stash should be empty
+## now: confirm purge_stash actually emptied it.
+remaining="$(find "${stash_dir}" -maxdepth 1 -type f 2>/dev/null | wc -l || true)"
+[ "${remaining}" = '0' ] \
+  || die "scenario 2: '${stash_dir}' still has '${remaining}' file(s) after no-resume run"
+printf '%s\n' '  [PASS] default behavior purged stash and updater saw no tarball'
+
+## ---------------------------------------------------------------------------
+## scenario 3: a failed run that produced a tarball during the run results
+## in the tarball being moved into the stash by error_handler.
+## ---------------------------------------------------------------------------
+printf '%s\n' '-- scenario 3: failed run stashes tarball via error_handler --'
+reset_state
+install_failing_stub
+sandbox_rc=0
+run_sandbox --resume --input none || sandbox_rc="${?}"
+## The failing stub exits 23, which the sandbox's EXIT/ERR trap
+## propagates through error_handler. Asserting the exact code (not
+## just non-zero) catches the false-pass where the sandbox aborts
+## before reaching the updater handoff -- in that case the stash
+## also stays empty, but a generic 'rc != 0' assertion would not
+## have caught a regression that broke the handoff entirely.
+[ "${sandbox_rc}" -eq 23 ] \
+  || die "scenario 3: expected rc=23 from failing updater stub, got '${sandbox_rc}' (sandbox likely aborted before reaching the updater handoff)"
+[ -f "${stash_dir}/${tarball_name}" ] \
+  || die "scenario 3: '${stash_dir}/${tarball_name}' missing; error_handler did not stash the tarball"
+[ -f "${stash_dir}/${signature_name}" ] \
+  || die "scenario 3: '${stash_dir}/${signature_name}' missing; error_handler did not stash the detached signature"
+[ ! -e "${cache_dir}" ] \
+  || die "scenario 3: '${cache_dir}' still exists after error_handler ran; cleanup did not full-wipe tb_updater_home"
+printf '%s\n' '  [PASS] error_handler stashed tarball + signature on failure'
+
+## ---------------------------------------------------------------------------
+## scenario 4: end-to-end UX case. The user runs update-torbrowser WITHOUT
+## '--resume', the download fails, and the user runs '--resume' on the
+## retry. The retry must still pick up the partial -- this is the case the
+## reviewer flagged that the prior --preserve-work-dir design did not
+## handle (the first run, without --resume, wiped the partial).
+## ---------------------------------------------------------------------------
+printf '%s\n' '-- scenario 4: omitted --resume on first run, used --resume on retry --'
+reset_state
+install_failing_stub
+sandbox_rc=0
+run_sandbox --input none || sandbox_rc="${?}"
+[ "${sandbox_rc}" -eq 23 ] \
+  || die "scenario 4: first run expected rc=23 from failing updater stub, got '${sandbox_rc}' (sandbox likely aborted before reaching the updater handoff)"
+[ -f "${stash_dir}/${tarball_name}" ] \
+  || die "scenario 4: error_handler did not stash the tarball"
+install_observer_stub
+run_sandbox --resume --input none
+result="$(read_result)"
+[ "${result}" = 'present' ] \
+  || die "scenario 4: second run with '--resume' did not see the tarball stashed by the failed first run"
+remaining="$(find "${stash_dir}" -maxdepth 1 -type f 2>/dev/null | wc -l || true)"
+[ "${remaining}" = '0' ] \
+  || die "scenario 4: '${stash_dir}' still has '${remaining}' file(s) after the successful retry; end-of-success purge_stash regressed"
+printf '%s\n' '  [PASS] resume on retry recovers a partial from a no-resume failure and purges on success'
+
+printf '%s\n' '== test-sandbox-resume: all scenarios passed =='

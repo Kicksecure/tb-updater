@@ -1552,6 +1552,8 @@ tb_version_processing() {
 
    [ -n "${TBB_PACKAGE_LINK:-}" ] || TBB_PACKAGE_LINK="$TBB_REMOTE_FOLDER/${TBB_EXTRA_FOLDER}/$TBB_PACKAGE_FILENAME${TBB_DOWNLOAD_APPENDIX}"
    [ -n "${TBB_PACKAGE_FULL_PATH:-}" ] || TBB_PACKAGE_FULL_PATH="$tb_downloaded_files_folder/$TBB_PACKAGE_FILENAME"
+
+   [ -n "${TBB_SANDBOX_RESUME_HINT_FILENAME:-}" ] || TBB_SANDBOX_RESUME_HINT_FILENAME="${tb_downloaded_files_folder}/resume_hint"
 }
 
 tb_reset() {
@@ -1687,6 +1689,13 @@ $tb_notify_details"
 }
 
 tb_download_files() {
+   if [ "${who_ami}" = 'tb-updater' ]; then
+      ## Leave some hints for sandbox-update-torbrowser so it can
+      ## stash a partial download and restore it later.
+      overwrite "${TBB_SANDBOX_RESUME_HINT_FILENAME}" "TBB_SIG_FILENAME=${TBB_SIG_FILENAME}"
+      append "${TBB_SANDBOX_RESUME_HINT_FILENAME}" "TBB_PACKAGE_FILENAME=${TBB_PACKAGE_FILENAME}"
+   fi
+
    ### signature ###
 
    tb_notify_details="Downloading $tb_title digital signature (OpenPGP)... Will take a moment..."
@@ -2161,8 +2170,8 @@ y/n?"
    ## running under sandbox-update-torbrowser, we will have no permission to
    ## write to real_cache_folder directly. sandbox-update-torbrowser will move
    ## these files into real_cache_folder later.
-   overwrite "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_date" "$sig_creation_date"
-   overwrite "$tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime" "$sig_creation_unixtime"
+   overwrite "${tb_cache_folder}/last_used_gpg_bash_lib_output_signed_on_date" "${sig_creation_date}"
+   overwrite "${tb_cache_folder}/last_used_gpg_bash_lib_output_signed_on_unixtime" "${sig_creation_unixtime}"
 }
 
 tb_extract() {
@@ -2387,7 +2396,7 @@ tb_cleanup() {
 }
 
 tb_hardcoded_version_last_downloaded_save() {
-   overwrite "$tbb_version_last_downloaded_save_file" "$tbb_version_stripped"
+   overwrite "${tbb_version_last_downloaded_save_file}" "${tbb_version_stripped}"
    log notice "Saved '$tbb_version_stripped' in '$tbb_version_last_downloaded_save_file'."
 }
 
