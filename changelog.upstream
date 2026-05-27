@@ -1,3 +1,475 @@
+commit 8cead6d3859500caf6a06e4ba02fed0023aef895
+Merge: 5b60b6b bfda749
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed May 27 15:03:36 2026 -0400
+
+    Merge remote-tracking branch 'refs/remotes/ArrayBolt3/arraybolt3/trixie'
+
+commit bfda749f159ab2e807a6feca333ecb1577876978
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Tue May 26 22:44:56 2026 -0400
+
+    Tweaks, fix sandbox-update-torbrowser's stash mechanism to not stash too much, add a TODO
+
+commit 4fc6e0b5d45a6fee8b3941eda28f8f1b8db1820d
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Tue May 26 22:12:53 2026 -0400
+
+    Squashed commit of the following:
+
+    commit 06bbfd4a593b055c78b9381d4e613ec36037e5fa
+    Author: Claude <noreply@anthropic.com>
+    Date:   Tue May 26 15:46:37 2026 +0000
+
+        test-sandbox-resume: gate updater restore on explicit backup success
+
+        Per Codex review r3304754641 (P2). The 'mktemp' line creates an
+        empty placeholder at ${updater_backup} BEFORE the 'install' below
+        copies the real /usr/bin/update-torbrowser bytes into it. If that
+        install fails after the EXIT trap is armed (transient I/O,
+        permission flake, disk full) the trap's '[ -f ${updater_backup} ]'
+        guard still passes -- on an empty file -- and the restore step
+        copies the empty placeholder back over /usr/bin/update-torbrowser,
+        bricking the updater for the rest of the CI job.
+
+        Replace the existence-only guard with an explicit 'backup_made'
+        flag set to 'true' only after the real install completes. The
+        backup file is unlinked in all paths (still empty after a failed
+        install) so no leftover accumulates either way.
+
+    commit 1cd11b3e9deb3f9061518e9fbd5d9e5e73a50c6c
+    Author: Claude <noreply@anthropic.com>
+    Date:   Tue May 26 12:26:01 2026 +0000
+
+        update-torbrowser: restore atomicity of cache writes via temp+mv
+
+        Per CodeRabbit r3303591567 (critical): the three direct 'printf >
+        file' writes that bypass the 'overwrite' helper lose the temp-
+        file-and-rename atomicity that overwrite provided. A crash mid-
+        write would leave the cache file truncated.
+
+        The read-side consumers already degrade gracefully:
+        - last_used_gpg_bash_lib_output_signed_on_unixtime is read via
+          read_integer_file, which rejects empty/non-numeric content and
+          falls back to "no previously accepted signature".
+        - tbb_version_last_downloaded_save_file is read via stcat and
+          falls back to "none" on empty content.
+
+        But CodeRabbit is right that 'truncated baseline' subtly differs
+        from 'absent baseline' for the --reset / tb_hard_reset code path
+        on the version file, and absent atomicity here loses a property
+        that overwrite advertises.
+
+        Add a small tb_overwrite_atomic helper that writes to
+        TARGET.tmp then renames; that's atomic on the same filesystem
+        (rename(2)). The three printf-redirect sites now call the helper.
+        Helper carries the printf-vs-overwrite rationale (R-150 single
+        source) so the call sites stay one-line.
+
+        test-sandbox-resume: scenarios 1 and 4 (the two that take the
+        restore-then-success path) now assert ${stash_dir} is empty after
+        the run. Without this, end-of-success purge_stash could regress
+        silently while the restore-side assertions stay green. Per
+        CodeRabbit nitpick on review 4363528316.
+
+    commit 57c28dd9362720f7a247f4ec5b456974854897bb
+    Author: Claude <noreply@anthropic.com>
+    Date:   Tue May 26 12:16:08 2026 +0000
+
+        sandbox-update-torbrowser: harden ensure_stash_dir + error_handler
+
+        Two CodeRabbit findings on edcad02, both correct on inspection.
+
+        * discussion_r3303282147 (ensure_stash_dir): the
+          '[ -d ... ] && return 0' fast path skips chown/chmod on every
+          call after the first, so a previous run that crashed between
+          mkdir and chown leaves a root-owned stash directory on disk.
+          Every subsequent stash/restore/purge call -- all of which run
+          under setpriv-tb-updater -- then fails to write into it. Drop
+          the early return and let mkdir-parents (idempotent) + chown +
+          chmod run unconditionally; the cost is three cheap syscalls
+          per call site.
+
+        * discussion_r3303282156 (error_handler): the handler runs
+          stash_tarball_to_stash and then cleanup under set -o errexit +
+          inherit_errexit, so any non-zero exit from the stash step
+          (find/setpriv/mv failure under disk pressure, a vanished
+          source_dir between -d test and find, etc.) aborts the trap
+          before cleanup can run, leaving tb_updater_home populated for
+          the next run to inherit. Wrap the stash call in 'if !
+          stash_tarball_to_stash; then log warn ...; fi' so cleanup is
+          reached on every failure path; on real stash failures the next
+          run will start from a known-good state with no stashed
+          partial, which falls back to the same fresh-install path the
+          rest of the design already supports.
+
+    commit edf5b5ccf720f8a7fd96714c155bc470406dd4f7
+    Author: Claude <noreply@anthropic.com>
+    Date:   Tue May 26 11:50:15 2026 +0000
+
+        style: trim WHAT-restating comments per R-151
+
+        R-151 (comment intent, not WHAT): function-name + identifier names
+        already convey what the helper does -- the function header should
+        only document non-obvious WHY. Trimmed:
+
+          * sandbox-update-torbrowser: helper-function headers
+            (ensure_stash_dir, stash_tarball_to_stash,
+            restore_tarball_from_stash, purge_stash) drop the "what this
+            function does" sentence and keep only the rationale (setpriv
+            ownership model, find no-op-on-empty, curl --continue-at hook,
+            two-site usage).
+          * sandbox-update-torbrowser: error_handler's WHY block now
+            states the invariant the ordering enforces (stash-before-
+            cleanup so partial survives full-wipe) instead of re-narrating
+            the resume flow.
+          * sandbox-update-torbrowser: sandbox_update_torbrowser startup
+            cleanup block drops the if/else bullet list that restated
+            what 'restore_tarball_from_stash' and 'purge_stash' already
+            say by name.
+          * sandbox-update-torbrowser: end-of-success purge_stash drops
+            the multi-line restatement.
+          * update-torbrowser: 18-line printf-vs-overwrite WHY -> 9-line
+            version retaining the bug pointer and the
+            not-load-bearing-atomicity trade-off.
+          * test-sandbox-resume: 50-line preamble (which restated the bug
+            history + design + per-scenario summaries that each scenario
+            already carries inline) -> 12 lines (test purpose, root
+            requirement, R-040/R-090/R-110 deviations).
+
+        Matches the surrounding file's existing comment density per R-152.
+
+    commit 6a482a0eeff2440b8a4b2b7a08d09cf77513ca83
+    Author: Claude <noreply@anthropic.com>
+    Date:   Tue May 26 11:39:47 2026 +0000
+
+        style: align this PR's additions with developer-meta-files style guide
+
+        Three nits from a re-audit against developer-meta-files AGENTS.md
+        + agents/bash-style-guide.md:
+
+        * R-020 (always ${var} braces, no bare $var) on the three new
+          'printf > file' lines this PR added to update-torbrowser. The
+          pre-existing 'log notice' line two lines below still uses bare
+          $var; left untouched per R-152 (match local file style for
+          code I didn't introduce).
+        * R-060 (long flag names whenever the tool supports one): mv -t
+          -> mv --target-directory= in the two new find -exec calls in
+          sandbox-update-torbrowser.
+        * Strict-mode-quintet ordering in test-sandbox-resume: errexit,
+          nounset, pipefail, errtrace to match the order shown in the
+          R-010 example block. Soft preference; cosmetic only.
+
+        The pre-push static gate from developer-meta-files (agents/
+        pre-push-static.sh) still flags SC1091 / SC2034 in
+        sandbox-update-torbrowser, but those are pre-existing on master
+        (the file uses relative paths in 'shellcheck source=' directives
+        that don't resolve outside the package install, and a
+        'who_ami="$(whoami)"' variable that's currently unused). Fixing
+        those is out of scope for this PR.
+
+    commit 6a455dc7ac6ab11745a87b776d4975867b3d4796
+    Author: Claude <noreply@anthropic.com>
+    Date:   Tue May 26 10:56:56 2026 +0000
+
+        test-sandbox-resume: assert exact rc=23 from failing stub
+
+        Per CodeRabbit review (#discussion_r3295084396), broadening 'rc !=
+        0' to 'rc == 23' tightens scenarios 3 and 4 against a false pass
+        where the sandbox aborts before reaching the updater handoff. The
+        stash-tarball assertion that follows already provides defense in
+        depth (no handoff means no in-cache tarball to stash, so the stash
+        file check would have failed too), but asserting the exact code
+        the stub exits with makes the intent of each scenario explicit and
+        catches a regression that breaks the handoff entirely with a clean
+        diagnostic instead of falling through to the secondary check.
+
+    commit edcad024422bc62172b7d310816766b8ca71dcdb
+    Author: Claude <noreply@anthropic.com>
+    Date:   Tue May 26 10:54:38 2026 +0000
+
+        update-torbrowser: write freshness cache directly, bypass 'overwrite'
+
+        The 'overwrite' helper-script from helper-scripts emits a leading
+        newline before the value when driven from update-torbrowser inside
+        the local-signature-cache-tests CI environment on Debian trixie.
+
+        Symptom: scenario_second_run_cache_hit_tb,
+        scenario_tampered_cache_rejected and scenario_second_run_mullvad_cache_hit
+        fail. read_integer_file reads the cache file written by the
+        overwrite call and sees '\n1779776891' instead of '1779776891',
+        rejects it as "Non-numeric value in target file", and the run
+        treats the cache as absent. The bash trace from
+        scenario_tampered_cache_rejected confirms the on-disk bytes:
+
+            + final='
+            1779776891'
+            + [[
+            1779776891 =~ ^[0-9]+$ ]]
+
+        i.e. cat showed a literal leading newline before the digits.
+
+        What's not at fault:
+          - $sig_creation_unixtime carrying whitespace: the is_whole_number
+            guard immediately above the overwrite call would have rejected
+            that under set -o errexit + the ERR trap.
+          - update-torbrowser code between green master (446e523) and red
+            master (5b60b6b): byte-identical
+            (git diff 446e523:usr/bin/update-torbrowser
+            5b60b6b:usr/bin/update-torbrowser is empty).
+          - helper-scripts HEAD: aedaaa3, no commits between the last green
+            and first red runs.
+          - apt-installed sq / sqop / python3 versions: identical in both
+            runs.
+
+        I could not reproduce locally under any of: Python 3.11 / 3.12 /
+        3.13.5 invoked via the same shebang, sudo -u tbtest, mode='w'
+        NamedTemporaryFile + shutil.move, or the
+        'printf-tampered-then-overwrite' sequence from
+        scenario_tampered_cache_rejected. So a root-cause fix in
+        helper-scripts/append-shared cannot be confirmed from here.
+
+        Workaround scope: replace the three update-torbrowser overwrite
+        calls with direct `printf '%s\n' VALUE > FILE` redirects. The cache
+        files are tiny per-user values whose contents read_integer_file
+        already validates on read, so the atomic temp-and-rename semantics
+        of 'overwrite' are not load-bearing -- a torn write just gets
+        rejected and the run proceeds as a fresh install, which is the
+        same fallback the helper provided.
+
+        Affects exactly the three writes that the failing scenarios exercise:
+          - $tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_date
+          - $tb_cache_folder/last_used_gpg_bash_lib_output_signed_on_unixtime
+          - $tbb_version_last_downloaded_save_file
+
+        Other write sites in the tree are untouched, so this leaves room
+        for a proper root-cause fix in helper-scripts later without having
+        to re-introduce 'overwrite' here.
+
+    commit 0e76529304df36d4d2c5e3ff870ae54fd0689a40
+    Author: Claude <noreply@anthropic.com>
+    Date:   Tue May 26 06:27:09 2026 +0000
+
+        sandbox-update-torbrowser: replace --preserve-work-dir with resume-stash
+
+        Per @ArrayBolt3's PR review (org-ai-assisted/tb-updater#14): the
+        previous --preserve-work-dir design kept the entire tb_updater_home
+        across a failed run, which (1) leaves any half-extracted browser
+        tree or other state from the failed run sitting on disk for the
+        next run to inherit, and (2) only kicked in when '--resume' was on
+        the command line of BOTH runs -- a user who forgot '--resume' on
+        the first (failing) run could not recover by passing it on the
+        second.
+
+        Replace it with a narrower mechanism that stashes only the partial
+        tarball + detached signature into a sibling location, then full-
+        wipes tb_updater_home on every run boundary.
+
+        Wire:
+
+          - Add tb_updater_stash_root='/var/lib/tb-updater/resume-stash'
+            and tb_updater_stash="${tb_updater_stash_root}/${tb_install_folder}".
+            Outside tb_updater_home so the existing cleanup_dir_as_tb_updater
+            pass over tb_updater_home does not touch it. Per-browser subdir
+            so update-torbrowser / update-mullvadbrowser / update-i2pbrowser
+            do not stomp on each other.
+          - ensure_stash_dir: lazy mkdir + chown tb-updater:tb-updater so
+            the same setpriv-driven deletion-permission model used for
+            tb_updater_home applies to the stash too.
+          - stash_tarball_to_stash: move *.tar.xz and *.tar.xz.asc out of
+            tb_updater_home/.cache/${tb_install_folder}/files/ into the
+            stash via setpriv-tb-updater. find + '-exec mv -t TARGET +'
+            silently no-ops when nothing matches.
+          - restore_tarball_from_stash: inverse move, recreating the cache
+            hierarchy with tb-updater ownership so curl can write into it.
+          - purge_stash: trivial wrapper around the existing
+            cleanup_dir_as_tb_updater on the stash.
+          - cleanup() loses its --preserve-work-dir parameter; it always
+            full-wipes tb_updater_home now.
+          - error_handler calls stash_tarball_to_stash, then cleanup.
+          - sandbox startup runs cleanup unconditionally, then either
+            restore_tarball_from_stash (with --resume) or purge_stash
+            (without).
+          - End-of-success path adds a purge_stash before the final
+            cleanup so a stash from a previous failed run does not survive
+            past the install that consumed it.
+
+        test-sandbox-resume is rewritten to four scenarios:
+
+          1. Pre-populated stash + --resume -> tarball appears in cache
+             when the updater stub runs.
+          2. Pre-populated stash + no --resume -> stash is empty after
+             the run AND the stub did not see the tarball.
+          3. Failing stub writes a tarball into the cache mid-run; after
+             the run, the tarball + signature must be in the stash and
+             the cache dir must be gone (proves the full-wipe ran).
+          4. UX end-to-end: failing stub with no --resume on run 1, then
+             observer stub with --resume on run 2. The observer must see
+             the tarball -- the case the reviewer flagged that the old
+             --preserve-work-dir design could not handle.
+
+        Failure diagnostics in the CI workflow are extended to list the
+        stash directory alongside the work directory.
+
+    commit 691055cd28b46b5a131dfb3de79a1db0c09a39f8
+    Author: Claude <noreply@anthropic.com>
+    Date:   Sun May 24 17:55:23 2026 +0000
+
+        test-sandbox-resume: cover error_handler preservation path
+
+        Addresses a CodeRabbit review nitpick on PR #14. The existing
+        scenarios exercised the startup cleanup branch only. The
+        sandbox script also calls 'cleanup --preserve-work-dir' from
+        error_handler, so a regression that reverts that to plain
+        'cleanup' would silently break the post-failure resume case
+        without any test catching it.
+
+        Scenario 3: prepare a marker, install a stub updater that
+        exits 23 to drive the sandbox's set -o errexit into the
+        EXIT/ERR trap, invoke sandbox-update-torbrowser --resume, and
+        require both a non-zero sandbox exit code (proving the trap
+        fired) and a surviving marker file (proving error_handler
+        preserved the work dir).
+
+    commit c82f8354c8dfff8f2bbb5a4cc7236ea7206936ae
+    Author: Claude <noreply@anthropic.com>
+    Date:   Mon May 11 12:16:32 2026 +0000
+
+        sandbox-update-torbrowser: complete style-guide compliance pass
+
+        Apply R-010 and R-020 to the pre-existing patterns that the
+        earlier style commit left out of scope.
+
+        R-010 (strict-mode quintet): add the two shopt lines the org
+        style guide requires alongside the four 'set -o' options:
+
+            shopt -s inherit_errexit
+            shopt -s shift_verbose
+
+        inherit_errexit makes a $(cmd) subshell respect errexit so a
+        silent failure inside command substitution no longer slips
+        through. shift_verbose logs when shift overruns argv.
+
+        Reviewed every existing $(...) call site in this script for the
+        new behaviour. All of them either succeed under normal
+        operation (whoami, id, parameter expansion of UUID-validated
+        cgroup names, is_*_enabled helpers that always print and
+        return 0), or sit on a code path the test does not exercise
+        (GUI / cgroup wiring is skipped when TB_INPUT != 'gui'). The
+        existing checks (validate_uuid on cgroup name, explicit '||
+        true' on the X-server detection pipeline) keep the legitimate
+        "this might be empty" branches working.
+
+        R-020 (always brace variable references): brace every bare
+        positional / special parameter in the file -- "$1", "$2", "$@",
+        "$?" -- so the rule applies file-wide rather than only to the
+        lines this branch added. The original is_gui_enabled function
+        used the unbraced form; this commit makes it consistent with
+        the rest of the file and with the org style.
+
+    commit 6ffc02eeb596523929763a7ed01a0f6025ab4268
+    Author: Claude <noreply@anthropic.com>
+    Date:   Mon May 11 12:09:04 2026 +0000
+
+        style: align with developer-meta-files bash style guide
+
+        Audit of the branch's two touched bash files against
+        org-ai-assisted/developer-meta-files/agents/bash-style-guide.md.
+        Pre-existing patterns in the touched files (e.g. bare $1 inside
+        is_gui_enabled, missing inherit_errexit/shift_verbose at the top
+        of sandbox-update-torbrowser) are out of scope for this branch.
+
+        sandbox-update-torbrowser:
+          - R-021: hoist 'preserve_work_dir' into the existing function-
+            top 'local' line; split declaration from assignment.
+
+        .github/ci/test-sandbox-resume:
+          - R-002: add the 'AI-Assisted' marker to the file header.
+          - R-010: add 'shopt -s inherit_errexit' and 'shopt -s
+            shift_verbose' to the strict-mode quintet.
+          - R-020: brace $0 / $@ / $* references.
+          - R-030/R-031: route status output through 'printf "%s\n" "..."'
+            instead of putting the format text + '\n' inside the format
+            string. Drop the leading blank-line separators that violated
+            the same rule.
+          - R-050: blank line between cleanup_test()'s closing brace and
+            the 'trap' that registers it.
+          - R-060: long-flag form for chown (--recursive).
+          - R-120: safe-rm in place of rm, with --force / --recursive.
+
+        Document the test's deviations from R-040 / R-090 / R-110
+        (bare printf, plain '[ -x ]' / 'id', own die()) in the file
+        header, with the same rationale used by pre-push-static.sh:
+        keep the self-contained test runnable without sourcing
+        helper-scripts and matching the existing .github/ci/self-test
+        convention.
+
+    commit 4a4bf06060740c5bd44431447f26fd6f656ba413
+    Author: Claude <noreply@anthropic.com>
+    Date:   Mon May 11 12:02:05 2026 +0000
+
+        ci: create tb-updater system user before sandbox-resume test
+
+        genmkfile install copies the package files but does not execute the
+        debian postinst, so the 'tb-updater' system account and the
+        /var/lib/tb-updater/work home directory do not exist by default in
+        the CI container. The previous CI run failed at
+        test-sandbox-resume's 'id tb-updater' precondition for this reason.
+
+        Add a workflow step that creates the account with the same adduser
+        invocation tb-updater.postinst uses, so the home directory comes
+        into being too. Run it before the new regression test only - the
+        file://-fixture self-tests do not exercise the sandbox path and do
+        not require the account.
+
+    commit 79a8045b98b9f76fcf82f450f2d84de15ff1dcec
+    Author: Claude <noreply@anthropic.com>
+    Date:   Mon May 11 11:57:52 2026 +0000
+
+        ci: add regression test for sandbox-update-torbrowser --resume
+
+        Add .github/ci/test-sandbox-resume which exercises the bug fix from
+        Kicksecure/tb-updater#40 end-to-end: it seeds a marker file under
+        /var/lib/tb-updater/work, swaps /usr/bin/update-torbrowser for a stub
+        that records whether the marker survived the sandbox's startup
+        cleanup, and invokes sandbox-update-torbrowser twice.
+
+          - With '--resume', the marker must still be present when the
+            sandbox hands off to the updater (regression case from the
+            upstream bug).
+          - Without '--resume', the marker must be gone, preserving the
+            pre-existing "wipe leftovers" behavior.
+
+        Wire the test into self-test.yml as a separate step that runs as
+        root (sandbox-update-torbrowser drops privileges to 'tb-updater'
+        itself via setpriv, so the test cannot use the unprivileged
+        'tbtest' account that the file://-fixture scenarios share). Add
+        the 'acl' package to the apt install line so 'has setfacl' at the
+        top of sandbox-update-torbrowser succeeds in the CI container.
+
+    commit 2e631bbf95d5e9c6e4af75fc327bc8fdbf680727
+    Author: Claude <noreply@anthropic.com>
+    Date:   Mon May 11 11:47:27 2026 +0000
+
+        sandbox-update-torbrowser: preserve work dir for --resume
+
+        The sandbox script unconditionally wiped /var/lib/tb-updater/work at
+        startup and on error, which deleted any partial Tor Browser archive
+        download. Subsequent runs invoked with --resume therefore restarted
+        from byte 0 instead of continuing where curl left off.
+
+        Detect --resume in the script's arguments, add a --preserve-work-dir
+        option to cleanup(), and use it at startup when --resume is set and
+        in error_handler() so partial downloads survive a failed run.
+
+        Fixes Kicksecure/tb-updater#40.
+
+commit 5b60b6b4f2ea5b08ba9df6e254b2b857a2a7558a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sun May 24 19:11:07 2026 +0000
+
+    bumped changelog version
+
 commit eb4140f2ca7f08b89b661f019fba3462cde41992
 Merge: 446e523 6ee5a42
 Author: Patrick Schleizer <adrelanos@whonix.org>
