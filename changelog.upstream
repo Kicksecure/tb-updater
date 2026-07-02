@@ -1,3 +1,75 @@
+commit 31e9edef2339088c273586cb8bf1595e561bc056
+Merge: c095e50 52dc120
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Thu Jul 2 02:09:58 2026 -0400
+
+    Merge remote-tracking branch 'org-ai-assisted/claude/arm64-arch-download-aarch64'
+
+commit 52dc1202a81900aa84f6f56ab44eed4fdc9c0616
+Author: claude (dev22 c20093f1-1b30-4397-87b6-9586321c87df) <noreply@anthropic.com>
+Date:   Wed Jul 1 07:04:51 2026 -0400
+
+    test-sandbox-resume: make failing stub drop the resume_hint (fix scenarios 3, 4)
+
+    The self-test's sandbox-resume scenarios 3 and 4 asserted that a failed
+    download leaves its partial tarball in the resume-stash, but they never
+    passed: install_failing_stub wrote the tarball + detached signature into
+    the cache directory and exited non-zero without ever dropping the
+    resume_hint.
+
+    sandbox-update-torbrowser's stash_tarball_to_stash() intentionally stashes
+    ONLY the files named in that validated hint (an allowlist, so a
+    compromised download cannot make the root-run stash move arbitrary paths);
+    with no hint present it stashes nothing and returns early. The real
+    update-torbrowser writes the hint at the START of tb_download_files(), so a
+    genuine mid-download failure always leaves it behind -- but the stub
+    omitted it, so error_handler correctly stashed nothing and the assertion
+    'resume-stash/tb/...tar.xz missing' fired.
+
+    This regressed in the commit that tightened the stash to "not stash too
+    much": the stash was made hint-gated but the stub was not updated to match
+    the real updater. Drop the hint from the stub, mirroring tb_download_files()
+    (TBB_SIG_FILENAME + TBB_PACKAGE_FILENAME), so the stub faithfully simulates
+    a mid-download failure and the scenarios exercise the real stash path. No
+    production code change; the stash allowlist behaviour is unchanged.
+
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+    Claude-Session: https://claude.ai/code/session_018bezwAzE9uxSX1xrH7okFV
+
+commit 3956d44cdc8de4f439afbb58bfba552fccea91d9
+Author: claude (dev22 c20093f1-1b30-4397-87b6-9586321c87df) <noreply@anthropic.com>
+Date:   Wed Jul 1 06:04:07 2026 -0400
+
+    update-torbrowser: fix arm64 ARCH_DOWNLOAD auto-detection (linux-aarch64)
+
+    Auto-detection produced ARCH_DOWNLOAD="linux-arm64" on 64-bit ARM. Tor
+    Project names its 64-bit ARM Linux download "linux-aarch64" (matching
+    "uname --machine"), not "linux-arm64" (the Debian architecture name).
+    The "linux-arm64" strings do not exist on the download server, so
+    update-torbrowser built dead URLs and failed on arm64:
+
+      aus1.torproject.org/torbrowser/update_3/alpha/download-linux-arm64.json
+        -> HTTP 404
+      aus1.torproject.org/torbrowser/update_3/alpha/download-linux-aarch64.json
+        -> HTTP 200 (contains tor-browser-linux-aarch64-<ver>.tar.xz)
+
+    Set ARCH_DOWNLOAD="linux-aarch64" for the arm64 case. $ARCH is used only
+    within this detection block, so keeping the Debian arch name "arm64" for
+    the branch condition is fine; only the download string was wrong.
+
+    Reported on the Whonix forum for arm64 Tor Browser (aarch64 nightlies via
+    tb-updater require ARCH_DOWNLOAD=linux-aarch64):
+    https://forums.whonix.org/t/arm64-tor-browser/11806/31
+
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+    Claude-Session: https://claude.ai/code/session_018bezwAzE9uxSX1xrH7okFV
+
+commit c095e50f6054c8b951e94860e100a2638d9afcea
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jun 24 23:47:38 2026 +0000
+
+    bumped changelog version
+
 commit 19c455af01b32daa1a280da393ca7510298422cd
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Jun 24 16:53:35 2026 -0400
