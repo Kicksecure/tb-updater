@@ -137,11 +137,22 @@ install_failing_stub() {
   ## then exits non-zero so the sandbox's set -o errexit triggers
   ## the EXIT/ERR trap. error_handler should move the tarball into
   ## the stash before wiping tb_updater_home.
+  ##
+  ## It also writes the resume_hint, mirroring update-torbrowser's
+  ## tb_download_files(): the hint is dropped at the START of a
+  ## download, so a mid-download failure always leaves it behind.
+  ## sandbox-update-torbrowser's stash_tarball_to_stash() stashes
+  ## ONLY the files named in that validated hint (an allowlist, so a
+  ## compromised download cannot make it move arbitrary paths); with
+  ## no hint it deliberately stashes nothing. A stub that omits the
+  ## hint therefore never exercises the stash path.
   cat > "${updater_bin}" <<STUB
 #!/bin/bash
 mkdir --parents -- '${cache_dir}'
 printf '%s\n' 'mid-download-bytes' > '${cache_dir}/${tarball_name}'
 printf '%s\n' 'mid-download-sig'   > '${cache_dir}/${signature_name}'
+printf '%s\n' 'TBB_SIG_FILENAME=${signature_name}'   > '${cache_dir}/resume_hint'
+printf '%s\n' 'TBB_PACKAGE_FILENAME=${tarball_name}' >> '${cache_dir}/resume_hint'
 exit 23
 STUB
   chmod 0755 -- "${updater_bin}"

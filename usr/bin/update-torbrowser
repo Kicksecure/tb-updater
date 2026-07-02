@@ -848,7 +848,10 @@ tb_preparation() {
       elif [ "${ARCH:-}" = "i686" ]; then
          [ -n "${ARCH_DOWNLOAD:-}" ] || ARCH_DOWNLOAD="linux-i686"
       elif [ "${ARCH:-}" = "arm64" ]; then
-         [ -n "${ARCH_DOWNLOAD:-}" ] || ARCH_DOWNLOAD="linux-arm64"
+         ## Tor Project names the 64-bit ARM download 'linux-aarch64' (matching
+         ## 'uname --machine'), NOT 'linux-arm64' (the Debian architecture name).
+         ## 'linux-arm64' does not exist on the download server (HTTP 404).
+         [ -n "${ARCH_DOWNLOAD:-}" ] || ARCH_DOWNLOAD="linux-aarch64"
       else
          [ -n "${ARCH_DOWNLOAD:-}" ] || ARCH_DOWNLOAD="linux-$ARCH"
          log warning "Guessing. Setting ARCH_DOWNLOAD to '$ARCH_DOWNLOAD'. If functional, this is probably OK."
