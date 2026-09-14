@@ -2,10 +2,6 @@
 ## 'set -e'.
 tb-updater: maintainer-script-ignores-errors [postinst]
 
-## We need a directory at /var/cache/tb-updater so that Qubes' bind-dirs.sh
-## works.
-tb-updater: file-in-unusual-dir [var/cache/tb-updater/placeholder]
-
 ## The postinst tests for /var/lib/dpkg/info/whonix-ws-network-conf.prerm to
 ## detect whether whonix-ws-network-conf is installed before restoring its
 ## resolv.conf.

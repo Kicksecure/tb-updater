@@ -74,8 +74,8 @@ else
    source /usr/libexec/helper-scripts/boot-session-detection.bsh
 fi
 
-# shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/has.sh
-source /usr/libexec/helper-scripts/has.sh
+# shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/has.bsh
+source /usr/libexec/helper-scripts/has.bsh
 # shellcheck source=../../../helper-scripts/usr/libexec/helper-scripts/package_installed_check.sh
 source /usr/libexec/helper-scripts/package_installed_check.sh
 ## shellcheck source=../../../../helper-scripts/usr/libexec/log_run_die.sh

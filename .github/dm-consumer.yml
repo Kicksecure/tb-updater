@@ -15,7 +15,7 @@ coverity:
 
 dist-ai-tests:
   apt-packages: "python3 python3-pytest"
-  ## version-validator sources helper-scripts' strings.bsh / has.sh by absolute
+  ## version-validator sources helper-scripts' strings.bsh / has.bsh by absolute
   ## path; provide helper-scripts at the repo-sibling path so shellcheck -x
   ## follows the '# shellcheck source=' directives in the isolated CI checkout
   ## (lets version-validator / unit_test drop their SC1091 / SC2154 disables).
