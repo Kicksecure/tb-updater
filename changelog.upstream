@@ -1,3 +1,21 @@
+commit 3b42d8b06336634f682c3f5d7fc112e3cb41c0f8
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Sep 15 11:25:14 2026 -0400
+
+    tbb_hardcoded_version update
+
+commit 80fd3a104b1a8a75e4fca31d32192f078e1215b0
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Sep 15 11:24:28 2026 -0400
+
+    no more duplicate lintian override file
+
+commit ac2c3e78a1cb993e2381f5d2128f2e9f231c1418
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Sep 15 14:53:43 2026 +0000
+
+    bumped changelog version
+
 commit 0aab62cd3df1a0e56135ff02c7755ef9058c3147
 Merge: fcd271e c6f6f56
 Author: Patrick Schleizer <adrelanos@whonix.org>
