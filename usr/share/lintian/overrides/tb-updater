@@ -1,5 +1,6 @@
-## see var/cache/tb-updater/placeholder
-tb-updater: file-in-unusual-dir [var/cache/tb-updater/placeholder]
-
 ## Only a test if a maintainer script is executable. No actual use.
 tb-updater: uses-dpkg-database-directly [postinst]
+
+## Lintian doesn't recognize that 'set -o errexit' does the same thing as
+## 'set -e'.
+tb-updater: maintainer-script-ignores-errors [postinst]
