@@ -1,8 +1,72 @@
+commit 995393a96d27aba8976ebfc4b677a6b4711a0dea
+Merge: d3c6da9 2ea720a
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Sep 14 02:39:07 2026 -0400
+
+    Merge remote-tracking branch 'refs/remotes/ArrayBolt3/arraybolt3/trixie'
+
+commit d3c6da92e7361b59e0e8a812ec0108f65ddc2375
+Merge: 448a9e5 e1aa3d3
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Mon Sep 14 01:54:01 2026 -0400
+
+    Merge remote-tracking branch 'refs/remotes/ArrayBolt3/arraybolt3/trixie'
+
+commit 2ea720aba7132f83cbfcc3243c071e3f3bff0e02
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Sun Sep 13 18:31:16 2026 -0400
+
+    Move privleap configuration to non-conffile location
+
+commit e1aa3d36cfc03a97d81a508e1c4909f209fd5bf1
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Fri Sep 11 17:38:57 2026 -0400
+
+    Remove obsolete bind-dirs fixup placeholder
+
+commit c8fe9da570cef464d61ec28c3493b8d6d7a9a0f8
+Merge: 448a9e5 b99138f
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Fri Sep 11 17:30:34 2026 -0400
+
+    Merge branch 'ai' into arraybolt3/trixie
+
+commit 448a9e56f61999b313a28928e4902bb0e7c787f2
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Sep 9 11:06:51 2026 +0000
+
+    bumped changelog version
+
 commit 8d3eece72fb55dd013cbaaa16d8b0aa85a8749ce
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Wed Sep 9 05:30:26 2026 -0400
 
     tbb_hardcoded_version update
+
+commit b99138f97161b1fcaffad708b8fa51c7744efdea
+Merge: 493ca78 5a3145e
+Author: claude (dev490 427cd1a1-bb80-4a36-9e14-2b6cec600780) <noreply@anthropic.com>
+Date:   Tue Sep 8 23:30:09 2026 -0400
+
+    Merge branch 'master' into ai
+
+    # Conflicts:
+    #       debian/tb-updater.lintian-overrides
+
+commit 5a3145e56928a0ebc3bbdea999e2f88bec9bb300
+Merge: 996300e f5e13af
+Author: claude (dev490 427cd1a1-bb80-4a36-9e14-2b6cec600780) <noreply@anthropic.com>
+Date:   Tue Sep 8 23:29:31 2026 -0400
+
+    Merge remote-tracking branch 'up/master'
+
+commit 493ca78a143dba621b701a174a804cbda2797487
+Author: claude (dev474 c7439536-fad8-4884-b71a-d2f3c4c23905) <noreply@anthropic.com>
+Date:   Mon Sep 7 11:48:03 2026 -0400
+
+    rename has.sh to has.bsh (bashism convention)
+
+    Sourced helper-scripts lib uses bashisms; .bsh marks it. Path-only edit.
 
 commit f5e13af2bd3eac2b0346e3a6f97e825302f23296
 Author: Patrick Schleizer <adrelanos@whonix.org>
@@ -16,6 +80,16 @@ Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Sun Aug 30 10:19:32 2026 -0400
 
     Merge remote-tracking branch 'refs/remotes/ArrayBolt3/arraybolt3/trixie'
+
+commit 64e15e783b820a08dc324c17fc90a01c77909879
+Author: claude (dev371 3fff1819-b77d-4dde-be19-8c01e09d3394) <noreply@anthropic.com>
+Date:   Fri Aug 28 01:23:44 2026 -0400
+
+    lintian: drop redundant maintainer-script-ignores-errors override
+
+    Now suppressed globally in genmkfile; the false positive is the same errexit long-form case.
+
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
 
 commit ef279681746da71ee9d2be41cb27784f9abb754f
 Author: Aaron Rainbolt <arraybolt3@gmail.com>
