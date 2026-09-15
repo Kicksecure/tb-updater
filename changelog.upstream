@@ -1,3 +1,16 @@
+commit 0aab62cd3df1a0e56135ff02c7755ef9058c3147
+Merge: fcd271e c6f6f56
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Sep 15 10:46:03 2026 -0400
+
+    Merge remote-tracking branch 'refs/remotes/org-ai-assisted/ai'
+
+commit fcd271e8a31d82151288c93dcc96a60e8ed36fa4
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Sep 15 12:04:07 2026 +0000
+
+    bumped changelog version
+
 commit 995393a96d27aba8976ebfc4b677a6b4711a0dea
 Merge: d3c6da9 2ea720a
 Author: Patrick Schleizer <adrelanos@whonix.org>
@@ -17,6 +30,20 @@ Author: Aaron Rainbolt <arraybolt3@gmail.com>
 Date:   Sun Sep 13 18:31:16 2026 -0400
 
     Move privleap configuration to non-conffile location
+
+commit c6f6f56c861389e89d79e37fe80076dba82f68e1
+Merge: b99138f 4e7b021
+Author: claude <noreply@anthropic.com>
+Date:   Sun Sep 13 06:09:26 2026 -0400
+
+    Merge branch 'master' into ai
+
+commit 4e7b021ad33a236db611f587fac0fa18dc6f6f05
+Merge: 5a3145e 448a9e5
+Author: claude <noreply@anthropic.com>
+Date:   Sun Sep 13 06:09:25 2026 -0400
+
+    Merge remote-tracking branch 'upstream/master'
 
 commit e1aa3d36cfc03a97d81a508e1c4909f209fd5bf1
 Author: Aaron Rainbolt <arraybolt3@gmail.com>
