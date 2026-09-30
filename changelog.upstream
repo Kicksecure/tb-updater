@@ -1,3 +1,21 @@
+commit ed2cf8a10ef049ac371f92b6e534c0a4eb1902f1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Sep 30 05:33:15 2026 -0400
+
+    tbb_hardcoded_version update
+
+commit afdee2f4247a1e8ea5c8b68ecf9153865c6a5e72
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Sep 30 05:28:43 2026 -0400
+
+    update signing key, new sub key, same main key
+
+commit f7e45c9611505e58f79fee8be037ef030ed74d81
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Tue Sep 29 16:11:03 2026 +0000
+
+    bumped changelog version
+
 commit b90f2926deb59c85a62edd7318b86ad8da0cd9cd
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Tue Sep 29 05:07:42 2026 -0400
