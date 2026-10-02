@@ -1,3 +1,31 @@
+commit d46ed5fdc084b10ea442def16296cab7f85daee2
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 2 08:56:51 2026 -0400
+
+    shellcheck
+
+commit 76557b9f4e0f474b9d6582f14a06adea40ae2492
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 2 08:56:18 2026 -0400
+
+    mkdir --mode
+
+commit 877ef590f700ddc9f29f5947336eaa8a7bc90349
+Author: claude (dev845 4d0f03ef-0ae9-4fa2-abfb-56c4ec4a1cbe) <noreply@anthropic.com>
+Date:   Fri Oct 2 08:30:29 2026 -0400
+
+    tb-updater: self-lock on set-but-absent XDG dir
+
+    - upgrade/TemplateVM export XDG_RUNTIME_DIR to a dir logind never made; empty-only guard missed it
+
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+commit e7aaa1fe6d428386c392e196d9e1e1abb2a8fbe1
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Fri Oct 2 10:51:09 2026 +0000
+
+    bumped changelog version
+
 commit 137fe934f0918a1b571278e07f99a13892a73bf7
 Author: Patrick Schleizer <adrelanos@whonix.org>
 Date:   Fri Oct 2 06:47:43 2026 -0400
