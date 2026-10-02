@@ -43,7 +43,7 @@ source "${HELPER_SCRIPTS_PATH:-}"/usr/libexec/helper-scripts/light_sleep.bsh
 if [ "$(id -u)" = '0' ]; then
   tb_lock_runtime_dir="${XDG_RUNTIME_DIR:-/run/user/0}"
   if [ ! -d "${tb_lock_runtime_dir}" ] || [ -L "${tb_lock_runtime_dir}" ]; then
-    mkdir --parents -- /run/user/0
+    mkdir --mode=0700 --parents -- /run/user/0
     chmod 0700 -- /run/user/0
     export XDG_RUNTIME_DIR="/run/user/0"
   fi
