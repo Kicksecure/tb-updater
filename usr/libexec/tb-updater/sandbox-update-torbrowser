@@ -29,6 +29,26 @@ source "${HELPER_SCRIPTS_PATH:-}"/usr/libexec/helper-scripts/log_run_die.sh
 # shellcheck source=../../../../helper-scripts/usr/libexec/helper-scripts/light_sleep.bsh
 source "${HELPER_SCRIPTS_PATH:-}"/usr/libexec/helper-scripts/light_sleep.bsh
 
+## The self-lock below (lockfile.sh, which by design refuses any dir outside
+## /run/user/$EUID for TOCTOU safety) needs a usable per-user runtime dir. Root
+## does not always have one: a package-build chroot and a Qubes TemplateVM apt
+## postinst have no systemd-logind at all (XDG_RUNTIME_DIR unset, /run/user/0
+## absent), and `sudo`/pam_systemd can export XDG_RUNTIME_DIR=/run/user/0 WITHOUT
+## logind ever creating the directory. In every such case lockfile.sh dies "no
+## per-user runtime dir". Provision root's own 0700 /run/user/0 and point the lock
+## at it whenever the dir lockfile.sh would select is not a usable (existing,
+## non-symlink) directory -- mirrors lockfile.sh's own predicate, so no gap. Inert
+## on a real logind system where it already exists. The tb-updater work phase
+## provisions its own /run/user/<tb-updater-uid> separately below.
+if [ "$(id -u)" = '0' ]; then
+  tb_lock_runtime_dir="${XDG_RUNTIME_DIR:-/run/user/0}"
+  if [ ! -d "${tb_lock_runtime_dir}" ] || [ -L "${tb_lock_runtime_dir}" ]; then
+    mkdir --parents -- /run/user/0
+    chmod 0700 -- /run/user/0
+    export XDG_RUNTIME_DIR="/run/user/0"
+  fi
+fi
+
 # shellcheck source=../../../../helper-scripts/usr/libexec/helper-scripts/lockfile.sh
 source "${HELPER_SCRIPTS_PATH:-}"/usr/libexec/helper-scripts/lockfile.sh
 
